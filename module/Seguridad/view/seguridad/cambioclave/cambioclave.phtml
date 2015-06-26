@@ -1,0 +1,208 @@
+<?php echo $this->doctype(); ?>
+<html>
+	<head>
+		<?php echo $this->headTitle($this->translate('Aplicacion ERP')) ?>
+
+        <!-- Styles -->
+		<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/images/favicon.ico'))								
+						->appendStylesheet($this->basePath() . '/js/jquery-ui-1.10.2/css/ui-lightness/jquery-ui.css')						
+						->appendStylesheet($this->basePath() . '/js/custom-alert/custom-alert.css')
+						->appendStylesheet($this->basePath() . '/js/custom-validate/custom-validate.css')
+						->appendStylesheet($this->basePath() . '/css/style.css') 									
+						->appendStylesheet($this->basePath() . '/css/login.css') 									
+		?>		
+		
+        <!-- Scripts -->
+		<?php echo $this->headScript()->appendFile($this->basePath() . '/js/scripts/jquery-1.9.1.min.js')
+									  ->appendFile($this->basePath() . '/js/jquery-ui-1.10.2/jquery-ui-1.10.2.custom.min.js')
+									  ->appendFile($this->basePath() . '/js/custom-alert/custom-alert.js')
+									  ->appendFile($this->basePath() . '/js/custom-validate/custom-validate.js')
+		?>	
+                
+		<script type="text/javascript">
+			var ajax_process = null;
+			
+			$(document).ready(function () {
+				$("#btnCambiarClave").click(function () {
+					if (!ValidateControls('frm')) {
+						return false;
+					}
+					$('#frm').submit();
+			    });
+				$("#btnCancelar").click(function () {
+					$('input[type=password]').val('');
+			    });
+				$("#btnRegresar").click(function () {
+					window.location.replace("<?php echo $this->basePath(); ?>/application");
+			    });
+				$('.default-value').each(function() {
+					var default_value = this.value;
+					$(this).css('color', '#666'); // this could be in the style sheet instead
+					$(this).focus(function() {
+						if(this.value == default_value) {
+							this.value = '';
+							$(this).css('color', '#333');
+						}
+					});
+					$(this).blur(function() {
+						if(this.value == '') {
+							$(this).css('color', '#666');
+							this.value = default_value;
+						}
+					});
+				});
+	
+				//==============================================================
+				//CLAVE
+				//==============================================================
+				
+				// cache references to the input elements into variables
+			    var passwordField1 = $('input[name=clave]');
+			 
+			    // add a password placeholder field to the html
+			    passwordField1.after('<input id="passwordPlaceholder" type="text" value="Nueva Clave" autocomplete="off" class="pwd-style" maxlength="20" />');
+			    var passwordPlaceholder1 = $('#passwordPlaceholder');
+			 
+			    // show the placeholder with the prompt text and hide the actual password field
+			    passwordPlaceholder1.show();
+			    passwordField1.hide();
+	
+			    // when focus is placed on the placeholder hide the placeholder and show the actual password field
+			    passwordPlaceholder1.focus(function() {
+			        passwordPlaceholder1.hide();
+			        passwordField1.show();
+			        passwordField1.focus();
+			    });
+			    // and vice versa: hide the actual password field if no password has yet been entered
+			    passwordField1.blur(function() {
+			        if(passwordField1.val() == '') {
+			            passwordPlaceholder1.show();
+			            passwordField1.hide();
+			        }
+			    });
+	
+			  	//==============================================================
+				//CLAVE ANTIGUA
+				//==============================================================
+				
+				// cache references to the input elements into variables
+			    var passwordField2 = $('input[name=claveAntigua]');
+			 
+			    // add a password placeholder field to the html
+			    passwordField2.after('<input id="passwordPlaceholder0" type="text" value="Clave actual" autocomplete="off" class="pwd-style" maxlength="20" />');
+			    var passwordPlaceholder2 = $('#passwordPlaceholder0');
+			 
+			    // show the placeholder with the prompt text and hide the actual password field
+			    passwordPlaceholder2.show();
+			    passwordField2.hide();
+	
+			    // when focus is placed on the placeholder hide the placeholder and show the actual password field
+			    passwordPlaceholder2.focus(function() {
+			        passwordPlaceholder2.hide();
+			        passwordField2.show();
+			        passwordField2.focus();
+			    });
+			    // and vice versa: hide the actual password field if no password has yet been entered
+			    passwordField2.blur(function() {
+			        if(passwordField2.val() == '') {
+			            passwordPlaceholder2.show();
+			            passwordField2.hide();
+			        }
+			    });
+	
+			  //==============================================================
+				//CLAVE ANTIGUA
+				//==============================================================
+				
+				// cache references to the input elements into variables
+			    var passwordField = $('input[name=repetirclave]');
+			 
+			    // add a password placeholder field to the html
+			    passwordField.after('<input id="passwordPlaceholder2" type="text" value="Verificar Clave" autocomplete="off" class="pwd-style" maxlength="20" />');
+			    var passwordPlaceholder = $('#passwordPlaceholder2');
+			 
+			    // show the placeholder with the prompt text and hide the actual password field
+			    passwordPlaceholder.show();
+			    passwordField.hide();
+	
+			    // when focus is placed on the placeholder hide the placeholder and show the actual password field
+			    passwordPlaceholder.focus(function() {
+			        passwordPlaceholder.hide();
+			        passwordField.show();
+			        passwordField.focus();
+			    });
+			    // and vice versa: hide the actual password field if no password has yet been entered
+			    passwordField.blur(function() {
+			        if(passwordField.val() == '') {
+			            passwordPlaceholder.show();
+			            passwordField.hide();
+			        }
+			    });
+			});
+		</script>
+
+	</head>
+	<body>
+	<div>
+		<form id="frm" name="frm" action="<?php echo($this->url('seguridad-cambioclave', array('action' => 'procesarcambioclave'))); ?>" method="post">
+			<div style="text-align: center"><img src='<?php echo($this->basePath()); ?>/images/logobig_erp.png' width='500' height='360' /></div>
+	        <table style="border:0; margin-left: auto; margin-right: auto;">
+	        	<tr>
+	        		<td align="center">
+	        			<span class="tituloBienvenidos">CAMBIO DE CLAVE</span>
+	        		</td>
+	        	</tr>
+	        	<tr>
+	            	<td align="left">
+	                	<span id="divMensajes" class="tituloLogin">Ingrese sus datos para realizar el cambio de clave</span><br />
+	                </td>
+	            </tr>
+	            <tr>
+	                <td align="center">
+	                	<input id="claveAntigua" name="claveAntigua" type="password"  maxlength="20" value="" autocomplete="off" class="pwd-style" 
+	                	validate="required" validateMessage="Ingrese la clave actual del usuario" />
+	                </td>
+	           	</tr>
+	           	<tr>
+	                <td align="center">
+	                	<input id="clave" name="clave" type="password"  maxlength="20" value="" autocomplete="off" class="pwd-style" 
+	                	validate="required" validateMessage="Ingrese la nueva clave del usuario" />
+	                </td>
+	          	</tr>
+	          	<tr>
+	          		<td align="center">          
+						<input id="repetirclave" name="repetirclave" type="password"  maxlength="20" value="" autocomplete="off" class="pwd-style"
+						validate="required" validateMessage="Verifique la clave nueva del usuario" />
+	                </td>
+	            </tr>
+	            <tr>
+	            	<td align="center">           
+						<input id="btnCambiarClave" name="btnCambiarClave" type="button" value="Cambiar" />
+						<input id="btnCancelar" name="btnCancelar" type="button" value="Cancelar" />
+						<input id="btnRegresar" name="btnRegresar" type="button" value="Regresar" />
+					</td>
+	            </tr>
+	        </table>
+        </form>
+		<div id="dialog-message" title=""></div>		
+<?php		
+/*$mensaje = '';
+if ($this->mensaje){
+    /*foreach($this->flashMessages as $message)
+    {
+		$mensaje = $mensaje.$message;
+    }
+	echo '<script>message_alert("Mensaje del Sistema","'.$this->mensaje.'");</script>';				
+}//end if*/
+$mensaje = '';
+if ($this->flashMessages){
+	foreach($this->flashMessages as $message)
+	{
+		$mensaje = $mensaje.$message;
+	}
+	echo '<script>message_alert("Mensaje del Sistema","'.$mensaje.'");</script>';
+}//end if
+?>
+</div>
+</body>
+</html>

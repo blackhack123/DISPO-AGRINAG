@@ -1,0 +1,210 @@
+<?php echo $this->doctype(); ?>
+<html>
+<head lang="en">
+    <meta>
+    <title>AGRINAG - Dispo</title>
+
+
+    <!-- Le styles -->
+    <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+    					//->appendStylesheet($this->basePath('js/jquery-ui-1.10.2/css/ui-lightness/jquery-ui.css'))
+					    ->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))
+	                    ->appendStylesheet('http://fonts.googleapis.com/css?family=Muli')
+                        ->appendStylesheet($this->basePath('css/bootstrap.min.css'))
+                        ->appendStylesheet($this->basePath('css/sweet-alert.css'))
+                        ->appendStylesheet($this->basePath('css/main.css')) 
+                        ->appendStylesheet($this->basePath('js/custom-alert/custom-alert.css'))
+                        
+    ?>                        
+    
+    <!-- Scripts -->
+    <?php echo $this->headScript()
+            ->appendFile($this->basePath('js/scripts/jquery-1.11.1.min.js'))
+            //->appendFile($this->basePath('js/jquery-ui-1.10.2/jquery-ui-1.10.2.custom.min.js')
+            //->appendFile($this->basePath('js/jquery-ui-1.10.2/i18n/jquery.ui.datepicker-es.js')))
+    		->appendFile($this->basePath('js/jquery-ui-1.11.4/jquery-ui-1.11.4.custom.min.js'))    
+            ->appendFile($this->basePath('js/jquery-ui-1.11.4/i18n/jquery.ui.datepicker-es.js'))         
+ //           ->appendFile($this->basePath('js/scripts/angular.min.js'))
+ //           ->appendFile($this->basePath('js/scripts/angular-route.min.js'))
+ //           ->appendFile($this->basePath('js/scripts/angular-animate.min.js'))
+            ->appendFile($this->basePath('js/scripts/bootstrap.min.js'))            
+ //           ->appendFile($this->basePath('js/scripts/ui-bootstrap-tpls-0.11.0.min.js'))
+ //           ->appendFile($this->basePath('js/scripts/angular-animate.min.js'))
+            ->appendFile($this->basePath('js/scripts/sweet-alert.js'))     
+            ->appendFile($this->basePath('js/scripts/behaviors.js'))
+            
+            ->appendFile($this->basePath('js/respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9',))
+            ->appendFile($this->basePath('js/html5shiv.min.js'),   'text/javascript', array('conditional' => 'lt IE 9',))
+            ->appendFile($this->basePath('js/custom-system/serializeFormJSON.js'))            
+            ->appendFile($this->basePath('js/custom-system/ajax/ajax.js'))
+            ->appendFile($this->basePath('js/custom-cargador/custom-cargador.js'))            
+            ->appendFile($this->basePath('js/custom-alert/custom-alert.js'));
+     ?>
+    
+    
+<!--  
+  //  <script type="text/javascript" src="javascripts/behaviors.jsxx"></script>
+  //  <script type="text/javascript" src="javascripts/services/cart.jsxx"></script>
+  // <script type="text/javascript" src="javascripts/main.jsxxx"></script>
+  //  <script type="text/javascript" src="javascripts/controllers/homectrl.jsxxx"></script>
+  //  <script type="text/javascript" src="javascripts/controllers/orderctrl.jsxxx"></script>
+   // <script type="text/javascript" src="javascripts/controllers/ordenesctrl.jsxxx"></script>
+-->
+
+<script>
+	$(document).ready(function ()
+	{
+		//Se esconde los mensajes
+		//$("#tasks_message").show();
+		$("#msg_order").hide();			//msg_orden - esto aparecera cuando se haga el ADD para anadir la orden
+		consultarNroItemsPedidoComprando();
+	});//$(document).ready
+
+
+	function consultarNroItemsPedidoComprando()
+	{
+		var data = '';
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/pedido/consultarnroitemspedidocomprando',
+							'cancel_process_previous':false,
+							'show_cargando':false,
+							'async': true,
+							'finish':function(response){
+									if (response.respuesta_code=='OK'){
+										//Se muestra el cuadro de informacion que se cargo una orden
+										$("#msg_nro_items_comprando").html(response.nro_items_comprando);
+									}else{
+										message_error('ERROR', response);
+									}//end if	
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;		
+	}//end function consultarNroItemsPedidoComprando
+		
+</script>		
+     
+</head>
+<body class="clearfix">                
+	<div id="dialog-message" title=""></div>
+                  
+    <div class="menu-right">
+        <ul class="esconder">
+            <?php
+//            if ($_SESSION["perfil_id"] == 2){ ?>
+                <li class="right-menu-item">
+                    <span class="pointer" data-toggle="modal" data-target="#choose_cliente2">
+                        <img class="tool" title="Cliente" src="<?php echo($this->basePath()); ?>/images/side-menu-cliente.png">
+                    </span>
+                </li>
+            <?php 
+//			} ?>
+            <li class="right-menu-item">
+                <a href="#/">
+                    <img class="tool" title="Home" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
+                </a>
+            </li>
+            <li class="right-menu-item"> 
+                <div class="animate-show alert message_add arrow_right animate-show" role="alert" id="msg_order" style="display: none;" > <!-- NOTIFICACION -->
+                </div>              
+                <a href="#/order-resume" >
+                    <span class="notification img-circle" id="msg_nro_items_comprando"> <!-- NOTIFICACION -->
+                        {{c}}
+                    </span>
+                    <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png">
+                </a>
+            </li>
+            <li class="right-menu-item">
+                <a href="#/list-ordenes">
+                    <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png">
+                </a>
+            </li>           
+            <li class="right-menu-item">
+                <a href="?session=logout">
+                    <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
+                </a>
+            </li>            
+        </ul>
+        <ul class="aparecer">
+            <?php
+  //          if ($_SESSION["perfil_id"] == 2){ ?>
+                <li class="right-menu-item">
+                    <span class="pointer" data-toggle="modal" data-target="#choose_cliente2">
+                        <img class="tool" title="Cliente" src="<?php echo($this->basePath()); ?>/images/side-menu-cliente.png">
+                    </span>
+                </li>
+            <?php 
+//			} ?>
+            <li class="right-menu-item">
+                <a href="#/">
+                    <img class="home" title="Tools" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
+                </a>
+            </li>
+            <li class="right-menu-item">
+                <div class="animate-show alert message_add arrow_right animate-show msg_task" role="alert" id="tasks_message"> <!-- NOTIFICACION -->
+                	MORONI SALAZAR
+                </div>              
+                <a href="#/order-resume" >
+                    <span class="notification img-circle" ng-show="count > 0">
+                        {{count}}
+                    </span>
+                    <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png">
+                </a>
+            </li>
+            <li class="right-menu-item">
+                <a href="#/list-ordenes">
+                    <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png">
+                </a>
+            </li>          
+            <li class="right-menu-item">
+                <a href="?session=logout">
+                    <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
+                </a>
+            </li> 
+        </ul>
+    </div>
+	<div id="page" class="clearfix">
+        <div id="head_fix">
+        	<header>
+                <a href="#/"><img src="<?php echo($this->basePath()); ?>/images/logo-agrinag-header.png" alt="logo agrinag"></a>
+
+                <div class="pull-right">
+                    <div class="user-info flo-left">
+                        <div class="icon-user img-circle flo-left">
+                            <img src="<?php echo($this->basePath()); ?>/images/user-icon.png">
+                        </div>
+                        <div class="flo-left">
+                            <h2>
+                                <?php // echo $nombre ?>
+                            </h2>
+                            <h3 class="flo-left">
+<?php 
+								echo($this->identidad_usuario['cliente_nombre']. ' - '.$this->identidad_usuario['nombre_usuario']);
+?>                            	<br>
+<?php 
+								echo($this->identidad_usuario['cliente_seleccion_marcacion_nombre']);
+?>								
+                            </h3>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="user-menu flo-left">
+                        <span class="glyphicon glyphicon-list"></span>
+                    </div>
+                </div>                
+            </header>           
+        </div>
+
+        
+
+ 
+        
+        <div class="content clearfix">
+        	<?php echo $this->content; ?>
+		</div>
+    </div>
+    
+</body>
+</html>

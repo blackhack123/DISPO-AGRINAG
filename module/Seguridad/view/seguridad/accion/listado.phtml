@@ -1,0 +1,268 @@
+<?php
+
+/**
+ * @author 	Ing. Héctor Mero
+ * Opcion:	Accion
+ */
+
+$opcion_id = 39;
+?>
+
+<meta charset="UTF-8">
+<script type="text/javascript">
+	var contenedor_opcion_39 = "<?php echo($this->contenedor_opcion); ?>";
+	var ajax_process_39 = null;
+
+	$(document).ready(function () {
+
+		InputData_KeyEnterDisabled();
+		
+		$("#btn_nuevo_39").on('click', function(event){
+			cargador_visibility('show');			
+			ajax_process_39 = $.ajax({
+										type: "POST",
+										url: 'seguridad/accion/nuevo/0?contenedor_opcion='+contenedor_opcion_39,
+										cache: false,
+										beforeSend : function(){           
+											if (ajax_process_39) {
+												ajax_process_39.abort();
+											}	
+										},											
+									}).done(function(msg) {
+										$("#"+contenedor_opcion_39).html(msg);
+										cargador_visibility('hide');
+									}).error(function(request, status, error) {
+										message_error('ERROR', request.responseText);	
+										cargador_visibility('hide');
+									});
+			return false;	
+		});	  
+
+		$("#btn_modificar_39").on('click', function(event){
+			var selr = jQuery('#grid_39').jqGrid('getGridParam','selrow');
+
+			if (selr){
+				consultar_39(selr);
+			}else{
+				message_alert('Advertencia','Debe de Seleccionar un registro');	
+			}
+				
+			return false;
+		});
+		
+		
+		$("#btn_eliminar_39").on('click', function(event){ 
+			if (jqgrid_fila_seleccionada("grid_39")){
+				var parametros = {};
+				parametros['ids'] = jqgrid_get_ids_seleccionado("grid_39","id");				
+				message_confirm('Confirme','¿Está Seguro de Inactivar ?','eliminar_39', parametros);
+			}else{
+				message_alert('Advertencia','Debe de Seleccionar un registro');	
+			}
+			return false;			
+		});	
+
+
+		$("#btn_inactivar_39").on('click', function(event){ 
+			if (jqgrid_fila_seleccionada("grid_39")){
+				var parametros = {};
+				parametros['ids'] = jqgrid_get_ids_seleccionado("grid_39","id");				
+				message_confirm('Confirme','¿Está Seguro de Inactivar ?','eliminar_39', parametros);
+			}else{
+				message_alert('Advertencia','Debe de Seleccionar un registro');	
+			}
+			return false;			
+		});		 
+
+		$("#btn_activar_39").on('click', function(event){ 
+			if (jqgrid_fila_seleccionada("grid_39")){
+				var parametros = {};
+				parametros['ids'] = jqgrid_get_ids_seleccionado("grid_39","id");				
+				message_confirm('Confirme','¿Está Seguro de Activar ?','activar_39', parametros);
+			}else{
+				message_alert('Advertencia','Debe de Seleccionar un registro');	
+			}
+			return false;			
+		});
+
+		$("#btn_consultar_39").on('click', function(event){
+			$('#grid_39').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+			return false;
+		});
+		
+        jQuery("#grid_39").jqGrid({
+			url:'<?php echo($this->basePath()); ?>/seguridad/accion/listadodata',
+			postData: {
+				nombre: function() { return $("#txt_nombre_39").val(); },
+				estado: function() { return $("#cbo_estado_39").val(); }
+			},
+			datatype: "json",
+		    loadonce: true,			
+           	colNames:['','Código','Nombre','Estado', ''],
+           	colModel:[
+           		{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},						
+           		{name:'id',index:'id', width:50,align:"center", sorttype:"int"},
+           		{name:'nombre',index:'nombre', width:300, sorttype:"string"},
+           		{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
+                {name:'btn_editar',index:'', width:30,label:"test" ,align:"center", formatter:actionEditModificarFormatter_39,
+           		  cellattr: function () { return ' title=" Modificar"'; }
+                },           		
+           	],
+           	rowNum:999999999,
+           	pager: '#pager_39',
+			toppager:false,
+			pgbuttons:false,
+			pginput:false,
+			rowList:false,
+			jsonReader: {
+				repeatitems : false,
+			},		
+           	/*caption:"Grilla de Prueba",*/
+			afterInsertRow : function(rowid, rowdata)
+			{
+				if (rowdata.estado == "I")
+				{
+					$(this).jqGrid('setRowData', rowid, false, {color:'red'});
+				}
+
+			},
+        	ondblClickRow: function (rowid,iRow,iCol,e) {
+	            var data = $('#grid_39').getRowData(rowid);				
+	            consultar_39(data.id);
+	            return false;
+        	},
+			loadError: function (jqXHR, textStatus, errorThrown) {
+				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+			}
+        });
+		//Se configura el grid para que pueda navegar procesar la fila con el ENTER
+		jQuery("#grid_39").jqGrid('bindKeys', {
+			   "onEnter" : function( rowid ) { 
+					consultar_39(rowid);
+			   }
+		});
+		
+        function actionEditModificarFormatter_39(cellvalue, options, rowObject){
+				var accion_id = rowObject.id;	
+				new_format_value = '<a href="javascript:void(0)" onclick="consultar_39(\''+accion_id+'\')"><img src="images/edit.png" border="0" /></a> ';
+				return new_format_value;
+       	}//end function actionEditModificarFormatter
+
+		jQuery("#grid_39").jqGrid('navGrid','#pager_39',{edit:false,add:false,del:false});		
+		
+	});
+	
+	//Consulta un registro que se seleccione del DataGrid
+	function consultar_39(id){
+		cargador_visibility('show');
+		ajax_process_39 = $.ajax({
+							url: 'seguridad/accion/consultar/'+id,
+							data: {
+								"contenedor_opcion": contenedor_opcion_39
+							},	
+							beforeSend : function(){           
+								if (ajax_process_39) {
+									ajax_process_39.abort();
+								}
+							},				
+							cache: false			
+						}).done(function(msg) {
+							$("#"+contenedor_opcion_39).html(msg);
+							cargador_visibility('hide');
+						}).error(function(request, status, error) {
+							message_error('ERROR',request.responseText);
+							cargador_visibility('hide');
+						});
+		return false;
+	}//end function consultar_39		
+
+	function eliminar_39(respuesta, parametros){
+		if (respuesta){
+			cargador_visibility('show');
+			ids = parametros.ids;
+			ajax_process_39 = $.ajax({
+									type: "POST",
+									url: 'seguridad/accion/eliminarmasivo',
+									data: {ids: ids},
+									cache: false,
+									beforeSend : function(){           
+										if (ajax_process_39) {
+											ajax_process_39.abort();
+										}
+									},				
+								}).done(function(msg) {
+									pagina_actual = $('#grid_39').getGridParam('page');
+                                    //recargo el datagrid con esta linea por que se le puso un  loadonce: true 
+									$('#grid_39').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");				
+									message_info('Mensaje del Sistema',"Datos Inactivados con éxito");											
+									cargador_visibility('hide');
+								}).error(function(request, status, error) {
+									message_error('ERROR', request.responseText);
+									cargador_visibility('hide');				
+								});	
+			return false;
+		}//end if
+	}//end function eliminar_39	
+
+	function activar_39(respuesta, parametros){
+		if (respuesta){
+			cargador_visibility('show');
+			ids = parametros.ids;
+			ajax_process_39 = $.ajax({
+									type: "POST",
+									url: 'seguridad/accion/activarmasivo',
+									data: {ids: ids},
+									cache: false,
+									beforeSend : function(){           
+										if (ajax_process_39) {
+											ajax_process_39.abort();
+										}
+									},				
+								}).done(function(msg) {
+									pagina_actual = $('#grid_39').getGridParam('page');
+									 //recargo el datagrid con esta linea por que se le puso un  loadonce: true 
+									$('#grid_39').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");				
+									message_info('Mensaje del Sistema',"Datos Activados con éxito");											
+									cargador_visibility('hide');
+								}).error(function(request, status, error) {
+									message_error('ERROR', request.responseText);
+									cargador_visibility('hide');				
+								});	
+			return false;
+		}//end if
+	}//end function activar_modulo	
+	
+</script>
+
+<div id="div_contenedor39" style="padding: 2px; height: auto; border-color: #000000;">
+	<form name="frm_39" id="frm_39" action="" method="post">
+		<?php echo $this->partial('toolbar/toolbar', array(
+				'opcion_id' 		=> $opcion_id,
+				'permisos' 			=> $this->permisos,
+				'habilitarAcciones'	=> $this->habilitarAcciones
+		));
+		?>
+		<div class="titulo1">LISTADO</div>
+		<table>
+			<tr>
+				<td valign="middle" class="etiqueta">Nombre:</td>
+				<td valign="middle"><input name="txt_nombre_39" id="txt_nombre_39"
+					type="text" />
+				</td>
+				<td valign="middle" class="etiqueta">Estado:</td>
+				<td valign="middle"><select name="cbo_estado_39" id="cbo_estado_39">
+						<option value="">&lt;Todos&gt;</option>
+						<option value="A">Activo</option>
+						<option value="I">Inactivo</option>
+				</select>
+				</td>
+				<td><?php 		if (\Application\Constants\Accion::isPermisoAccion($opcion_id, \Application\Constants\Accion::CONSULTAR)){ ?>
+					<button id="btn_consultar_39" class="boton_consultar">Consultar</button>
+					<?php		}//end if ?>
+				</td>
+			</tr>
+		</table>
+		<table id="grid_39" class="grid"></table>
+		<div id="pager_39"></div>
+	</form>
+</div>

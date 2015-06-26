@@ -1,0 +1,306 @@
+<meta charset="UTF-8">
+
+
+<script>
+
+	$(document).ready(function () {
+
+        $('#filter_text').keyup(function () 
+        {
+            var rex = new RegExp($(this).val(), 'i');
+            $('.searchable tr').hide();
+            $('.searchable tr').filter(function () {
+                return rex.test($(this).text());
+            }).show();
+        })	       
+        
+        $('#cbo_filter').change(function () 
+        {
+           console.log($(this).val());
+           // var rex2 = new RegExp($(this).val(), '[^\*]');
+			var regexp2 = /^C/gi;
+            //var rex2 = /^A/
+            $('.searchable tr').hide();
+            $('.searchable tr .variedad').filter(function () {
+                return regexp2.test($.trim($(this).text()));
+            }).parent().show();
+        })
+
+
+        $(".btn_add_order").on('click', function(event){ 
+            add_order($(this));
+			return false;
+        });
+        //btn_add_order
+	});//$(document).ready
+
+
+	function add_order(obj)
+	{
+		var tr 				= obj.closest('tr');
+		var id_tr			= tr.attr('id');
+		var variedad_id 	= tr.attr('variedad_id');
+		var grado_id		= tr.attr('grado_id');
+		var tipo_caja_id	= $('#'+id_tr+'_tipo_caja_id').val(); 
+		var cantidad_order	= $('#'+id_tr+'_cantidad_order').val();
+
+/*		console.log('id_tr:', id_tr);
+		console.log('variedad_id:',variedad_id);
+		console.log('grado_id:',grado_id);
+		console.log('tipo_caja_id:',tipo_caja_id);
+		console.log('cantidad_order:',cantidad_order);
+*/
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{	variedad_id: variedad_id,
+						grado_id: grado_id,
+						tipo_caja_id: tipo_caja_id,
+						cantidad_order: cantidad_order
+					}
+		data = JSON.stringify(data);
+		
+		//var data = '';
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/pedido/additem',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									if (response.respuesta_code=='OK'){
+										$("#marcacion_sec").html(response.opciones);									
+									}else{
+										message_error('ERROR', response);
+									}//end if								
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;		
+	}
+</script>
+
+
+<section class="col-md-15 col-sm-15">
+    <div class="title-section clearfix">
+        <h1>
+            Disponibilidad
+        </h1>
+
+        <div class="pull-right clearfix" ng-show="view_dispo">
+             <div class="search pull-left separator">
+                <input id="filter_text" type="text" class="flo-left input-search" placeholder="Search">
+                <button class="button-search">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </div>
+
+            <p class="pull-left letter">
+                Select a Letter:
+            </p>
+
+            <select id="cbo_filter" class="form-control select-class search pull-left select-letter" ng-model="letter" ng-init="letter = 'all'" >
+                <option value="all">ALL</option>
+                <option value="A">A</option>
+                <option value="b">B</option>
+                <option value="c">C</option>
+                <option value="d">D</option>
+                <option value="e">E</option>
+                <option value="f">F</option>
+                <option value="g">G</option>
+                <option value="h">H</option>
+                <option value="i">I</option>
+                <option value="j">J</option>
+                <option value="k">K</option>
+                <option value="l">L</option>
+                <option value="m">M</option>
+                <option value="n">N</option>
+                <option value="o">O</option>
+                <option value="p">P</option>
+                <option value="q">Q</option>
+                <option value="r">R</option>
+                <option value="s">S</option>
+                <option value="t">T</option>
+                <option value="u">U</option>
+                <option value="v">V</option>
+                <option value="w">W</option>
+                <option value="x">X</option>
+                <option value="y">Y</option>
+                <option value="z">Z</option>                            
+             </select> 
+        </div>
+    </div>
+
+
+    <div class="clearfix" ng-show="view_dispo"> 
+
+        <div class="table-container col-md-14 col-md-offset-1 col-sm-14 col-sm-offset-1">                        
+
+             <div class="clear table-head">
+                <table class="table-dispo">
+                        <tr>
+                            <td class="th-inner"  width="300">Description</td>
+                            <td class="th-inner"  width="70">40</td>
+                            <td class="th-inner"  width="70">50</td>
+                            <td class="th-inner"  width="70">60</td>
+                            <td class="th-inner"  width="70">70</td>
+                            <td class="th-inner"  width="70">80</td>
+                            <td class="th-inner"  width="70">90</td>
+                            <td class="th-inner"  width="70">100</td>
+                            <td class="th-inner"  width="70">110</td>
+                            <td class="th-inner"  width="90">types boxes</td>
+                            <td class="th-inner"  width="70">Stock</td>
+                            <td class="th-inner" width="180">order</th>
+                        </tr>
+                </table>
+            </div>
+            <div class="table-scroll">
+                <div class="border">
+                <table class="table-dispo searchable">
+<?php 
+		$ind = 0;
+		foreach($this->result as $reg)
+		{
+			$ind ++;
+			
+			//Se establecen los precios de acuerdo al GRADO del tallo
+			$grado_id	= null;
+			$precio		= null;
+			$precio_40 	= null;
+			$precio_50 	= null;
+			$precio_60 	= null;
+			$precio_70 	= null;
+			$precio_80	= null;
+			$precio_90 	= null;
+			$precio_100 = null;
+			$precio_110 = null;
+			 switch (trim($reg['grado_id']))
+			 {
+			 	case '40':
+			 		$precio_40 	= $reg['precio'];
+			 		$precio		= $reg['precio'];
+			 		$grado_id	= 40;
+			 		break;
+			 	case '50':
+			 		$precio_50 	= $reg['precio'];
+			 		$precio		= $reg['precio'];
+			 		$grado_id	= 50;
+			 		break;
+			 	case '60':
+			 		$precio_60 	= $reg['precio'];
+			 		$precio		= $reg['precio'];
+			 		$grado_id	= 60;
+			 		break;
+ 				case '70':
+			 		$precio_70 	= $reg['precio'];
+			 		$precio		= $reg['precio'];
+			 		$grado_id	= 70;
+ 					break;
+ 				case '80':
+			 		$precio_80 	= $reg['precio'];
+			 		$precio		= $reg['precio'];
+			 		$grado_id	= 80;
+ 					break;
+ 				case '90':
+			 		$precio_90 	= $reg['precio'];
+			 		$precio		= $reg['precio'];
+			 		$grado_id	= 90;
+ 					break;
+ 				case '100':
+			 		$precio_100 = $reg['precio'];
+			 		$precio		= $reg['precio'];
+			 		$grado_id	= 100;
+ 					break;
+ 				case '110':
+			 		$precio_110 = $reg['precio'];
+			 		$precio		= $reg['precio'];
+			 		$grado_id	= 110;
+ 					break;
+			}//end switch
+			
+			//Se configura el combo de caja
+			$options_cbo_caja = '';
+			foreach($reg['cajas'] as $caja)
+			{
+				$options_cbo_caja .='<option value="'.$caja.'">'.$caja.'</option>';
+			}//end foreach
+			
+			
+			//Se configura del combo de ORDEN
+			$options_cbo_order = '';
+			for($i=1; $i <= $reg['nro_cajas']; $i++)
+			{
+				$options_cbo_order .='<option value="'.$i.'">'.$i.'</option>';
+			}//end foreach			
+?>                
+                    <tr id="<?php echo($ind); ?>" variedad_id="<?php echo($reg['variedad_id']); ?>" grado_id="<?php echo($grado_id); ?>">                                
+                        <td width="300" class="variedad">
+                            <?php echo($reg['variedad_nombre']); ?>
+
+                            <div class="pull-right" style="margin-right: 10%; color: orange;">
+                                <span class="glyphicon glyphicon-star pointer"
+                                ng-click="ctrl.mostrar_oferta($index,items)"
+                                aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
+                            </div>
+                        </td>
+                        <td width="70">
+                            <?php echo($precio_40); ?>                                    
+                        </td>
+                        <td width="70">
+                            <?php echo($precio_50); ?>
+                        </td>
+                        <td width="70">
+                            <?php echo($precio_60); ?>
+                        </td>
+                        <td width="70">
+                            <?php echo($precio_70); ?>
+                        </td>
+                        <td width="70">
+                            <?php echo($precio_80); ?>
+                        </td>
+                        <td width="70">
+                            <?php echo($precio_90); ?>
+                        </td>
+                        <td width="70">
+                            <?php echo($precio_100); ?>
+                        </td>                                
+                        <td width="70">
+                            <?php echo($precio_110); ?>
+                        </td>
+                        <td width="90">
+                            <!-- select class="form-control select-class" ng-model="items.tob" 
+                            ng-init="items.tob='HB'" ng-change="ctrl.cantidad_cajas($index,items.tob,items.variedad_id,items.grado_id)"
+                            ng-options="caja for caja in items.cajas">
+                            </select -->
+                            <select class="form-control select-class" id="<?php echo($ind); ?>_tipo_caja_id"><?php echo($options_cbo_caja); ?></select>                            
+                        </td>
+                        <td width="70">
+                        	<?php echo($reg['nro_cajas']); ?>
+                        </td>
+                        <td width="180">
+                        	<select class="form-control select-class" id="<?php echo($ind); ?>_cantidad_order""><?php echo($options_cbo_order); ?></select>
+                        	<div class="btn_add_order btn btn-xs btn-success" indice="<?php echo($ind); ?>">
+                                <span class="glyphicon glyphicon-plus-sign"></span> Add
+                            </div>
+                            </a>
+                        </td>
+                    </tr>
+<?php 
+		}//end foreach
+?>                      
+                </table>
+                </div>
+            </div>
+            
+
+            <div class="clearfix" ng-show="view_dispo">
+                <p>*PRICE PER STEM ($)</p> 
+            </div>
+            
+            <div class="clear">
+                <a href="#/order-resume" class="button-class pull-right"> Ver Pedido </a>
+            </div>                       
+
+            <!-- </form> -->
+        </div>
+
+    </div>
+    
+</section>

@@ -1,0 +1,225 @@
+<?php
+
+/**
+* @author Ing. Héctor Mero	
+* Opcion: Usuario
+*/
+	
+$opcion_id = 1;	
+?>
+
+<meta charset="UTF-8">
+
+
+<script>
+	var contenedor_opcion = "<?php echo($this->contenedor_opcion); ?>"
+	var ajax_process_1 = null;
+
+	$(document).ready(function () {
+		InputData_KeyEnterDisabled();
+		$("#btn_nuevo_1").on('click', function(event){
+			cargador_visibility('show');		
+			ajax_process_1 = $.ajax({
+									url: 'seguridad/usuario/nuevo/0',
+									data: {
+										"contenedor_opcion": contenedor_opcion
+									},	
+									cache: false,
+									beforeSend : function(){           
+										if (ajax_process_1) {
+											ajax_process_1.abort();
+										}	
+									},											
+								}).done(function(msg) {
+									$("#"+contenedor_opcion).html(msg);
+									cargador_visibility('hide');
+								}).error(function(request, status, error) {
+									message_error('ERROR', request.responseText);
+									cargador_visibility('hide');
+								});
+
+			return false;
+		});	  
+
+		$("#btn_modificar_1").on('click', function(event){
+			var selr = jQuery('#grid_usuario_1').jqGrid('getGridParam','selrow');
+
+			if (selr){
+				consultar_1(selr)
+			}else{
+				message_alert('Advertencia','Debe de Seleccionar un registro');	
+			}
+				
+			return false;
+		});
+	
+				
+		$("#btn_eliminar_1").on('click', function(event){   			
+			if (jqgrid_fila_seleccionada("grid_usuario_1")){
+				var parametros = {};
+				parametros['ids'] = jqgrid_get_ids_seleccionado("grid_usuario_1","id");				
+				message_confirm('Confirme','¿Está Seguro de eliminar?','eliminar_1', parametros);
+			}else{
+				message_alert('Advertencia','Debe de Seleccionar un registro');	
+			}
+			return false;			
+		});		 
+
+		$("#btn_consultar_1").on('click', function(event){
+			$('#grid_usuario_1').trigger('reloadGrid',[{page:1}]);
+			return false;
+		});		
+
+	});	
+
+	$(document).ready(function () {
+        jQuery("#grid_usuario_1").jqGrid({
+			url:'<?php echo($this->basePath()); ?>/seguridad/usuario/listadodata',
+			postData: {
+				nombre_usuario: function() { return $("#txt_nombre_usuario_1").val(); },
+				estado: function() { return $("#cbo_estado_1").val(); }				
+			},
+			datatype: "json",		
+           	colNames:['','Codigo','Usuario', 'Nombre','Perfil','Cambiar Clave','Nro. Intentos','Estado', ''],
+           	colModel:[
+           		{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},			
+           		{name:'id',index:'id', width:50, sorttype:"int"},
+           		{name:'nombre_usuario',index:'usuario', width:120, sorttype:"string"},
+           		{name:'nombre_persona',index:'nombre_persona', width:300, sorttype:"string", align:"left"},
+           		{name:'nombre_perfil',index:'nombre_perfil', width:180, sorttype:"string", align:"left"},
+           		{name:'estado_cambio_clave',index:'estado_cambio_clave', width:110, formatter: 'checkbox', align: 'center'},
+           		{name:'nro_intentos',index:'nro_intentos', width:100, sorttype:"string", align:"center"},
+           		{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
+           		{name:'btn_editar',index:'', width:30, align:"center", formatter:actionEditModificarFormatter_1},           		
+           	],
+			jsonReader: {
+				repeatitems : false,
+				/*id: "0"*/
+			},
+        	pager: '#pager_usuario_1',
+           	/*caption:"Grilla de Prueba",*/
+			afterInsertRow : function(rowid, rowdata)
+			{
+				if (rowdata.estado == "I")
+				{
+					$(this).jqGrid('setRowData', rowid, false, {color:'red'});
+				}
+
+			},
+        	ondblClickRow: function (rowid,iRow,iCol,e) {
+	            var data = $('#grid_usuario_1').getRowData(rowid);				
+				consultar_1(data.id)
+	            return false;
+        	},
+			loadError: function (jqXHR, textStatus, errorThrown) {
+				/*message_error('ERROR','HTTP status code: ' + jqXHR.status + '\n' +
+					  'textStatus: ' + textStatus + '\n' +
+					  'errorThrown: ' + errorThrown);
+				*/
+				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+			}
+        });
+		jQuery("#grid_usuario_1").jqGrid('navGrid','#pager_usuario_1',{edit:false,add:false,del:false});	
+		//Se configura el grid para que pueda navegar procesar la fila con el ENTER
+		jQuery("#grid_usuario_1").jqGrid('bindKeys', {
+			   "onEnter" : function( rowid ) { 
+					consultar_1(rowid);
+			   }
+		});
+
+		
+        function actionEditModificarFormatter_1(cellvalue, options, rowObject){
+				var usuario_id = rowObject.id;
+				new_format_value = '<a href="javascript:void(0)" onclick="consultar_1(\''+usuario_id+'\')"><img src="images/edit.png" border="0" /></a> ';
+				return new_format_value
+       	}//end function actionEditModificarFormatter_1
+
+		jQuery("#grid_usuario_1").jqGrid('navGrid','#pager_usuario_1',{edit:false,add:false,del:false});		
+	});
+	
+	//Consulta un registro que se seleccione del DataGrid
+	function consultar_1(id){
+		cargador_visibility('show');	
+		ajax_process_1 = $.ajax({
+								url: 'seguridad/usuario/consultar/'+id,
+								data: {
+									"contenedor_opcion": contenedor_opcion
+								},	
+								cache: false,
+								beforeSend : function(){           
+									if (ajax_process_1) {
+										ajax_process_1.abort();
+									}	
+								},											
+							}).done(function(msg) {
+								$("#"+contenedor_opcion).html(msg);
+								cargador_visibility('hide');
+							}).error(function(request, status, error) {
+								message_error('ERROR',request.responseText);			
+								cargador_visibility('hide');
+							});
+		return false;
+	}//end function consultar_1		
+
+	function eliminar_1(respuesta, parametros){
+		if (respuesta){
+			ids = parametros.ids;
+			cargador_visibility('show');
+			ajax_process_1 = $.ajax({
+									type: "POST",
+									url: 'seguridad/usuario/eliminarmasivo',
+									data: {ids: ids},
+									cache: false,
+									beforeSend : function(){           
+										if (ajax_process_1) {
+											ajax_process_1.abort();
+										}
+									},			
+								}).done(function(msg) {			
+										pagina_actual = $('#grid_usuario_1').getGridParam('page');
+										$('#grid_usuario_1').trigger('reloadGrid',[{page:pagina_actual}]);				
+										message_info('Mensaje del Sistema',"Datos Eliminados con éxito");											
+										cargador_visibility('hide');
+								}).error(function(request, status, error) {
+										message_error('ERROR', request.responseText);
+										cargador_visibility('hide');
+								});	
+			return false;
+		}//end if
+	}//end function eliminar_1		
+</script>
+
+<div id="div_contenedor1" style="padding:2px; height:auto; border-color:#000000;">
+
+<form name="frm_1" id="frm_1" action="" method="post">
+	<?php echo $this->partial('toolbar/toolbar', array(
+														'opcion_id' 		=> $opcion_id,
+														'permisos' 			=> $this->permisos,
+														'habilitarAcciones'	=> $this->habilitarAcciones	
+													   )); 
+	?>
+	<div class="titulo1">LISTADO</div>	
+    <table>
+		<tr>
+    		<td valign="middle" class="etiqueta">Usuario:</td>
+    		<td valign="middle"><input name="txt_nombre_usuario_1" id="txt_nombre_usuario_1" type="text" />
+			</td>
+    		<td valign="middle" class="etiqueta">Estado:</td>
+    		<td valign="middle">
+				<select name="cbo_estado_1" id="cbo_estado_1">
+					<option value="">&lt;Todos&gt;</option>
+					<option value="A">Activo</option>
+					<option value="I">Inactivo</option>
+				</select>
+			</td>
+    		<td>
+<?php 		if (\Application\Constants\Accion::isPermisoAccion($opcion_id, \Application\Constants\Accion::CONSULTAR)){ ?>
+					<button id="btn_consultar_1" class="boton_consultar">Consultar</button> 
+<?php		}//end if ?>				
+			</td>
+    	</tr>
+    </table>
+	<table id="grid_usuario_1" class="grid"></table>
+	<div id="pager_usuario_1"></div>  
+</form>
+</div>

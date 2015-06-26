@@ -1,0 +1,116 @@
+<?php
+
+namespace Dispo\DAO;
+use Doctrine\ORM\EntityManager,
+	Application\Classes\Conexion;
+use Dispo\Data\GrupoDispoDetData;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
+class GrupoDispoDetDAO extends Conexion 
+{
+	private $table_name	= 'grupo_dispo_det';
+
+	/**
+	 * Ingresar
+	 *
+	 * @param GrupoDispoDetData $GrupoDispoDetData
+	 * @return array Retorna un Array $key el cual contiene el id
+	 */
+	public function ingresar(GrupoDispoDetData $GrupoDispoDetData)
+	{
+		$key    = array(
+				'grupo_dispo_cab_id'				=> $GrupoDispoDetData->getGrupoDispoCabId(),
+				'variedad_id'						=> $GrupoDispoDetData->getVariedadId(),
+				'grado_id'							=> $GrupoDispoDetData->getGradoId()
+				
+		);
+		$record = array(
+				'grupo_dispo_cab_id'				=> $GrupoDispoDetData->getGrupoDispoCabId(),
+				'variedad_id'		                => $GrupoDispoDetData->getVariedadId(),
+				'grado_id'		            		=> $GrupoDispoDetData->getGradoId(),
+				'cantidad_bunch'                	=> $GrupoDispoDetData->getCantidadBunch(),
+				'cantidad_bunch_disponible'         => $GrupoDispoDetData->getCantidadBunchDisponible(),
+				'usuario_mod_id'                	=> $GrupoDispoDetData->getUsuarioModId(),
+				'fecha_mod'                			=> $GrupoDispoDetData->getFechaMod()
+		);
+		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
+		//$id = $this->getEntityManager()->getConnection()->lastInsertId();
+		return $GrupoDispoCabId;
+		return $VariedadId;
+		return $GradoId;
+	}//end function ingresar
+
+
+
+	/**
+	 * Modificar
+	 *
+	 * @param GrupoDispoDetData $GrupoDispoDetData
+	 * @return array Retorna un Array $key el cual contiene el id
+	 */
+	public function modificar(GrupoDispoDetData $GrupoDispoDetData)
+	{
+		$key    = array(
+				'grupo_dispo_cab_id'		      		  => $GrupoDispoDetData->getGrupoDispoCabId(),
+				'variedad_id'						      => $GrupoDispoDetData->getVariedadId(),
+				'grado_id'						       	  => $GrupoDispoDetData->getGradoId(),
+		);
+		$record = array(
+				'grupo_dispo_cab_id'				=> $GrupoDispoDetData->getGrupoDispoCabId(),
+				'variedad_id'		                => $GrupoDispoDetData->getVariedadId(),
+				'grado_id'		            		=> $GrupoDispoDetData->getGradoId(),
+				'cantidad_bunch'                	=> $GrupoDispoDetData->getCantidadBunch(),
+				'cantidad_bunch_disponible'         => $GrupoDispoDetData->getCantidadBunchDisponible(),
+				'usuario_mod_id'                	=> $GrupoDispoDetData->getUsuarioModId(),
+				'fecha_mod'                			=> $GrupoDispoDetData->getFechaMod(),haHoraActualServidor()
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $GrupoDispoDetData->getGrupoDispoCabId();
+		return $GrupoDispoDetData->getVariedadId();
+		return $GrupoDispoDetData->getGradoId();
+	}//end function modificar
+
+
+	/**
+	 * 
+	 * @param int $grupo_dispo_det
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @return \Dispo\Data\GrupoDispoDetData|NULL
+	 */
+	public function consultar($grupo_dispo_det, $variedad_id, $grado_id)
+	{
+		$GrupoDispoDetData 		    = new GrupoDispoDetData();
+
+		$sql = 	' SELECT grupo_dispo_det.* '.
+				' FROM grupo_dispo_det '.
+				' WHERE grupo_dispo_det = :grupo_dispo_det '.
+				'   and variedad_id		= :variedad_id'.
+				'   and grado_id		= :grado_id';
+
+
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':grupo_dispo_det',$grupo_dispo_det);
+		$stmt->bindValue(':variedad_id',$variedad_id);
+		$stmt->bindValue(':grado_id',$grado_id);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		if($row){
+			$GrupoDispoDetData->setGrupoDispoDet				($row['grupo_dispo_det']);
+			$GrupoDispoDetData->setVariedadId					($row['variedad_id']);
+			$GrupoDispoDetData->setGradoId		    			($row['grado_id']);
+			$GrupoDispoDetData->setCantidadBunch				($row['cantidad_bunch']);
+			$GrupoDispoDetData->setCantidadBunchDisponible		($row['cantidad_bunch_disponible']);
+			$GrupoDispoDetData->setUsuarioModId    				($row['usuario_mod_id']);
+			$GrupoDispoDetData->setFechaMod						($row['fecha_mod']);
+			
+			return $GrupoDispoDetData;
+		}else{
+			return null;
+		}//end if
+
+	}//end function consultar
+
+
+}//end class
+?>

@@ -1,0 +1,461 @@
+<?php
+
+/**
+* @author Ing. Héctor Mero	
+* Opcion: Mantenimiento de Usuario
+*/
+	
+$opcion_id = 1;		
+?>
+
+<meta charset="UTF-8">
+<script>
+	var contenedor_opcion = "<?php echo($this->contenedor_opcion); ?>";	
+	var COL_GRID_OPCION_ACCION_1_ACCION 		= 0;
+	
+	$(function() {
+		var tipo_extension_1 = $.ajax({
+			url: 'seguridad/usuario/getComboTipoExtensionDataGrid',
+			async: false, 
+			success: function(data, result) {
+				if (!result) message_error('ERROR', 'Error al cargar combo de Tipo Extension');
+			}
+		}).responseText;
+
+		InputData_UpperCaseAll();		
+		InputData_TrimAll();
+		InputData_KeyEnterDisabled();
+
+		$("#tabsUsuario_1").tabs();
+		$("#btn_addrow_grid_ext_voip_1, #btn_quitarrow_grid_ext_voip_1").button({
+			icons: {
+				primary: "ui-icon-arrowthick-1-w"
+			}
+		});
+		$("#btn_addrow_grid_ext_voip_1").on('click', function(event){	
+			var newData = [{"accion":"I", "id": 0, "tipo_extension": 0, "numero_extension": 0}];
+			$("#grid_ext_voip_1").addRowData('',newData);
+			return false;
+		});
+		$("#btn_quitarrow_grid_ext_voip_1").on('click', function(event){		   /*CON ESTO SOLUCIONAMOS PARA REALIZAR EL SUBMIT*/
+			var selr = $('#grid_ext_voip_1').jqGrid('getGridParam','selrow');
+
+			if( selr == null ) {
+				alert('Seleccione una fila');
+				return false;
+			}//end if
+
+			var accion = $('#grid_ext_voip_1').jqGrid('getCell', selr, 'accion');
+			$('#grid_ext_voip_1').jqGrid('editCell', selr, COL_GRID_OPCION_ACCION_1_ACCION, false); //Se sale del modo edicion
+
+			if (accion == 'I'){
+				$('#grid_ext_voip_1').delRowData(selr);
+			}else{
+				var ret = jQuery("#grid_ext_voip_1").jqGrid('getRowData',id);
+				alert(ret.id);
+				$('#grid_ext_voip_1').jqGrid('setRowData', ret.id, false, {color:'red'});
+				$("#grid_ext_voip_1").jqGrid('setCell', ret.id, "accion", "E");
+			}//end if
+
+			return false;
+		});
+		$("#btn_nuevo_1").on('click', function(event){
+			cargador_visibility('show');
+			ajax_process_1 = $.ajax({
+								type: "POST",
+								url: 'seguridad/usuario/nuevo/0?contenedor_opcion='+contenedor_opcion,
+								cache: false,
+								beforeSend : function(){           
+									if (ajax_process_1) {
+										ajax_process_1.abort();
+									}
+								},												
+							}).done(function(msg) {
+								$("#"+contenedor_opcion).html(msg);
+								$("#btn_ingresar_1").show();
+								cargador_visibility('hide');
+							}).error(function(request, status, error) {
+								message_error('ERROR', request.responseText);
+								cargador_visibility('hide');
+							});
+			return false;	
+		});	  
+
+		$("#btn_grabar_1").on('click', function(event){			
+			if ($("#codigo_1").val()==''){
+				//INGRESAR
+				grabar_1('ingresar'); 
+			}else{
+				//MODIFICAR
+				grabar_1('modificar');
+			}//end if
+			return false;
+		});
+		
+		$("#btn_eliminar_1").on('click', function(event){   		
+			message_confirm('Confirme','¿Está Seguro de eliminar?','eliminar_1');
+			return false;
+		});
+
+		$("#btn_regresar_1").on('click', function(event){
+			cargador_visibility('show');		
+			ajax_process_1 = $.ajax({
+									url: 'seguridad/usuario/listado',
+									data: {
+										"contenedor_opcion": contenedor_opcion
+									},			
+									cache: false,
+									beforeSend : function(){           
+										if (ajax_process_1) {
+											ajax_process_1.abort();
+										}
+									},
+								}).done(function(msg) {
+									$("#"+contenedor_opcion).html(msg);	
+									cargador_visibility('hide');
+								}).error(function(request, status, error) {
+									message_error('ERROR', request.responseText);			
+									cargador_visibility('hide');
+								});			
+			return false;
+		});
+		
+		$("#buscar_persona_1").on('click', function(event){     		
+			//Se carga el contenido de la ventana de dialogo
+			cargador_visibility('show');			
+			ajax_process_1 = $.ajax({
+									url: '<?php echo($this->basePath()); ?>/general/persona/dialog',
+									type: "GET",
+									data: {'dialog_id':'dialog-buscarpersona_1',
+										   'opcion_app': '<?php echo($opcion_id); ?>',
+										   'link_id_persona': 'persona_id_1',
+										   'link_nombre': 'nombre_1',		   
+										  },
+									dataType: "html",
+									beforeSend : function(){           
+										if (ajax_process_1) {
+											ajax_process_1.abort();
+										}
+									},				
+								}).done(function(msg) {
+									$("#dialog-buscarpersona_1").html( msg );
+									
+									/*Pasa el foco al siguiente control para evitar conflicto en el ENTER del GRID*/
+									$("#perfil_1").focus();
+									
+									/*Abre la ventana de Dialogo*/
+									$("#dialog-buscarpersona_1").dialog( "open" );								
+									cargador_visibility('hide');
+									
+								}).error(function(request, status, error) {
+									message_error('ERROR', request.responseText);
+									cargador_visibility('hide');
+								});	
+			return false;
+		});	
+
+		//Setea la configuración de la pantalla de Dialogo
+		$( "#dialog-buscarpersona_1" ).dialog({
+			autoOpen: false,
+			height: 500,
+			width: 'auto',
+		//	minHeight: 'auto',
+			modal: true
+		});
+
+		jQuery("#grid_empresa_sucursal_1").jqGrid({
+			url:'<?php echo($this->basePath()); ?>/seguridad/usuario/cargaempresasucursallistadodata',
+			postData: {
+				usuario_id: $("#codigo_1").val()
+			},
+			datatype: "json",
+		    loadonce: true,			
+		    colNames:['','','','Empresa','Sucursal',''],
+			colModel:[
+				{name:'id',index:'id',key:true,editable:false,hidden: true,sorttype:'int'},
+				{name:'empresa_id',index:'empresa_id',editable:false,hidden: true},
+				{name:'sucursal_id',index:'sucursal_id',editable:false,hidden: true},
+				{name:'empresa',index:'empresa', editable:false, width:100 },
+				{name:'sucursal',index:'sucursal', editable:false, width:350 },
+				{name:'tipo_accion',index:'tipo_accion', width:50, align:"center",editable:true, hidden: true}
+			],
+           	rowNum:999999999,
+           	pager: '#pager_empresa_sucursal_1',
+			toppager:false,
+			pgbuttons:false,
+			pginput:false,
+			rowList:false,
+			multiselect: true,
+			multiSort:true,
+			sortname: 'empresa, sucursal',
+			sortorder: 'asc',
+			jsonReader: {
+				repeatitems : false,
+			},		
+           	onSelectRow: function (rowid,status,e) {
+               	if(status){
+					$("#grid_empresa_sucursal_1").jqGrid('setCell', rowid, "tipo_accion", "I");
+				}
+				else{
+					$("#grid_empresa_sucursal_1").jqGrid('setCell', rowid, "tipo_accion", "C");
+				}
+			},
+			onSelectAll: function (aRowids,status,e) {
+				if(status){
+					for(var i=0; i<aRowids.length; i++)
+					{
+						$("#grid_empresa_sucursal_1").jqGrid('setCell', aRowids[i], "tipo_accion", "I");
+					}
+				}
+				else{
+					for(var j=0; j<aRowids.length; j++)
+					{
+						$("#grid_empresa_sucursal_1").jqGrid('setCell', aRowids[j], "tipo_accion", "I");
+					}
+				}
+			},
+			loadComplete: function(data) {
+		        if (data.rows.length > 0) {
+		            for (var i = 0; i < data.rows.length; i++) {
+			            if (data.rows[i].tipo_accion == 'I') {
+			            	jQuery("#grid_empresa_sucursal_1").setSelection(data.rows[i].id, true);
+		                }
+		            }
+		        }
+		    },        	
+			loadError: function (jqXHR, textStatus, errorThrown) {
+				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+			}/*,
+			grouping: true,
+		   	groupingView : {
+		   		groupField : ['dispositivo','modulo','opcion'],
+		   		groupColumnShow : [false, false, true],
+		   		groupText : ['<b>{0}</b>','<b>{0}</b>','<b>{0}</b>'],
+		   		groupCollapse : false,
+		   		groupDataSorted : [false,false,false],
+	            groupSorted: [false,false,false]	              
+		   	}*/
+        });
+		
+		jQuery("#grid_empresa_sucursal_1").jqGrid('navGrid','#pager_empresa_sucursal_1',{edit:false,add:false,del:false});			
+		jQuery("#grid_empresa_sucursal_1").jqGrid('filterToolbar', {stringResult: true, searchOnEnter: false});
+
+		jQuery("#grid_ext_voip_1").jqGrid({
+			url:'<?php echo($this->basePath()); ?>/seguridad/usuario/cargausuarioextensionlistadodata',
+			postData: {
+				usuario_id: $("#codigo_1").val()
+			},
+			datatype: "json",
+			loadonce: true,
+			rowNum:999999999,
+			colNames:['','Codigo','Tipo Extension','Numero Extension'],
+			colModel:[
+				{name:'accion',index:'accion', width:50, align:"center", hidden: true},
+				{name:'id',index:'id', width:50,  key : true, align:"center", editable:false,sorttype:'int'},
+				{name:'tipo_extension',index:'tipo_extension', width:50, editable:true, edittype: "select", formatter:'select', editrules: { required: true }, editoptions: { value: tipo_extension_1} },
+				{name:'numero_extension',index:'numero_extension', width:120, editable:true, sorttype:'number', editrules: { required: true } },
+			],
+			cmTemplate: {editable: true},
+			toppager:false,
+			//rowNum:10,
+		   	//rowList:[10,20,30],
+			height: '100%',
+			sortname: 'id',
+			viewrecords: true,
+			sortorder: "id",
+			forceFit : true,
+			cellEdit: true,
+			width: '550',
+			cellsubmit: 'clientArray',
+			editurl: 'clientArray',
+			onSelectRow: function (id) {
+				if (id && id !== lastsel3) {
+					$(this).jqGrid("restoreRow", lastsel3);
+					$(this).jqGrid("editRow", id, true);
+					lastsel3 = id;
+				}
+			},
+			jsonReader: {
+				repeatitems : false,
+			},
+			afterSaveCell : function(rowid,name,val,iRow,iCol) {
+				var accion = jQuery("#grid_ext_voip_1").jqGrid('getCell',rowid, COL_GRID_OPCION_ACCION_1_ACCION);
+				if (accion=='C'){
+					$("#grid_ext_voip_1").jqGrid('setCell', rowid, "accion", "M");
+				}//end if
+			},
+			loadComplete: function (data) {
+			},
+			loadError: function (jqXHR, textStatus, errorThrown) {
+				alert("Entro al error");
+				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+			}
+		});
+	});
+	
+	function eliminar_1(respuesta){
+		if (respuesta){
+			id = $("#codigo_1").val();
+			cargador_visibility('show');			
+			ajax_process_1 = $.ajax({
+									type: "POST",
+									url: 'seguridad/usuario/eliminar/'+id+'?contenedor_opcion='+contenedor_opcion,
+									data: $("#frm_1").serialize(),
+									cache: false,
+									beforeSend : function(){           
+										if (ajax_process_1) {
+											ajax_process_1.abort();
+										}
+									},					
+								}).done(function(msg) {
+									$("#"+contenedor_opcion).html(msg);
+									message_info('Mensaje del Sistema',"Datos Eliminados con éxito");				
+									cargador_visibility('hide');
+								}).error(function(request, status, error) {
+									message_error('ERROR', request.responseText);
+									cargador_visibility('hide');
+								});	
+			return false;
+		}//end if
+	}//end function eliminar_1
+	
+	function validaControles_1(){
+		return ValidateControls();
+	}//end function validaControles
+
+	function grabar_1(accion){
+		switch (accion){
+			case 'ingresar':
+					id = 0;
+					break;
+			case 'modificar':
+					id = $("#codigo_1").val();
+					break;
+		}//end switch
+		if (!validaControles_1()) {
+			return false;
+		}
+
+		var allData = {
+			    formData: $("#frm_1").serializeFormJSON(),
+			    gridEmpresaSucursalData: $('#grid_empresa_sucursal_1').jqGrid('getGridParam','data'),
+			    gridExtensionData: $('#grid_ext_voip_1').jqGrid('getGridParam','data')
+		};
+
+		cargador_visibility('show');		
+		ajax_process_1 = $.ajax({
+								type: "POST",
+								url: 'seguridad/usuario/'+accion+'/'+id+'?contenedor_opcion='+contenedor_opcion,
+								data: JSON.stringify(allData),
+								cache: false,
+								beforeSend : function(){           
+									if (ajax_process_1) {
+										ajax_process_1.abort();
+									}
+								},							
+							}).done(function(msg) {
+								$("#"+contenedor_opcion).html(msg);  //Carga el HTML
+								message_info('Mensaje del Sistema',"Datos Grabados con éxito");											
+								cargador_visibility('hide');
+							}).error(function(request, status, error) {
+								message_error('ERROR', request.responseText);
+								cargador_visibility('hide');								
+							});	
+		return false;		
+	}//end function grabar_1
+	
+</script>
+
+
+<!--  <div id="loader_1" style="padding:2px; height:auto; border-color:#000000;">-->
+<form name="frm_1" id="frm_1" action="" method="post">
+	<?php echo $this->partial('toolbar/toolbar', array(
+														'opcion_id' 		=> $opcion_id,
+														'permisos' 			=> $this->permisos,
+														'activa_regresar' 	=> true,
+														'habilitarAcciones'	=> $this->habilitarAcciones	
+													   )); 
+	?>
+	<div class="titulo1">
+		<?php 
+			$usuarioActual_id = $this->UsuarioData->getId();
+			echo (empty($usuarioActual_id) ? 'NUEVO USUARIO' :  $this->UsuarioData->getNombreUsuario());
+		?>
+	</div>
+	<div id="tabsUsuario_1">
+		<ul>
+			<li><a href="#tabsUsuario_1-1">Datos del Usuario</a></li>
+			<li><a href="#tabsUsuario_1-2">Empresa-Sucursal del Usuario</a></li>
+			<li><a href="#tabsUsuario_1-3">Extensiones VoIP del Usuario</a></li>
+		</ul>
+		<div id="tabsUsuario_1-1">	
+		    <table>
+				<tr>
+					<td class="etiqueta">Codigo:</td>
+					<td><input name="codigo_1" id="codigo_1" type="text" size="3" class="input-text" value="<?php echo($this->UsuarioData->getId()); ?>" readonly /> </td>			
+				</tr>
+				<tr>
+					<td class="etiqueta">Nombre:</td>
+					<td>
+						<input name="nombre_1" id="nombre_1" type="text" size="40" maxlength="40" class="input_text" value="<?php echo($this->PersonaData->getNombre()); ?>" readonly  validate="required" validateFocus="buscar_persona_1" validateMessage="Seleccione una Persona"    /> 
+						<input name="persona_id_1" id="persona_id_1" type="hidden" size="3" value="<?php echo($this->UsuarioData->getPersonaId()); ?>" />			
+						<button id="buscar_persona_1" class="boton_dialog">Buscar Persona</button>
+					</td>			
+				</tr>
+				<tr>
+					<td class="etiqueta">Perfil:</td>
+					<td>
+						<select name="perfil_1" id="perfil_1" class="select" validate="required" validateMessage="Seleccione un Perfil">
+						   <?php echo($this->cboPerfil); ?>
+						</select>						
+					</td>			
+				</tr>
+				<tr>
+					<td class="etiqueta">Grupo Empresarial:</td>
+					<td>
+						<select name="grupo_empresarial_1" id="grupo_empresarial_1" class="select" validate="required" validateMessage="Seleccione un Perfil">
+						   <?php echo($this->cboGrupoEmpresarial); ?>
+						</select>						
+					</td>			
+				</tr>		
+				<tr>
+					<td class="etiqueta">Usuario:</td>
+					<td><input name="usuario_1" id="usuario_1" type="text" size="40" maxlength="20" class="input-text" value="<?php echo($this->UsuarioData->getNombreUsuario()); ?>" validate="required" validateMessage="Ingrese un Usuario" /></td>
+				</tr>
+				<tr>
+					<td class="etiqueta">Cambiar Clave?:</td>
+					<td><input name="cambio_clave_1" id="cambio_clave_1" type="checkbox" value="1" <?php if ($this->UsuarioData->getEstadoCambioClave() == 1){echo('checked');} ?> /></td>
+				</tr>
+				<tr>
+					<td class="etiqueta">Generar y Enviar Clave Temporal?:</td>
+					<td><input name="generar_clave_1" id="generar_clave_1" type="checkbox" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="etiqueta">Nro Intentos:</td>
+					<td><input name="nro_intentos_1" id="nro_intentos_1" type="text" size="5" maxlength="5" class="input-text" value="<?php echo($this->UsuarioData->getNroIntentos()); ?>"  /> </td>			
+				</tr>
+				<tr>
+					<td class="etiqueta">Estado:</td>
+					<td>
+						<select name="estado_1" id="estado_1" class="select">
+						   <?php echo($this->cboEstado); ?>
+						</select>						
+					</td>
+				</tr>
+		    </table>
+		</div>
+		<div id="tabsUsuario_1-2">
+			<br />
+			<table id="grid_empresa_sucursal_1" class="grid"></table>
+			<div id="pager_empresa_sucursal_1"></div>
+		</div>
+		<div id="tabsUsuario_1-3">
+			<br />
+			<button id="btn_addrow_grid_ext_voip_1">Adicionar</button>
+			<button id="btn_quitarrow_grid_ext_voip_1">Quitar</button>
+			<table id="grid_ext_voip_1" class="grid"></table>	
+		</div>
+	</div>
+</form>
+<!-- </div>-->
+<div id="dialog-buscarpersona_1" title="Buscador de Personas"></div>

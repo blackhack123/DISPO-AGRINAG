@@ -1,0 +1,181 @@
+<?php
+
+/**
+ * @author Ing. Héctor Mero
+ * Opcion:	Mantenimiento Accion
+ */
+
+$opcion_id = 39;
+?>
+
+<meta charset="UTF-8">
+<script type="text/javascript">
+	var contenedor_opcion_39 = "<?php echo($this->contenedor_opcion); ?>";
+	var ajax_process_39 = null;
+	
+	$(function() {
+		InputData_UpperCaseAll();		
+		InputData_TrimAll();
+		InputData_KeyEnterDisabled();
+		
+		$("#btn_nuevo_39").on('click', function(event){
+			cargador_visibility('show');			
+			ajax_process_39 = $.ajax({
+										type: "POST",
+										url: 'seguridad/accion/nuevo/0?contenedor_opcion='+contenedor_opcion_39,
+										cache: false,
+										beforeSend : function(){           
+											if (ajax_process_39) {
+												ajax_process_39.abort();
+											}	
+										},											
+									}).done(function(msg) {
+										$("#"+contenedor_opcion_39).html(msg);
+										cargador_visibility('hide');
+									}).error(function(request, status, error) {
+										message_error('ERROR', request.responseText);	
+										cargador_visibility('hide');
+									});
+			return false;	
+		});	  
+
+		$("#btn_grabar_39").on('click', function(event){		
+			if ($("#codigo_39").val()==''){
+				//INGRESAR
+				grabar_39('ingresar'); 
+			}else{
+				//MODIFICAR
+				grabar_39('modificar');
+			}//end if
+			return false;
+		});
+		
+		$("#btn_eliminar_39").on('click', function(event){   		
+			message_confirm('Confirme','¿Está Seguro de eliminar?','eliminar_39');
+			return false;
+		});
+
+		$("#btn_regresar_39").on('click', function(event){
+			cargador_visibility('show');
+			ajax_process_39 = $.ajax({
+										url: 'seguridad/accion/listado',
+										data: {
+											"contenedor_opcion": contenedor_opcion_39
+										},			
+										cache: false,
+										beforeSend : function(){           
+											if (ajax_process_39) {
+												ajax_process_39.abort();
+											}	
+										},																					
+									}).done(function(msg) {
+										$("#"+contenedor_opcion_39).html(msg);				
+										cargador_visibility('hide');
+									}).error(function(request, status, error) {
+										message_error('ERROR', request.responseText);			
+										cargador_visibility('hide');
+									});			
+			return false;
+		});
+	});	
+	
+	function eliminar_39(respuesta){
+		if (respuesta){	
+			cargador_visibility('show');
+			id = $("#codigo_39").val();
+			ajax_process_39 = $.ajax({
+										type: "POST",
+										url: 'seguridad/accion/eliminar/'+id+'?contenedor_opcion='+contenedor_opcion_39,
+										data: $("#frm_39").serialize(),
+										cache: false,
+										beforeSend : function(){           
+											if (ajax_process_39) {
+												ajax_process_39.abort();
+											}	
+										},																					
+									}).done(function(msg) {
+										$("#"+contenedor_opcion_39).html(msg);
+										message_info('Mensaje del Sistema',"Datos Eliminados con éxito");
+										cargador_visibility('hide');
+									}).error(function(request, status, error) {
+										message_error('ERROR', request.responseText);
+										cargador_visibility('hide');
+									});	
+			return false;
+		}//end if
+	}//end function eliminar_39
+
+	function grabar_39(accion){
+		switch (accion){
+			case 'ingresar':
+					id = 0;
+					break;
+			case 'modificar':
+					id = $("#codigo_39").val();
+					break;
+		}//end switch
+		if (!ValidateControls('frm_39')) {
+			return false;
+		}
+
+		cargador_visibility('show');
+		ajax_process_39 = $.ajax({
+									type: "POST",
+									url: 'seguridad/accion/'+accion+'/'+id+'?contenedor_opcion='+contenedor_opcion_39,
+									data: $("#frm_39").serialize(),
+									cache: false,
+									beforeSend : function(){           
+										if (ajax_process_39) {
+											ajax_process_39.abort();
+										}	
+									},											
+								}).done(function(msg) {
+									$("#"+contenedor_opcion_39).html(msg);  //Carga el HTML
+									message_info('Mensaje del Sistema',"Datos Grabados con éxito");											
+									cargador_visibility('hide');
+								}).error(function(request, status, error) {
+									message_error('ERROR', request.responseText);
+									cargador_visibility('hide');
+								});	
+
+		return false;		
+	}//end function grabar_39
+	
+</script>
+<form name="frm_39" id="frm_39" action="" method="post">
+	<?php echo $this->partial('toolbar/toolbar', array(
+			'opcion_id' 		=> $opcion_id,
+			'permisos' 			=> $this->permisos,
+			'habilitarAcciones'	=> $this->habilitarAcciones
+	));
+	?>
+	<div class="titulo1">
+		<?php
+			echo ($this->AccionData->getNombre()==null ? 'NUEVA ACCION' : $this->AccionData->getNombre());
+		?>
+	</div>
+	<table>
+		<tr>
+			<td class="etiqueta">Codigo:</td>
+			<td><input name="codigo_39" id="codigo_39" type="text" size="3"
+				class="input-text" value="<?php echo($this->AccionData->getId()); ?>"
+				readonly />
+			</td>
+		</tr>
+		<tr>
+			<td class="etiqueta">Nombre:</td>
+			<td><input name="nombre_39" id="nombre_39" type="text" size="40"
+				maxlength="100" class="input-text"
+				value="<?php echo($this->AccionData->getNombre()); ?>"
+				validate="required" validateMessage="Ingrese un nombre del Modulo" />
+			</td>
+		</tr>
+		<tr>
+			<td class="etiqueta">Estado:</td>
+			<td><select name="estado_39" id="estado_39" class="select">
+					<?php echo($this->cboEstado); ?>
+			</select>
+			</td>
+		</tr>
+	</table>
+</form>
