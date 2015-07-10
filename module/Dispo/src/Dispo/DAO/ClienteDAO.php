@@ -114,6 +114,22 @@ class ClienteDAO extends Conexion
 
 
 
+	/**
+	 * 
+	 * @return array
+	 */
+	public function consultarTodo()
+	{
+		$sql = 	' SELECT id, TRIM(nombre) as nombre '.
+				' FROM cliente '.
+				' ORDER BY nombre';
+
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		return $result;
+	}//end function consultarTodo
+
 }//end class
 
 ?>

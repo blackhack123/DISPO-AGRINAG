@@ -24,7 +24,6 @@ class LoadController extends AbstractActionController
 	
 		$data = $SesionUsuarioPlugin->getRecord();
 
-		
 		switch($SesionUsuarioPlugin->getUserPerfilId())	
 		{
 			case \Application\Constants\Perfil::ID_CLIENTE: //CLIENTE
@@ -42,10 +41,9 @@ class LoadController extends AbstractActionController
 				return $this->redirect()->toRoute('dispo-admin');
 				break;
 		}//end switch	
-		
+
 		$this->layout()->identidad_usuario 	= $data;
-		
-		
+
 		return $viewModel;		
     }//end function indexAction
 

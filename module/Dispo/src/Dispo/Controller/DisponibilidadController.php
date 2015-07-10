@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Zend\View\Model\JsonModel;
 use Dispo\BO\DispoBO;
 use Dispo\BO\MarcacionBO;
+use Dispo\BO\AgenciaCargaBO;
 
 
 class DisponibilidadController extends AbstractActionController
@@ -23,17 +24,28 @@ class DisponibilidadController extends AbstractActionController
 	{
 		try
 		{
-			$viewModel 			= new ViewModel();
-			
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginClienteVendedor();
 
 			$SesionUsuarioPlugin->getUserLayout();
-			$viewModel->setTemplate('Dispo/Disponibilidad/seleccionarmarcacionagencia.phtml');
 			
-			$this->layout($SesionUsuarioPlugin->getUserLayout());
-			return $viewModel;
-			//false
+			$marcacion_sec 		= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
+			$agencia_carga_id 	= $SesionUsuarioPlugin->getClienteSeleccionAgenciaId();
+				
+			//identidad_usuario
+			if (empty($marcacion_sec)||(empty($agencia_carga_id)))
+			{
+				$viewModel 			= new ViewModel();
+				
+				$data = $SesionUsuarioPlugin->getRecord();
+				$viewModel->identidad_usuario 	= $data;
+				$viewModel->setTemplate('Dispo/Disponibilidad/seleccionarmarcacionagencia.phtml');
+				$this->layout($SesionUsuarioPlugin->getUserLayout());
+				return $viewModel;
+			}else{
+				return $this->redirect()->toRoute('dispo-disponibilidad-listado');
+			}//end if
+		
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
@@ -76,7 +88,30 @@ class DisponibilidadController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}		
-	}//end public function
+	}//end public asignarMarcacionAgenciaAction
+	
+	
+	
+	public function liberarMarcacionAgenciaAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+		
+			//Consulta la carga para obtener el nombre
+			$SesionUsuarioPlugin->setClienteSeleccionMarcacionSec	(null);
+			$SesionUsuarioPlugin->setClienteSeleccionAgenciaId		(null);
+		
+			return $this->redirect()->toRoute('dispo-disponibilidad-seleccionar-marcacion-agencia');
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function  liberarMarcacionAgenciaAction
 	
 	
 	
@@ -95,7 +130,7 @@ class DisponibilidadController extends AbstractActionController
 
 			//Se pregunta si se ha seleccionado una marcacion y una agencia, caso contrario lo rutea
 			//para obligarlo a seleccionar
-			$marcacion_id	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionId();
+			$marcacion_id	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
 			$agencia_id		= $SesionUsuarioPlugin->getClienteSeleccionAgenciaId();
 
 			//Se pregunta si ya existe una marcacion y agencia seleccionada por el cliente
@@ -107,12 +142,15 @@ class DisponibilidadController extends AbstractActionController
 
 			//Se consulta la dispo, considerando los criterios de busqueda
 			$cliente_id 	= $SesionUsuarioPlugin->getUserClienteId();
-			$usuario_id 	= $SesionUsuarioPlugin->getUsuarioId();
-			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionId();
+			$usuario_id 	= $SesionUsuarioPlugin->getClienteUsuarioId();
+			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
 
-			$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec);
 			
-			$viewModel->result				= $result;
+			$data = $SesionUsuarioPlugin->getRecord();
+			$viewModel->identidad_usuario 	= $data;			
+			//$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec);  //MORONITOR			
+			//$viewModel->result				= $result;	//MORONITOR
+			
 			$viewModel->marcacion_nombre 	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionNombre();
 //			echo("<br>");var_dump($result);echo("<br>");
 //			exit;
@@ -135,8 +173,7 @@ class DisponibilidadController extends AbstractActionController
 	public function listadodetalledispoAction()
 	{
 		try
-		{
-			$viewModel 				= new ViewModel();
+		{			
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 				
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
@@ -147,30 +184,37 @@ class DisponibilidadController extends AbstractActionController
 		
 			//Se pregunta si se ha seleccionado una marcacion y una agencia, caso contrario lo rutea
 			//para obligarlo a seleccionar
-			$marcacion_id	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionId();
+			$marcacion_id	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
 			$agencia_id		= $SesionUsuarioPlugin->getClienteSeleccionAgenciaId();
 		
 			//Se pregunta si ya existe una marcacion y agencia seleccionada por el cliente
 			//en caso de no estar, se lo dirige a la pantalla para que lo seleccione
-			if ((empty($marcacion_id))||(empty($agencia_id)))
+/*			if ((empty($marcacion_id))||(empty($agencia_id)))
 			{
 				return $this->redirect()->toRoute('dispo-disponibilidad-seleccionar-marcacion-agencia');
 			}//end if
-		
+*/		
 			//Se consulta la dispo, considerando los criterios de busqueda
 			$cliente_id 	= $SesionUsuarioPlugin->getUserClienteId();
-			$usuario_id 	= $SesionUsuarioPlugin->getUsuarioId();
-			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionId();
-		
-			$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec);
-				
-			$viewModel->result	= $result;
+			$usuario_id 	= $SesionUsuarioPlugin->getClienteUsuarioId();
+			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
 
-			$viewModel->setTemplate('Dispo/disponibilidad/listado_detalle_dispo.phtml');			
-			$viewModel->setTerminal(true);
-		
+			$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec);
+
+			$viewModel 							= new ViewModel();
+			$viewModel->respuesta_dispo_code	= $result['respuesta_code'];
+			$viewModel->respuesta_dispo_msg		= $result['respuesta_msg'];	
+			if (!empty($result['result_dispo']))
+			{			
+				$viewModel->result					= $result['result_dispo'];
+			}else{
+				$viewModel->result					= null;
+			}//end if
+
+			$viewModel->setTerminal(true);				
+			$viewModel->setTemplate('Dispo/disponibilidad/listado_detalle_dispo.phtml');
 			return $viewModel;
-			//false
+
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
@@ -181,38 +225,51 @@ class DisponibilidadController extends AbstractActionController
 	}//end function listadodispoAction
 
 	
-	/*-----------------------------------------------------------------------------*/
-	public function listadodataAction()
-	/*-----------------------------------------------------------------------------*/
+	
+	
+	public function getcomboMarcacionAgenciacargaAction()
 	{
-/*		try
+		try
 		{
-			$PruebaBO = new PruebaBO();
-			$PruebaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-
-			$condiciones = array();
-			$result = $PruebaBO->listado($condiciones);
-			//var_dump($result);
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+				
+			$AgenciaCargaBO = new AgenciaCargaBO();
+			$MarcacionBO 	= new MarcacionBO();
+						
+			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$MarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());			
+		
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			//var_dump($json); exit;
+			$marcacion_texto_primer_elemento		= $json['marcacion_texto_primer_elemento'];
+			$agenciacarga_texto_primer_elemento		= $json['agenciacarga_texto_primer_elemento'];
+			$cliente_id = $SesionUsuarioPlugin->getUserClienteId();
+			$marcacion_sec		= null;
+			$agencia_carga_id 	= null;
+		
+			$marcacion_opciones 	= $MarcacionBO->getComboPorClienteId($cliente_id, $marcacion_sec, $marcacion_texto_primer_elemento);
+			$agenciacarga_opciones 	= $AgenciaCargaBO->getComboTodos($agencia_carga_id, $agenciacarga_texto_primer_elemento);	
+		
 			$response = new \stdClass();
-			$i=0;
-			foreach($result as $row){
-				//var_dump($row);
-				$response->rows[$i] = $row;
-				$i++;
-			}//end foreach
-			$response->userdata['nro_regs'] = count($result);
+			$response->marcacion_opciones				= $marcacion_opciones;
+			$response->agenciacarga_opciones			= $agenciacarga_opciones;			
+			$response->respuesta_code 		= 'OK';
+		
 			$json = new JsonModel(get_object_vars($response));
-			
 			return $json;
-			exit;
+		
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
 			$response->setStatusCode(500);
 			$response->setContent($excepcion_msg);
 			return $response;
-		}
-*/	}//end function listadodataAction
-
-
+		}		
+	}//end function getcomboMarcacionAgenciacargaAction
+	
+	
 }

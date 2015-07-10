@@ -382,7 +382,59 @@ class UsuarioDAO extends Conexion {
 	}//end function consultarGrupoDispoCab
 	
 	
-
+	
+	/**
+	 * 
+	 * @param int $cliente_id
+	 * @return array
+	 */
+	function consultarPorCliente($cliente_id)
+	{
+		$sql = 	" SELECT usuario.id, usuario.nombre, usuario.username, CONCAT(usuario.nombre,' (',usuario.username,')') as nombre_completo ".
+				" FROM cliente INNER JOIN usuario ".
+				"                      ON usuario.cliente_id	= cliente.id ".
+				"                     AND usuario.perfil_id		= ".\Application\Constants\Perfil::ID_CLIENTE.
+				" WHERE cliente.id = :cliente_id";
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue('cliente_id', $cliente_id);
+		$stmt->execute();
+		
+		//$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$result = $stmt->fetchAll();
+		return $result;		
+	}//end function function consultarPorCliente
+	
+	
+	
+	/**
+	 * 
+	 * @param int $id
+	 * @return array
+	 */
+	function consultarArray($id){
+		$sql = 	" SELECT usuario.*, cliente.nombre cliente_nombre  ".
+				" FROM usuario LEFT JOIN cliente ".
+				"                      ON cliente.id	= usuario.cliente_id".
+				" WHERE usuario.id = :usuario_id";
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue('usuario_id', $id);
+		$stmt->execute();
+		
+		//$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$reg = $stmt->fetch();
+		return $reg;	
+	}//end function consultarArray
+	
+	
+	
+	/**
+	 * 
+	 * @param string $username
+	 * @param string $clave_encriptada
+	 * @return number
+	 */
 	function usuarioencriptar($username, $clave_encriptada)
 	{
 		$sql = 	'UPDATE '.$this->table_name.
@@ -396,6 +448,11 @@ class UsuarioDAO extends Conexion {
 
 	
 	
+	/**
+	 * 
+	 * @param string $clave
+	 * @return string
+	 */
 	function encriptar($clave)
 	{
 		$clave_encriptada = sha1(md5($clave));

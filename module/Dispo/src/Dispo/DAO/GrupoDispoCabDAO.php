@@ -5,8 +5,9 @@ use Doctrine\ORM\EntityManager,
 	Application\Classes\Conexion;
 use Dispo\Data\GrupoDispoCabDataData;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Dispo\Data\GrupoDispoCabData;
 
-class GrupoDispoCabDataDAO extends Conexion 
+class GrupoDispoCabDAO extends Conexion 
 {
 	private $table_name	= 'grupo_dispo_cab';
 
@@ -77,7 +78,7 @@ class GrupoDispoCabDataDAO extends Conexion
 		if($row){
 			$GrupoDispoCabDataData->setId			    ($row['id']);
 			$GrupoDispoCabDataData->setNombre		    ($row['nombre']);
-			$GrupoDispoCabDataData->setInventarioId		($row['direccion']);
+			$GrupoDispoCabDataData->setInventarioId		($row['inventario_id']);
 		
 			return $GrupoDispoCabDataData;
 		}else{
@@ -86,6 +87,36 @@ class GrupoDispoCabDataDAO extends Conexion
 
 	}//end function consultar
 
+	
+	
+	/**
+	 * 
+	 * @param int $usuario_id
+	 * @return array
+	 */
+	public function consultarPorUsuarioId($usuario_id)
+	{
+		$sql = 	' SELECT usuario.grupo_dispo_cab_id, grupo_dispo_cab.inventario_id, grupo_dispo_cab.nombre as grupo_dispo_cab_nombre '.
+				' FROM usuario INNER JOIN grupo_dispo_cab '.
+				'                      ON grupo_dispo_cab.id   			= usuario.grupo_dispo_cab_id'.
+				' WHERE usuario.id 		= :usuario_id';
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':usuario_id',$usuario_id);;
+		$stmt->execute();
+		$row = $stmt->fetch();		
+		if($row){
+			$GrupoDispoCabDataData = new GrupoDispoCabData();
+			
+			$GrupoDispoCabDataData->setId			    ($row['grupo_dispo_cab_id']);
+			$GrupoDispoCabDataData->setNombre		    ($row['grupo_dispo_cab_nombre']);
+			$GrupoDispoCabDataData->setInventarioId		($row['inventario_id']);
+		
+			return $GrupoDispoCabDataData;
+		}else{
+			return null;
+		}//end if
+		return $row;
+	}//end function consultarPorUsuarioId
 
 }//end class
 

@@ -104,13 +104,21 @@ class LoginController extends AbstractActionController
 								$session->offsetSet('perfil_nombre', $rsUsuario['perfil_nombre']);
 								$session->offsetSet('cliente_id', $rsUsuario['cliente_id']);
 								$session->offsetSet('cliente_nombre', $rsUsuario['cliente_nombre']);
-								$session->offsetSet('cliente_seleccion_marcacion_id', null);
+								$session->offsetSet('cliente_seleccion_marcacion_sec', null);
 								$session->offsetSet('cliente_seleccion_agencia_id', null);
+								//Variables de sesion usadas por el usuario de vendedor para emular a los clientes
+								$session->offsetSet('cliente_usuario_id', null);
+								$session->offsetSet('cliente_usuario_nombre', null);
+								$session->offsetSet('cliente_usuario_username', null);								
 
 								switch($rsUsuario['perfil_id'])
 								{
 									case \Application\Constants\Perfil::ID_CLIENTE: //CLIENTE								
-										$session->offsetSet('layout','layout/pedido');
+										//Se setea las variables del cliente, que solo es usuario en la emulacion del usuario vendedor
+										//pero se lo deja inicializado para tener constancia de su existencia
+										$session->offsetSet('cliente_usuario_id', $rsUsuario['id']);
+										$session->offsetSet('cliente_usuario_nombre', $rsUsuario['usuario_nombre']);
+										$session->offsetSet('cliente_usuario_username', $rsUsuario['username']);
 										
 										//Se consulta si existe un pedido comprando para reactivar y seguir en la compra
 										$reg_pedido =  $PedidoBO->consultarUltimoPedidoComprando( $rsUsuario['cliente_id']);
@@ -118,14 +126,26 @@ class LoginController extends AbstractActionController
 										if ($reg_pedido)
 										{
 											$session->offsetSet('cliente_pedido_cab_id_actual', $reg_pedido['id']);
+											
+											//Se consulta la marcacion y la agencia de carga del detalle de la factura
+											$reg_det	= $PedidoBO->consultarPedidoDetUltimoRegistro($reg_pedido['id']);//end if
+											if ($reg_det)
+											{
+												$session->offsetSet('cliente_seleccion_marcacion_sec', $reg_det['marcacion_sec']);
+												$session->offsetSet('cliente_seleccion_marcacion_nombre', $reg_det['marcacion_nombre']);
+												$session->offsetSet('cliente_seleccion_agencia_id', $reg_det['agencia_carga_id']);
+											}//end if
+											
 										}//end if
+										
+										$session->offsetSet('layout','layout/pedido');										
 										unset($reg_pedido);
 										break;
 
 									case \Application\Constants\Perfil::ID_VENTAS:
 										$session->offsetSet('vendedor_usuario_id', $rsUsuario['id']);
 										$session->offsetSet('vendedor_nombre_usuario', $rsUsuario['usuario_nombre']);
-										$session->offsetSet('vendedor_username', $rsUsuario['vendedor_username']);
+										$session->offsetSet('vendedor_username', $rsUsuario['username']);
 										$session->offsetSet('layout','layout/pedido');
 										break;
 								
@@ -173,6 +193,7 @@ class LoginController extends AbstractActionController
 	}//end function autenticarAction
 
 	
+	
 	public function encriptarAction()
 	{
 		try
@@ -182,8 +203,8 @@ class LoginController extends AbstractActionController
 			$UsuarioBO = new UsuarioBO();
 			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			
-			$username 	= 'admin';
-			$clave 		= '@dmin123';			
+			$username 	= 'ventas1';
+			$clave 		= 'vent@s-321';			
 			$UsuarioBO->usuarioencriptar($username, $clave);
 			exit;
 		}catch (\Exception $e) {
@@ -196,6 +217,7 @@ class LoginController extends AbstractActionController
 		
 		
 	}//end function encriptarAction
+	
 	
 
 	public function logoutAction()

@@ -1,0 +1,376 @@
+<meta charset="UTF-8">
+	<script>
+		$(document).ready(function () {
+
+			$(".modal-dialog-agencia-carga").css('width', '400px');
+			
+
+			$("body").on('click', '#btn_confirmar', function(event){
+				$("#detalle_pedido_sin_stock").html('');
+	        	var xswal = swal({
+				  title: "Desea confirmar su pedido?",
+				  text: "Verifique que todo su pedido este en orden!",
+				  type: "warning",
+				  showCancelButton: true,
+				  confirmButtonColor: "#DD6B55",
+				  confirmButtonText: "Si, confirmar",
+				  closeOnConfirm: false,
+				  closeOnCancel: false
+				},
+				function(isConfirm){
+					if (isConfirm) {				
+						//Se actualiza la DISPO una vez confirmado el PEDIDO
+						var data = {
+									pedido_cab_id: '<?php echo($this->pedido_cab_id); ?>'
+				  				   };
+							    		
+			    		var parameters = {
+			    							'type': 'POST',
+			    							'url':'<?php echo($this->basePath()); ?>/dispo/pedido/confirmar',
+			    							'show_cargando':true,
+			    							'async': false,
+			    							'finish':function(response){
+			    									if (response.respuesta_codex == 'OK'){
+			    										swal({  title: "El pedido se ha confirmado con exito!",   
+			    											text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",
+			    											//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
+			    											//html:true,
+			    											type: "success",
+			    											showCancelButton: true,
+			    											confirmButtonColor: "#DD6B55",
+			    											confirmButtonText: "Si, la misma!",
+			    											cancelButtonText: "No, cambiar!",
+			    											closeOnConfirm: false,
+			    											closeOnCancel: false,
+			    											/*timer: 2000*/
+			    										},
+			    										function(isConfirm){
+			    											cargador_visibility('show');
+		
+			    											swal({  title: "Procesando su peticion ...",   
+				    											text: "",  
+				    											type: "success",
+				    											showCancelButton: false,
+				    											showConfirmButton: false,
+				    										});
+			    											if (isConfirm) {
+																//Redirigir al listado de la disponibilidad y conservar las variables de marcacion y agencia de carga
+			    												window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/listado';
+			    											}else{
+			    												//Se enceran las variables de seccion de marcacion y agencia de carga, 
+				    											window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/liberarMarcacionAgencia';
+			    											}//end if
+			    										});	    										
+			    									}//end if	
+			    									if (response.respuesta_codex == 'NOVEDAD')
+			    									{
+				    									$("#detalle_pedido_sin_stock").html(response.html);
+				    									$(window).scrollTop(2000);
+				    									swal({  title: "No hay stock suficiente en su pedido ...",   
+			    											text: "POR FAVOR INDIQUE OTRA CANTIDAD de CAJAS",  
+			    											type: "error",
+			    											showCancelButton: false,
+			    											showConfirmButton: true,
+			    										});
+				    									/*function(isConfirm){
+				    										if (isConfirm) {
+				    											$(window).scrollTop(1000);
+				    										}//end if
+				    									});*/				    									
+				    									/*$(".sweet-alert").css('display','none');
+				    									$(".sweet-overlay").css('display','none');*/
+														//alert('entra aqui');
+			    									}else{
+			    										//cargador_visibility('show');
+				    									//alert('hola'+ response.respuesta_msg);			
+			    										swal({  title: response.respuesta_mensaje,   
+			    											text: '',		    											
+			    											type: "error",
+			    											html: true,
+			    											showCancelButton: false,
+			    											confirmButtonColor: "#DD6B55",
+			    											//showConfirmButton: false,
+			    										});
+			    									}//end if
+			    									
+			    							}//end finish
+			    		                 }//end parameters
+			    		ajax_call(parameters, data);
+						return;
+					}else{
+						$(".sweet-alert").css('display','none');
+						$(".sweet-overlay").css('display','none');
+						
+						xswal.closeModal();
+					}//end if
+				});//end function
+					
+				event.preventDefault();
+				return false;
+			});
+	
+	
+			
+	        $("#btn_cambiar_agencia_carga").on('click', function(event){
+				var agencia_carga_idx 	= $("#dialog_cbo_agencia_carga").val();
+				var pedido_det_secx   	= $("#dialog_pedido_det_sec").html();
+	
+				var tr				  	= $(".tr_det_"+pedido_det_secx);
+				var control_agencia_carga_nombre = tr.find('.agencia_carga_nombre');
+	
+				if (agencia_carga_idx == '')
+				{
+					swal({
+						  title: "Seleccione la Agencia de Carga",
+						  text: "",
+						  type: "warning",
+						  showCancelButton: false,
+						  confirmButtonColor: "#DD6B55",
+						  confirmButtonText: "Ok",
+						  closeOnConfirm: true,
+						  closeOnCancel: true
+						},			
+					function(isConfirm){
+							$("#dialog_cbo_agencia_carga").focus();
+					});	
+					return false;
+				}//end if
+	
+				var data = {pedido_cab_id: '<?php echo($this->pedido_cab_id); ?>',
+							pedido_det_sec: pedido_det_secx,
+							agencia_carga_id: agencia_carga_idx
+		  					}    		
+	    		var parameters = {
+	    							'type': 'POST',
+	    							'url':'<?php echo($this->basePath()); ?>/dispo/pedido/grabarcambiocargaagencia',
+	    							'show_cargando':true,
+	    							'async': false,
+	    							'finish':function(response){
+	    									if (response.respuesta_code=='OK'){
+	    										control_agencia_carga_nombre.html(response.agencia_carga_nombre);
+	    										//return true;
+	    									}//end if									
+	    							}
+	    		                 }
+	    		ajax_call(parameters, data);
+	    		return true;			
+	        });
+	
+	
+			
+	        $("body").on('click', '#btn_grabar_comentario', function(event){
+				var data = {pedido_cab_id: '<?php echo($this->pedido_cab_id); ?>',
+							comentario: $("#pedido_comentario").val()
+		  					}
+				console.log('data', data);	    		
+	    		var parameters = {
+	    							'type': 'POST',
+	    							'url':'<?php echo($this->basePath()); ?>/dispo/pedido/grabarcomentario',
+	    							'show_cargando':true,
+	    							'async': false,
+	    							'finish':function(response){
+	    									if (response.respuesta_code=='OK'){
+	    										$(".dialog_comentario").modal('hide');
+	    									}//end if									
+	    							}
+	    		                 }
+	    		ajax_call(parameters, data);
+	    		return false;			
+	        });
+	
+
+	        $("body").on('click', '.btn_mostrar_dialog_agencia_carga', function(event){			
+				var pedido_det_sec 			= $(this).attr('pedido_det_sec');
+				var tr				  		= $(".tr_det_"+pedido_det_sec);
+				var control_agencia_carga_nombre = tr.find('.agencia_carga_nombre');
+				var nombre_agencia_carga 	= control_agencia_carga_nombre.html();
+
+				$("#dialog_nombre_agencia_carga").html(nombre_agencia_carga);
+				$("#dialog_pedido_det_sec").html(pedido_det_sec);
+	
+				return true;			
+	    	});
+	
+
+	        $("body").on('click', '.btn_eliminar_detalle', function(event){
+	            var pedido_det_secx = $(this).attr('pedido_det_sec');
+	            var tr =  $(this).closest('tr');
+	            
+	        	swal({
+	  			  title: "Esta seguro de borrar el Item?",
+	  			  text: "La variedad sera retirada de su pedido!",
+	  			  type: "warning",
+	  			  showCancelButton: true,
+	  			  confirmButtonColor: "#DD6B55",
+	  			  confirmButtonText: "Si, borrarlo",
+	  			  closeOnConfirm: false
+	  			},
+	  			function(){
+	  				var data = {pedido_cab_id: '<?php echo($this->pedido_cab_id); ?>',
+	  							pedido_det_sec: pedido_det_secx
+	  		  					}
+	  				//var data = '';
+	  				var parameters = {	'type': 'POST',//'POST',
+	  									//'contentType': 'application/json',
+	  									'url':'<?php echo($this->basePath()); ?>/dispo/pedido/eliminardetalle',
+	  									'cancel_process_previous':false,
+	  									'show_cargando':true,
+	  									//'method':'async'
+	  									'async': false,
+	  									'finish':function(response){
+	  											if (response.respuesta_code=='OK'){
+	  												tr.remove();
+	  	  											if (response.nro_reg_det>0){
+	  	  												swal("Borrado!", "El item ha sido borrado! ", "success");
+	  													consultarNroItemsPedidoComprando(); 
+	  													//Se elimina el TR
+	  	  											}else{
+	  	  	  											swal({
+	  	  	  													title: "Borrado!",
+																text: 'Se eliminó por completo el pedido. Se consultará la disponibilidad!',
+																type: "success",
+																showConfirmButton: false,
+																timer: 2000								
+	  	  	  												},
+	  	  	  												function()
+	  	  	  												{
+	  	  	  													window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/listado';
+	  	  	  												});
+	  	  	  												window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/listado';		  	  	  										
+	  	  											}//Debe de dirigir al pedido
+	  											}else{
+	  												message_error('ERROR', response);
+	  											}//end if								
+	  									}							
+	  				                 };
+	  				response = ajax_call(parameters, data);	
+	  				return false;
+	  			});
+	
+	  			            
+				return false;
+	        });
+
+
+			cargar_detalle('<?php echo($this->pedido_cab_id); ?>');	        
+		});//$(document).ready
+		
+
+	
+		function cargar_detalle(pedido_cab_id)
+		{
+			$(".detalle_pedido").html('');
+			var data = {pedido_cab_id: pedido_cab_id}
+			    		
+			var parameters = {
+								'type': 'POST',
+								'url':'<?php echo($this->basePath()); ?>/dispo/pedido/consultardetallehtml',
+								'show_cargando':true,
+								'async': true,
+								'cancel_process_previous':false,
+								'finish':function(response){
+										if (response.respuesta_code=='OK'){
+											$(".detalle_pedido").html(response.html);
+										}//end if									
+								}
+			                 }
+			ajax_call(parameters, data);
+			return false;					
+		}//end function cargar_detalle
+
+	
+	</script>
+
+
+    <div class="title-section">
+        <h1>
+            Current Order
+        </h1>
+    </div>
+
+    <div class="table-container col-md-16 col-sm-16">
+        <!-- start message -->
+        <div class="alert alert-success" role="alert" id="dialog_confirm_msn" style="display:none">
+            <div class="clearfix">
+                <p class="flo-left">
+                    <b>Su pedido fue enviado con exito.</b> Desea continuar utilizando la misma marcacion?
+                </p>  
+        
+                <div class="add-label flo-right pointer" ng-click="ctrl.question(ctrl.valor = false)">
+                   No
+                </div>               
+        
+                <div class="add-label flo-right pointer" ng-click="ctrl.question(ctrl.valor = true)">
+                   Si
+                </div>                            
+            </div>
+        </div>
+        <!-- end message -->
+
+		<div class="detalle_pedido"></div>        
+        
+        <div id="detalle_pedido_sin_stock"></div>
+</section>
+
+
+	<!-- Modal -->
+	<div class="modal fade modal-agencia-carga" id="CambiarAgenciaCarga" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-sm modal-dialog-agencia-carga">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title" id="myModalLabel">
+	        	Cambiar Ag. de Carga <br><i><span id="dialog_nombre_agencia_carga" ></i></span>
+	        	<div style="display: none" id="dialog_pedido_det_sec"></div>
+	        </h4>
+	      </div>
+	      <div class="modal-body clearfix">
+	        <div class="marca-container clearfix" style="width: 100%">
+	                    <div class="carga-info flo-left clearfix">
+	                        <img class="flo-left" src="<?php echo($this->basePath()); ?>/images/carga-icon.png" alt="">
+	                        <select class="form-control flo-left" id="dialog_cbo_agencia_carga" style="width: 230px">
+	                            <?php echo($this->cbo_agencia_carga); ?>
+	                        </select>
+	                    </div>
+	
+	                    <div id="btn_cambiar_agencia_carga" class="add-label flo-right pointer" style="margin: 0" data-dismiss="modal">
+	                            Save This
+	                    </div>
+	         </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	
+	<!-- Modal -->
+	<div id="dialog_comentario" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title" id="myModalLabel">Comentario - Orden : <?php echo($this->nro_pedido_formateado); ?></h4>
+	      </div>
+	      <div class="modal-body clearfix">
+	        <div class="clearfix">
+	            <textarea id="pedido_comentario" class="form-control" style="margin-bottom: 10px; height:200px"><?php echo($this->pedido_comentario)?></textarea>                        
+	
+	            <div id="btn_grabar_comentario" class="add-label flo-right pointer"  data-dismiss="modal">
+	                Save This
+	            </div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+
+
+	     <!-- DIALOGS -->	
+		<?php echo $this->partial('dispo/dialog/seleccioncliente', array(
+				'identidad_usuario' 		=> $this->identidad_usuario,
+				'opcion_consulta'			=> ''
+		));
+		?>		
+		
+<div id="novedad_mover_scroll"></div>		

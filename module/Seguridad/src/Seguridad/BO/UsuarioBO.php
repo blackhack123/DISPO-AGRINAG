@@ -62,6 +62,53 @@ class UsuarioBO extends Conexion{
 		exit;
 	}//end function usuarioencriptar
 	
+	
+	
+
+	/**
+	 * 
+	 * @param string $cliente_id
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getComboPorCliente($cliente_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$UsuarioDAO = new UsuarioDAO();
+		
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+		
+		$result = $UsuarioDAO->consultarPorCliente($cliente_id);
+		
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre_completo', $cliente_id, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;		
+	}//end function getComboPorCliente
+
+	
+	
+	function consultar($id, $type_result = \Application\Constants\ResultType::OBJETO)
+	{
+		$UsuarioDAO = new UsuarioDAO();
+		
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+		
+		$result = null;
+		switch ($type_result)
+		{
+			case \Application\Constants\ResultType::OBJETO:
+				$result = $UsuarioDAO->consultar($id);
+				break;
+				
+			case \Application\Constants\ResultType::MATRIZ:
+				$result = $UsuarioDAO->consultarArray($id);
+				break;
+		}//end switch
+		
+		return $result;
+	}//end function consultar
+	
+	
 /*	function ingresar(UsuarioData $UsuarioData, $isGenerarClave)
 	{	
 		$UsuarioDAO = new UsuarioDAO();

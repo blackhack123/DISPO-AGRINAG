@@ -13,7 +13,7 @@ return array(
         'invokables' => array(
 //            'Seguridad\Controller\Seguridad' 	=> 'Seguridad\Controller\SeguridadController',
 			'Seguridad\Controller\Login' 	 	=> 'Seguridad\Controller\LoginController',
-//            'Seguridad\Controller\Usuario' 		=> 'Seguridad\Controller\UsuarioController',
+            'Seguridad\Controller\Usuario' 		=> 'Seguridad\Controller\UsuarioController',
 //        	'Seguridad\Controller\Cambioclave'	=> 'Seguridad\Controller\CambioclaveController',	 
         ),
     ),

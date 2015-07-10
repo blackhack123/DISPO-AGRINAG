@@ -8,6 +8,7 @@ use Dispo\DAO\DispoDAO;
 use Dispo\DAO\TipoCajaMatrizDAO;
 use Dispo\DAO\PedidoCabDAO;
 use Dispo\DAO\PedidoDetDAO;
+use Dispo\DAO\VariedadDAO;
 
 
 
@@ -29,12 +30,13 @@ class DispoBO extends Conexion
 	 * @return array
 	 */
 	function getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id = null, $variedad_id = null, $grado_id = null, 
-					  $get_fincas = false, $rebajar_cajas_pedido = true)
+					  $get_fincas = false, $rebajar_cajas_pedido = true, $validar_variedad_faltante = false)
 	{	
 		$UsuarioDAO				= new UsuarioDAO();
 		$DispoDAO				= new DispoDAO();
 		$TipoCajaMatrizDAO 		= new TipoCajaMatrizDAO();
 		$PedidoDetDAO			= new PedidoDetDAO();
+		$VariedadDAO			= new VariedadDAO();
 		
 /*		$this->getEntityManager()->getConnection()->beginTransaction();
 		try 
@@ -43,6 +45,7 @@ class DispoBO extends Conexion
 			$DispoDAO->setEntityManager					($this->getEntityManager());
 			$TipoCajaMatrizDAO->setEntityManager		($this->getEntityManager());
 			$PedidoDetDAO->setEntityManager				($this->getEntityManager());
+			$VariedadDAO->setEntityManager				($this->getEntityManager());
 			
 			/**
 			 * Consulta el GRUPO_DISPO_CAB_ID del usuario de cliente
@@ -65,6 +68,14 @@ class DispoBO extends Conexion
 			 * por lo que dara los bunches disponibles, y posteriormente si existe una
 			 * RESTRICCION en GRUPO_DISPO se aplica la regla para la dispo por grupo
 			 */
+			if (empty($inventario_id))
+			{
+				$result = array('respuesta_code' 	=> '02',
+						'respuesta_msg'		=> 'Usuario no tiene inventario, comuniquese con su asesor'
+				);
+				return $result;
+			}//end if			
+			
 			$result = $DispoDAO->consultarInventarioPorCliente($cliente_id, $inventario_id, $grupo_dispo_cab_id, $variedad_id, $grado_id);			
 			
 			/**
@@ -78,17 +89,38 @@ class DispoBO extends Conexion
 			
 			if (empty($result))
 			{
-				$result = array('respuesta_code' 	=> '02',
-								'respuesta_msg'		=> 'Usuario no tiene inventario, comuniquese con su asesor'
-								);
-				return $result;
+				if ($validar_variedad_faltante)
+				{
+					$VariedadData = $VariedadDAO->consultar($variedad_id);
+					$result = array('respuesta_code' 	=> '12',
+									'respuesta_msg'		=> 'No existen cajas '.$tipo_caja_id .' para la variedad '.$VariedadData->getNombre().' grado '.$grado_id
+									);
+					unset($VariedadData);
+					return $result;
+				}//end if
 			}//end if
+			
 			foreach($result as $row)
 			{
 				//$porcentaje = 100/100;
 				if (empty($row['grupo_dispo_det_cantidad_bunch_disponible']))
 				{
 					$tot_bunch_disponibles          = 0;
+					
+					/*------------------------------------*/
+					if (empty($tot_bunch_disponibles))
+					{
+						if ($validar_variedad_faltante)
+						{						
+							//$VariedadData = $VariedadDAO->consultar($variedad_id);
+							$result = array('respuesta_code' 	=> '13',
+									'respuesta_msg'		=> '.No existen cajas '.$tipo_caja_id .' para la variedad '.$row['variedad_nombre'].' grado '.$grado_id
+							);
+							//unset($VariedadData);
+							return $result;
+						}//end if
+					}//end if
+					/*------------------------------------*/					
 					//$porcentaje = $row['grupo_dispo_det_cantidad_bunch_disponible']/100;
 				}else{
 					if ($row['grupo_dispo_det_cantidad_bunch_disponible'] > $row['tot_bunch_disponible'])
@@ -299,8 +331,13 @@ class DispoBO extends Conexion
 			}//end if			
 			
 			//$this->getEntityManager()->getConnection()->commit();
-			
-			return $result_consolidado2;
+			$result = array('respuesta_code' 	=> 'OK',
+					'respuesta_msg'		=> '',
+					'result_dispo'		=> $result_consolidado2
+			);
+						
+			//return $result_consolidado2;
+			return $result;
 
 /*		} catch (Exception $e) {
 			$this->getEntityManager()->getConnection()->rollback();
@@ -310,18 +347,5 @@ class DispoBO extends Conexion
 */		
 	}//end function getDispo
 
-/*
-	function getDispoFormateado($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id = null, $variedad_id = null, $grado_id = null, 
-						$type_result = "echo", $get_fincas = false, $rebajar_cajas_pedido = true)
-	{
-		$result = $this->getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id, 
-									$type_result, $get_fincas, $rebajar_cajas_pedido);
-		
-		$result2	= null;
-		foreach($result as $reg){
-			$result[]
-		}
-	}//end getDispoFormateado
-*/	
 	
-}//end class PaisBO
+}//end class DispoBO

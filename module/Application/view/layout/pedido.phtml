@@ -8,9 +8,9 @@
     <!-- Le styles -->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
     					//->appendStylesheet($this->basePath('js/jquery-ui-1.10.2/css/ui-lightness/jquery-ui.css'))
-					    ->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))
+					    //->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))
 	                    ->appendStylesheet('http://fonts.googleapis.com/css?family=Muli')
-                        ->appendStylesheet($this->basePath('css/bootstrap.min.css'))
+                        ->appendStylesheet($this->basePath('css/bootstrap.css'))
                         ->appendStylesheet($this->basePath('css/sweet-alert.css'))
                         ->appendStylesheet($this->basePath('css/main.css')) 
                         ->appendStylesheet($this->basePath('js/custom-alert/custom-alert.css'))
@@ -54,6 +54,17 @@
 <script>
 	$(document).ready(function ()
 	{
+        $("#inicio").on('click', function(event){ 
+        	window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/seleccionarMarcacionAgencia'
+			return false;
+        });
+
+		
+        $("#opt_order, #msg_nro_items_comprando").on('click', function(event){ 
+        	window.location.href = '<?php echo($this->basePath()); ?>/dispo/pedido/consultarpedidoactual'
+			return false;
+        });
+        
 		//Se esconde los mensajes
 		//$("#tasks_message").show();
 		$("#msg_order").hide();			//msg_orden - esto aparecera cuando se haga el ADD para anadir la orden
@@ -87,32 +98,31 @@
      
 </head>
 <body class="clearfix">                
-	<div id="dialog-message" title=""></div>
+
                   
     <div class="menu-right">
         <ul class="esconder">
             <?php
-//            if ($_SESSION["perfil_id"] == 2){ ?>
+            if ($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_VENTAS){ ?>
                 <li class="right-menu-item">
-                    <span class="pointer" data-toggle="modal" data-target="#choose_cliente2">
+                    <span class="pointer" data-toggle="modal" data-target="#dialog_seleccion_cliente">
                         <img class="tool" title="Cliente" src="<?php echo($this->basePath()); ?>/images/side-menu-cliente.png">
                     </span>
                 </li>
             <?php 
-//			} ?>
+			} ?>
             <li class="right-menu-item">
                 <a href="#/">
-                    <img class="tool" title="Home" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
+                    <img id="inicio" class="tool" title="Home" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
                 </a>
             </li>
             <li class="right-menu-item"> 
                 <div class="animate-show alert message_add arrow_right animate-show" role="alert" id="msg_order" style="display: none;" > <!-- NOTIFICACION -->
                 </div>              
                 <a href="#/order-resume" >
-                    <span class="notification img-circle" id="msg_nro_items_comprando"> <!-- NOTIFICACION -->
-                        {{c}}
+                    <span class="notification img-circle" id="msg_nro_items_comprando"> <!-- NOTIFICACION -->                       
                     </span>
-                    <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png">
+                    <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png" id="opt_order">
                 </a>
             </li>
             <li class="right-menu-item">
@@ -121,21 +131,12 @@
                 </a>
             </li>           
             <li class="right-menu-item">
-                <a href="?session=logout">
+                <a href="<?php echo($this->basePath()); ?>/seguridad/login/logout">
                     <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
                 </a>
             </li>            
         </ul>
         <ul class="aparecer">
-            <?php
-  //          if ($_SESSION["perfil_id"] == 2){ ?>
-                <li class="right-menu-item">
-                    <span class="pointer" data-toggle="modal" data-target="#choose_cliente2">
-                        <img class="tool" title="Cliente" src="<?php echo($this->basePath()); ?>/images/side-menu-cliente.png">
-                    </span>
-                </li>
-            <?php 
-//			} ?>
             <li class="right-menu-item">
                 <a href="#/">
                     <img class="home" title="Tools" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
@@ -176,12 +177,15 @@
                         </div>
                         <div class="flo-left">
                             <h2>
-                                <?php // echo $nombre ?>
+<?php 
+								if ($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_VENTAS)
+								{
+									echo($this->identidad_usuario['nombre_usuario'].' <span style="color:yellow">(Vendedor)</span><br>');
+								}//end if								
+								echo('<div id="identidad_cliente">'.$this->identidad_usuario['cliente_nombre']. ' - '.$this->identidad_usuario['cliente_usuario_nombre'].'</div>');
+?>	
                             </h2>
                             <h3 class="flo-left">
-<?php 
-								echo($this->identidad_usuario['cliente_nombre']. ' - '.$this->identidad_usuario['nombre_usuario']);
-?>                            	<br>
 <?php 
 								echo($this->identidad_usuario['cliente_seleccion_marcacion_nombre']);
 ?>								
@@ -197,14 +201,17 @@
             </header>           
         </div>
 
-        
-
- 
-        
         <div class="content clearfix">
-        	<?php echo $this->content; ?>
+            <section class="col-md-15 col-sm-15">
+                <!--  div class="title-section clearfix" -->        
+        			<?php echo $this->content; ?>
+                <!--  /div  -->
+            </section>                    
 		</div>
     </div>
     
-</body>
+    
+	<div id="dialog-message" title=""></div>   
+	
+ </body>
 </html>

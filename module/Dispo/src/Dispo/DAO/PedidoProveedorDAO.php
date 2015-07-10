@@ -19,32 +19,27 @@ class PedidoProveedorDAO extends Conexion
 	public function ingresar(PedidoProveedorData $PedidoProveedorData)
 	{
 		$key    = array(
-				'pedido_cab_id'						=> $PedidoProveedorData->getPedidoCabId(),
-				'pedido_det_sec'					=> $PedidoProveedorData->getPedidoDetSec(),
-				'proveedor_id'						=> $PedidoProveedorData->getProveedorId()
-				
+				'pedido_cab_id'		=> $PedidoProveedorData->getPedidoCabId(),
+				'pedido_det_sec'	=> $PedidoProveedorData->getPedidoDetSec(),
+				'proveedor_id'		=> $PedidoProveedorData->getProveedorId()
 		);
 		$record = array(
-				'pedido_cab_id'									=> $PedidoProveedorData->getPedido_cabId(),
-				'pedido_det_sec'             					=> $PedidoProveedorData->getPedidoDetSec(),
-				'proveedor_id'				            		=> $PedidoProveedorData->getProveedorId(),
-				'nro_cajas'  	             			 		=> $PedidoProveedorData->getNroCajas(),
-				'cantidad_bunch'      							=> $PedidoProveedorData->getCantidadBunch(),
-				'tallos_x_bunch'				        		=> $PedidoProveedorData->getTallosxBunch(),
-				'tallos_total'        							=> $PedidoProveedorData->getTallosTotal(),
-				'variedad_id'        							=> $PedidoProveedorData->getVariedadId(),
-				'grado_id'        								=> $PedidoProveedorData->getGradoId(),
-				'precio'      									=> $PedidoProveedorData->getPrecio(),
-				'total'   		     							=> $PedidoProveedorData->getTotal(),	
-				'fec_exportado'   		     					=> $PedidoProveedorData->getFecExportado()
-				
+				'pedido_cab_id'		=> $PedidoProveedorData->getPedidoCabId(),
+				'pedido_det_sec'    => $PedidoProveedorData->getPedidoDetSec(),
+				'proveedor_id'		=> $PedidoProveedorData->getProveedorId(),
+				'nro_cajas'  	    => $PedidoProveedorData->getNroCajas(),
+				'cantidad_bunch'    => $PedidoProveedorData->getCantidadBunch(),
+				'tallos_x_bunch'	=> $PedidoProveedorData->getTallosxBunch(),
+				'tallos_total'      => $PedidoProveedorData->getTallosTotal(),
+				'variedad_id'       => $PedidoProveedorData->getVariedadId(),
+				'grado_id'        	=> $PedidoProveedorData->getGradoId(),
+				'precio'      		=> $PedidoProveedorData->getPrecio(),
+				'total'   		    => $PedidoProveedorData->getTotal(),	
+				//'fec_exportado'   	=> $PedidoProveedorData->getFecExportado()
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
 		//$id = $this->getEntityManager()->getConnection()->lastInsertId();
-		return $PedidoCabId;
-		return $PedidoDetSec;
-		return $Proveedor_id;
-		
+		return $key;		
 	}//end function ingresar
 
 
@@ -56,7 +51,7 @@ class PedidoProveedorDAO extends Conexion
 	 */
 	public function modificar(PedidoProveedorData $PedidoProveedorData)
 	{
-		$key    = array(
+/*		$key    = array(
 				'pedido_cab_id'			      		  		  => $PedidoProveedorData->getPedidoCabId(),
 				'pedido_det_sec'						      => $PedidoProveedorData->getPedidoDetSec(),
 				'proveedor_id'								  => $PedidoProveedorData->getProveedorId()
@@ -77,10 +72,8 @@ class PedidoProveedorDAO extends Conexion
 				'fec_exportado'   		     					=> $PedidoProveedorData->getFecExportado()
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $PedidoProveedorData->getPedidoCabId();
-		return $PedidoProveedorData->getPedidoDetSec();
-		return $PedidoProveedorData->getProveedorId();
-		
+		return $key;
+*/		
 	}//end function modificar
 
 
@@ -121,8 +114,7 @@ class PedidoProveedorDAO extends Conexion
 			$PedidoProveedorData->setPrecio							($row['precio']);
 			$PedidoProveedorData->setTotal							($row['total']);
 			$PedidoProveedorData->setFecExportado					($row['fec_exportado']);
-				
-				
+			
 			return $PedidoProveedorData;
 		}else{
 			return null;

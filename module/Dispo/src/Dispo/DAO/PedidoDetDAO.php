@@ -52,8 +52,8 @@ class PedidoDetDAO extends Conexion
 				'estado_reg_oferta'        						=> $PedidoDetData->getEstadoRegOferta(),
 				'usuario_ing_id'								=> $PedidoDetData->getUsuarioIngId(),
 				'usuario_mod_id'								=> $PedidoDetData->getUsuarioModId(),
-				'fec_ingreso'									=> \Application\Classes\Fecha::getFechaActualServidor(),
-				'fec_modifica'									=> \Application\Classes\Fecha::getFechaActualServidor(),
+				'fec_ingreso'									=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'fec_modifica'									=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
@@ -108,6 +108,76 @@ class PedidoDetDAO extends Conexion
 		return $PedidoDetData->getPedidoCabId();
 		return $PedidoDetData->getPedidoDetSec();
 */	}//end function modificar
+
+
+	/**
+	 * Actualiza el numero de cajas
+	 * 
+	 * @param PedidoDetData $PedidoDetData
+	 * @return array $key
+	 */
+	public function actualizarNroCajas(PedidoDetData $PedidoDetData)
+	{
+		$key    = array(
+				'pedido_cab_id'			      		  		  => $PedidoDetData->getPedidoCabId(),
+				'pedido_det_sec'						      => $PedidoDetData->getPedidoDetSec()
+		);
+		$record = array(
+				'nro_cajas'        								=> $PedidoDetData->getNroCajas(),
+				'cantidad_bunch'   		     					=> $PedidoDetData->getCantidadBunch(),
+				//'tallos_x_bunch'	        					=> $PedidoDetData->getTallosxBunch(),
+				'tallos_total'    		    					=> $PedidoDetData->getTallosTotal(),
+				//'precio'        								=> $PedidoDetData->getPrecio(),
+				'total'        									=> $PedidoDetData->getTotal(),
+				'usuario_mod_id'								=> $PedidoDetData->getUsuarioModId(),
+				'fec_modifica'									=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $key;
+	}//end function actualizarNroCajas
+		
+		
+		
+	/**
+	 * 
+	 * @param PedidoDetData $PedidoDetData
+	 * @return array
+	 */
+	public function	cambiarAgenciaCarga(PedidoDetData $PedidoDetData)
+	{
+		$key    = array(
+				'pedido_cab_id'			=> $PedidoDetData->getPedidoCabId(),
+				'pedido_det_sec'		=> $PedidoDetData->getPedidoDetSec()
+		);	
+
+		$record = array(
+				'agencia_carga_id'		=> $PedidoDetData->getAgenciaCargaId()
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		
+		return $key;
+	}//end function cambiarAgenciaCarga
+		
+	
+
+	/**
+	 * 
+	 * @param int $pedido_cab_id
+	 * @param int $pedido_det_sec
+	 * @return boolean
+	 */
+	public function eliminar($pedido_cab_id, $pedido_det_sec)
+	{
+		$key    = array(
+				'pedido_cab_id'				=> $pedido_cab_id,
+				'pedido_det_sec'			=> $pedido_det_sec,
+		);
+
+		$this->getEntityManager()->getConnection()->delete($this->table_name, $key);
+		return true;		
+	}//end function eliminar
+
 
 
 	/**
@@ -167,6 +237,32 @@ class PedidoDetDAO extends Conexion
 
 
 
+	/**
+	 *
+	 * @param int $pedido_cab_id
+	 * @param int $pedido_det_sec
+	 * @return array
+	 */
+	public function consultarArray($pedido_cab_id, $pedido_det_sec)
+	{
+		$PedidoDetData 		    = new PedidoDetData();
+	
+		$sql = 	' SELECT pedido_det.*, agencia_carga.nombre as agencia_carga_nombre '.
+				' FROM pedido_det LEFT JOIN agencia_carga '.
+				'                        ON agencia_carga.id = pedido_det.agencia_carga_id '.
+				' WHERE pedido_cab_id = :pedido_cab_id '.
+				'   and pedido_det_sec		= :pedido_det_sec';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':pedido_cab_id',$pedido_cab_id);
+		$stmt->bindValue(':pedido_det_sec',$pedido_det_sec);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		return $row;
+	}//end function consultarArray	
+	
+	
+	
 
 	/**
 	 * Consulta todos los pedidos del cliente que este en estado comprando
@@ -300,13 +396,20 @@ class PedidoDetDAO extends Conexion
 
 	
 	
-	public function consultarNroItemsComprandoPorPedido($pedido_cab_id)
+	/**
+	 * 
+	 * @param int $pedido_cab_id
+	 * @return number
+	 */
+	public function consultarNroItemsPorPedido($pedido_cab_id, $estado = null)
 	{
 		$sql = 	' SELECT count(*) as nro_reg '.
 				' FROM pedido_det INNER JOIN pedido_cab '.
-				'                         ON pedido_cab.id 		= pedido_det.pedido_cab_id '.
-				"						 AND pedido_cab.estado  = '".\Application\Constants\Pedido::ESTADO_COMPRANDO."'".
-				' WHERE pedido_det.pedido_cab_id= :pedido_cab_id ';
+				'                         ON pedido_cab.id 		= pedido_det.pedido_cab_id ';
+		if (!empty($estado)){
+			$sql = $sql."				 AND pedido_cab.estado  = '".$estado."'";
+		}
+		$sql = $sql.' WHERE pedido_det.pedido_cab_id= :pedido_cab_id ';
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->bindValue(':pedido_cab_id', $pedido_cab_id);
@@ -322,8 +425,72 @@ class PedidoDetDAO extends Conexion
 			}//end if
 		}//end if
 		return $nro_reg;
-	}//end function consultarNroItemsComprandoPorPedido
+	}//end function consultarNroItemsPorPedido
+			
+	
+	/**
+	 * 
+	 * @param intn $pedido_cab_id
+	 * @param string $estado (OPCIONAL) Esta campo se lo usara para fortalece el query de pedidos por tema de seguridad 
+	 * @return array
+	 */
+	public function consultarPorPedidoCabId($pedido_cab_id, $estado = null)
+	{
+		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
+				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id '.
+				' FROM pedido_det INNER JOIN pedido_cab '.
+				'				     ON pedido_cab.id			= pedido_det.pedido_cab_id ';
+		if (!empty($estado)){
+			$sql .= "               AND pedido_cab.estado		= '".$estado."'";
+		}//end if
+		$sql .=	'				  INNER JOIN variedad '.
+				'                    ON variedad.id				= pedido_det.variedad_id '.
+				'				  LEFT JOIN agencia_carga '.
+				'                    ON agencia_carga.id 		= pedido_det.agencia_carga_id '.
+				'				  LEFT JOIN marcacion '.
+				'					 ON marcacion.marcacion_sec	= pedido_det.marcacion_sec '.
+				' WHERE pedido_det.pedido_cab_id	= :pedido_cab_id';
+
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':pedido_cab_id', $pedido_cab_id);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		
+		return $result;
+	}//end function consultarPorPedidoCabId
+	
+
 	
 	
+	/**
+	 * 
+	 * @param int $pedido_cab_id
+	 * @return array
+	 */
+	public function consultarPorPedidoCabIdUltimoRegistro($pedido_cab_id)
+	{
+		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
+				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id '.
+				' FROM pedido_det INNER JOIN pedido_cab '.
+				'				     ON pedido_cab.id			= pedido_det.pedido_cab_id '.
+				'				  INNER JOIN variedad '.
+				'                    ON variedad.id				= pedido_det.variedad_id '.
+				'				  LEFT JOIN agencia_carga '.
+				'                    ON agencia_carga.id 		= pedido_det.agencia_carga_id '.
+				'				  LEFT JOIN marcacion '.
+				'					 ON marcacion.marcacion_sec	= pedido_det.marcacion_sec '.
+				' WHERE pedido_det.pedido_cab_id	= :pedido_cab_id'.
+				' ORDER BY pedido_det.pedido_det_sec DESC'.
+				' LIMIT 0, 1';		
+
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':pedido_cab_id', $pedido_cab_id);
+		$stmt->execute();
+		$reg = $stmt->fetch();
+		
+		return $reg;
+	}//end function consultarPorPedidoCabIdUltimoRegistro
+	
+
 }//end class
 ?>

@@ -54,7 +54,7 @@ function ajax_call(parameters, obj_data){
 									}
 								},
 							}).done(function(msg) {
-								if (msg.respuesta_code=='OK'){
+								if ((msg.respuesta_code=='OK')||(msg.respuesta_code=='NOOK')){
 									parameters.finish(msg)
 								}else{
 									message_error('ERROR1.', msg);

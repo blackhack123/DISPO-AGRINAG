@@ -6,14 +6,124 @@ namespace Seguridad\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use	Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
+use Zend\Session\Container;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\JsonModel;
 use Seguridad\BO\UsuarioBO;
 use Seguridad\Data\UsuarioData;
 use Application\Classes\CorreoElectronico;
+use Dispo\BO\PedidoBO;
 
 class UsuarioController extends AbstractActionController
 {
+	
+	
+	public function getcomboPorClienteAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+				
+			$UsuarioBO = new UsuarioBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginVentas();  //Solo el Vendedor Puede hacer este procedimiento
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			//var_dump($json); exit;
+			$texto_primer_elemento		= $json['texto_primer_elemento'];
+			$cliente_id 				= $json['cliente_id'];
+	
+			$opciones = $UsuarioBO->getComboPorCliente($cliente_id, $texto_primer_elemento);
+	
+			$response = new \stdClass();
+			$response->opciones				= $opciones;
+			$response->respuesta_code 		= 'OK';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+	
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function getcomboAction
+
+	
+	
+	public function asignarClienteUsuarioAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginVentas();
+
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+			$UsuarioBO 	= new UsuarioBO();			
+			$PedidoBO	= new PedidoBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+				
+			$cliente_id		= $json['cliente_id'];
+			$usuario_id		= $json['usuario_id'];
+			
+			$reg_usuario = $UsuarioBO->consultar($usuario_id, \Application\Constants\ResultType::MATRIZ);
+
+			$SesionUsuarioPlugin->setUserClienteId				($cliente_id);
+			$SesionUsuarioPlugin->setUserClienteNombre			($reg_usuario['cliente_nombre']);			
+			$SesionUsuarioPlugin->setClienteUsuarioId			($usuario_id);
+			$SesionUsuarioPlugin->setClienteUsuarioNombre		($reg_usuario['nombre']);
+			$SesionUsuarioPlugin->setClienteUsuarioUserName		($reg_usuario['username']);			
+
+			$response = new \stdClass();
+			$response->respuesta_code 			= 'OK';
+			$response->cliente_id				= $cliente_id;
+			$response->cliente_usuario_id		= $usuario_id;
+			$response->cliente_nombre			= $reg_usuario['cliente_nombre'];
+			$response->cliente_usuario_nombre	= $reg_usuario['nombre'];
+			$response->cliente_usuario_username	= $reg_usuario['username'];
+			
+			//Se consulta si existe un pedido comprando para reactivar y seguir en la compra
+			$reg_pedido =  $PedidoBO->consultarUltimoPedidoComprando($cliente_id);
+			//Si existe el registro en estado comprando lo asigna a la variable de sesion para que lo utilize
+			if ($reg_pedido)
+			{
+				$session = new Container('usuario');
+				$session->offsetSet('cliente_pedido_cab_id_actual', $reg_pedido['id']);
+					
+				//Se consulta la marcacion y la agencia de carga del detalle de la factura
+				$reg_det	= $PedidoBO->consultarPedidoDetUltimoRegistro($reg_pedido['id']);//end if
+				if ($reg_det)
+				{
+					$session->offsetSet('cliente_seleccion_marcacion_sec', $reg_det['marcacion_sec']);
+					$session->offsetSet('cliente_seleccion_marcacion_nombre', $reg_det['marcacion_nombre']);
+					$session->offsetSet('cliente_seleccion_agencia_id', $reg_det['agencia_carga_id']);
+				}//end if
+			}//end if			
+			
+			
+			$json = new JsonModel(get_object_vars($response));
+			return $json;			
+
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end seleccionarClienteUsuarioAction
+	
+	
 	
 	public function listadodataAction()
 	{	

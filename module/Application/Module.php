@@ -19,6 +19,21 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+        
+        /*------Se configura las variables PHP que se inicializan en la aplicacion---------*/
+        $app         = $e->getParam('application');
+        $config      = $app->getConfig();
+        
+        $config      = $app->getConfig();
+        $phpSettings = $config['phpSettings'];
+        if($phpSettings) {
+        	foreach($phpSettings as $key => $value) {
+        		ini_set($key, $value);
+        	}//end foreach
+        }//end if
+        
+        \Application\Classes\Fecha::setFormato($config['formatoFecha']);
+        /*---------------------------------------------------------------------------------*/
     }
 
     public function getConfig()

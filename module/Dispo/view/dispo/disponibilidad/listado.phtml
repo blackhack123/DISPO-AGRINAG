@@ -26,12 +26,12 @@
         })
 
 
-        $(".btn_add_order").on('click', function(event){ 
+ /*       $(".btn_add_order").on('click', function(event){ 
             add_order($(this));
 			return false;
         });
         //btn_add_order
-
+*/
 
         consultar_detalle_dispo();
 	});//$(document).ready
@@ -46,18 +46,18 @@
 								url: '<?php echo($this->basePath()); ?>/dispo/disponibilidad/listadodetalledispo',
 								type: "GET",
 								async: true,
-								dataType: "html",								
+								contentType: "application/json",								
 								/*beforeSend : function(){
 									if (ajax_process_30) {
 										ajax_process_30.abort();
 									}
 								},*/
 							}).done(function(msg) {
-								$("#detalle_dispo").html( msg );
+								$("#detalle_dispo").html(msg);									
 								cargador_visibility('hide');
-								console.log('termina consultar_detalle_dispo');
 
 							}).error(function(request, status, error) {
+								console.log('paso99', status, error );
 								message_error('ERROR', request.responseText);
 								cargador_visibility('hide');
 							});	
@@ -66,13 +66,12 @@
 </script>
 
 
-<section class="col-md-15 col-sm-15">
-    <div class="title-section clearfix">
+
         <h1>
             Disponibilidad
         </h1>
 
-        <div class="pull-right clearfix" ng-show="view_dispo">
+        <div class="pull-right clearfix">
              <div class="search pull-left separator">
                 <input id="filter_text" type="text" class="flo-left input-search" placeholder="Search">
                 <button class="button-search">
@@ -80,11 +79,11 @@
                 </button>
             </div>
 
-            <p class="pull-left letter">
+            <p class="pull-left letter" style="padding-top:14px">
                 Select a Letter:
             </p>
 
-            <select id="cbo_filter" class="form-control select-class search pull-left select-letter" ng-model="letter" ng-init="letter = 'all'" >
+            <select id="cbo_filter" class="form-control select-class search pull-left select-letter">
                 <option value="">ALL</option>
                 <option value="A">A</option>
                 <option value="B">B</option>
@@ -117,14 +116,14 @@
     </div>
 
 
-    <div class="clearfix" ng-show="view_dispo"> 
+    <div class="clearfix col-md-15 col-sm-15"> 
 
         <div class="table-container col-md-14 col-md-offset-1 col-sm-14 col-sm-offset-1">                        
 
 			<div id="detalle_dispo"></div>
             
 
-            <div class="clearfix" ng-show="view_dispo">
+            <div class="clearfix">
                 <p>*PRICE PER STEM ($)</p> 
             </div>
             
@@ -135,6 +134,10 @@
             <!-- </form> -->
         </div>
 
-    </div>
-    
-</section>
+
+   	 	<!-- DIALOGS -->	
+		<?php echo $this->partial('dispo/dialog/seleccioncliente', array(
+				'identidad_usuario' 		=> $this->identidad_usuario,
+				'opcion_consulta'			=> 'view_seleccionar_marcacion'
+		));
+		?>	

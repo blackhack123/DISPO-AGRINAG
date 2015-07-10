@@ -180,11 +180,64 @@ class DispoDAO extends Conexion
 				" AND dispo.clasifica = '1'".//PARA TOMAR CALIDAD DE FLOR (RECIEN ADICIONADO)
 				' GROUP BY variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.proveedor_id, grupo_dispo_det.cantidad_bunch_disponible, grupo_precio_det.precio '.
 				' ORDER BY variedad.nombre, dispo.variedad_id, dispo.grado_id, tot_bunch_disponible DESC';
-		
+
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$result = $stmt->fetchAll();
 		return $result;		
 	}//end function consultarInventarioPorCliente
+	
+	
+	
+	/**
+	 * 
+	 * @param string $proveedor_id
+	 * @param string $inventario_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @return array
+	 */
+	public function consultarInventarioPorProveedor($proveedor_id, $inventario_id, $variedad_id, $grado_id)
+	{
+		$sql = " SELECT cantidad_bunch_disponible, fecha, inventario_id, fecha_bunch,  ".
+				"        proveedor_id, variedad_id, grado_id ".
+				" FROM dispo ".
+				" WHERE inventario_id 	= '".$inventario_id."'".
+				"   and proveedor_id  	= '".$proveedor_id."'".
+				"   and variedad_id		= '".$variedad_id."'".
+				"   and grado_id		= '".$grado_id."'";
+				" ORDER BY fecha_bunch ";
+		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$result = $stmt->fetchAll();
+		return $result;		
+	}//end function consultaInventarioPorProveedor
+	
+	
+	
+	/**
+	 * 
+	 * @param DispoData $DispoData
+	 * @param number $cantidad_descontar
+	 */
+	public function rebajar(DispoData $DispoData, $cantidad_descontar)
+	{
+		if ($cantidad_descontar == 0)
+		{
+			return 0;	
+		}//end if
+		
+		$sql = 	" UPDATE dispo ".
+				" SET cantidad_bunch_disponible = cantidad_bunch_disponible - ".$cantidad_descontar.
+				" WHERE fecha			= '".$DispoData->getFecha()."'".
+				"	and inventario_id 	= '".$DispoData->getInventarioId()."'".
+				"	and fecha_bunch 	= '".$DispoData->getFechaBunch()."'".
+				"   and proveedor_id  	= '".$DispoData->getProveedorId()."'".
+				"   and variedad_id		= '".$DispoData->getVariedadId()."'".
+				"   and grado_id		= '".$DispoData->getGradoId()."'";
+
+		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
+		return $count;		
+	}//end function rebajar
+	
 }//end class
 
 ?>

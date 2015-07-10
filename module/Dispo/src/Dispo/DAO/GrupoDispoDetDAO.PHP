@@ -112,5 +112,27 @@ class GrupoDispoDetDAO extends Conexion
 	}//end function consultar
 
 
+	
+	/**
+	 *
+	 * @param GrupoDispoDetData $DispoGrupoDetData
+	 * @param number $cantidad_descontar
+	 */
+	public function rebajar(GrupoDispoDetData $DispoGrupoDetData, $cantidad_descontar)
+	{
+		if ($cantidad_descontar==0)
+		{
+			return 0;
+		}//end if
+		$sql = 	" UPDATE grupo_dispo_det ".
+				" SET cantidad_bunch_disponible = cantidad_bunch_disponible - ".$cantidad_descontar.
+				" WHERE grupo_dispo_cab_id	= ".$DispoGrupoDetData->getGrupoDispoCabId().
+				"   and variedad_id			= '".$DispoGrupoDetData->getVariedadId()."'".
+				"   and grado_id			= '".$DispoGrupoDetData->getGradoId()."'";
+
+		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
+		return $count;
+	}//end function rebajar	
+	
 }//end class
 ?>

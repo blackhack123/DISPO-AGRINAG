@@ -14,6 +14,7 @@ return array(
        		'Dispo\Controller\Marcacion' 			=> 'Dispo\Controller\MarcacionController',
         	'Dispo\Controller\Agenciacarga' 		=> 'Dispo\Controller\AgenciacargaController',
         	'Dispo\Controller\Pedido'		 		=> 'Dispo\Controller\PedidoController',
+        	'Dispo\Controller\Cliente'		 		=> 'Dispo\Controller\ClienteController',
         ),
     ),
     // The following section is new and should be added to your file
@@ -88,7 +89,7 @@ return array(
         							'action'     => 'index',
         					),
         			),
-        	), 
+        	),
         	'dispo-pedido' => array(
         			'type'    => 'segment',
        				'options' => array(
@@ -104,9 +105,26 @@ return array(
        						),
        				),
        		),
+       		'dispo-cliente' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/cliente[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[0-9]+',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Cliente',
+        							'action'     => 'index',
+        					),
+        			),
+        	),        		
 		),
     ),
     'view_manager' => array(
+    		'template_map' => array(
+    				'dispo/dialog/seleccioncliente'		  => __DIR__ . '/../view/partial/dialogseleccioncliente.phtml',
+    		),    		
         'template_path_stack' => array(
             'dispo' => __DIR__ . '/../view',
         ),

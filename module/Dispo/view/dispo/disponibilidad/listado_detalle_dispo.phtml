@@ -37,7 +37,7 @@
 							'control_process':true,
 							'show_cargando':false,
 							'finish':function(response){
-									if (response.respuesta_code=='OK'){
+									if (response.respuesta_codex=='OK'){
 										//Se muestra el cuadro de informacion que se cargo una orden
 										$("#msg_order").show();
 										$("#msg_order").html(response.respuesta_mensaje);
@@ -47,9 +47,15 @@
 										consultarNroItemsPedidoComprando()
 										consultar_detalle_dispo()									
 									}else{
-										message_error('ERROR', response);
+										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
+											type: "error",
+											html: false,
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											showConfirmButton: true,
+											});
 									}//end if
-									console.log('termina add order');
+									//console.log('termina add order');
 									cargador_visibility('hide');
 							}							
 		                 }
@@ -85,6 +91,8 @@
           		<div class="border">
                		<table class="table-dispo searchable">
 <?php 
+	if ($this->result)
+	{
 		$ind = 0;
 		foreach($this->result as $reg)
 		{
@@ -214,7 +222,22 @@
 	                    </tr>
 <?php 
 		}//end foreach
+	}//end if
 ?>                      
                 	</table>
                 </div> <!-- class="border" -->
             </div> <!-- class="table-scroll" -->
+            
+<?php 	if ($this->respuesta_dispo_code != 'OK')
+	  	{
+?>            
+			<script>
+					swal({title: "<?php echo ('('.$this->respuesta_dispo_code . ') '.$this->respuesta_dispo_msg); ?>",		    											
+						type: "error",
+						html: false,
+						showCancelButton: false,
+						confirmButtonColor: "#DD6B55",
+						showConfirmButton: true,
+						});
+			</script>            
+<?php 	}//end if ?>
