@@ -272,4 +272,62 @@ class DisponibilidadController extends AbstractActionController
 	}//end function getcomboMarcacionAgenciacargaAction
 	
 	
+	
+	
+	public function consultarofertahtmlAction()
+	{
+		try
+		{
+			$viewModel 				= new ViewModel();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+		
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+		
+			$config = $this->getServiceLocator()->get('Config');
+		
+			$DispoBO				= new DispoBO();
+		
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			//Recibe las variables
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+				
+			$variedad_id		= $json['variedad_id'];
+			$grado_id			= $json['grado_id'];
+			$cliente_id 		= $SesionUsuarioPlugin->getUserClienteId();
+			$cliente_usuario_id	= $SesionUsuarioPlugin->getClienteUsuarioId();
+
+			//Consulta el cliente para saber con que precio especial debe de trabajar
+			list($reg_grupo_precio_det, $rs_precio_oferta) 	= $DispoBO->consultarPrecioOfertaPorCliente($cliente_id, $variedad_id, $grado_id); 
+
+			//Asigna las variables a la vista
+			$viewModel->reg_grupo_precio_det		= $reg_grupo_precio_det;
+			$viewModel->rs_precio_oferta			= $rs_precio_oferta;
+
+			$viewModel->setTemplate('Dispo/disponibilidad/oferta_variedad.phtml');
+			$viewModel->setTerminal(true);
+			$viewRender = $this->getServiceLocator()->get('ViewRenderer');
+			$html = $viewRender->render($viewModel);
+
+			$response = new \stdClass();
+			$response->respuesta_code 			= 'OK';
+			$response->respuesta_codex 			= 'OK'; //$result['respuesta'];
+			$response->respuesta_mensaje		= '';
+			$response->html = $html;
+		
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function consultarofertahtmlAction
+	
 }

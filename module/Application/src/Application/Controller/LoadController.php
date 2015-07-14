@@ -24,7 +24,7 @@ class LoadController extends AbstractActionController
 	
 		$data = $SesionUsuarioPlugin->getRecord();
 
-		switch($SesionUsuarioPlugin->getUserPerfilId())	
+/*		switch($SesionUsuarioPlugin->getUserPerfilId())	
 		{
 			case \Application\Constants\Perfil::ID_CLIENTE: //CLIENTE
 				//$this->layout('layout/pedido');
@@ -43,8 +43,10 @@ class LoadController extends AbstractActionController
 		}//end switch	
 
 		$this->layout()->identidad_usuario 	= $data;
-
 		return $viewModel;		
+*/
+//		$this->layout()->identidad_usuario 	= $data;
+		return $this->redirect()->toRoute('dispo-disponibilidad');
     }//end function indexAction
 
 }//end class

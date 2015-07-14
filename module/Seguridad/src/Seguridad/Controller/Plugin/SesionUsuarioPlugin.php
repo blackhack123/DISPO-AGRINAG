@@ -138,18 +138,37 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 		return true;
 	}//end function isLogin	
 
+	
+	
+	
 	/*-----------------------------------------------------------------------------*/
-	public function isLoginAdmin()
+	/**
+	 * Me redirecciona al home siempre y cuando no sea perfil administrador
+	 * 
+	 * @param boolean $redirect
+	 * @return boolean
+	 */
+	public function isLoginAdmin($redirect = false)
 	/*-----------------------------------------------------------------------------*/
 	{
 		if ($this->isLogin())
 		{
 			if ($this->getUserPerfilId() == \Application\Constants\Perfil::ID_ADMIN)
 			{	
-				return true;
+				$respuesta = true;
+			}else{
+				$respuesta = false;
 			}//end if
 		}//end if
-		return false;
+		
+		
+		if (($respuesta==false)&&($redirect==true))
+		{
+			$this->getController()->flashmessenger()->addMessage("Debe de Iniciar Session");
+			$this->getController()->plugin('redirect')->toRoute('home'); //seguridad-login;
+		}//end if
+		
+		return $respuesta;
 	}//end function isLoginAdmin
 
 	
@@ -174,7 +193,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	{
 		if ($this->isLogin())
 		{
-			if ($this->getUserPerfilId() == \Application\Constants\Perfil::ID_VENTAS)
+			if (($this->getUserPerfilId() == \Application\Constants\Perfil::ID_VENTAS) || ($this->getUserPerfilId() == \Application\Constants\Perfil::ID_ADMIN))
 			{
 				return true;
 			}//end if

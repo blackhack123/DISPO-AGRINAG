@@ -104,6 +104,33 @@ class GrupoPrecioDetDAO extends Conexion
 
 	}//end function consultar
 
+	
+
+	/**
+	 * 
+	 * @param string $cliente_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @return \Dispo\Data\GrupoPrecioDetData|NULL
+	 */
+	public function consultarPorClienteIdPorVariedadIdPorGradoId($cliente_id, $variedad_id, $grado_id)
+	{
+		$GrupoPrecioDetData 		    = new GrupoPrecioDetData();
+		
+		$sql = 	' SELECT grupo_precio_det.*, variedad_id.nombre variedad_nombre '.
+				' FROM grupo_precio_det INNER JOIN cliente '.
+				"                               ON cliente.id 	= '".$cliente_id."'".
+				'						INNER JOIN variedad '.
+				'								ON variedad.id	= grupo_precio_det.variedad_id '. 
+				' WHERE grupo_precio_det.grupo_precio_cab_id 	= cliente.grupo_precio_cab_id '.
+				"   and grupo_precio_det.variedad_id		 	= '".$variedad_id."'".
+				"   and grupo_precio_det.grado_id				= '".$grado_id."'";
+
+		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		return $row;
+	}//end function consultarPorClienteIdPorVariedadIdPorGradoId
 
 }//end class
 ?>

@@ -2,7 +2,7 @@
 	<script>
 		$(document).ready(function () {
 
-			$(".modal-dialog-agencia-carga").css('width', '400px');
+			$("#modal-dialog-agencia-carga").css('width', '400px');
 			
 
 			$("body").on('click', '#btn_confirmar', function(event){
@@ -30,7 +30,10 @@
 			    							'show_cargando':true,
 			    							'async': false,
 			    							'finish':function(response){
-			    									if (response.respuesta_codex == 'OK'){
+				    								//console.log('response.respuesta_codex:',response.respuesta_codex);
+				    								switch (response.respuesta_codex){
+				    								case 'OK':
+				    									//console.log('paso01');
 			    										swal({  title: "El pedido se ha confirmado con exito!",   
 			    											text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",
 			    											//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
@@ -60,10 +63,11 @@
 			    												//Se enceran las variables de seccion de marcacion y agencia de carga, 
 				    											window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/liberarMarcacionAgencia';
 			    											}//end if
-			    										});	    										
-			    									}//end if	
-			    									if (response.respuesta_codex == 'NOVEDAD')
-			    									{
+			    										});
+			    										break;
+			    										
+				    								case 'NOVEDAD':
+			    										//console.log('paso02');
 				    									$("#detalle_pedido_sin_stock").html(response.html);
 				    									$(window).scrollTop(2000);
 				    									swal({  title: "No hay stock suficiente en su pedido ...",   
@@ -80,10 +84,13 @@
 				    									/*$(".sweet-alert").css('display','none');
 				    									$(".sweet-overlay").css('display','none');*/
 														//alert('entra aqui');
-			    									}else{
+														break;
+														
+			    									default:
+			    										//console.log('paso03');
 			    										//cargador_visibility('show');
 				    									//alert('hola'+ response.respuesta_msg);			
-			    										swal({  title: response.respuesta_mensaje,   
+			    										swal({  title: response.respuesta_msg,   
 			    											text: '',		    											
 			    											type: "error",
 			    											html: true,
@@ -91,7 +98,7 @@
 			    											confirmButtonColor: "#DD6B55",
 			    											//showConfirmButton: false,
 			    										});
-			    									}//end if
+			    									}//end switch
 			    									
 			    							}//end finish
 			    		                 }//end parameters
@@ -101,7 +108,7 @@
 						$(".sweet-alert").css('display','none');
 						$(".sweet-overlay").css('display','none');
 						
-						xswal.closeModal();
+						//xswal.closeModal();
 					}//end if
 				});//end function
 					
@@ -162,7 +169,7 @@
 				var data = {pedido_cab_id: '<?php echo($this->pedido_cab_id); ?>',
 							comentario: $("#pedido_comentario").val()
 		  					}
-				console.log('data', data);	    		
+				//console.log('data', data);	    		
 	    		var parameters = {
 	    							'type': 'POST',
 	    							'url':'<?php echo($this->basePath()); ?>/dispo/pedido/grabarcomentario',
@@ -170,7 +177,7 @@
 	    							'async': false,
 	    							'finish':function(response){
 	    									if (response.respuesta_code=='OK'){
-	    										$(".dialog_comentario").modal('hide');
+	    										$("#dialog_comentario").modal('hide');
 	    									}//end if									
 	    							}
 	    		                 }
@@ -252,14 +259,14 @@
 	        });
 
 
-			cargar_detalle('<?php echo($this->pedido_cab_id); ?>');	        
+			cargar_detalle_pedido('<?php echo($this->pedido_cab_id); ?>');	        
 		});//$(document).ready
 		
 
 	
-		function cargar_detalle(pedido_cab_id)
+		function cargar_detalle_pedido(pedido_cab_id)
 		{
-			$(".detalle_pedido").html('');
+			//$("#detalle_pedido").html('');
 			var data = {pedido_cab_id: pedido_cab_id}
 			    		
 			var parameters = {
@@ -270,7 +277,7 @@
 								'cancel_process_previous':false,
 								'finish':function(response){
 										if (response.respuesta_code=='OK'){
-											$(".detalle_pedido").html(response.html);
+											$("#detalle_pedido").html(response.html);
 										}//end if									
 								}
 			                 }
@@ -307,7 +314,7 @@
         </div>
         <!-- end message -->
 
-		<div class="detalle_pedido"></div>        
+		<div id="detalle_pedido"></div>        
         
         <div id="detalle_pedido_sin_stock"></div>
 </section>
@@ -315,7 +322,7 @@
 
 	<!-- Modal -->
 	<div class="modal fade modal-agencia-carga" id="CambiarAgenciaCarga" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	  <div class="modal-dialog modal-sm modal-dialog-agencia-carga">
+	  <div id="modal-dialog-agencia-carga" class="modal-dialog modal-sm">
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>

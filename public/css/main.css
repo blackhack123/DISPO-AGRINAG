@@ -195,6 +195,34 @@ header {
   font-size: 12px;
 }
 
+.title-admin-section {
+  padding: 8px;
+  /*margin: 30px 0;*/
+  min-height: 30px;
+  border: solid 1px #bfbfbf;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #82B3EF), color-stop(100%, #173A6F));
+  background-image: -webkit-linear-gradient(top, #82B3EF, #173A6F);
+  background-image: -moz-linear-gradient(top, #82B3EF, #173A6F);
+  background-image: -o-linear-gradient(top, #82B3EF, #173A6F);
+  background-image: linear-gradient(top, #82B3EF, #173A6F);
+  -webkit-box-shadow: white 1px 1px 0, #f2f2f2 -1px -1px 0 inset;
+  -moz-box-shadow: white 1px 1px 0, #f2f2f2 -1px -1px 0 inset;
+  box-shadow: white 1px 1px 0, #f2f2f2 -1px -1px 0 inset;
+}
+.title-admin-section h1 {
+  margin: 0;
+  margin-left: 10px;
+  display: inline-block;
+  line-height: 20px;
+  text-transform: uppercase;
+  font-size: 20px;
+  color:#FFFFFF;
+  text-shadow: 0 1px 0 #98C95E;
+  font-family: 'Muli', sans-serif;
+}
+
+
+
 /* line 201, ../sass/main.scss */
 .subtitle-section {
   margin: 0;
@@ -230,6 +258,39 @@ header {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   font-size: 20px;
+  font-weight: bold;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fbfbfb), color-stop(100%, #e5e5e5));
+  background-image: -webkit-linear-gradient(top, #fbfbfb, #e5e5e5);
+  background-image: -moz-linear-gradient(top, #fbfbfb, #e5e5e5);
+  background-image: -o-linear-gradient(top, #fbfbfb, #e5e5e5);
+  background-image: linear-gradient(top, #fbfbfb, #e5e5e5);
+  -webkit-box-shadow: 0 1px 0 white;
+  -moz-box-shadow: 0 1px 0 white;
+  box-shadow: 0 1px 0 white;
+}
+
+.search .input-search2 {
+  margin-top:-5px;
+  width: 180px;
+  border: solid 1px #bfbfbf;
+  padding: 5px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  -webkit-box-shadow: 0 1px 0 white;
+  -moz-box-shadow: 0 1px 0 white;
+  box-shadow: 0 1px 0 white;
+}
+/* line 223, ../sass/main.scss */
+.search .button-search2 {
+  margin-top:-5px;	
+  width: 48px;
+  line-height: 25px;
+  border: solid 1px #bfbfbf;
+  padding: 0;
+  border-left: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  font-size: 15px;
   font-weight: bold;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fbfbfb), color-stop(100%, #e5e5e5));
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e5e5e5);
@@ -293,6 +354,31 @@ header {
 .table-container .table-dispo tr:last-child td {
   border-bottom: none;
 }
+
+
+.table-container .table-dispo thead th {
+  padding: 8px 0;
+  border-bottom: 1px solid #cdcdcd;
+  border-right: 1px solid #cdcdcd;
+}
+
+.table-container .table-dispo tbody td {
+  padding: 3px 5px;
+  border-bottom: 1px solid #cdcdcd;
+  border-right: 1px solid #cdcdcd;
+/*  border-left: 1px solid #cdcdcd;*/
+}
+
+.table-container .table-dispo tbody td:first-child {
+  border-left: 1px solid #cdcdcd;
+}
+
+.table-container .table-dispo tbody td:last-child {
+  border-right: 1px solid #cdcdcd;
+}
+
+
+
 
 /* line 283, ../sass/main.scss */
 .button-class {
@@ -483,10 +569,10 @@ header {
 
 /* line 492, ../sass/main.scss */
 .select-class {
-  width: 50px;
+  /*width: 50px;*/
   padding: 0;
   height: 28px;
-  display: inline;
+  /*display: inline;*/
 }
 
 /* line 499, ../sass/main.scss */
@@ -881,4 +967,45 @@ header {
 /* line 816, ../sass/main.scss */
 .popover .popover-title, .popover .popover-content {
   padding: 8px;
+}
+
+
+
+
+
+/*===================================ESTILOS DEL TABLE SORTER====================================*/
+.row_even {
+background-color:#FFFFFF;   
+}
+.row_odd {
+background-color:#EFEFEF;   
+}
+.row_even_over {
+background-color:#DFEFFF;   
+}
+.row_odd_over {
+background-color:#DFEFFF;   
+}
+.tablesorter thead tr th{
+	cursor: pointer; cursor:hand;
+}
+.color_inactivo_td{
+	color: red;
+}
+
+
+.tableinit tbody tr td{
+	height:22px;
+	padding-left:5px;
+	padding-right:5px; 
+}
+
+.tableinit tfoot tr th{
+	padding-left:5px;
+	padding-right:5px; 
+}
+
+.tablesorter .number_row{
+	color: #FFFFFF;
+	background:#666666;
 }

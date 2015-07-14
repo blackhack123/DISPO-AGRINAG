@@ -9,6 +9,8 @@ use Dispo\DAO\TipoCajaMatrizDAO;
 use Dispo\DAO\PedidoCabDAO;
 use Dispo\DAO\PedidoDetDAO;
 use Dispo\DAO\VariedadDAO;
+use Dispo\DAO\GrupoPrecioDetDAO;
+use Dispo\DAO\GrupoPrecioOfertaDAO;
 
 
 
@@ -156,7 +158,7 @@ class DispoBO extends Conexion
 					$tot_bunch_disponibles = $grupo_dispo_det_cantidad_bunch_disponible;
 					$grupo_dispo_det_cantidad_bunch_disponible = 0;
 				}//end if
-			
+
 				if (!empty($tot_bunch_disponibles))
 				{
 					$row_dispo = $row;
@@ -165,6 +167,7 @@ class DispoBO extends Conexion
 					$row_dispo['variedad_id']			= $row_dispo['variedad_id'];
 					$row_dispo['grado_id']				= $row_dispo['grado_id'];
 					$row_dispo['precio']				= $row_dispo['precio'];
+					$row_dispo['precio_oferta']			= $row_dispo['precio_oferta'];					
 					$row_dispo['grupo_dispo_det_cantidad_bunch_disponible']	= $grupo_dispo_det_cantidad_bunch_disponible_ant;
 			
 					//$row_dispo['tot_bunch_disponible'] 	= floor($row_dispo['tot_bunch_disponible']*$porcentaje);
@@ -255,7 +258,8 @@ class DispoBO extends Conexion
 				$row_new['nro_cajas'] 					= $row_new['nro_cajas'] +  $row['nro_cajas'];
 				$row_new['tot_bunch_disponible']		= $row_new['tot_bunch_disponible'] + $row['tot_bunch_disponible'];
 				$row_new['tallos_x_bunch'] 				= $row['tallos_x_bunch'];
-				$row_new['precio'] 						= $row['precio'] ;
+				$row_new['precio'] 						= $row['precio'];
+				$row_new['precio_oferta']				= $row['precio_oferta'];				
 			
 				//Control para el quiebre
 				$variedad_id_ant						= $row['variedad_id'];
@@ -347,5 +351,31 @@ class DispoBO extends Conexion
 */		
 	}//end function getDispo
 
+	
+
+	/**
+	 * 
+	 * @param string $cliente_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @return multitype:Ambigous <\Dispo\Data\GrupoPrecioDetData, NULL> multitype:
+	 */
+	public function consultarPrecioOfertaPorCliente ($cliente_id, $variedad_id, $grado_id)
+	{
+		$GrupoPrecioDetDAO			= new GrupoPrecioDetDAO();
+		$GrupoPrecioOfertaDAO		= new GrupoPrecioOfertaDAO();
+		
+		$GrupoPrecioDetDAO->setEntityManager			($this->getEntityManager());
+		$GrupoPrecioOfertaDAO->setEntityManager			($this->getEntityManager());
+		
+		
+		//AQUI SE DEBE DE CONSULTAR LA GET DISPO PERO PARA ESTE REGISTRO ESPECIFICO Y REPLICAR EL FUNCIONAMIENTO DE LA GRILLA
+		$reg_grupo_precio_det	= $GrupoPrecioDetDAO->consultarPorClienteIdPorVariedadIdPorGradoId($cliente_id, $variedad_id, $grado_id);
+		$result_precio_oferta 	= $GrupoPrecioOfertaDAO->consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($GrupoPrecioDetData->getGrupoPrecioCab(), 
+														$GrupoPrecioDetData->getVariedadId(), $GrupoPrecioDetData->getGradoId());
+
+		return array($reg_grupo_precio_det, $result_precio_oferta);
+		
+	}//end function consultarPrecio
 	
 }//end class DispoBO

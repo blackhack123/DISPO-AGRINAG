@@ -1,0 +1,25 @@
+/*@CHARSET "UTF-8";*/
+/*ISO-8859-1*/
+
+.tips_fondo{
+background: -webkit-gradient(linear, left top, left bottom, from(#E9FFB9), to(#fff), color-stop(0.9, #fff));
+background: -moz-linear-gradient(top, #E9FFB9, #fff);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E9FFB9', endColorstr='#ffffff');
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#E9FFB9', endColorstr='#ffffff')";
+background: -o-linear-gradient(top, #E9FFB9, #ffffff);
+}
+
+.tips_titulo{
+	color:#C17400;
+	font-weight:bold;
+	font-size:12px;
+	display: block;
+}
+
+.tips_texto{
+	color:#000033;
+	/*font-weight:bold;*/
+	font-size:11px;
+	display: block;
+}
+

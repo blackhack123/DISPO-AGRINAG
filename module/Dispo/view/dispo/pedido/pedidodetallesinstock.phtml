@@ -37,9 +37,12 @@
 							'finish':function(response){
 									if (response.respuesta_codex=='OK'){
 										//Se debe de actualizar el pedido actual
-
+										cargar_detalle_pedido(0);
+										consultarNroItemsPedidoComprando();
+										
 										//Se elimina la linea de la tabla porque ya se proceso, se evita la recarga por el parpadeo
 										$('table#tbl_sin_stock tr#'+id_tr).remove();
+										ocultarTablaSinStock();
 									}else{
 										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
 											type: "error",
@@ -79,10 +82,12 @@
 									if (response.respuesta_code=='OK'){
 										//Consulta el detalle de la dispo
 										consultarNroItemsPedidoComprando()
+										cargar_detalle_pedido(0)
 										//Se debe de actualizar el pedido actual
 
 										//Se elimina la linea de la tabla porque ya se proceso, se evita la recarga por el parpadeo
 										$('table#tbl_sin_stock tr#'+id_tr).remove();
+										ocultarTablaSinStock();
 									}else{
 										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
 											type: "error",
@@ -98,6 +103,18 @@
 		response = ajax_call(parameters, data);		
 		return false;
 	}//end function btn_eliminar_sin_stock_detalle	
+
+
+	function ocultarTablaSinStock()
+	{
+		var nro_tr = $('#tbl_sin_stock tr').length;
+		console.log('nro_tr:', nro_tr);
+		if (nro_tr == 1)
+		{
+			$("#detalle_pedido_sin_stock").html("");
+		}//end if
+	}//end function ocultarTablaSinStock
+	
 </script>
 
 	<div class="clearfix">

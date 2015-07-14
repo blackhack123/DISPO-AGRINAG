@@ -8,7 +8,13 @@
             add_order($(this));
 			return false;
         });
-        //btn_add_order
+
+
+        $("body").on('click', '.btn_oferta', function(event){
+        	mostrar_oferta_dispo($(this));
+			return true;
+        });
+        
 	});//$(document).ready
 
 
@@ -61,7 +67,51 @@
 		                 }
 		response = ajax_call(parameters, data);		
 		return false;		
-	}
+	}//end function addOrder
+
+
+	function mostrar_oferta_dispo(obj)
+	{
+		//cargador_visibility('show');		
+		var tr 				= obj.closest('tr');
+		var id_tr			= tr.attr('id');
+		var variedad_id 	= tr.attr('variedad_id');
+		var grado_id		= tr.attr('grado_id');
+
+		//Se llama mediante AJAX para llamar la oferta que tiene la variedad
+		var data = 	{	variedad_id: variedad_id,
+						grado_id: grado_id,
+						//tipo_caja_id: tipo_caja_id,
+						//cantidad_order: cantidad_order
+					}
+		data = JSON.stringify(data);
+		
+		//var data = '';
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/disponibilidad/consultarofertahtml',
+							'control_process':true,
+							'show_cargando':false,
+							'finish':function(response){
+									if (response.respuesta_codex=='OK'){
+										//Se muestra el cuadro de informacion que se cargo una orden
+										$("#dialog_oferta_formulario").html(response.respuesta_mensaje);
+									}else{
+										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
+											type: "error",
+											html: false,
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											showConfirmButton: true,
+											});
+									}//end if
+									//console.log('termina add order');
+									cargador_visibility('hide');
+							}							
+		                 }
+		response = ajax_call(parameters, data);
+		//cargador_visibility('hide');
+	}//end function 
 </script>
 
 
@@ -166,17 +216,18 @@
 			for($i=1; $i <= $reg['nro_cajas']; $i++)
 			{
 				$options_cbo_order .='<option value="'.$i.'">'.$i.'</option>';
-			}//end foreach			
-?>                
+			}//end foreach
+?>
 	                    <tr id="<?php echo($ind); ?>" variedad_id="<?php echo($reg['variedad_id']); ?>" grado_id="<?php echo($grado_id); ?>">                                
 	                        <td width="300" class="variedad">
 	                            <?php echo($reg['variedad_nombre']); ?>
-	
-	                            <div class="pull-right" style="margin-right: 10%; color: orange;">
-	                                <span class="glyphicon glyphicon-star pointer"
-	                                ng-click="ctrl.mostrar_oferta($index,items)"
-	                                aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
-	                            </div>
+
+								<?php if (!empty($reg['precio_oferta'])){ ?>
+		                            <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange;">
+		                                <span class="glyphicon glyphicon-star pointer"
+		                                aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
+		                            </div>
+	                            <?php }//end if ?>
 	                        </td>
 	                        <td width="70">
 	                            <?php echo($precio_40); ?>                                    
@@ -227,6 +278,29 @@
                 	</table>
                 </div> <!-- class="border" -->
             </div> <!-- class="table-scroll" -->
+            
+            
+            
+            <!--  DIALOG DE OFERTA -->
+			<div class="modal fade" id="oferta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			        <h4 class="modal-title" id="myModalLabel">Ofertas de Variedad - <span id="dialog_oferta_variedad_nombre"></span></h4>
+			      </div>
+			      <div class="modal-body clearfix">
+			        <div class="clearfix">
+			        	SIMON LIMON
+						<div id="dialog_oferta_formulario"></div>			
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+            
+                        
+            
             
 <?php 	if ($this->respuesta_dispo_code != 'OK')
 	  	{

@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Zend\View\Model\JsonModel;
 use Dispo\BO\MarcacionBO;
 use Dispo\BO\AgenciaCargaBO;
+use Dispo\Data\AgenciaCargaData;
 
 
 class AgenciacargaController extends AbstractActionController
@@ -51,5 +52,203 @@ class AgenciacargaController extends AbstractActionController
 	}//end function getcomboAction	
 
 	
+	
+	public function mantenimientoAction()
+	{
+		try
+		{
+			$viewModel 				= new ViewModel();
+				
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+		
+			//Controla el acceso a la informacion, solo accedera si es administrador
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$respuesta =  $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+		
+			$AgenciaCargaBO				= new AgenciaCargaBO();
+			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$condiciones['criterio_busqueda']		= $this->params()->fromPost('criterio_busqueda','');
+			$condiciones['estado']					= $this->params()->fromPost('busqueda_estado','');
+			$condiciones['sincronizado']			= $this->params()->fromPost('busqueda_sincronizado','');			
 
+			$result 		= $AgenciaCargaBO->listado($condiciones);
+			
+			$viewModel->criterio_busqueda	= $condiciones['criterio_busqueda'];
+			$viewModel->busqueda_estado				=  \Application\Classes\ComboGeneral::getComboEstado($condiciones['estado'],"&lt;ESTADO&gt;");
+			$viewModel->busqueda_sincronizado		= \Application\Classes\ComboGeneral::getComboSincronizado($condiciones['sincronizado'],"&lt;SINCRONIZADO&gt;");
+			$viewModel->result				= $result;
+			$this->layout($SesionUsuarioPlugin->getUserLayout());
+			$viewModel->setTemplate('Dispo/agencia_carga/mantenimiento.phtml');
+			return $viewModel;			
+			
+		
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function 
+	
+
+	
+	
+	public function nuevodataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+		
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$AgenciaCargaBO 				= new AgenciaCargaBO();
+			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+
+			$response = new \stdClass();
+			$response->cbo_tipo				= $AgenciaCargaBO->getComboTipo("", " ");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+		
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function nuevodataAction
+	
+	
+	
+	public function consultardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+		
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$AgenciaCargaBO 				= new AgenciaCargaBO();
+			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$agencia_carga_id		= $json['agencia_carga_id'];
+
+			$row					= $AgenciaCargaBO->consultar($agencia_carga_id, \Application\Constants\ResultType::MATRIZ);
+
+			$response = new \stdClass();
+			$response->row					= $row;
+			$response->cbo_tipo				= $AgenciaCargaBO->getComboTipo($row['tipo'], " ");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function consultarAction
+	
+	
+
+	
+	public function grabardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$AgenciaCargaData		= new AgenciaCargaData();
+			$AgenciaCargaBO 		= new AgenciaCargaBO();
+			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$accion						= $json['accion'];  //I, M
+			$AgenciaCargaData->setId		($json['id']); 
+			$AgenciaCargaData->setNombre	($json['nombre']);
+			$AgenciaCargaData->setDireccion	($json['direccion']);
+			$AgenciaCargaData->setTelefono	($json['telefono']);
+			$AgenciaCargaData->setTipo		($json['tipo']);
+			$AgenciaCargaData->setEstado	($json['estado']);
+
+			$response = new \stdClass();
+			switch ($accion)
+			{
+				case 'I':
+					$AgenciaCargaData->setUsuarioIngId($usuario_id);
+					$result = $AgenciaCargaBO->ingresar($AgenciaCargaData);
+					break;
+					
+				case 'M':
+					$AgenciaCargaData->setUsuarioModId($usuario_id);
+					$result = $AgenciaCargaBO->modificar($AgenciaCargaData);					
+					break;
+					
+				default:
+					$result['validacion_code'] 	= 'ERROR';
+					$result['respuesta_mensaje']= 'ACCESO NO VALIDO';
+					break;
+			}//end switch
+	
+			//Se consulta el registro siempre y cuando el validacion_code sea OK
+			if ($result['validacion_code']=='OK')
+			{
+				$row	= $AgenciaCargaBO->consultar($json['id'], \Application\Constants\ResultType::MATRIZ);
+			}else{
+				$row	= null;				
+			}//end if
+			
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->validacion_code 		= $result['validacion_code'];
+			$response->respuesta_mensaje	= $result['respuesta_mensaje'];				
+			if ($row)
+			{
+				$response->row					= $row;
+				$response->cbo_tipo				= $AgenciaCargaBO->getComboTipo($row['tipo'], " ");
+				$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			}else{
+				$response->row					= null;
+				$response->cbo_tipo				= '';
+				$response->cbo_estado			= '';				
+			}//end if
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function consultarAction	
+	
+	
 }//end controller

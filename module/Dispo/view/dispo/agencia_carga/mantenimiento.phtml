@@ -1,0 +1,374 @@
+
+<script>
+	$(document).ready(function () {
+		InputData_UpperCaseAll();		
+		InputData_TrimAll();
+/*		InputData_KeyEnterDisabled();*/
+//		InputData_initNumberAndDecimal();
+		
+		
+		$('table').tablesorter(); //Columna de Sueldo
+		$("table").stickyTableHeaders();
+
+
+        $("#btn_consultar").on('click', function(event){ 
+            $("#frm").submit();
+			return false;
+        });
+
+        $("#btn_nuevo").on('click', function(event){
+			nuevo(); 
+			return false;
+        });       
+
+        $(".btn_edit").on('click', function(event){ 
+			var tr 						= $(this).closest('tr');
+			var agencia_carga_id 		= tr.attr('agencia_carga_id');
+
+			consultar_agencia_carga(agencia_carga_id);
+			//$("#dialog_mantenimiento").modal('show') 
+        });
+		
+		
+        $("#tbl_registros tbody tr").on('dblclick', function(event){ 
+			var tr 						= $(this).closest('tr');
+			var agencia_carga_id 		= tr.attr('agencia_carga_id');
+
+			consultar_agencia_carga(agencia_carga_id);
+			//$("#dialog_mantenimiento").modal('show') 
+        });		
+
+        $("#btn_grabar").on('click', function(event){ 
+        	grabar();
+			return false;
+        });       
+
+	});//$(document).ready
+	
+	
+	function nuevo()
+	{
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/agenciacarga/nuevodata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									ValidateControlsInit();
+									$("#accion").val("I");
+									$("#dialog_mantenimiento_agenciacarga_nombre").html("NUEVO REGISTRO");
+
+									$("#agencia_carga_id").val('');
+									$("#agencia_carga_id").prop('readonly',false);
+									$("#nombre").val('');
+									$("#direccion").val('');
+									$("#telefono").val('');
+									$("#tipo").html(response.cbo_tipo);
+									$("#estado").html(response.cbo_estado);
+									$("#lbl_fec_sincronizado").html('');
+									$("#lbl_usuario_ing").html('');
+									$("#lbl_fec_ingreso").html('');
+									$("#lbl_usuario_mod").html('');
+									$("#lbl_fec_modifica").html('');
+									$("#sincronizado_pendiente").show();
+									$("#sincronizado_ok").hide();
+									
+									$("#dialog_mantenimiento").modal('show')
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;				
+	}//end function nuevo
+	
+	function consultar_agencia_carga(id)
+	{
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{agencia_carga_id: id}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/agenciacarga/consultardata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									mostrar_registro(response)
+									cargador_visibility('hide');
+
+									$("#dialog_mantenimiento").modal('show')
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;		
+	}//end function consultar_agencia_carga
+
+	
+
+	function grabar(){
+		if (!ValidateControls('frm')) {
+			return false;
+		}
+		
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{	accion: $("#accion").val(),
+					 	id: $("#agencia_carga_id").val(),
+					 	nombre: $("#nombre").val(),
+					 	direccion: $("#direccion").val(),
+					 	telefono: $("#telefono").val(),
+					 	tipo: $("#tipo").val(),
+					 	estado: $("#estado").val(),
+					}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/agenciacarga/grabardata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									if (response.validacion_code == 'OK')
+									{
+										mostrar_registro(response)
+										cargador_visibility('hide');
+										swal({  title: "Informacion grabada con exito!!",   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",
+											//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
+											//html:true,
+											type: "success",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									}else{
+										swal({title: response.respuesta_mensaje,   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",
+											//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
+											//html:true,
+											type: "error",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									
+									}									
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;		
+	}//end function grabar
+
+
+	function mostrar_registro(response)
+	{
+		var row = response.row;
+		if (row!==null)
+		{
+			$("#accion").val("M");			
+			$("#dialog_mantenimiento_agenciacarga_nombre").html(row.nombre);
+			$("#agencia_carga_id").val(row.id);
+			$("#agencia_carga_id").prop('readonly',true);
+			$("#nombre").val(row.nombre);
+			$("#direccion").val(row.direccion);
+			$("#telefono").val(row.telefono);
+			$("#tipo").html(response.cbo_tipo);
+			$("#estado").html(response.cbo_estado);
+			$("#lbl_fec_sincronizado").html(row.fec_sincronizado);
+			$("#lbl_usuario_ing").html(row.usuario_ing_user_name);
+			$("#lbl_fec_ingreso").html(row.fec_ingreso);
+			$("#lbl_usuario_mod").html(row.usuario_mod_user_name);
+			$("#lbl_fec_modifica").html(row.fec_modifica);
+			
+			if (row.sincronizado==1)
+			{
+				$("#sincronizado_pendiente").hide();
+				$("#sincronizado_ok").show();
+			}else{
+				$("#sincronizado_pendiente").show();
+				$("#sincronizado_ok").hide();
+			}//end if
+		}//end if
+	}//end function mostrar_registro
+</script>
+
+<style>
+	#tbl_mantenimiento td{
+		padding-left: 3px;
+		padding-top: 1px;
+		padding-bottom: 1px;	
+	}
+	
+	#tbl_mantenimiento td input{
+		/*margin-bottom: 5px;	*/
+	}	
+	
+	#tbl_mantenimiento td select{
+		/*margin-bottom: 5px;	*/
+	}		
+	
+	#tbl_mantenimiento tr:nth-child(even){
+		background: #E5E5E5;
+	}
+</style>
+
+    <div class="title-admin-section">
+        <h1>
+            AGENCIA DE CARGA
+        </h1>
+    </div>
+
+<div class="table-container col-md-16 col-sm-16">
+  <div class="clearfix">
+        	<div class="pull-left">
+            	<a id="btn_nuevo" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-white"></i> Nuevo</a>
+            </div>
+        	<div class="pull-right">
+            	<div class="form-inline">
+                	<form id="frm" action="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento" method="post" >
+                    <input name="criterio_busqueda" type="text" class="select-class" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+                    <select  name="busqueda_estado" class="select-class">
+                        <?php echo($this->busqueda_estado); ?>
+                    </select>
+                    <select name="busqueda_sincronizado" class="select-class">
+                    	<?php echo($this->busqueda_sincronizado); ?>
+                    </select>
+                    <a id="btn_consultar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-search icon-white"></i></a>
+                    </form>
+				</div>
+            </div>
+        </div>
+		<table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
+			<thead>
+				<tr>
+				  <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
+					<th  width="100" rowspan="2" class="th-inner">ID</th>				
+					<th  width="0" rowspan="2" class="th-inner">NOMBRE</th>
+					<th  width="0" rowspan="2" class="th-inner">DIRECCION</th>
+					<th  width="150" rowspan="2" class="th-inner">TELEFONO</th>
+					<th  width="50" rowspan="2" class="th-inner">TIPO</th>
+					<th  width="70" colspan="2" class="th-inner">SINCRONIZACION</th>					
+					<th  width="70" rowspan="2" class="th-inner">ESTADO</th>
+					<th  width="70" rowspan="2" class="th-inner">&nbsp;</th>
+				</tr>
+				<tr>
+				  <th  width="70" class="th-inner">&nbsp;</th>
+				  <th class="th-inner">FEC. ULTIMA VEZ</th>
+		      </tr>
+			</thead>
+			<tbody class="searchable" style="border: 1px solid #cdcdcd;">
+<?php  
+		$i=0;
+		foreach($this->result as $reg)
+		{
+			$i++;
+?>            
+				<tr agencia_carga_id="<?php echo($reg['id']); ?>">
+				  <td><?php echo($i); ?></td>
+					<td><?php echo($reg['id']); ?></td>
+					<td align="left"><?php echo($reg['nombre']); ?></td>
+					<td><?php echo($reg['direccion']); ?></td>
+					<td><?php echo($reg['telefono']); ?></td>
+					<td><?php echo($reg['tipo']); ?></td>
+					<td>
+					<?php if ($reg['sincronizado']==0){ ?>
+						<span class="glyphicon glyphicon-time icon-white" style="color:red"></span>
+					<?php }else{ ?>
+						<i class="glyphicon glyphicon-ok icon-white" style="color:green"></i>
+					<?php }//end if ?>	
+					</td>
+					<td><?php echo($reg['fec_sincronizado']); ?></td>
+					<td><?php echo($reg['estado']); ?></td>
+					<td><a href="#" class="btn_edit"><i class="glyphicon glyphicon-pencil icon-white" style="color:orange"></i></a></td>
+				</tr>
+<?php	}//end foreach ?>		
+			</tbody>
+		</table>    
+				
+    </div>
+    
+
+            <!--  DIALOG DE MANTENIMIENTO -->
+            <form id="frm">
+			<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			        <h4 class="modal-title" id="myModalLabel">AGENCIA DE CARGA (<span id="dialog_mantenimiento_agenciacarga_nombre"></span>)</h4>
+			      </div>
+			      <div class="modal-body clearfix">
+			        <div class="clearfix">
+                        
+			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" id="tbl_mantenimiento">
+			        	      <tr>
+			        	        <td><label class="control-label">ID:</label></td>
+			        	        <td>
+                                <input id="agencia_carga_id" name="agencia_carga_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" validate="required" validateMessage="Ingrese un codigo">
+                                <input type="hidden" name="accion" id="accion" value="" /></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">NOMBRE:</label></td>
+			        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="30" max-lenght="3" validate="required" validateMessage="Ingrese un nombre"></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">DIRECCION:</label></td>
+			        	        <td><input name="direccion" type="text" class="form-control input-sm" id="direccion" style="width:350px" value="" maxlength="30" max-lenght="3"></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">TELEFONO:</label></td>
+			        	        <td><input type="text" name="telefono"  class="form-control input-sm inputdata-number-and-decimal" id="telefono" style="width:350px" value="" maxlength="15" max-lenght="3" ></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">TIPO:</label></td>
+			        	        <td><select  name="tipo" class="select-class" id="tipo"></select></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">ESTADO:</label></td>
+			        	        <td><select  name="estado" class="select-class" id="estado"></select></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td>&nbsp;</td>
+			        	        <td>&nbsp;</td>
+		        	        </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">SINCRONIZADO:</label></td>
+			        	        <td>
+ 
+									<span id="sincronizado_pendiente" class="glyphicon glyphicon-time icon-white" style="color:red; display:none" ></span>
+									<span id="sincronizado_ok" class="glyphicon glyphicon-ok icon-white" style="color:green; display:none"></span>
+                                    <span id="lbl_fec_sincronizado"></span>
+ 
+                                </td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">Ingreso:</label></td>
+			        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">Modificación:</label></td>
+			        	        <td><b><span id="lbl_usuario_mod"></span></b> - <span id="lbl_fec_modifica"></span></td>
+		        	          </tr>
+	        	      </table>
+                      <br>
+						<center><a id="btn_grabar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a></center>
+     
+                      
+		        	  <!--   div id="dialog_oferta_formulario"></div -->			
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			</form>
+	

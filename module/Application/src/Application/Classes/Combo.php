@@ -28,7 +28,7 @@ class Combo {
 			foreach($arrData as $clave => $valor){
 				$selected  = "";
 	
-				if ($id==$clave){
+				if ($id===$clave){
 					$selected = "selected";	
 				}//end if
 				//die(var_dump($clave));
@@ -76,7 +76,7 @@ class Combo {
 				foreach($rsData as $reg){
 					$selected  = "";
 		
-					if ($reg[$campo_id]==$id){
+					if ($reg[$campo_id]===$id){
 						$selected = "selected";	
 					}//end if
 					$opciones = $opciones . '<option value="'.$reg[$campo_id].'" '.$selected.'>'.$reg[$campo_texto].'</option>';
@@ -173,4 +173,5 @@ class Combo {
 		return '';
 	}//end function	
 	
+
 }//end class Combo

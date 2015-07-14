@@ -148,10 +148,13 @@ class LoginController extends AbstractActionController
 										$session->offsetSet('vendedor_username', $rsUsuario['username']);
 										$session->offsetSet('layout','layout/pedido');
 										break;
-								
+
 									case \Application\Constants\Perfil::ID_ADMIN: //ADMIN
-										$session->offsetSet('layout','layout/admin');										
-										//$this->layout('layout/admin');
+										$session->offsetSet('vendedor_usuario_id', $rsUsuario['id']);
+										$session->offsetSet('vendedor_nombre_usuario', $rsUsuario['usuario_nombre']);
+										$session->offsetSet('vendedor_username', $rsUsuario['username']);
+										$session->offsetSet('layout','layout/pedido');
+										//$session->offsetSet('layout','layout/admin');
 										break;
 								}//end switch								
 

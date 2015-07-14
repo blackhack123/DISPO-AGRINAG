@@ -2,7 +2,9 @@
 
 
 <?php
- 		if ($this->identidad_usuario["perfil_id"] == \Application\Constants\Perfil::ID_VENTAS){ ?>
+ 		if (($this->identidad_usuario["perfil_id"] == \Application\Constants\Perfil::ID_VENTAS)
+			||($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN))
+		{ ?>
  				<script>
 	 				$(document).ready(function ()
 	 				{

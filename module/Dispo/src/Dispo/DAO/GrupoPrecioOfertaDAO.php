@@ -81,9 +81,9 @@ class GrupoPrecioOfertaDAO extends Conexion
 	 * @param string $grado_id
 	 * @return \Dispo\Data\GrupoPrecioOfertaData|NULL
 	 */
-	public function consultar($grupo_precio_cab_id, $variedad_id, $grado_id)
+	public function consultar($grupo_precio_cab_id, $variedad_id, $grado_id) //ESTA MAL ESTA FUNCION DEBE DE CONSULTARSE POR LA CLAVE
 	{
-		$GrupoPrecioOfertaData 		    = new GrupoPrecioOfertaData();
+/*		$GrupoPrecioOfertaData 		    = new GrupoPrecioOfertaData();
 
 		$sql = 	' SELECT grupo_precio_oferta.* '.
 				' FROM grupo_precio_oferta '.
@@ -109,9 +109,37 @@ class GrupoPrecioOfertaDAO extends Conexion
 		}else{
 			return null;
 		}//end if
-
+*/
 	}//end function consultar
 
 
+	
+	/**
+	 * 
+	 * @param int $grupo_precio_cab_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @return array
+	 */
+	public function consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($grupo_precio_cab_id, $variedad_id, $grado_id)
+	{
+		$GrupoPrecioOfertaData 		    = new GrupoPrecioOfertaData();
+		
+		$sql = 	' SELECT grupo_precio_oferta.*, variedad.nombre as variedad_combo_nombre '.
+				' FROM grupo_precio_oferta INNER JOIN variedad '.
+				'								   ON variedad.id = grupo_precio_oferta.variedad_id '.
+				' WHERE grupo_precio_cab 	= :grupo_precio_cab '.
+				'   and variedad_id			= :variedad_id'.
+				'   and grado_id			= :grado_id';
+		
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':grupo_precio_cab',$grupo_precio_cab);
+		$stmt->bindValue(':variedad_id',$variedad_id);
+		$stmt->bindValue(':grado_id',$grado_id);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		return $result;
+	}//end function consultarPorGrupoPrecioCabPorVariedadIdPorGradoId
 }//end class
 ?>

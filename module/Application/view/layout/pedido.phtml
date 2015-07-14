@@ -11,9 +11,13 @@
 					    //->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))
 	                    ->appendStylesheet('http://fonts.googleapis.com/css?family=Muli')
                         ->appendStylesheet($this->basePath('css/bootstrap.css'))
+						//->appendStylesheet('http://getbootstrap.com/2.3.2/assets/css/bootstrap.css')
                         ->appendStylesheet($this->basePath('css/sweet-alert.css'))
-                        ->appendStylesheet($this->basePath('css/main.css')) 
-                        ->appendStylesheet($this->basePath('js/custom-alert/custom-alert.css'))
+                        ->appendStylesheet($this->basePath('css/main.css'))
+                        ->appendStylesheet($this->basePath('css/mycustom.css'))                         
+                        ->appendStylesheet($this->basePath('js/custom-alert/custom-alert.css'))   
+                        ->appendStylesheet($this->basePath('js/custom-validate/custom-validate.css'))
+                        ->appendStylesheet($this->basePath('js/custom-tips/custom-tips.css'))
                         
     ?>                        
     
@@ -38,7 +42,16 @@
             ->appendFile($this->basePath('js/custom-system/serializeFormJSON.js'))            
             ->appendFile($this->basePath('js/custom-system/ajax/ajax.js'))
             ->appendFile($this->basePath('js/custom-cargador/custom-cargador.js'))            
-            ->appendFile($this->basePath('js/custom-alert/custom-alert.js'));
+            ->appendFile($this->basePath('js/custom-alert/custom-alert.js'))
+    		->appendFile($this->basePath('js/jquery.tablesorter/jquery.tablesorter.min.js'))
+    		->appendFile($this->basePath('js/jquery.stickytableheaders/jquery.stickytableheaders.min.js'))
+    		->appendFile($this->basePath('js/custom-tablesorter/custom-tablesorter.js'))
+    		->appendFile($this->basePath('js/custom-alert/custom-alert.js'))
+    		->appendFile($this->basePath('js/custom-validate/custom-validate.js'))
+    		->appendFile($this->basePath('js/custom-validate/i18n/custom-validate-fecha-es.js'))
+    		->appendFile($this->basePath('js/custom-validate/custom-validate-cedula.js'))	
+    		->appendFile($this->basePath('js/custom-tips/custom-tips.js'))
+			->appendFile($this->basePath('js/custom-system/input_data.js'));
      ?>
     
     
@@ -103,14 +116,16 @@
     <div class="menu-right">
         <ul class="esconder">
             <?php
-            if ($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_VENTAS){ ?>
+            if (($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_VENTAS)
+				||($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN))
+			{ ?>
                 <li class="right-menu-item">
                     <span class="pointer" data-toggle="modal" data-target="#dialog_seleccion_cliente">
                         <img class="tool" title="Cliente" src="<?php echo($this->basePath()); ?>/images/side-menu-cliente.png">
                     </span>
                 </li>
             <?php 
-			} ?>
+			}//end if ?>
             <li class="right-menu-item">
                 <a href="#/">
                     <img id="inicio" class="tool" title="Home" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
@@ -178,7 +193,8 @@
                         <div class="flo-left">
                             <h2>
 <?php 
-								if ($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_VENTAS)
+								if (($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_VENTAS)
+									||($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_ADMIN))
 								{
 									echo($this->identidad_usuario['nombre_usuario'].' <span style="color:yellow">(Vendedor)</span><br>');
 								}//end if								

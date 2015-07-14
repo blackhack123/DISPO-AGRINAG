@@ -153,7 +153,7 @@ class DispoDAO extends Conexion
 				'		dispo.grado_id,'.
 				'		dispo.proveedor_id, '.				
 				'		grupo_dispo_det.cantidad_bunch_disponible as grupo_dispo_det_cantidad_bunch_disponible, '.
-				'       grupo_precio_det.precio, '.
+				'       grupo_precio_det.precio, grupo_precio_det.precio_oferta, '.
 				'	sum(dispo.cantidad_bunch_disponible) as tot_bunch_disponible, '.
 				'	sum(dispo.tallos_x_bunch) as tot_tallos_x_bunch,'.
 				'	count(*) as veces_tallos_x_bunch'.
@@ -178,7 +178,7 @@ class DispoDAO extends Conexion
 				'					AND grupo_dispo_det.grado_id    			= dispo.grado_id '.
 				" WHERE cliente.id = '".$cliente_id."'".
 				" AND dispo.clasifica = '1'".//PARA TOMAR CALIDAD DE FLOR (RECIEN ADICIONADO)
-				' GROUP BY variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.proveedor_id, grupo_dispo_det.cantidad_bunch_disponible, grupo_precio_det.precio '.
+				' GROUP BY variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.proveedor_id, grupo_dispo_det.cantidad_bunch_disponible, grupo_precio_det.precio, grupo_precio_det.precio_oferta '.
 				' ORDER BY variedad.nombre, dispo.variedad_id, dispo.grado_id, tot_bunch_disponible DESC';
 
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);

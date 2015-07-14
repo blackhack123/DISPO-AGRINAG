@@ -100,7 +100,8 @@ var message_control_focus = null;
 		return 	false;
 	}
 
-	function message(tipo, titulo, mensaje){	
+	function message(tipo, titulo, mensaje){
+		return false; //Desactivado MORONITOR	
 		if ($("#dialog-message").html()==''){
 			bodyMessage();
 		}//end if
