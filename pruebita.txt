@@ -1,3 +1,0 @@
-Primera linea de pruebas
-Segunda linea de prueba
-tercera linea de prueba
