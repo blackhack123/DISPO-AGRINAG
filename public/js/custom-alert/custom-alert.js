@@ -85,14 +85,20 @@ var message_control_focus = null;
 	function bodyMessage(){
 		html='	<table>'
 			+'		<tr>'
-			+'			<td width="50" valign="top">'
+			+'			<td colspan=2 align="center" style="background-color:red; color:#6D0708; font-size:14px; color:white; font-weight:bold">'
+			+'				MENSAJE DEL SISTEMA'			
+			+'			</td>'			
+			+'		<tr>'
+			+'		<tr>'
+			+'			<td width="50" valign="top" style="padding-top:10px; padding-bottom:10px; padding-left:5px">'
 			+'				<span class="dialog-message-ico dialog-message-alert"></span>'
 			+'				<span class="dialog-message-ico dialog-message-info"></span>'
 			+'				<span class="dialog-message-ico dialog-message-error"></span>'
 			+'				<span class="dialog-message-ico dialog-message-question"></span>'
 			+'			</td>'
-			+'			<td>'
+			+'			<td style="padding-top:10px; padding-bottom:10px; padding-left:10px; padding-right:20px">'
 			+'				<span id="dialog-message-text"></span>'
+			+'				<br><br><div style="text-align:center"><input type="button" class="btn btn-small btn-success" onclick="javascript:$(\'#dialog-message\').dialog(\'close\');" value="CERRAR"></div>'			
 			+'			</td>'
 			+'		</tr>'
 			+'	</table>'
@@ -100,8 +106,18 @@ var message_control_focus = null;
 		return 	false;
 	}
 
-	function message(tipo, titulo, mensaje){
-		return false; //Desactivado MORONITOR	
+	function message(tipo, titulo, mensaje, show){
+		//return false; //Desactivado MORONITOR				
+		if (typeof show === 'undefined') { return false;}		
+
+		$("#dialog-message").css("background-color", "#FFFFFF"); 
+		$("#dialog-message").css("margin-top", "40px"); 
+		$("#dialog-message").css("margin-left", "20px"); 
+		$("#dialog-message").css("margin-right", "50px"); 
+		$("#dialog-message").css("border","#000000 solid 3px"); 
+		$("#dialog-message").css("padding-bottom", "1px"); 		
+		$("#dialog-message").css("padding-left", "1px"); 		
+		$("#dialog-message").css("padding-right", "1px"); 		
 		if ($("#dialog-message").html()==''){
 			bodyMessage();
 		}//end if
@@ -115,7 +131,9 @@ var message_control_focus = null;
 		$(".dialog-message-"+tipo).show();		
 		$("#dialog-message-text").html(mensaje);
 		
-		$("#dialog-message").dialog({
+/*		$("#dialog-message").show();
+		return false; //Desactivado MORONITOR	
+*/		$("#dialog-message").dialog({
 			width: 'auto',
 			minHeight: 'auto',		
 			modal: true,
@@ -123,20 +141,20 @@ var message_control_focus = null;
 			hide: 'fade',			
 			closeOnEscape: true,			
 			open: function(event, ui) {
-			  $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').show();
+			  $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
 			},
 			close: function( event, ui ) {
 			  if (message_control_focus != null){
 				  $("#"+message_control_focus).focus();
 			  }//end if
-			},
+			}/*,
 			buttons: {
 				Ok: function() {
 					$( this ).dialog( "close" );
 				}
-			}
+			}*/
 		});		
-		$("#dialog-message").dialog('option', 'title', titulo);	
+		//$("#dialog-message").dialog('option', 'title', titulo);	
 		$("#dialog-message").dialog("option", "position", "center");
 		$("#dialog-message").dialog( "option", "closeOnEscape", true );
 
@@ -158,7 +176,8 @@ var message_control_focus = null;
 		return false;
 	}
 
-	function message_error(titulo, mensaje){
-		message('error', titulo, mensaje);
+	function message_error(titulo, mensaje, show){
+		if (typeof show === 'undefined') { show=false; }
+		message('error', titulo, mensaje, show);
 		return false;
 	}

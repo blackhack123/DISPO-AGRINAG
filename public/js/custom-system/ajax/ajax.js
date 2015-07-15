@@ -57,13 +57,13 @@ function ajax_call(parameters, obj_data){
 								if ((msg.respuesta_code=='OK')||(msg.respuesta_code=='NOOK')){
 									parameters.finish(msg)
 								}else{
-									message_error('ERROR1.', msg);
+									message_error('ERROR1.', msg, true);
 								}	
 								if (parameters.show_cargando==true){
 									cargador_visibility('hide');
 								}//end if
 							}).error(function(request, status, error) {
-								message_error('ERROR2', request.responseText);
+								message_error('ERROR2', request.responseText, true);
 								console.log(request);
 								console.log(status);								
 								console.log(error);
