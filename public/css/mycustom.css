@@ -1,3 +1,10 @@
+.select-class2 {
+  /*width: 50px;*/
+  padding: 0;
+  height: 28px;
+  display: inline;
+}
+
 
 .search .input-search2 {
   margin-top:-5px;

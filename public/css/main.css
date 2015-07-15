@@ -569,10 +569,10 @@ header {
 
 /* line 492, ../sass/main.scss */
 .select-class {
-  /*width: 50px;*/
+  width: 50px;
   padding: 0;
   height: 28px;
-  /*display: inline;*/
+  display: inline;
 }
 
 /* line 499, ../sass/main.scss */
