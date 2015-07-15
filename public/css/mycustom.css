@@ -96,9 +96,14 @@ background-color:#DFEFFF;
 }
 
 
-/* line 562, ../sass/screen.scss */
-/*.control-input {
-  height: 28px;
-*/ /* margin: 0 auto;*/
- /*text-align: center;*/
-/*}*/
+/*=================================ESTILOS PARA TABLA DE MANTENIMIENTOS==============================*/
+	.tbl_formulario_mantenimiento td{
+		padding-left: 3px;
+		padding-top: 1px;
+		padding-bottom: 1px;	
+	}
+	
+	
+	.tbl_formulario_mantenimiento tr:nth-child(even){
+		background: #E5E5E5;
+	}

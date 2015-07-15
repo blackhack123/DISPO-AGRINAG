@@ -135,8 +135,7 @@
 										mostrar_registro(response)
 										cargador_visibility('hide');
 										swal({  title: "Informacion grabada con exito!!",   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",
-											//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
 											//html:true,
 											type: "success",
 											showCancelButton: false,
@@ -149,8 +148,7 @@
 										});
 									}else{
 										swal({title: response.respuesta_mensaje,   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",
-											//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
 											//html:true,
 											type: "error",
 											showCancelButton: false,
@@ -175,6 +173,7 @@
 		var row = response.row;
 		if (row!==null)
 		{
+			ValidateControlsInit();
 			$("#accion").val("M");			
 			$("#dialog_mantenimiento_agenciacarga_nombre").html(row.nombre);
 			$("#agencia_carga_id").val(row.id);
@@ -202,31 +201,9 @@
 	}//end function mostrar_registro
 </script>
 
-<style>
-	#tbl_mantenimiento td{
-		padding-left: 3px;
-		padding-top: 1px;
-		padding-bottom: 1px;	
-	}
-	
-	#tbl_mantenimiento td input{
-		/*margin-bottom: 5px;	*/
-	}	
-	
-	#tbl_mantenimiento td select{
-		/*margin-bottom: 5px;	*/
-	}		
-	
-	#tbl_mantenimiento tr:nth-child(even){
-		background: #E5E5E5;
-	}
-</style>
-
-    <div class="title-admin-section">
-        <h1>
-            AGENCIA DE CARGA
-        </h1>
-    </div>
+<div class="title-admin-section">
+	<h1>AGENCIA DE CARGA</h1>
+</div>
 
 <div class="table-container col-md-16 col-sm-16">
   <div class="clearfix">
@@ -310,7 +287,7 @@
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
                         
-			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" id="tbl_mantenimiento">
+			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
 			        	      <tr>
 			        	        <td><label class="control-label">ID:</label></td>
 			        	        <td>
