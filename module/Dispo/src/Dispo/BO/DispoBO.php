@@ -371,8 +371,8 @@ class DispoBO extends Conexion
 		
 		//AQUI SE DEBE DE CONSULTAR LA GET DISPO PERO PARA ESTE REGISTRO ESPECIFICO Y REPLICAR EL FUNCIONAMIENTO DE LA GRILLA
 		$reg_grupo_precio_det	= $GrupoPrecioDetDAO->consultarPorClienteIdPorVariedadIdPorGradoId($cliente_id, $variedad_id, $grado_id);
-		$result_precio_oferta 	= $GrupoPrecioOfertaDAO->consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($GrupoPrecioDetData->getGrupoPrecioCab(), 
-														$GrupoPrecioDetData->getVariedadId(), $GrupoPrecioDetData->getGradoId());
+		$result_precio_oferta 	= $GrupoPrecioOfertaDAO->consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($reg_grupo_precio_det['grupo_precio_cab_id'],
+														$variedad_id, $grado_id);
 
 		return array($reg_grupo_precio_det, $result_precio_oferta);
 		

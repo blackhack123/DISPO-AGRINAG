@@ -95,7 +95,7 @@
 							'finish':function(response){
 									if (response.respuesta_codex=='OK'){
 										//Se muestra el cuadro de informacion que se cargo una orden
-										$("#dialog_oferta_formulario").html(response.respuesta_mensaje);
+										$("#dialog_oferta_formulario").html(response.html);
 									}else{
 										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
 											type: "error",
@@ -291,6 +291,7 @@
 			      </div>
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
+			        	SIMON LIMON
 						<div id="dialog_oferta_formulario"></div>			
 			        </div>
 			      </div>

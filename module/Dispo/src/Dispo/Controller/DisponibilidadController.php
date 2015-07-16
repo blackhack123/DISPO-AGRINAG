@@ -39,7 +39,7 @@ class DisponibilidadController extends AbstractActionController
 				
 				$data = $SesionUsuarioPlugin->getRecord();
 				$viewModel->identidad_usuario 	= $data;
-				$viewModel->setTemplate('Dispo/Disponibilidad/seleccionarmarcacionagencia.phtml');
+				$viewModel->setTemplate('dispo/disponibilidad/seleccionarmarcacionagencia.phtml');
 				$this->layout($SesionUsuarioPlugin->getUserLayout());
 				return $viewModel;
 			}else{
@@ -212,7 +212,7 @@ class DisponibilidadController extends AbstractActionController
 			}//end if
 
 			$viewModel->setTerminal(true);				
-			$viewModel->setTemplate('Dispo/disponibilidad/listado_detalle_dispo.phtml');
+			$viewModel->setTemplate('dispo/disponibilidad/listado_detalle_dispo.phtml');
 			return $viewModel;
 
 		}catch (\Exception $e) {
@@ -289,11 +289,11 @@ class DisponibilidadController extends AbstractActionController
 			$DispoBO				= new DispoBO();
 		
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			
+
 			//Recibe las variables
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
-				
+
 			$variedad_id		= $json['variedad_id'];
 			$grado_id			= $json['grado_id'];
 			$cliente_id 		= $SesionUsuarioPlugin->getUserClienteId();
@@ -303,10 +303,11 @@ class DisponibilidadController extends AbstractActionController
 			list($reg_grupo_precio_det, $rs_precio_oferta) 	= $DispoBO->consultarPrecioOfertaPorCliente($cliente_id, $variedad_id, $grado_id); 
 
 			//Asigna las variables a la vista
+			echo("<pre>");var_dump($rs_precio_oferta);echo("</pre>");exit();
 			$viewModel->reg_grupo_precio_det		= $reg_grupo_precio_det;
 			$viewModel->rs_precio_oferta			= $rs_precio_oferta;
 
-			$viewModel->setTemplate('Dispo/disponibilidad/oferta_variedad.phtml');
+			$viewModel->setTemplate('dispo/disponibilidad/oferta_variedad.phtml');
 			$viewModel->setTerminal(true);
 			$viewRender = $this->getServiceLocator()->get('ViewRenderer');
 			$html = $viewRender->render($viewModel);

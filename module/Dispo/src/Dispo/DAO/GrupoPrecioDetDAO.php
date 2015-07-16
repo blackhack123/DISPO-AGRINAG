@@ -117,7 +117,7 @@ class GrupoPrecioDetDAO extends Conexion
 	{
 		$GrupoPrecioDetData 		    = new GrupoPrecioDetData();
 		
-		$sql = 	' SELECT grupo_precio_det.*, variedad_id.nombre variedad_nombre '.
+		$sql = 	' SELECT grupo_precio_det.*, variedad.nombre variedad_nombre '.
 				' FROM grupo_precio_det INNER JOIN cliente '.
 				"                               ON cliente.id 	= '".$cliente_id."'".
 				'						INNER JOIN variedad '.

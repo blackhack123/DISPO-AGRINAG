@@ -211,10 +211,10 @@ class PedidoController extends AbstractActionController
 			//Se consulta la dispo, considerando los criterios de busqueda
 			$data = $SesionUsuarioPlugin->getRecord();
 			$viewModel->identidad_usuario 	= $data;
-				
+
 			$this->layout($SesionUsuarioPlugin->getUserLayout());
 	
-			$viewModel->setTemplate('Dispo/pedido/pedido_actual.phtml');
+			$viewModel->setTemplate('dispo/pedido/pedido_actual.phtml');
 			return $viewModel;
 			//false
 		}catch (\Exception $e) {
@@ -272,7 +272,7 @@ class PedidoController extends AbstractActionController
 			$data = $SesionUsuarioPlugin->getRecord();
 			$viewModel->identidad_usuario 	= $data;
 
-			$viewModel->setTemplate('Dispo/pedido/pedido_actual_detalle.phtml');
+			$viewModel->setTemplate('dispo/pedido/pedido_actual_detalle.phtml');
 			$viewModel->setTerminal(true);
 			$viewRender = $this->getServiceLocator()->get('ViewRenderer');
 			$html = $viewRender->render($viewModel);
@@ -483,7 +483,7 @@ class PedidoController extends AbstractActionController
 			if ($result['respuesta']=='NOVEDAD')
 			{
 				$viewModel 	= new ViewModel(array("result" => $result['novedades_pedido_det']));
-				$viewModel->setTemplate('Dispo/pedido/pedidodetallesinstock.phtml');
+				$viewModel->setTemplate('dispo/pedido/pedidodetallesinstock.phtml');
 				$viewModel->setTerminal(true);
 				$viewRender = $this->getServiceLocator()->get('ViewRenderer');
 				$html = $viewRender->render($viewModel);

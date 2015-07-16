@@ -123,18 +123,16 @@ class GrupoPrecioOfertaDAO extends Conexion
 	 */
 	public function consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($grupo_precio_cab_id, $variedad_id, $grado_id)
 	{
-		$GrupoPrecioOfertaData 		    = new GrupoPrecioOfertaData();
-		
 		$sql = 	' SELECT grupo_precio_oferta.*, variedad.nombre as variedad_combo_nombre '.
 				' FROM grupo_precio_oferta INNER JOIN variedad '.
 				'								   ON variedad.id = grupo_precio_oferta.variedad_id '.
-				' WHERE grupo_precio_cab 	= :grupo_precio_cab '.
+				' WHERE grupo_precio_cab 	= :grupo_precio_cab_id '.
 				'   and variedad_id			= :variedad_id'.
 				'   and grado_id			= :grado_id';
 		
 		
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
-		$stmt->bindValue(':grupo_precio_cab',$grupo_precio_cab);
+		$stmt->bindValue(':grupo_precio_cab_id',$grupo_precio_cab_id);
 		$stmt->bindValue(':variedad_id',$variedad_id);
 		$stmt->bindValue(':grado_id',$grado_id);
 		$stmt->execute();

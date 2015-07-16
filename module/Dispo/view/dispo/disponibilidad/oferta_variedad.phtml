@@ -12,7 +12,7 @@
          
               <tr>
                   <td width="90">
-                     {{ctrl.precio_normal}}                             
+                     <?php echo($this->reg_grupo_precio_det['precio']); ?>                           
                   </td>                                
                   <td width="90">
                       <b><?php echo($this->reg_grupo_precio_det['precio_oferta']); ?></b>                               
@@ -50,7 +50,9 @@
                   <td class="th-inner"  width="90">Cantidad</td>                               
                   <td class="th-inner" width="150">order</th>
               </tr>
-         
+<?php 	if($this->rs_precio_oferta)
+		{
+			foreach ($this->rs_precio_oferta as $reg)?>         
               <tr ng-repeat="oferta in ctrl.oferta | orderBy:'nombre'">                                
                   <td width="200">
                       {{oferta.variedad_hueso_nombre}}                                
@@ -84,6 +86,9 @@
                       </div> -->
                   </td>
               </tr>
+<?php 		}//end foreach
+		}//end if	
+?>              
           </table>
   	</div>
 

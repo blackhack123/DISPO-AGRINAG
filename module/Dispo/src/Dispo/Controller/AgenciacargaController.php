@@ -80,7 +80,7 @@ class AgenciacargaController extends AbstractActionController
 			$viewModel->busqueda_sincronizado		= \Application\Classes\ComboGeneral::getComboSincronizado($condiciones['sincronizado'],"&lt;SINCRONIZADO&gt;");
 			$viewModel->result				= $result;
 			$this->layout($SesionUsuarioPlugin->getUserLayout());
-			$viewModel->setTemplate('Dispo/agencia_carga/mantenimiento.phtml');
+			$viewModel->setTemplate('dispo/agencia_carga/mantenimiento.phtml');
 			return $viewModel;			
 			
 		
