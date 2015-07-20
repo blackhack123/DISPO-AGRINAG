@@ -202,10 +202,26 @@
 	        $("body").on('click', '.btn_eliminar_detalle', function(event){
 	            var pedido_det_secx = $(this).attr('pedido_det_sec');
 	            var tr =  $(this).closest('tr');
-	            
+	            var oferta 								=  tr.attr('oferta');
+				var pedido_cab_oferta_id 				=  tr.attr('pedido_cab_oferta_id');
+				var pedido_det_oferta_sec 				=  tr.attr('pedido_det_oferta_sec');
+				var variedad_nombre_oferta_vinculada 	=  $.trim(tr.attr('variedad_nombre_oferta_vinculada'));
+				var variedad_nombre						=  $.trim(tr.find('.variedad_nombre').html());
+
+				if ((oferta==1)||(pedido_cab_oferta_id!==''))
+				{
+					var swal_title = "La variedad "+variedad_nombre+" tiene una oferta vinculada ("+variedad_nombre_oferta_vinculada+")!! Está seguro de borrar el Item?";
+					var swal_text  = "Si va eliminar esta variedad tambien se borrará la oferta vinculada";
+				}else{
+					var swal_title = "Esta seguro de borrar el Item?";
+					var swal_text  = "La variedad será retirada de su pedido!";
+				}//end if
+
 	        	swal({
-	  			  title: "Esta seguro de borrar el Item?",
-	  			  text: "La variedad sera retirada de su pedido!",
+	  			  //title: "Esta seguro de borrar el Item?",
+	  			  //text: "La variedad sera retirada de su pedido!",
+				  title: swal_title,
+	  			  text: swal_text,
 	  			  type: "warning",
 	  			  showCancelButton: true,
 	  			  confirmButtonColor: "#DD6B55",
@@ -226,7 +242,22 @@
 	  									'async': false,
 	  									'finish':function(response){
 	  											if (response.respuesta_code=='OK'){
-	  												tr.remove();
+	  												tr.remove(); //Remueve la fila actual
+													
+													//Se remueve la fila donde se encuentre la oferta vinculada
+													if ((oferta==1)||(pedido_cab_oferta_id!==''))
+													{
+														if (oferta==1)
+														{
+															var pedido_det_sec_hueso = $('#tbl_pedido_actual').find('[pedido_det_oferta_sec="'+pedido_det_secx+'"]');
+															var tr_oferta =  pedido_det_sec_hueso.closest('tr');
+															tr_oferta.remove();
+														}else{
+															var pedido_det_sec_carne = $('#tbl_pedido_actual').find('.tr_det_'+pedido_det_oferta_sec);
+															var tr_oferta =  pedido_det_sec_carne.closest('tr');
+															tr_oferta.remove();	
+														}
+													}//end if
 	  	  											if (response.nro_reg_det>0){
 	  	  												swal("Borrado!", "El item ha sido borrado! ", "success");
 	  													consultarNroItemsPedidoComprando(); 

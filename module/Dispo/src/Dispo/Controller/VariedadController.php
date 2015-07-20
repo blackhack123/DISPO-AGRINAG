@@ -16,46 +16,6 @@ class VariedadController extends AbstractActionController
 {
 
 	
-	public function getcomboAction()
-	{
-		try
-		{
-			$EntityManagerPlugin = $this->EntityManagerPlugin();
-				
-			$VariedadBO = new VariedadBO();
-			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-	
-			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->isLogin();
-	
-			$body = $this->getRequest()->getContent();
-			$json = json_decode($body, true);
-			//var_dump($json); exit;
-			$texto_primer_elemento		= $json['texto_primer_elemento'];
-			$variedad_id = null;
-	
-			$opciones = $VariedadBO->getComboTodos($variedad_id, $texto_primer_elemento);
-	
-			$response = new \stdClass();
-			$response->opciones				= $opciones;
-			$response->respuesta_code 		= 'OK';
-	
-			$json = new JsonModel(get_object_vars($response));
-			return $json;
-	
-		}catch (\Exception $e) {
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;
-		}
-	}//end function getcomboAction
-	
-	
-	
-
-	
 	public function mantenimientoAction()
 	{
 		try
@@ -75,8 +35,7 @@ class VariedadController extends AbstractActionController
 			$condiciones['criterio_busqueda']		= $this->params()->fromPost('criterio_busqueda','');
 			$condiciones['estado']					= $this->params()->fromPost('busqueda_estado','');
 			$condiciones['sincronizado']			= $this->params()->fromPost('busqueda_sincronizado','');
-				
-		
+
 			$result 		= $VariedadBO->listado($condiciones);
 			
 			$viewModel->criterio_busqueda			= $condiciones['criterio_busqueda'];
@@ -115,7 +74,7 @@ class VariedadController extends AbstractActionController
 
 			$colorbase = null;
 			$response = new \stdClass();
-			$response->cbo_color_base		= $ColoresBO->getComboTodos($colorbase, $texto_primer_elemento);
+			$response->cbo_color_base		= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
@@ -220,8 +179,11 @@ class VariedadController extends AbstractActionController
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 	
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
-			$VariedadBO 				= new VariedadBO();
-			$VariedadBOBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$VariedadBO 			= new VariedadBO();
+			$ColoresBO				= new ColoresBO();
+			
+			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 		
@@ -231,9 +193,10 @@ class VariedadController extends AbstractActionController
 			$variedad		= $json['variedad'];
 	
 			$row					= $VariedadBO->consultar($variedad, \Application\Constants\ResultType::MATRIZ);
-	
+				
 			$response = new \stdClass();
 			$response->row					= $row;
+			$response->cbo_color_base		= $ColoresBO->getCombo($row['colobase'], "&lt;Seleccione&gt;");
 	
 			$json = new JsonModel(get_object_vars($response));
 			return $json;

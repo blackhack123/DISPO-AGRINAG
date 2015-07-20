@@ -364,6 +364,10 @@ class PedidoBO extends Conexion
 			$PedidoCabDAO->setEntityManager($this->getEntityManager());
 			$PedidoDetDAO->setEntityManager($this->getEntityManager());		
 			
+			//Se elimina primera la oferta vinculada
+			$respuesta 		= $PedidoDetDAO->eliminarOferta($pedido_cab_id, $pedido_det_sec);
+			
+			//Se elimina el detalle del pedido
 			$respuesta 		= $PedidoDetDAO->eliminar($pedido_cab_id, $pedido_det_sec);
 			$nro_regs_det	= $PedidoDetDAO->consultarNroItemsPorPedido($pedido_cab_id);
 			

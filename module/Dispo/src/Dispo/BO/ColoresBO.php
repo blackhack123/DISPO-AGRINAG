@@ -4,7 +4,7 @@ namespace Dispo\BO;
 
 use Application\Classes\Conexion;
 use Doctrine\ORM\EntityManager;
-use Dispo\DAO\VariedadDAO;
+use Dispo\DAO\ColoresDAO;
 
 
 class ColoresBO extends Conexion
@@ -17,18 +17,18 @@ class ColoresBO extends Conexion
 	 * @param string $color_1er_elemento
 	 * @return string
 	 */
-	function getComboTodos($colorbase, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	function getCombo($color, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
 	{	
-		$VariedadDAO = new VariedadDAO();
+		$ColoresDAO = new ColoresDAO();
 		
-		$VariedadDAO->setEntityManager($this->getEntityManager());
+		$ColoresDAO->setEntityManager($this->getEntityManager());
 
-		$result = $VariedadDAO->consultarColores();
+		$result = $ColoresDAO->consultarTodos();
 		
-		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'color', 'nombre', $colorbase, $texto_1er_elemento, $color_1er_elemento);
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'color', 'nombre', $color, $texto_1er_elemento, $color_1er_elemento);
 		 
 		return $opciones;
-	}//end function getComboTodos
+	}//end function getCombo
 
 
 }//end class

@@ -24,7 +24,7 @@
         </div>
 
         <form class="clear frm_pedido" name="frm_pedido">
-            <table class="table-dispo border">
+            <table class="table-dispo border" id="tbl_pedido_actual">
                     <tr>
                         <td class="th-inner"  width="60">ID Item</td>
                         <td class="th-inner"  width="110">Variedad</td>
@@ -51,21 +51,25 @@
 	{
 		foreach ($this->rs_pedido_det as $reg)
 		{	
-?>                    
-                    <tr class="tr_det_<?php echo($reg['pedido_det_sec']); ?>">    
+?>
+                    <tr class="tr_det_<?php echo($reg['pedido_det_sec']); ?>" oferta="<?php echo($reg['estado_reg_oferta']); ?>" pedido_cab_oferta_id="<?php echo($reg['pedido_cab_oferta_id']); ?>" pedido_det_oferta_sec="<?php echo($reg['pedido_det_oferta_sec']); ?>" variedad_nombre_oferta_vinculada="<?php echo($reg['variedad_nombre_oferta_vinculada']); ?>">    
                         <td>                                        
                           	<?php echo($reg['pedido_det_sec']); ?>
                         </td>                          
                         <td>
-                        	<?php echo($reg['variedad_nombre']); ?>
-                            <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange;">
-		                                <span class="glyphicon glyphicon-star pointer"
-		                                aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
-		                    </div>
-							<div class="pull-right btn_oferta" style="margin-right: 10%; color: gray;">
-		                                <span class="glyphicon glyphicon-star pointer"
-		                                aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
-		                    </div>
+                        	<span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span>
+                            <?php if ($reg['estado_reg_oferta']==1){ ?>
+								<div class="pull-right btn_oferta" style="margin-right: 10%; color: orange;">
+											<span class="glyphicon glyphicon-star pointer"
+											aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
+								</div>
+							<?php }//end if ?>
+                            <?php if (!empty($reg['pedido_cab_oferta_id'])){ ?>
+                                <div class="pull-right btn_oferta" style="margin-right: 10%; color: gray;">
+                                            <span class="glyphicon glyphicon-star pointer"
+                                            aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
+                                </div>
+                            <?php }//end if ?>
                         </td>
                         <td>
                             <?php echo($reg['grado_id']); ?>

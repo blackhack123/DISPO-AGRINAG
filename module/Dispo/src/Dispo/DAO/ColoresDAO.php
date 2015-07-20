@@ -73,10 +73,10 @@ class ColoresDAO extends Conexion
 		$stmt->bindValue(':color',$color);
 		$stmt->execute();
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
-		if($row){
-
-				$ColoresData->getcolor						($row['color']);				
-				$ColoresData->getNombre 					($row['nombre']);
+		if($row)
+		{
+			$ColoresData->getcolor		($row['color']);				
+			$ColoresData->getNombre 	($row['nombre']);
 			return $ColoresData;
 		}else{
 			return null;
@@ -85,6 +85,29 @@ class ColoresDAO extends Conexion
 	}//end function consultar
 
 
+	/**
+	 * consultarTodos
+	 *
+	 * @return array
+	 */
+	public function consultarTodos()
+	{
+		$sql = 	' SELECT colores.* '.
+				' FROM colores '.
+				' ORDER BY nombre ';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		
+		//Elimina los espacios
+		foreach($result as &$reg)
+		{
+			$reg['nombre'] = trim($reg['nombre']);
+		}//end foreach
+	
+		return $result;
+	}//end function consultarTodos	
 }//end class
 
 ?>

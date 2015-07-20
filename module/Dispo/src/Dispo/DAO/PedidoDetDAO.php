@@ -179,6 +179,43 @@ class PedidoDetDAO extends Conexion
 	}//end function eliminar
 
 
+	public function eliminarHueso($pedido_cab_id, $pedido_det_sec)
+	{
+		$key    = array(
+				'pedido_cab_oferta_id'			=> $pedido_cab_id,
+				'pedido_det_oferta_sec'			=> $pedido_det_sec,
+		);
+	
+		$this->getEntityManager()->getConnection()->delete($this->table_name, $key);
+		return true;
+	}//end function eliminar	
+	
+	
+	
+	/**
+	 * 
+	 * @param int $pedido_cab_id
+	 * @param int $pedido_det_sec
+	 * @return boolean
+	 */
+	public function eliminarOferta($pedido_cab_id, $pedido_det_sec)
+	{
+		$PedidoDetData = $this->consultar($pedido_cab_id, $pedido_det_sec);
+		
+		//PRIMER CASO.-  Eliminar el HUESO en caso de ser CARNE el registro consultado
+		//SEGUNDO CASO.- Eliminar la CARNE en caso que el registro consultado sea HUESO		
+		if ($PedidoDetData->getEstadoRegOferta()==1)
+		{
+			//Se elimina el hueso
+			$resultado = $this->eliminarHueso($PedidoDetData->getPedidoCabId(), $PedidoDetData->getPedidoDetSec());			
+		}else{
+			//Se elimina la carne
+			$resultado = $this->eliminar($PedidoDetData->getPedidoCabOfertaId(), $PedidoDetData->getPedidoDetOfertaSec());
+		}//end function
+		return $resultado; 
+	}//end function eliminarOferta
+
+
 
 	/**
 	 *
@@ -437,7 +474,16 @@ class PedidoDetDAO extends Conexion
 	public function consultarPorPedidoCabId($pedido_cab_id, $estado = null)
 	{
 		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
-				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id '.
+				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id, '.
+				'		 CASE pedido_det.estado_reg_oferta '.
+				'			WHEN 1 THEN variedad_hueso.nombre '.
+				'			WHEN 0 THEN variedad_carne.nombre '.
+				'        END as variedad_nombre_oferta_vinculada, '.
+				'		 CASE pedido_det.estado_reg_oferta '.
+				'			WHEN 1 THEN variedad_hueso.id '.
+				'			WHEN 0 THEN variedad_carne.id '.
+				'        END as variedad_id_oferta_vinculada '.				
+				/*'        pedido_vinculado_carne.variedad_id as variedad_id_oferta_vinculada, variedad_carne.nombre as variedad_nombre_oferta_vinculada '.*/
 				' FROM pedido_det INNER JOIN pedido_cab '.
 				'				     ON pedido_cab.id			= pedido_det.pedido_cab_id ';
 		if (!empty($estado)){
@@ -449,7 +495,18 @@ class PedidoDetDAO extends Conexion
 				'                    ON agencia_carga.id 		= pedido_det.agencia_carga_id '.
 				'				  LEFT JOIN marcacion '.
 				'					 ON marcacion.marcacion_sec	= pedido_det.marcacion_sec '.
-				' WHERE pedido_det.pedido_cab_id	= :pedido_cab_id';
+				'                 LEFT JOIN pedido_det as pedido_det_vinculado_carne '.
+				'					 ON pedido_det_vinculado_carne.pedido_cab_id	= pedido_det.pedido_cab_oferta_id '.
+				'				    AND pedido_det_vinculado_carne.pedido_det_sec	= pedido_det.pedido_det_oferta_sec '.
+				'                 LEFT JOIN variedad as variedad_carne '.
+				'					 ON variedad_carne.id				   			= pedido_det_vinculado_carne.variedad_id'.
+				'                 LEFT JOIN pedido_det as pedido_det_vinculado_hueso '.
+				'					 ON pedido_det_vinculado_hueso.pedido_cab_oferta_id	 = pedido_det.pedido_cab_id '.
+				'				    AND pedido_det_vinculado_hueso.pedido_det_oferta_sec = pedido_det.pedido_det_sec '.
+				'                 LEFT JOIN variedad as variedad_hueso '.
+				'					 ON variedad_hueso.id				   				 = pedido_det_vinculado_hueso.variedad_id'.
+				' WHERE pedido_det.pedido_cab_id	= :pedido_cab_id'.
+				' ORDER BY pedido_cab_id, pedido_det_sec';
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->bindValue(':pedido_cab_id', $pedido_cab_id);

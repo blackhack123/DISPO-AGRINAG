@@ -206,17 +206,20 @@
 							'contentType': 'application/json',
 							'url':'<?php echo($this->basePath()); ?>/dispo/pedido/additem',
 							'control_process':true,
-							'show_cargando':false,
+							'show_cargando':true,
 							'finish':function(response){
 									if (response.respuesta_codex=='OK'){
 										//Se muestra el cuadro de informacion que se cargo una orden
+										$('#dialog_oferta').modal('hide')
+										
 										$("#msg_order").show();
 										$("#msg_order").html(response.respuesta_mensaje);
 										setTimeout(function(){ $("#msg_order").hide(); }, 4000);
 
 										//Consulta el detalle de la dispo
 										consultarNroItemsPedidoComprando()
-										consultar_detalle_dispo()									
+										consultar_detalle_dispo()
+										//cargador_visibility('hide');							
 									}else{
 										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
 											type: "error",

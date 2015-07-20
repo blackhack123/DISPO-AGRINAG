@@ -45,7 +45,7 @@ class PedidoController extends AbstractActionController
 			$flag_oferta		= false;
 			
 			//Se obtiene la bandera de oferta y el hueso
-			if ($json['hueso_variedad_id'])
+			if (!(empty($json['hueso_variedad_id'])))
 			{
 				$flag_oferta = true;
 				$hueso_variedad_id		= $json['hueso_variedad_id'];
