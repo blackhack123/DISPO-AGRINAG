@@ -141,9 +141,10 @@ header {
   width: 65px;
   background: #afafaf;
   height: 100%;
-  position: absolute;
+  position:fixed;  /*MORONITOR absolute -> fixed*/
   right: 0;
-  padding: 90px 10px 0;
+  padding: 90px 10px 0px;
+
 }
 /* line 156, ../sass/main.scss */
 .menu-right ul {

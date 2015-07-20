@@ -130,6 +130,22 @@ class ClienteDAO extends Conexion
 		return $result;
 	}//end function consultarTodo
 
+	
+	
+	public function consultarUsuarioAsignado()
+	{
+		$sql = 	' SELECT distinct cliente.id, TRIM(cliente.nombre) as nombre '.
+				' FROM cliente INNER JOIN usuario '.
+				'                 ON usuario.cliente_id = cliente.id '.
+				' ORDER BY cliente.nombre';
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		return $result;
+	}//end function consultarUsuarioAsignado
+	
+	
 }//end class
 
 ?>

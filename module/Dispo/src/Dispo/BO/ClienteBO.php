@@ -23,7 +23,8 @@ class ClienteBO extends Conexion
 		
 		$ClienteDAO->setEntityManager($this->getEntityManager());
 
-		$result = $ClienteDAO->consultarTodo();
+		//$result = $ClienteDAO->consultarTodo();
+		$result = $ClienteDAO->consultarUsuarioAsignado();
 		
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $cliente_id, $texto_1er_elemento, $color_1er_elemento);
 		 

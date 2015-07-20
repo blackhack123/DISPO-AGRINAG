@@ -115,8 +115,8 @@
 <body class="clearfix">                
 
                   
-    <div class="menu-right">
-        <ul class="esconder">
+    <div class="menu-right" data-spy="affix" data-offset-bottom="0">
+        <ul class="esconderx">
             <?php
             if (($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_VENTAS)
 				||($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN))
@@ -152,34 +152,6 @@
                     <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
                 </a>
             </li>            
-        </ul>
-        <ul class="aparecer">
-            <li class="right-menu-item">
-                <a href="#/">
-                    <img class="home" title="Tools" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
-                </a>
-            </li>
-            <li class="right-menu-item">
-                <div class="animate-show alert message_add arrow_right animate-show msg_task" role="alert" id="tasks_message"> <!-- NOTIFICACION -->
-                	MORONI SALAZAR
-                </div>              
-                <a href="#/order-resume" >
-                    <span class="notification img-circle" ng-show="count > 0">
-                        {{count}}
-                    </span>
-                    <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png">
-                </a>
-            </li>
-            <li class="right-menu-item">
-                <a href="#/list-ordenes">
-                    <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png">
-                </a>
-            </li>          
-            <li class="right-menu-item">
-                <a href="?session=logout">
-                    <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
-                </a>
-            </li> 
         </ul>
     </div>
 	<div id="page" class="clearfix">
