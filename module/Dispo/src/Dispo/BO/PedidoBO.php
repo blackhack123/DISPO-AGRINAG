@@ -20,6 +20,46 @@ use Dispo\Exception\PedidoException;
 class PedidoBO extends Conexion
 {
 	
+	public function addItemOferta(	$pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
+								    $variedad_id, $grado_id, $tipo_caja_id, $nro_cajas_seleccionada,
+									$hueso_variedad_id, $hueso_grado_id, $hueso_tipo_caja_id, $hueso_nro_cajas_seleccionada)
+	{
+		$DispoBO		= new DispoBO();
+				
+		try
+		{
+			$this->getEntityManager()->getConnection()->beginTransaction();
+						
+			$DispoBO->setEntityManager($this->getEntityManager());	
+
+			//Se registra la oferta
+			$result_oferta 	= $this->addItem($pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
+											 $variedad_id, $grado_id, $tipo_caja_id, $nro_cajas_seleccionada, false, 'oferta_carne');
+			if ($result_oferta['respuesta_code']!='OK')
+			{
+				$this->getEntityManager()->getConnection()->rollback();
+				return $result_oferta;
+			}//end if
+			
+			//Se registra el hueso
+			$result_hueso 	= $this->addItem($pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
+											 $hueso_variedad_id, $hueso_grado_id, $hueso_tipo_caja_id, $hueso_nro_cajas_seleccionada, false, 'oferta_hueso', $result_oferta['pedido_cab_sec']);
+			if ($result_hueso['respuesta_code']!='OK')
+			{
+				$this->getEntityManager()->getConnection()->rollback();
+				return $result_hueso;
+			}//end if
+
+			$this->getEntityManager()->getConnection()->commit();
+			return array($result_oferta, $result_hueso);
+
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}//end try
+	}//end function addItemOferta
+	
 
 	/**
 	 * Permite crear un Pedido o agregar detalles a un Pedido ya Existente
@@ -37,7 +77,8 @@ class PedidoBO extends Conexion
 	 * @return array
 	 */
 	public function addItem($pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
-						    $variedad_id, $grado_id, $tipo_caja_id, $nro_cajas_seleccionada)
+						    $variedad_id, $grado_id, $tipo_caja_id, $nro_cajas_seleccionada,
+							$control_transaccion = true, $tipo_oferta = null, $carne_pedido_cab_sec = null)
 	{
 		$DispoBO		= new DispoBO();		
 		$PedidoCabDAO 	= new PedidoCabDAO();
@@ -45,7 +86,9 @@ class PedidoBO extends Conexion
 		$PedidoCabData	= new PedidoCabData();
 		$PedidoDetData	= new PedidoDetData();
 
-		$this->getEntityManager()->getConnection()->beginTransaction();
+		if ($control_transaccion){
+			$this->getEntityManager()->getConnection()->beginTransaction();
+		}//end if
 		try
 		{
 			$DispoBO->setEntityManager($this->getEntityManager());		
@@ -68,9 +111,10 @@ class PedidoBO extends Conexion
 			 */
 			$result_dispo = $DispoBO->getDispo($cliente_id, $usuario_cliente_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id, false, true, true);
 			if ($result_dispo['respuesta_code']!='OK'){
-				$this->getEntityManager()->getConnection()->rollback();
-				$this->getEntityManager()->close();
-
+				if ($control_transaccion){
+					$this->getEntityManager()->getConnection()->rollback();
+					$this->getEntityManager()->close();
+				}//end if
 				return $result_dispo;
 			}//end if			
 			$reg_dispo	  = $result_dispo['result_dispo'][0];
@@ -99,10 +143,16 @@ class PedidoBO extends Conexion
 			 */
 			$pedido_cab_sec = $PedidoDetDAO->consultarMaximaSecuencia($pedido_cab_id);
 			$pedido_cab_sec++;
-			
+
 			$bunch_total 	= $nro_cajas_seleccionada * $reg_dispo['cantidad_bunch']; //Se multiplica por la cantidad de bunch que tiene una caja
 			$tallos_total	= $bunch_total * $reg_dispo['tallos_x_bunch'];
-			$precio_total	= $tallos_total *  $reg_dispo['precio']; //Se multiplica el precio del tallo
+			if ($tipo_oferta=='oferta_carne')
+			{
+				$precio 		= $reg_dispo['precio_oferta'];
+			}else{
+				$precio 		= $reg_dispo['precio'];
+			}
+			$precio_total	= $tallos_total *  $precio; //Se multiplica el precio del tallo						
 			
 			$PedidoDetData->setPedidoCabId			($pedido_cab_id);
 			$PedidoDetData->setPedidoDetSec 		($pedido_cab_sec);
@@ -117,17 +167,27 @@ class PedidoBO extends Conexion
 			$PedidoDetData->setCantidadBunch		($bunch_total);
 			$PedidoDetData->setTallosxBunch			($reg_dispo['tallos_x_bunch']);
 			$PedidoDetData->setTallosTotal			($tallos_total);
-			$PedidoDetData->setPrecio				($reg_dispo['precio']);
+			$PedidoDetData->setPrecio				($precio);
 			$PedidoDetData->setTotal				($precio_total);
 			$PedidoDetData->setAgenciaCargaId		($agencia_carga_id);
 			$PedidoDetData->setComentario			('');
-			$PedidoDetData->setPedidoCabOfertaId 	(null);
-			$PedidoDetData->setPedidoDetOfertaSec 	(null);
-			$PedidoDetData->setEstadoRegOferta		(0);
+			if ($tipo_oferta=='oferta_hueso')
+			{
+				$PedidoDetData->setPedidoCabOfertaId 	($pedido_cab_id);
+				$PedidoDetData->setPedidoDetOfertaSec 	($carne_pedido_cab_sec);
+			}else{
+				$PedidoDetData->setPedidoCabOfertaId 	(null);
+				$PedidoDetData->setPedidoDetOfertaSec 	(null);
+			}//end if
+			if ($tipo_oferta=='oferta_carne')
+			{
+				$PedidoDetData->setEstadoRegOferta		(1);
+			}else{
+				$PedidoDetData->setEstadoRegOferta		(0);				
+			}//end if
 			$PedidoDetData->setUsuarioIngId			($usuario_ing_id);
 			$PedidoDetData->setUsuarioModId			($usuario_ing_id);
 			$key_det =  $PedidoDetDAO->ingresar($PedidoDetData);
-			
 			
 			/*
 			 * 5. Actualizar el total de la CABECERA de PEDIDO
@@ -144,12 +204,16 @@ class PedidoBO extends Conexion
 			$result['pedido_cab_sec'] 	= $pedido_cab_sec;
 			$result['variedad_nombre']	= $reg_dispo['variedad_nombre'];
 			
-			$this->getEntityManager()->getConnection()->commit();
+			if ($control_transaccion){
+				$this->getEntityManager()->getConnection()->commit();
+			}//end if
 			return $result;
 			
 		} catch (Exception $e) {
-			$this->getEntityManager()->getConnection()->rollback();
-			$this->getEntityManager()->close();
+			if ($control_transaccion){
+				$this->getEntityManager()->getConnection()->rollback();
+				$this->getEntityManager()->close();				
+			}//end if
 			throw $e;
 		}			
 	}//end function addItem

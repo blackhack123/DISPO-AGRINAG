@@ -360,7 +360,7 @@ class DispoBO extends Conexion
 	 * @param string $grado_id
 	 * @return multitype:Ambigous <\Dispo\Data\GrupoPrecioDetData, NULL> multitype:
 	 */
-	public function consultarPrecioOfertaPorCliente ($cliente_id, $variedad_id, $grado_id)
+	public function consultarPrecioOfertaPorCliente ($cliente_id, $usuario_id, $marcacion_sec, $variedad_id, $grado_id)
 	{
 		$GrupoPrecioDetDAO			= new GrupoPrecioDetDAO();
 		$GrupoPrecioOfertaDAO		= new GrupoPrecioOfertaDAO();
@@ -371,11 +371,65 @@ class DispoBO extends Conexion
 		
 		//AQUI SE DEBE DE CONSULTAR LA GET DISPO PERO PARA ESTE REGISTRO ESPECIFICO Y REPLICAR EL FUNCIONAMIENTO DE LA GRILLA
 		$reg_grupo_precio_det	= $GrupoPrecioDetDAO->consultarPorClienteIdPorVariedadIdPorGradoId($cliente_id, $variedad_id, $grado_id);
-		$result_precio_oferta 	= $GrupoPrecioOfertaDAO->consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($reg_grupo_precio_det['grupo_precio_cab_id'],
-														$variedad_id, $grado_id);
 
-		return array($reg_grupo_precio_det, $result_precio_oferta);
+		$tipo_caja_id = null;  //No se especifica el tipo de caja
+		$dispo_precio_oferta = $this->getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id);
+
+		//Obtiene el registro de la carne (Registro Cabecera)		
+		/*$rs_precio_oferta 	= $GrupoPrecioOfertaDAO->consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($reg_grupo_precio_det['grupo_precio_cab_id'],
+														$variedad_id, $grado_id);
 		
-	}//end function consultarPrecio
+		return array($dispo_precio_oferta, $rs_precio_oferta);
+		*/
+		return $dispo_precio_oferta;
+	}//end function consultarPrecioOfertaPorCliente
+	
+	
+	
+	
+	
+	public function consultarPrecioOfertaPorClienteHueso ($cliente_id, $usuario_id, $marcacion_sec, $oferta_variedad_id, $oferta_grado_id, $oferta_tipo_caja_id, $oferta_nro_caja)
+	{
+		$GrupoPrecioDetDAO			= new GrupoPrecioDetDAO();
+		$GrupoPrecioOfertaDAO		= new GrupoPrecioOfertaDAO();
+	
+		$GrupoPrecioDetDAO->setEntityManager			($this->getEntityManager());
+		$GrupoPrecioOfertaDAO->setEntityManager			($this->getEntityManager());
+	
+	
+		//Nos permite identificar el grupo_precio_cab_id en que se encuentra el cliente para poder saber con que precio va a trabajar
+		$reg_grupo_precio_det	= $GrupoPrecioDetDAO->consultarPorClienteIdPorVariedadIdPorGradoId($cliente_id, $oferta_variedad_id, $oferta_grado_id);
+			
+		//Se obtiene los registros HUESO (EL COMBO), de acuerdo a la CARNE 
+		$rs_precio_oferta 	= $GrupoPrecioOfertaDAO->consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($reg_grupo_precio_det['grupo_precio_cab_id'], $oferta_variedad_id, $oferta_grado_id);
+
+		//Se pregunta registro por registro la disponibilidad y la conversion de las cajas
+		$result_hueso = null;
+		foreach($rs_precio_oferta as $reg_precio_oferta)
+		{
+			$rs_dispo_precio_oferta = $this->getDispo($cliente_id, $usuario_id, $marcacion_sec, $oferta_tipo_caja_id, $reg_precio_oferta['variedad_combo_id'], $reg_precio_oferta['grado_combo_id']);			
+			if ($rs_dispo_precio_oferta) {
+				$reg_dispo_precio_oferta = $rs_dispo_precio_oferta['result_dispo'][0];
+				
+				$hueso_cajas_minima = $reg_precio_oferta['factor_combo'] *  $oferta_nro_caja;
+				
+				if ($reg_dispo_precio_oferta['nro_cajas'] >=  $hueso_cajas_minima)
+				{
+					$reg_hueso = array();
+					$reg_hueso['variedad_id'] 			= $reg_dispo_precio_oferta['variedad_id'];
+					$reg_hueso['variedad_nombre'] 		= $reg_dispo_precio_oferta['variedad_nombre'];
+					$reg_hueso['grado_id'] 				= $reg_dispo_precio_oferta['grado_id'];
+					$reg_hueso['tipo_caja_id'] 			= $reg_dispo_precio_oferta['tipo_caja_id'];
+					$reg_hueso['precio'] 				= $reg_dispo_precio_oferta['precio'];
+					$reg_hueso['nro_cajas'] 			= $reg_dispo_precio_oferta['nro_cajas'];
+					$reg_hueso['nro_cajas_requeridas'] 	= $hueso_cajas_minima;
+
+					$result_hueso[] = $reg_hueso;
+				}//end if
+			}//end if			
+		}//end foreach	
+		
+		return $result_hueso;
+	}//end function consultarPrecioOfertaPorClienteHueso	
 	
 }//end class DispoBO

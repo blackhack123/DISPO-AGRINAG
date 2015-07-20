@@ -27,7 +27,7 @@ class PedidoController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$PedidoBO				= new PedidoBO();
 			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-				
+
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 
@@ -42,7 +42,18 @@ class PedidoController extends AbstractActionController
 			$grado_id			= $json['grado_id'];
 			$tipo_caja_id		= $json['tipo_caja_id'];
 			$cantidad_order		= $json['cantidad_order'];
+			$flag_oferta		= false;
 			
+			//Se obtiene la bandera de oferta y el hueso
+			if ($json['hueso_variedad_id'])
+			{
+				$flag_oferta = true;
+				$hueso_variedad_id		= $json['hueso_variedad_id'];
+				$hueso_grado_id			= $json['hueso_grado_id'];
+				$hueso_tipo_caja_id		= $json['hueso_tipo_caja_id'];
+				$hueso_cantidad_order	= $json['hueso_cantidad_order'];
+			}//end if
+
 			//Se verifica que el pedido_cab_id sea valido en la base de datos, en caso de no serlo se inicializa a CERO
 			$reg_cabecera =  $PedidoBO->consultarPedidoCabecera($pedido_cab_id);
 			if (empty($reg_cabecera))
@@ -52,8 +63,15 @@ class PedidoController extends AbstractActionController
 			}//end if
 
 			//Se invoca la llamada
-			$result = $PedidoBO->addItem($pedido_cab_id, $cliente_id, $usuario_id, $vendedor_usuario_id, $marcacion_sec, $agencia_carga_id, $variedad_id, $grado_id, $tipo_caja_id, $cantidad_order);
-			
+			if ($flag_oferta == false)
+			{
+				$result = $PedidoBO->addItem($pedido_cab_id, $cliente_id, $usuario_id, $vendedor_usuario_id, $marcacion_sec, $agencia_carga_id, $variedad_id, $grado_id, $tipo_caja_id, $cantidad_order);
+			}else{
+				list($result, $result_hueso) = $PedidoBO->addItemOferta($pedido_cab_id, $cliente_id, $usuario_id, $vendedor_usuario_id, $marcacion_sec, $agencia_carga_id,
+																		$variedad_id, $grado_id, $tipo_caja_id, $cantidad_order,
+																		$hueso_variedad_id, $hueso_grado_id, $hueso_tipo_caja_id, $hueso_cantidad_order);
+			}//end if
+
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';						  //Se forza a responder OK, para que pueda ir por el evento finish de la LIBRERIA AJAX
 			$response->respuesta_codex 		= $result['respuesta_code'];  //Se utiliza esta variable para no lo controle la LIBRERIA AJAX LAS NOVEDADES 
@@ -553,6 +571,7 @@ class PedidoController extends AbstractActionController
 			return $response;
 		}
 	}//end function actualizarnrocajasAction
+	
 	
 	
 }//end controller

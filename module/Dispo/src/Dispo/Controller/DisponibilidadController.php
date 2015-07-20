@@ -226,6 +226,74 @@ class DisponibilidadController extends AbstractActionController
 
 	
 	
+	public function getcajasAction()
+	{
+		try
+		{
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+				
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+				
+			$DispoBO				= new DispoBO();
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);			
+			$tipo_caja_id		= $json['tipo_caja_id'];
+			$variedad_id		= $json['variedad_id'];
+			$grado_id			= $json['grado_id'];
+				
+			//Se pregunta si se ha seleccionado una marcacion y una agencia, caso contrario lo rutea
+			//para obligarlo a seleccionar
+			$marcacion_id	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
+			$agencia_id		= $SesionUsuarioPlugin->getClienteSeleccionAgenciaId();
+
+			//Se consulta la dispo, considerando los criterios de busqueda
+			$cliente_id 	= $SesionUsuarioPlugin->getUserClienteId();
+			$usuario_id 	= $SesionUsuarioPlugin->getClienteUsuarioId();
+			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
+
+			$cbo_nro_caja		= "";
+			$nro_cajas			= 0;			
+			$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id);
+
+			if($result)
+			{
+				$result_dispo = $result['result_dispo'][0];
+				if ($result_dispo)
+				{
+					$arr_cajas = array();
+					for($i=1; $i<=$result_dispo['nro_cajas'];$i++) $arr_cajas[$i]=$i;
+					
+					$cbo_nro_caja		= \Application\Classes\Combo::getComboDataArray($arr_cajas, 1, "");	
+					$nro_cajas			= $result_dispo['nro_cajas'];
+				}///end if	
+			}//end function 
+			
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje    = $result['respuesta_msg'];
+			$response->respuesta_codex		= $result['respuesta_code'];
+			$response->cbo_nro_caja			= $cbo_nro_caja;
+			$response->nro_cajas			= $nro_cajas;
+
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function getcajasAction
+	
+	
+	
+
+	
 	
 	public function getcomboMarcacionAgenciacargaAction()
 	{
@@ -253,7 +321,7 @@ class DisponibilidadController extends AbstractActionController
 		
 			$marcacion_opciones 	= $MarcacionBO->getComboPorClienteId($cliente_id, $marcacion_sec, $marcacion_texto_primer_elemento);
 			$agenciacarga_opciones 	= $AgenciaCargaBO->getComboTodos($agencia_carga_id, $agenciacarga_texto_primer_elemento);	
-		
+
 			$response = new \stdClass();
 			$response->marcacion_opciones				= $marcacion_opciones;
 			$response->agenciacarga_opciones			= $agenciacarga_opciones;			
@@ -296,16 +364,21 @@ class DisponibilidadController extends AbstractActionController
 
 			$variedad_id		= $json['variedad_id'];
 			$grado_id			= $json['grado_id'];
+			//$tipo_caja_id		= $json['tipo_caja_id'];  //Envia el tipo de caja con que el cliente ha seleccionado en la grilla de dispo
 			$cliente_id 		= $SesionUsuarioPlugin->getUserClienteId();
 			$cliente_usuario_id	= $SesionUsuarioPlugin->getClienteUsuarioId();
+			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();			
 
 			//Consulta el cliente para saber con que precio especial debe de trabajar
-			list($reg_grupo_precio_det, $rs_precio_oferta) 	= $DispoBO->consultarPrecioOfertaPorCliente($cliente_id, $variedad_id, $grado_id); 
+			$dispo_precio_oferta = $DispoBO->consultarPrecioOfertaPorCliente($cliente_id, $cliente_usuario_id, $marcacion_sec, $variedad_id, $grado_id); 
+			$reg_dispo_precio_oferta = null;
+			if ($dispo_precio_oferta) {
+				$reg_dispo_precio_oferta = $dispo_precio_oferta['result_dispo'][0];
+			}
 
 			//Asigna las variables a la vista
-			echo("<pre>");var_dump($rs_precio_oferta);echo("</pre>");exit();
-			$viewModel->reg_grupo_precio_det		= $reg_grupo_precio_det;
-			$viewModel->rs_precio_oferta			= $rs_precio_oferta;
+			//echo("<pre>");var_dump($rs_precio_oferta);echo("</pre>");exit();
+			$viewModel->reg_dispo_precio_oferta		= $reg_dispo_precio_oferta;
 
 			$viewModel->setTemplate('dispo/disponibilidad/oferta_variedad.phtml');
 			$viewModel->setTerminal(true);
@@ -330,5 +403,57 @@ class DisponibilidadController extends AbstractActionController
 			return $response;
 		}		
 	}//end function consultarofertahtmlAction
+
 	
+	
+	//MORONITOR PILAS CON ESTO
+	public function getcajasofertasAction()
+	{
+		try
+		{
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+	
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+	
+			$DispoBO				= new DispoBO();
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$oferta_tipo_caja_id		= $json['oferta_tipo_caja_id'];
+			$oferta_variedad_id			= $json['oferta_variedad_id'];
+			$oferta_grado_id			= $json['oferta_grado_id'];
+			$oferta_nro_caja			= $json['oferta_nro_caja'];
+	
+			//Se pregunta si se ha seleccionado una marcacion y una agencia, caso contrario lo rutea
+			//para obligarlo a seleccionar
+			$marcacion_id	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
+			$agencia_id		= $SesionUsuarioPlugin->getClienteSeleccionAgenciaId();
+	
+			//Se consulta la dispo, considerando los criterios de busqueda
+			$cliente_id 		= $SesionUsuarioPlugin->getUserClienteId();
+			$cliente_usuario_id = $SesionUsuarioPlugin->getClienteUsuarioId();
+			$marcacion_sec		= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
+			
+			$result_hueso = $DispoBO->consultarPrecioOfertaPorClienteHueso($cliente_id, $cliente_usuario_id, $marcacion_sec, $oferta_variedad_id, $oferta_grado_id, $oferta_tipo_caja_id, $oferta_nro_caja);
+	
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje    = '';  //$result['respuesta_msg'];
+			$response->respuesta_codex		= 'OK'; //$result['respuesta_code'];
+			$response->result				= $result_hueso;
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+	
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function getcajasofertaAction
+		
 }

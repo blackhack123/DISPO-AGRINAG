@@ -171,7 +171,7 @@ class PedidoCabDAO extends Conexion
 
 					return $PedidoCabData;
 					break;
-					
+
 				case \Application\Constants\ResultType::MATRIZ:
 					return $row;
 			}//end switch

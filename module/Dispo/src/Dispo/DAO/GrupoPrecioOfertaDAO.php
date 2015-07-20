@@ -123,12 +123,17 @@ class GrupoPrecioOfertaDAO extends Conexion
 	 */
 	public function consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($grupo_precio_cab_id, $variedad_id, $grado_id)
 	{
-		$sql = 	' SELECT grupo_precio_oferta.*, variedad.nombre as variedad_combo_nombre '.
-				' FROM grupo_precio_oferta INNER JOIN variedad '.
-				'								   ON variedad.id = grupo_precio_oferta.variedad_id '.
-				' WHERE grupo_precio_cab 	= :grupo_precio_cab_id '.
-				'   and variedad_id			= :variedad_id'.
-				'   and grado_id			= :grado_id';
+		$sql = 	' SELECT grupo_precio_oferta.*, variedad.nombre as variedad_combo_nombre, grupo_precio_det.precio as precio_combo '.
+				' FROM grupo_precio_oferta INNER JOIN grupo_precio_det '.
+				'							       ON grupo_precio_det.grupo_precio_cab_id 		= grupo_precio_oferta.grupo_precio_cab_id '.
+				'								  AND grupo_precio_det.variedad_id				= grupo_precio_oferta.variedad_combo_id  '.
+				'								  AND grupo_precio_det.grado_id					= grupo_precio_oferta.grado_combo_id  '.
+				'						   INNER JOIN variedad '.
+				'								   ON variedad.id = grupo_precio_det.variedad_id '.
+				' WHERE grupo_precio_oferta.grupo_precio_cab_id	= :grupo_precio_cab_id '.
+				'   and grupo_precio_oferta.variedad_id			= :variedad_id'.
+				'   and grupo_precio_oferta.grado_id			= :grado_id'.
+				' ORDER BY variedad.nombre, grupo_precio_oferta.grado_combo_id ';
 		
 		
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
@@ -139,5 +144,8 @@ class GrupoPrecioOfertaDAO extends Conexion
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
 		return $result;
 	}//end function consultarPorGrupoPrecioCabPorVariedadIdPorGradoId
+	
+	
+
 }//end class
 ?>

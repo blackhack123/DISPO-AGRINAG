@@ -2,6 +2,7 @@
 
 
 <script>
+	var ajax_process_dispo_det_cajas = null;
 
 	$(document).ready(function () {
         $(".btn_add_order").on('click', function(event){ 
@@ -14,10 +15,69 @@
         	mostrar_oferta_dispo($(this));
 			return true;
         });
-        
+
+        $("body").on('change', '.cbo_tipo_caja_detalle', function(event){
+        	consultar_nro_cajas($(this));
+			return true;
+        });        
 	});//$(document).ready
 
 
+	function consultar_nro_cajas(obj)
+	{		
+		var tr 				= obj.closest('tr');
+		var id_tr			= tr.attr('id');
+		var variedad_id 	= tr.attr('variedad_id');
+		var grado_id		= tr.attr('grado_id');
+		var tipo_caja_id	= $('#'+id_tr+'_tipo_caja_id').val(); 	
+
+		//Se inicializa la cantidad de cajas y el combo de seleccion de cajas
+		 $('#'+id_tr+'_cantidad_order').html('');
+		 $('#'+id_tr+'_stock').html('loading..');
+		 		
+		var data = 	{	variedad_id: variedad_id,
+						grado_id: grado_id,
+						tipo_caja_id: tipo_caja_id,
+					}
+
+		data = JSON.stringify(data);
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/disponibilidad/getcajas',
+							'control_process':true,
+							'show_cargando':false,
+							'finish':function(response){
+									if (response.respuesta_codex=='OK'){
+										//Se muestra el cuadro de informacion que se cargo una orden
+										//Se inicializa la cantidad de cajas y el combo de seleccion de cajas
+										 $('#'+id_tr+'_cantidad_order').html(response.cbo_nro_caja);
+										 $('#'+id_tr+'_stock').html(response.nro_cajas);				
+										 if (response.nro_cajas==0)
+										 {
+											 $('#'+id_tr+'_cantidad_order').hide();
+											 $('#'+id_tr+'_add').hide();
+										 }else{
+											 $('#'+id_tr+'_cantidad_order').show();
+											 $('#'+id_tr+'_add').show();
+										 }	
+									}else{
+										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
+											type: "error",
+											html: false,
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											showConfirmButton: true,
+											});
+									}//end if
+									//console.log('termina add order');
+									cargador_visibility('hide');
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;		
+	}//end function consultarDispoPorCaja
+
+	
 	function add_order(obj)
 	{
 		cargador_visibility('show');		
@@ -77,6 +137,9 @@
 		var id_tr			= tr.attr('id');
 		var variedad_id 	= tr.attr('variedad_id');
 		var grado_id		= tr.attr('grado_id');
+
+
+		$("#dialog_oferta_variedad_nombre").val($("#variedad_nombre").html());
 
 		//Se llama mediante AJAX para llamar la oferta que tiene la variedad
 		var data = 	{	variedad_id: variedad_id,
@@ -219,8 +282,8 @@
 			}//end foreach
 ?>
 	                    <tr id="<?php echo($ind); ?>" variedad_id="<?php echo($reg['variedad_id']); ?>" grado_id="<?php echo($grado_id); ?>">                                
-	                        <td width="300" class="variedad">
-	                            <?php echo($reg['variedad_nombre']); ?>
+	                        <td width="300">
+	                            <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span>
 
 								<?php if (!empty($reg['precio_oferta'])){ ?>
 		                            <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange;">
@@ -254,18 +317,14 @@
 	                            <?php echo($precio_110); ?>
 	                        </td>
 	                        <td width="90">
-	                            <!-- select class="form-control select-class" ng-model="items.tob" 
-	                            ng-init="items.tob='HB'" ng-change="ctrl.cantidad_cajas($index,items.tob,items.variedad_id,items.grado_id)"
-	                            ng-options="caja for caja in items.cajas">
-	                            </select -->
-	                            <select class="form-control select-class" id="<?php echo($ind); ?>_tipo_caja_id"><?php echo($options_cbo_caja); ?></select>                            
+	                            <select class="form-control select-class cbo_tipo_caja_detalle" id="<?php echo($ind); ?>_tipo_caja_id"><?php echo($options_cbo_caja); ?></select>                            
 	                        </td>
 	                        <td width="70">
-	                        	<?php echo($reg['nro_cajas']); ?>
+	                        	<span id="<?php echo($ind); ?>_stock"><?php echo($reg['nro_cajas']); ?></span>
 	                        </td>
 	                        <td width="180">
-	                        	<select class="form-control select-class" id="<?php echo($ind); ?>_cantidad_order""><?php echo($options_cbo_order); ?></select>
-	                        	<div class="btn_add_order btn btn-xs btn-success" indice="<?php echo($ind); ?>">
+	                        	<select class="form-control select-class" id="<?php echo($ind); ?>_cantidad_order"><?php echo($options_cbo_order); ?></select>
+	                        	<div id="<?php echo($ind); ?>_add" class="btn_add_order btn btn-xs btn-success pull-right" indice="<?php echo($ind); ?>">
 	                                <span class="glyphicon glyphicon-plus-sign"></span> Add
 	                            </div>
 	                            </a>
@@ -291,7 +350,6 @@
 			      </div>
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
-			        	SIMON LIMON
 						<div id="dialog_oferta_formulario"></div>			
 			        </div>
 			      </div>
