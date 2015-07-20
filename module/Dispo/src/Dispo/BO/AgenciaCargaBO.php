@@ -3,6 +3,8 @@
 namespace Dispo\BO;
 
 use Application\Classes\Conexion;
+use Doctrine\ORM\EntityManager;
+use Zend\View\Model\JsonModel;
 use Dispo\DAO\AgenciaCargaDAO;
 use Dispo\Data\AgenciaCargaData;
 
@@ -115,7 +117,7 @@ class AgenciaCargaBO extends Conexion
 	
 	
 	/**
-	 * Ingresar
+	 * Modificar
 	 * 
 	 * @param AgenciaCargaData $AgenciaCargaData
 	 * @return array
@@ -127,12 +129,17 @@ class AgenciaCargaBO extends Conexion
 		{
 			$AgenciaCargaDAO = new AgenciaCargaDAO();
 			$AgenciaCargaDAO->setEntityManager($this->getEntityManager());
-			$AgenciaCargaData2 = $AgenciaCargaDAO->consultar($AgenciaCargaData->getId());
-			if (empty($AgenciaCargaData2))
+			//$AgenciaCargaData2 = $AgenciaCargaDAO->consultar($AgenciaCargaData->getId());
+			$result = $AgenciaCargaDAO->consultarDuplicado('M',$AgenciaCargaData->getId(), $AgenciaCargaData->getNombre());
+			$id=		$AgenciaCargaData->getId();
+			$nombre=	$AgenciaCargaData->getNombre();
+			if (!empty($result))
 			{
+				
 				$result['validacion_code'] 	= 'NO-EXISTS';
-				$result['respuesta_mensaje']= 'El registro no existe, no puede ser moficado!!';
+				$result['respuesta_mensaje']= 'El registro  existe, no puede ser moficado!!';
 			}else{
+				
 				$id = $AgenciaCargaDAO->modificar($AgenciaCargaData);
 				$result['validacion_code'] 	= 'OK';
 				$result['respuesta_mensaje']= '';

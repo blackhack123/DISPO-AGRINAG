@@ -5,43 +5,44 @@ namespace Dispo\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
-use Zend\View\Model\JsonModel;
 use Dispo\BO\MarcacionBO;
-use Dispo\BO\AgenciaCargaBO;
-use Dispo\Data\AgenciaCargaData;
+use Zend\View\Model\JsonModel;
+use Dispo\BO\VariedadBO;
+use Dispo\BO\ColoresBO;
+use Dispo\Data\VariedadData;
 
 
-class AgenciacargaController extends AbstractActionController
+class VariedadController extends AbstractActionController
 {
 
+	
 	public function getcomboAction()
 	{
 		try
 		{
 			$EntityManagerPlugin = $this->EntityManagerPlugin();
-			
-			$AgenciaCargaBO = new AgenciaCargaBO();
-			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-
+				
+			$VariedadBO = new VariedadBO();
+			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->isLoginClienteVendedor();
-
+			$SesionUsuarioPlugin->isLogin();
+	
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
-			//var_dump($json); exit;			
+			//var_dump($json); exit;
 			$texto_primer_elemento		= $json['texto_primer_elemento'];
-			$cliente_id = $SesionUsuarioPlugin->getUserClienteId();
-			$agencia_carga_id = null;
-
-			$opciones = $AgenciaCargaBO->getComboTodos($agencia_carga_id, $texto_primer_elemento);
-
+			$variedad_id = null;
+	
+			$opciones = $VariedadBO->getComboTodos($variedad_id, $texto_primer_elemento);
+	
 			$response = new \stdClass();
 			$response->opciones				= $opciones;
 			$response->respuesta_code 		= 'OK';
-
+	
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
-		
+	
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
@@ -49,9 +50,11 @@ class AgenciacargaController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function getcomboAction	
-
+	}//end function getcomboAction
 	
+	
+	
+
 	
 	public function mantenimientoAction()
 	{
@@ -65,24 +68,24 @@ class AgenciacargaController extends AbstractActionController
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 			$respuesta =  $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
-		
-			$AgenciaCargaBO				= new AgenciaCargaBO();
-			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-		
+			
+			$VariedadBO				= new VariedadBO();
+			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
 			$condiciones['criterio_busqueda']		= $this->params()->fromPost('criterio_busqueda','');
 			$condiciones['estado']					= $this->params()->fromPost('busqueda_estado','');
-			$condiciones['sincronizado']			= $this->params()->fromPost('busqueda_sincronizado','');			
-
-			$result 		= $AgenciaCargaBO->listado($condiciones);
+			$condiciones['sincronizado']			= $this->params()->fromPost('busqueda_sincronizado','');
+				
+		
+			$result 		= $VariedadBO->listado($condiciones);
 			
-			$viewModel->criterio_busqueda	= $condiciones['criterio_busqueda'];
+			$viewModel->criterio_busqueda			= $condiciones['criterio_busqueda'];
 			$viewModel->busqueda_estado				=  \Application\Classes\ComboGeneral::getComboEstado($condiciones['estado'],"&lt;ESTADO&gt;");
 			$viewModel->busqueda_sincronizado		= \Application\Classes\ComboGeneral::getComboSincronizado($condiciones['sincronizado'],"&lt;SINCRONIZADO&gt;");
 			$viewModel->result				= $result;
 			$this->layout($SesionUsuarioPlugin->getUserLayout());
-			$viewModel->setTemplate('dispo/agencia_carga/mantenimiento.phtml');
-			return $viewModel;			
-			
+			$viewModel->setTemplate('dispo/variedad/mantenimiento.phtml');
+			return $viewModel;	
 		
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
@@ -92,7 +95,6 @@ class AgenciacargaController extends AbstractActionController
 			return $response;
 		}
 	}//end function 
-	
 
 	
 	
@@ -103,14 +105,17 @@ class AgenciacargaController extends AbstractActionController
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 		
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
-			$AgenciaCargaBO 				= new AgenciaCargaBO();
-			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-		
+			$VariedadBO 			= new VariedadBO();
+			$ColoresBO				= new ColoresBO();
+			
+			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 
+			$colorbase = null;
 			$response = new \stdClass();
-			$response->cbo_tipo				= $AgenciaCargaBO->getComboTipo("", " ");
+			$response->cbo_color_base		= $ColoresBO->getComboTodos($colorbase, $texto_primer_elemento);
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
@@ -128,47 +133,8 @@ class AgenciacargaController extends AbstractActionController
 	}//end function nuevodataAction
 	
 	
-	
-	public function consultardataAction()
-	{
-		try
-		{
-			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
-			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
-			$AgenciaCargaBO 				= new AgenciaCargaBO();
-			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
-			if ($respuesta==false) return false;
 
-			$body = $this->getRequest()->getContent();
-			$json = json_decode($body, true);
-			$agencia_carga_id		= $json['agencia_carga_id'];
-
-			$row					= $AgenciaCargaBO->consultar($agencia_carga_id, \Application\Constants\ResultType::MATRIZ);
-
-			$response = new \stdClass();
-			$response->row					= $row;
-			$response->cbo_tipo				= $AgenciaCargaBO->getComboTipo($row['tipo'], " ");
-			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
-			$response->respuesta_code 		= 'OK';
-			$response->respuesta_mensaje	= '';
-
-			$json = new JsonModel(get_object_vars($response));
-			return $json;
-			//false
-		}catch (\Exception $e) {
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;
-		}		
-	}//end function consultarAction
-	
-	
-
-	
-	public function grabardataAction()
+		public function grabardataAction()
 	{
 		try
 		{
@@ -176,9 +142,9 @@ class AgenciacargaController extends AbstractActionController
 			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
 	
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
-			$AgenciaCargaData		= new AgenciaCargaData();
-			$AgenciaCargaBO 		= new AgenciaCargaBO();
-			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$VariedadData		= new VariedadData();
+			$VariedadBO 		= new VariedadBO();
+			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
@@ -186,24 +152,21 @@ class AgenciacargaController extends AbstractActionController
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 			$accion						= $json['accion'];  //I, M
-			$AgenciaCargaData->setId		($json['id']); 
-			$AgenciaCargaData->setNombre	($json['nombre']);
-			$AgenciaCargaData->setDireccion	($json['direccion']);
-			$AgenciaCargaData->setTelefono	($json['telefono']);
-			$AgenciaCargaData->setTipo		($json['tipo']);
-			$AgenciaCargaData->setEstado	($json['estado']);
-
+			$VariedadData->setId		($json['id']); 
+			$VariedadData->setNombre	($json['nombre']);
+			$VariedadData->setColorBase	($json['colorbase']);
+			$VariedadData->setEstado	($json['estado']);
 			$response = new \stdClass();
 			switch ($accion)
 			{
 				case 'I':
-					$AgenciaCargaData->setUsuarioIngId($usuario_id);
-					$result = $AgenciaCargaBO->ingresar($AgenciaCargaData);
+					$VariedadData->setUsuarioIngId($usuario_id);
+					$result = $VariedadBO->ingresar($VariedadData);
 					break;
 					
 				case 'M':
-					$AgenciaCargaData->setUsuarioModId($usuario_id);
-					$result = $AgenciaCargaBO->modificar($AgenciaCargaData);					
+					$VariedadData->setUsuarioModId($usuario_id);
+					$result = $VariedadBO->modificar($VariedadData);					
 					break;
 					
 				default:
@@ -215,7 +178,7 @@ class AgenciacargaController extends AbstractActionController
 			//Se consulta el registro siempre y cuando el validacion_code sea OK
 			if ($result['validacion_code']=='OK')
 			{
-				$row	= $AgenciaCargaBO->consultar($json['id'], \Application\Constants\ResultType::MATRIZ);
+				$row	= $VariedadBO->consultar($json['id'], \Application\Constants\ResultType::MATRIZ);
 			}else{
 				$row	= null;				
 			}//end if
@@ -228,7 +191,7 @@ class AgenciacargaController extends AbstractActionController
 			if ($row)
 			{
 				$response->row					= $row;
-				$response->cbo_tipo				= $AgenciaCargaBO->getComboTipo($row['tipo'], " ");
+				$response->cbo_tipo				= $VariedadBO->getComboTipo($row['tipo'], " ");
 				$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
 			}else{
 				$response->row					= null;
@@ -247,6 +210,42 @@ class AgenciacargaController extends AbstractActionController
 			return $response;
 		}
 	}//end function consultarAction	
+	
+
+
+	public function consultardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$VariedadBO 				= new VariedadBO();
+			$VariedadBOBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+		
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$variedad		= $json['variedad'];
+	
+			$row					= $VariedadBO->consultar($variedad, \Application\Constants\ResultType::MATRIZ);
+	
+			$response = new \stdClass();
+			$response->row					= $row;
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function consultarAction
 	
 	
 }//end controller

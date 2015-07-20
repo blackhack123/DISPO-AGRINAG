@@ -26,4 +26,3 @@ class ColoresData
 
 }//end class
 
-?>

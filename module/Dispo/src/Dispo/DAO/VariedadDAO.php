@@ -19,21 +19,23 @@ class VariedadDAO extends Conexion
 	public function ingresar(VariedadData $VariedadData)
 	{
 		$key    = array(
-				'id'						        => $VariedadData->getId(),
+				'id'						        => $VariedadData->getId()
 		);
 		$record = array(
 				'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
-				'colorbase'		                    => $VariedadData->getColorBase()
-				
-				
-		);
+				'colorbase'		                    => $VariedadData->getColorBase(),
+				'fec_ingreso'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_ing_id'	                => $VariedadData->getUsuarioIngId(),
+				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),
+				'sincronizado'	                    => 0,
+				'fec_sincronizado'                  => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+	);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
 		//$id = $this->getEntityManager()->getConnection()->lastInsertid();
-		return $id;
+		return $key;
 	}//end function ingresar
-
-
 
 	/**
 	 * Modificar
@@ -44,13 +46,18 @@ class VariedadDAO extends Conexion
 	public function modificar(VariedadData $VariedadData)
 	{
 		$key    = array(
-				'id'						        => $VariedadData->getId(),
+				'id'						        => $VariedadData->getId()
 		);
 		$record = array(
 				'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
-				'colorbase'		                    => $VariedadData->getColorBase()
-				
+				'colorbase'		                    => $VariedadData->getColorBase(),
+				'fec_ingreso'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_ing_id'	                => $VariedadData->getUsuarioIngId(),
+				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),
+				'sincronizado'	                    => 0,
+				'fec_sincronizado'                  => \Application\Classes\Fecha::getFechaHoraActualServidor()
 				
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
@@ -82,6 +89,12 @@ class VariedadDAO extends Conexion
 				$VariedadData->setId							($row['id']);				
 				$VariedadData->setNombre 						($row['nombre']);
 				$VariedadData->setColorBase 					($row['colorbase']);
+				$VariedadData->setFecIngreso 					($row['fec_ingreso']);
+				$VariedadData->setFecModifica 					($row['fec_modifica']);
+				$VariedadData->setUsuarioIngId 					($row['usuario_ing_id']);
+				$VariedadData->setUsuarioModId 					($row['usuario_mod_id']);
+				$VariedadData->setSincronizado 					($row['sincronizado']);
+				$VariedadData->setFecSincronizado				($row['fec_sincronizado']);
 			return $VariedadData;
 		}else{
 			return null;
@@ -89,7 +102,65 @@ class VariedadDAO extends Conexion
 
 	}//end function consultar
 
+	
+	/**
+	 * consultarTodos
+	 *
+	 * @return array
+	 */
+	public function consultarTodos()
+	{
+		$sql = 	' SELECT variedad.* '.
+				' FROM variedad ';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		//return new ViewModel(array(result'=>$result));
+		return $result;
+	}//end function consultarTodos
+	
+	
+	
+
+	
+	
+	public function listado($condiciones)
+	{
+		$sql = 	' SELECT * '.
+				' FROM variedad '.
+				' WHERE 1 = 1 ';
+	
+		if (!empty($condiciones['criterio_busqueda']))
+		{
+			$sql = $sql." and (nombre like '%".$condiciones['criterio_busqueda']."%'".
+					"      or id like '%".$condiciones['criterio_busqueda']."%'".
+					"      or colorbase like '%".$condiciones['criterio_busqueda']."%')";
+					
+		}//end if
+	
+		if (!empty($condiciones['estado']))
+		{
+			$sql = $sql." and estado = '".$condiciones['estado']."'";
+		}//end if 
+
+		
+		if (isset($condiciones['sincronizado']))
+		{
+			if ($condiciones['sincronizado']!='')
+			{
+				$sql = $sql." and sincronizado = ".$condiciones['sincronizado'];
+			}//end if
+		}//end if
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function listado
+	
 
 }//end class
 
-?>

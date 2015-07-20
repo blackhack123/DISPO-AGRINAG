@@ -4,6 +4,8 @@ namespace Dispo\DAO;
 use Doctrine\ORM\EntityManager,
 	Application\Classes\Conexion;
 use Dispo\Data\AgenciaCargaData;
+use Zend\View\Model\JsonModel;
+use Dispo\BO\AgenciaCargaBO;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class AgenciaCargaDAO extends Conexion 
@@ -38,8 +40,6 @@ class AgenciaCargaDAO extends Conexion
 		//$id = $this->getEntityManager()->getConnection()->lastInsertId();
 		return $key;
 	}//end function ingresar
-
-
 
 	/**
 	 * Modificar
@@ -131,6 +131,39 @@ class AgenciaCargaDAO extends Conexion
 	}//end function consultar
 
 	
+	
+	/**
+	 *
+	 * @param string $id
+	 * @param string $nombre
+	 * @return array
+	 */
+	public function consultarDuplicado($accion, $id, $nombre)
+	{
+		$sql = 	' SELECT agencia_carga.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name  '.
+				' FROM agencia_carga LEFT JOIN usuario as usuario_ing '.
+				'                           ON usuario_ing.id = agencia_carga.usuario_ing_id '.
+				'					 LEFT JOIN usuario as usuario_mod '.
+				'                           ON usuario_mod.id = agencia_carga.usuario_mod_id ';
+		switch ($accion)
+		{
+			case 'I':
+					$sql = $sql." WHERE agencia_carga.id 	 = '".$id."'".
+					            "    or agencia_carga.nombre = '".$nombre."'";
+				break;
+				
+			case 'M':
+				$sql = $sql." WHERE agencia_carga.id 	!= '".$id."'".
+						    "   and agencia_carga.nombre = '".$nombre."'";
+				break;
+		}//end switch
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		return $result;
+	}//end function consultarDuplicado
+
 
 	/**
 	 * consultarTodos

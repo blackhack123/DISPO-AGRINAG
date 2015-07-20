@@ -24,22 +24,5 @@ class IndexController extends AbstractActionController
     	return $viewModel;
     }
     
-    public function pruebaAction()
-    {
-    	/*$em = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-    	echo("paso02");
-    	exit;
-    	*/
-    	$objectManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-    	
-    	$sql = 'select * from cds';
-    	$stmt = $objectManager->getConnection()->prepare($sql);
-    	//$stmt->bindValue(':estado', $estado);
-    	$stmt->execute();
 
-    	$result = $stmt->fetchAll();
-    	var_dump($result);    	
-    	echo("paso01");
-    	exit;
-    }
 }

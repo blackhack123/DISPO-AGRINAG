@@ -22,7 +22,7 @@ class ComboGeneral {
 		return $opciones;
 	}//end function getComboEstado
 	
-	
+
 
 	/**
 	 *
