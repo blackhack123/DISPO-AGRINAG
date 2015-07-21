@@ -25,12 +25,12 @@ class VariedadDAO extends Conexion
 				'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
 				'colorbase'		                    => $VariedadData->getColorBase(),
+				'estado'		                    => $VariedadData->getEstado(),
 				'fec_ingreso'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
-				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'fec_modifica'	                    => $VariedadData->getFecModifica(),
 				'usuario_ing_id'	                => $VariedadData->getUsuarioIngId(),
 				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),
-				'sincronizado'	                    => 0,
-				'fec_sincronizado'                  => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'sincronizado'	                    => 0
 	);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
 		//$id = $this->getEntityManager()->getConnection()->lastInsertid();
@@ -52,6 +52,7 @@ class VariedadDAO extends Conexion
 				'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
 				'colorbase'		                    => $VariedadData->getColorBase(),
+				'estado'                			=> $VariedadData->getEstado(),
 				'fec_ingreso'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_ing_id'	                => $VariedadData->getUsuarioIngId(),
@@ -66,40 +67,60 @@ class VariedadDAO extends Conexion
 
 
 	/**
-	 * Consultar
-	 *
+	 * 
 	 * @param string $id
-	 * @return VariedadData|null
-	 */	
-	public function consultar($id)
+	 * @param int $resultType
+	 * @return \Dispo\Data\VariedadData|NULL|array
+	 */
+	public function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
 	{
-		$VariedadData 		    = new VariedadData();
-
-		$sql = 	' SELECT variedad.* '.
-				' FROM variedad '.
-				' WHERE variedad.id = :id ';
-
-
-		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
-		$stmt->bindValue(':id',$id);
-		$stmt->execute();
-		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
-		if($row){
-
-				$VariedadData->setId							($row['id']);				
-				$VariedadData->setNombre 						($row['nombre']);
-				$VariedadData->setColorBase 					($row['colorbase']);
-				$VariedadData->setFecIngreso 					($row['fec_ingreso']);
-				$VariedadData->setFecModifica 					($row['fec_modifica']);
-				$VariedadData->setUsuarioIngId 					($row['usuario_ing_id']);
-				$VariedadData->setUsuarioModId 					($row['usuario_mod_id']);
-				$VariedadData->setSincronizado 					($row['sincronizado']);
-				$VariedadData->setFecSincronizado				($row['fec_sincronizado']);
-			return $VariedadData;
-		}else{
-			return null;
-		}//end if
-
+		switch ($resultType)
+		{
+			case \Application\Constants\ResultType::OBJETO:
+				$VariedadData	    = new VariedadData();
+		
+				$sql = 	' SELECT variedad.* '.
+						' FROM variedad '.
+						' WHERE variedad.id = :id ';
+						
+				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+				$stmt->bindValue(':id',$id);
+				$stmt->execute();
+				$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+				if($row){
+					$VariedadData->setId							($row['id']);				
+					$VariedadData->setNombre 						($row['nombre']);
+					$VariedadData->setColorBase 					($row['colorbase']);
+					$VariedadData->setFecIngreso 					($row['fec_ingreso']);
+					$VariedadData->setFecModifica 					($row['fec_modifica']);
+					$VariedadData->setUsuarioIngId 					($row['usuario_ing_id']);
+					$VariedadData->setUsuarioModId 					($row['usuario_mod_id']);
+					$VariedadData->setSincronizado 					($row['sincronizado']);
+					$VariedadData->setFecSincronizado				($row['fec_sincronizado']);
+					return $VariedadData;
+				}else{
+					return null;
+				}//end if
+				break;
+		
+			case \Application\Constants\ResultType::MATRIZ:
+				$sql = 	' SELECT variedad.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name  '.
+						' FROM variedad LEFT JOIN usuario as usuario_ing '.
+						'                           ON usuario_ing.id = variedad.usuario_ing_id '.
+						'					 LEFT JOIN usuario as usuario_mod '.
+						'                           ON usuario_mod.id = variedad.usuario_mod_id '.
+						' WHERE variedad.id = :id ';
+		
+				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+				$stmt->bindValue(':id',$id);
+				$stmt->execute();
+				$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+				return $row;
+				break;
+		}//end switch
+		
+		
+		
 	}//end function consultar
 
 	
@@ -122,6 +143,39 @@ class VariedadDAO extends Conexion
 	}//end function consultarTodos
 	
 	
+	
+
+	/**
+	 *
+	 * @param string $id
+	 * @param string $nombre
+	 * @return array
+	 */
+	public function consultarDuplicado($accion, $id, $nombre)
+	{
+		$sql = 	' SELECT variedad.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name  '.
+				' FROM variedad LEFT JOIN usuario as usuario_ing '.
+				'                           ON usuario_ing.id = variedad.usuario_ing_id '.
+				'					 LEFT JOIN usuario as usuario_mod '.
+				'                           ON usuario_mod.id = variedad.usuario_mod_id ';
+		switch ($accion)
+		{
+			case 'I':
+				$sql = $sql." WHERE variedad.id 	 = '".$id."'".
+						"    or variedad.nombre = '".$nombre."'";
+				break;
+	
+			case 'M':
+				$sql = $sql." WHERE variedad.id 	!= '".$id."'".
+						"   and variedad.nombre = '".$nombre."'";
+				break;
+		}//end switch
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		return $result;
+	}//end function consultarDuplicado
 	
 
 	

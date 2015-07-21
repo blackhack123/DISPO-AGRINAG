@@ -18,11 +18,22 @@ class VariedadData
 	 * @var string
 	 */	
 	protected $colorbase;
+	
+	/**
+	 * @var string
+	 */
+	protected $estado;
+	
+	/**
+	 * @var string
+	 */
+	protected $fec_ingreso;
+	
 
 	/**
 	 * @var string
 	 */
-	protected $fec_modifca;
+	protected $fec_modifica;
 	
 	/**
 	 * @var string

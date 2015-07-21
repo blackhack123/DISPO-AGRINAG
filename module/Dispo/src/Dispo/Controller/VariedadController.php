@@ -15,7 +15,6 @@ use Dispo\Data\VariedadData;
 class VariedadController extends AbstractActionController
 {
 
-	
 	public function mantenimientoAction()
 	{
 		try
@@ -92,6 +91,51 @@ class VariedadController extends AbstractActionController
 	}//end function nuevodataAction
 	
 	
+	
+	
+	public function consultardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$VariedadBO 			= new VariedadBO();
+			$ColoresBO				= new ColoresBO();
+				
+			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$variedad_id		= $json['variedad_id'];
+	
+			$row					= $VariedadBO->consultar($variedad_id, \Application\Constants\ResultType::MATRIZ);
+	
+			$response = new \stdClass();
+			$response->row					= $row;
+			$response->cbo_color_base		= $ColoresBO->getCombo($row['colorbase'], "&lt;Seleccione&gt;");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function consultarAction
+	
+	
+	
 
 		public function grabardataAction()
 	{
@@ -103,8 +147,12 @@ class VariedadController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$VariedadData		= new VariedadData();
 			$VariedadBO 		= new VariedadBO();
+			$ColoresBO 			= new ColoresBO();
+			
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-	
+			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 	
@@ -138,6 +186,7 @@ class VariedadController extends AbstractActionController
 			if ($result['validacion_code']=='OK')
 			{
 				$row	= $VariedadBO->consultar($json['id'], \Application\Constants\ResultType::MATRIZ);
+			
 			}else{
 				$row	= null;				
 			}//end if
@@ -150,12 +199,12 @@ class VariedadController extends AbstractActionController
 			if ($row)
 			{
 				$response->row					= $row;
-				$response->cbo_tipo				= $VariedadBO->getComboTipo($row['tipo'], " ");
 				$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+				$response->cbo_color_base		= $ColoresBO->getCombo($row['colorbase'], "&lt;Seleccione&gt;");
 			}else{
 				$response->row					= null;
-				$response->cbo_tipo				= '';
-				$response->cbo_estado			= '';				
+				$response->cbo_estado			= '';		
+				$response->cbo_color_base		= '';
 			}//end if
 	
 			$json = new JsonModel(get_object_vars($response));
@@ -169,46 +218,6 @@ class VariedadController extends AbstractActionController
 			return $response;
 		}
 	}//end function consultarAction	
-	
-
-
-	public function consultardataAction()
-	{
-		try
-		{
-			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
-	
-			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
-			$VariedadBO 			= new VariedadBO();
-			$ColoresBO				= new ColoresBO();
-			
-			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-	
-			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
-		
-	
-			$body = $this->getRequest()->getContent();
-			$json = json_decode($body, true);
-			$variedad		= $json['variedad'];
-	
-			$row					= $VariedadBO->consultar($variedad, \Application\Constants\ResultType::MATRIZ);
-				
-			$response = new \stdClass();
-			$response->row					= $row;
-			$response->cbo_color_base		= $ColoresBO->getCombo($row['colobase'], "&lt;Seleccione&gt;");
-	
-			$json = new JsonModel(get_object_vars($response));
-			return $json;
-			//false
-		}catch (\Exception $e) {
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;
-		}
-	}//end function consultarAction
 	
 	
 }//end controller

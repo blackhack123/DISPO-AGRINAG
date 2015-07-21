@@ -199,6 +199,7 @@
 			}//end if
 		}//end if
 	}//end function mostrar_registro
+	
 </script>
 
 <div class="title-admin-section">
@@ -249,8 +250,12 @@
 		foreach($this->result as $reg)
 		{
 			$i++;
+			$class_row = '';
+			if ($reg['estado']=='I'){
+				$class_row = 'row_estado_inactivo';
+			}
 ?>            
-				<tr agencia_carga_id="<?php echo($reg['id']); ?>">
+				<tr agencia_carga_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
 				  <td><?php echo($i); ?></td>
 					<td><?php echo($reg['id']); ?></td>
 					<td align="left"><?php echo($reg['nombre']); ?></td>

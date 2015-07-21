@@ -31,7 +31,7 @@ class AgenciaCargaDAO extends Conexion
 				'tipo'                				=> $AgenciaCargaData->getTipo(),
 				'estado'                			=> $AgenciaCargaData->getEstado(),
 				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
-				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'fec_modifica'                		=> $AgenciaCargaData->getFecModifica(),
 				'usuario_ing_id'                	=> $AgenciaCargaData->getUsuarioIngId(),
 				'usuario_mod_id'                	=> $AgenciaCargaData->getUsuarioIngId(),
 				'sincronizado'                		=> 0
@@ -41,6 +41,8 @@ class AgenciaCargaDAO extends Conexion
 		return $key;
 	}//end function ingresar
 
+	
+	
 	/**
 	 * Modificar
 	 *

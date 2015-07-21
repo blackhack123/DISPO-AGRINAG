@@ -67,6 +67,63 @@ class VariedadBO extends Conexion
 	}//end function ingresar
 	
 	
+	
+	/**
+	 * Modificar
+	 *
+	 * @param VariedadData $VariedadData
+	 * @return array
+	 */
+	function modificar(VariedadData $VariedadData)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try
+		{
+			$VariedadDAO = new VariedadDAO();
+			$VariedadDAO->setEntityManager($this->getEntityManager());
+			//$AgenciaCargaData2 = $AgenciaCargaDAO->consultar($AgenciaCargaData->getId());
+			$result = $VariedadDAO->consultarDuplicado('M',$VariedadData->getId(), $VariedadData->getNombre());
+			$id=		$VariedadData->getId();
+			$nombre=	$VariedadData->getNombre();
+			if (!empty($result))
+			{
+	
+				$result['validacion_code'] 	= 'NO-EXISTS';
+				$result['respuesta_mensaje']= 'El registro  existe, no puede ser moficado!!';
+			}else{
+	
+				$id = $VariedadDAO->modificar($VariedadData);
+				$result['validacion_code'] 	= 'OK';
+				$result['respuesta_mensaje']= '';
+			}//end if
+	
+			$this->getEntityManager()->getConnection()->commit();
+			return $result;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function ingresar
+	
+	
+	
+	/**
+	 * Consultar
+	 *
+	 * @param string $id
+	 * @param int $resultType
+	 * @return Ambigous <\Dispo\Data\AgenciaCargaData, NULL, array>
+	 */
+	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$VariedadDAO = new VariedadDAO();
+		$VariedadDAO->setEntityManager($this->getEntityManager());
+		$reg = $VariedadDAO->consultar($id, $resultType);
+		return $reg;
+	}//end function consultar
+	
+	
 	/**
 	 *
 	 * 

@@ -29,7 +29,16 @@ $(document).ready(function () {
 		consultar_variedad(variedad_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });
+
 	
+    $("#tbl_registros tbody tr").on('dblclick', function(event){ 
+		var tr 						= $(this).closest('tr');
+		var variedad_id 		= tr.attr('variedad_id');
+
+		consultar_variedad(variedad_id);
+		//$("#dialog_mantenimiento").modal('show') 
+    });	
+
 	
     $("#tbl_registros tbody tr").on('dblclick', function(event){ 
 		var tr 						= $(this).closest('tr');
@@ -95,7 +104,7 @@ $(document).ready(function () {
 		var data = 	{	accion: $("#accion").val(),
 					 	id: $("#variedad_id").val(),
 					 	nombre: $("#nombre").val(),
-					 	base: $("#base").val(),
+					 	colorbase: $("#colorbase").val(),
 					 	estado: $("#estado").val(),
 					}
 		console.log(data);
@@ -144,8 +153,67 @@ $(document).ready(function () {
 		response = ajax_call(parameters, data);		
 		return false;		
 	}//end function grabar
-	
 
+
+
+	function consultar_variedad(id)
+	{
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{variedad_id: id}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/variedad/consultardata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									mostrar_registro(response)
+									cargador_visibility('hide');
+
+									$("#dialog_mantenimiento").modal('show')
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;		
+	}//end function consultar_variedad
+
+	function mostrar_registro(response)
+	{
+		var row = response.row;
+		if (row!==null)
+		{
+			ValidateControlsInit();
+			$("#accion").val("M");			
+			$("#dialog_mantenimiento_variedad_nombre").html(row.nombre);
+			$("#variedad_id").val(row.id);
+			$("#variedad_id").prop('readonly',true);
+			$("#nombre").val(row.nombre);
+			$("#colorbase").html(response.cbo_color_base);
+			$("#estado").html(response.cbo_estado);
+			$("#lbl_fec_ingreso").html(row.fec_ingreso);
+			$("#lbl_fec_modifica").html(row.fec_modifica);
+			$("#lbl_usuario_ing").html(row.usuario_ing_user_name);
+			$("#lbl_usuario_mod").html(row.usuario_mod_user_name);
+			$("#lbl_fec_sincronizado").html(row.fec_sincronizado);
+			
+			
+			
+			
+			if (row.sincronizado==1)
+			{
+				$("#sincronizado_pendiente").hide();
+				$("#sincronizado_ok").show();
+			}else{
+				$("#sincronizado_pendiente").show();
+				$("#sincronizado_ok").hide();
+			}//end if
+		}//end if
+	}//end function mostrar_registro
+
+
+
+	
 	});//$(document).ready
     </script>
 
@@ -252,7 +320,7 @@ $(document).ready(function () {
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">COLOR BASE:</label></td>
-			        		    <td><select  name="colorbase" class="select-class2" id="colorbase"></select></td>
+			        		    <td><select  name="colorbase" class="select-class2" id="colorbase" validate="required"></select></td>
 		        	          </tr>	
 		        	           <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>
