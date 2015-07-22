@@ -185,7 +185,7 @@
         <!-- div class="table-container col-md-14 col-md-offset-1 col-sm-14 col-sm-offset-1" -->                        
 
 
-                <table id="tbl_dispo" class="table-dispo" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
+                <table id="tbl_dispo" class="clear table-head table-dispo tablesorter tableinit">
                 	<thead>
                         <tr>
                             <th class="th-inner"  width="300">Description</th>
@@ -199,7 +199,7 @@
                             <th class="th-inner"  width="70">110</th>
                             <th class="th-inner"  width="90">types boxes</th>
                             <th class="th-inner"  width="70">Stock</th>
-                            <th class="th-inner" style="min-width:120px">order</th>
+                            <th class="th-inner" style="min-width:120px; max-width:120px" width="120">order</th>
                         </tr>
                       </thead>
 
@@ -279,12 +279,13 @@
 			
 			//Se configura del combo de ORDEN
 			$options_cbo_order = '';
+			$class_row = '';
 			for($i=1; $i <= $reg['nro_cajas']; $i++)
 			{
 				$options_cbo_order .='<option value="'.$i.'">'.$i.'</option>';
 			}//end foreach
 ?>
-	                    <tr id="<?php echo($ind); ?>" variedad_id="<?php echo($reg['variedad_id']); ?>" grado_id="<?php echo($grado_id); ?>">                                
+	                    <tr id="<?php echo($ind); ?>" variedad_id="<?php echo($reg['variedad_id']); ?>" grado_id="<?php echo($grado_id); ?>"   class="<?php echo($class_row); ?>">                                
 	                        <td>
 	                            <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span>
 
