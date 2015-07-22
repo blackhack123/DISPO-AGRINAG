@@ -16,6 +16,8 @@ return array(
         	'Dispo\Controller\Pedido'		 		=> 'Dispo\Controller\PedidoController',
         	'Dispo\Controller\Cliente'		 		=> 'Dispo\Controller\ClienteController',
         	'Dispo\Controller\Variedad'		 		=> 'Dispo\Controller\VariedadController',
+        	'Dispo\Controller\transportadora'		=> 'Dispo\Controller\TransportadoraController',
+        	'Dispo\Controller\usuario'				=> 'Dispo\Controller\UsuarioController',
         ),
     ),
     // The following section is new and should be added to your file
@@ -134,6 +136,22 @@ return array(
         					),
         			),
         	),
+        		
+        		
+        		'dispo-transportadora' => array(
+        				'type'    => 'segment',
+        				'options' => array(
+        						'route'    => '/dispo/transportadora[/:action][/:id]',
+        						'constraints' => array(
+        								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        								'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        						),
+        						'defaults' => array(
+        								'controller' => 'Dispo\Controller\Transportadora',
+        								'action'     => 'index',
+        						),
+        				),
+        		),        		
 		),
     ),
     'view_manager' => array(

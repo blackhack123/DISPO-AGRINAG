@@ -14,7 +14,7 @@ return array(
 //            'Seguridad\Controller\Seguridad' 	=> 'Seguridad\Controller\SeguridadController',
 			'Seguridad\Controller\Login' 	 	=> 'Seguridad\Controller\LoginController',
             'Seguridad\Controller\Usuario' 		=> 'Seguridad\Controller\UsuarioController',
-//        	'Seguridad\Controller\Cambioclave'	=> 'Seguridad\Controller\CambioclaveController',	 
+        	'Seguridad\Controller\usuario'		=> 'Seguridad\Controller\UsuarioController',        		
         ),
     ),
     // The following section is new and should be added to your file
@@ -58,25 +58,10 @@ return array(
                     ),
                     'defaults' => array(
                         'controller' => 'Seguridad\Controller\Usuario',
-                        'action'     => 'listado',
+                        'action'     => 'index',
                     ),
 				),
 			),
-/*        		'seguridad-cambioclave' => array(
-        				'type'    => 'segment',
-        				'options' => array(
-        						'route'    => '/seguridad/cambioclave[/:action][/:id]',
-        						'constraints' => array(
-        								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        								'id'     => '[0-9]+',
-        						),
-        						'defaults' => array(
-        								'controller' => 'Seguridad\Controller\Cambioclave',
-        								'action'     => 'cambioclave',
-        						),
-        				),
-        		),
-*/        		 
 		),
     ),
     'view_manager' => array(

@@ -23,7 +23,6 @@ class ComboGeneral {
 	}//end function getComboEstado
 	
 
-
 	/**
 	 *
 	 * @param string $estado
