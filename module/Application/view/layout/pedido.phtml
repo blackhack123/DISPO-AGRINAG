@@ -92,7 +92,10 @@
 			return false;
         });	
 		
-		
+		//Se pone los estilos para que no se sobrepongan al tooltips
+		$(".title-section, .dform-control").css("z-index","-1");
+		$(".title-section, .dform-control").css("position","relative");
+				
 		//Se esconde los mensajes
 		//$("#tasks_message").show();
 		$("#msg_order").hide();			//msg_orden - esto aparecera cuando se haga el ADD para anadir la orden

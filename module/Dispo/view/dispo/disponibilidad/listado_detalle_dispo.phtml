@@ -5,6 +5,8 @@
 	var ajax_process_dispo_det_cajas = null;
 
 	$(document).ready(function () {
+		$("#tbl_dispo").stickyTableHeaders();
+		
         $(".btn_add_order").on('click', function(event){ 
             add_order($(this));
 			return false;
@@ -182,27 +184,28 @@
 
         <!-- div class="table-container col-md-14 col-md-offset-1 col-sm-14 col-sm-offset-1" -->                        
 
-             <div class="clear table-head">
-                <table class="table-dispo">
+
+                <table id="tbl_dispo" class="table-dispo" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
+                	<thead>
                         <tr>
-                            <td class="th-inner"  width="300">Description</td>
-                            <td class="th-inner"  width="70">40</td>
-                            <td class="th-inner"  width="70">50</td>
-                            <td class="th-inner"  width="70">60</td>
-                            <td class="th-inner"  width="70">70</td>
-                            <td class="th-inner"  width="70">80</td>
-                            <td class="th-inner"  width="70">90</td>
-                            <td class="th-inner"  width="70">100</td>
-                            <td class="th-inner"  width="70">110</td>
-                            <td class="th-inner"  width="90">types boxes</td>
-                            <td class="th-inner"  width="70">Stock</td>
-                            <td class="th-inner" width="180">order</th>
+                            <th class="th-inner"  width="300">Description</th>
+                            <th class="th-inner"  width="70">40</th>
+                            <th class="th-inner"  width="70">50</th>
+                            <th class="th-inner"  width="70">60</th>
+                            <th class="th-inner"  width="70">70</th>
+                            <th class="th-inner"  width="70">80</th>
+                            <th class="th-inner"  width="70">90</th>
+                            <th class="th-inner"  width="70">100</th>
+                            <th class="th-inner"  width="70">110</th>
+                            <th class="th-inner"  width="90">types boxes</th>
+                            <th class="th-inner"  width="70">Stock</th>
+                            <th class="th-inner" style="min-width:120px">order</th>
                         </tr>
-                </table>
-            </div>
-            <div class="table-scroll">
-          		<div class="border">
-               		<table class="table-dispo searchable">
+                      </thead>
+
+
+	            	<tbody class="searchable" style="border: 1px solid #cdcdcd;">
+               		
 <?php 
 	if ($this->result)
 	{
@@ -282,7 +285,7 @@
 			}//end foreach
 ?>
 	                    <tr id="<?php echo($ind); ?>" variedad_id="<?php echo($reg['variedad_id']); ?>" grado_id="<?php echo($grado_id); ?>">                                
-	                        <td width="300">
+	                        <td>
 	                            <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span>
 
 								<?php if (!empty($reg['precio_oferta'])){ ?>
@@ -292,51 +295,51 @@
 		                            </div>
 	                            <?php }//end if ?>
 	                        </td>
-	                        <td width="70">
+	                        <td>
 	                            <?php echo($precio_40); ?>                                    
 	                        </td>
-	                        <td width="70">
+	                        <td>
 	                            <?php echo($precio_50); ?>
 	                        </td>
-	                        <td width="70">
+	                        <td>
 	                            <?php echo($precio_60); ?>
 	                        </td>
-	                        <td width="70">
+	                        <td>
 	                            <?php echo($precio_70); ?>
 	                        </td>
-	                        <td width="70">
+	                        <td>
 	                            <?php echo($precio_80); ?>
 	                        </td>
-	                        <td width="70">
+	                        <td>
 	                            <?php echo($precio_90); ?>
 	                        </td>
-	                        <td width="70">
+	                        <td>
 	                            <?php echo($precio_100); ?>
 	                        </td>                                
-	                        <td width="70">
+	                        <td>
 	                            <?php echo($precio_110); ?>
 	                        </td>
-	                        <td width="90">
+	                        <td>
 	                            <select class="form-control select-class cbo_tipo_caja_detalle" id="<?php echo($ind); ?>_tipo_caja_id"><?php echo($options_cbo_caja); ?></select>                            
 	                        </td>
-	                        <td width="70">
+	                        <td>
 	                        	<span id="<?php echo($ind); ?>_stock"><?php echo($reg['nro_cajas']); ?></span>
 	                        </td>
-	                        <td width="180">
-	                        	<select class="form-control select-class" id="<?php echo($ind); ?>_cantidad_order"><?php echo($options_cbo_order); ?></select>
-	                        	<div id="<?php echo($ind); ?>_add" class="btn_add_order btn btn-xs btn-success pull-right" indice="<?php echo($ind); ?>">
-	                                <span class="glyphicon glyphicon-plus-sign"></span> Add
-	                            </div>
-	                            </a>
-	                        </td>
+	                        <td>
+                               		<select class="form-control select-class" id="<?php echo($ind); ?>_cantidad_order"><?php echo($options_cbo_order); ?></select>
+                                    <div id="<?php echo($ind); ?>_add" class="btn_add_order btn btn-xs btn-success pull-right" indice="<?php echo($ind); ?>">
+                                        <span class="glyphicon glyphicon-plus-sign"></span> Add
+                                    </div>
+ 	                        </td>
 	                    </tr>
 <?php 
 		}//end foreach
 	}//end if
-?>                      
+?>                  	
+						</tbody>    
                 	</table>
-                </div> <!-- class="border" -->
-            </div> <!-- class="table-scroll" -->
+                <!-- /div --> <!-- class="border" -->
+            <!-- /div --> <!-- class="table-scroll" -->
             
             
             
