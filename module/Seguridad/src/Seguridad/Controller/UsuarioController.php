@@ -13,6 +13,7 @@ use Seguridad\BO\UsuarioBO;
 use Seguridad\Data\UsuarioData;
 use Application\Classes\CorreoElectronico;
 use Dispo\BO\PedidoBO;
+use Seguridad\BO\PerfilBO;
 
 class UsuarioController extends AbstractActionController
 {
@@ -123,432 +124,248 @@ class UsuarioController extends AbstractActionController
 		}
 	}//end seleccionarClienteUsuarioAction
 	
-	
-	
-	public function listadodataAction()
-	{	
-/*		try
-		{		
-			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->getPermisoAccion($this->opcion_app, \Application\Constants\Accion::CONSULTAR);
-
+	/*
+	public function getcomboAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+				
 			$UsuarioBO = new UsuarioBO();
-			$UsuarioBO->setEntityManager($this->getEntityManager());
-
-			$request 		= $this->getRequest();
-			$nombre_usuario = $request->getQuery('nombre_usuario', "");
-			$estado 		= $request->getQuery('estado', "");		
-			$page 			= $request->getQuery('page');
-			$limit 			= $request->getQuery('rows');
-			$sidx			= $request->getQuery('sidx',1);
-			$sord 			= $request->getQuery('sord', "");
-
-			$UsuarioBO->setPage($page);
-			$UsuarioBO->setLimit($limit);
-			$UsuarioBO->setSidx($sidx);
-			$UsuarioBO->setSord($sord);
-
-			$condiciones = array("nombre_usuario"	=> $nombre_usuario,
-								 "estado" 			=> $estado,
-								);	
-			$result = $UsuarioBO->listado(1, $condiciones);
-
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			//var_dump($json); exit;
+			$texto_primer_elemento		= $json['texto_primer_elemento'];
+			$cliente_id = $SesionUsuarioPlugin->getUserClienteId();
+			$usuario_id = null;
+	
+			$opciones = $UsuarioBO->getComboTodos($usuario_id, $texto_primer_elemento);
+	
 			$response = new \stdClass();
-
-			$i=0;
-			foreach($result as $row){
-				$response->rows[$i] = $row;
-				$i++;
-			}
-
-			$tot_reg = $UsuarioBO->listado(2, $condiciones);	
-			$response->total 	= ceil($tot_reg/$limit);
-			$response->page 	= $page; 
-			$response->records 	= $tot_reg; 
-			
+			$response->opciones				= $opciones;
+			$response->respuesta_code 		= 'OK';
+	
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
+	
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
 			$response->setStatusCode(500);
 			$response->setContent($excepcion_msg);
-			return $response;			
+			return $response;
 		}
-*/	}//end function listadodataAction
+	}//end function getcomboAction
 	
-
-		
-	public function listadoAction()
+	*/
+	
+	public function mantenimientoAction()
 	{
-/*		try
+		try
 		{
-			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->getPermisoOpcion($this->opcion_app);
-			
-			$viewModel = new ViewModel();
-			$request   = $this->getRequest();
+			$viewModel 				= new ViewModel();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+	
+			//Controla el acceso a la informacion, solo accedera si es administrador
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$respuesta =  $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+
+			$UsuarioBO				= new UsuarioBO();
+			$PerfilBO				= new PerfilBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$PerfilBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$condiciones['criterio_busqueda']			= $this->params()->fromPost('criterio_busqueda','');
+			$condiciones['estado']						= $this->params()->fromPost('busqueda_estado','');
+			$condiciones['perfil_id']						= $this->params()->fromPost('busqueda_perfil_id','');
+			$condiciones['solo_vendedor_administrador']	= 1;
 				
-			$viewModel->contenedor_opcion = $request->getQuery('contenedor_opcion', "");
-			$viewModel->permisos	  		= $SesionUsuarioPlugin->getArrayPermisoAccion(); //Obtiene todos los permisos del usuario
-			$viewModel->habilitarAcciones			= array(\Application\Constants\Accion::INGRESAR 	=> true,
-															\Application\Constants\Accion::MODIFICAR	=> true,
-															\Application\Constants\Accion::ELIMINAR		=> true
-															);
-													
-			$viewModel->setTerminal(true);		
+			$result 		= $UsuarioBO->listado($condiciones);
+				
+			$viewModel->criterio_busqueda			= $condiciones['criterio_busqueda'];
+			$viewModel->cbo_busqueda_perfil			=  $PerfilBO->getComboPerfilRestringido('','&lt;PERFIL&gt;');
+			$viewModel->cbo_busqueda_estado			=  \Application\Classes\ComboGeneral::getComboEstado($condiciones['estado'],"&lt;ESTADO&gt;");
+			
+			$viewModel->result				= $result;
+			$this->layout($SesionUsuarioPlugin->getUserLayout());
+			$viewModel->setTemplate('seguridad/usuario/mantenimiento.phtml');
 			return $viewModel;
-		}catch (\Exception $e) {
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;			
-		}		
-*/	}//end function listadoAction
-	
-	
-	public function consultarAction()
-	{
-/*		try
-		{
-			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$data = $SesionUsuarioPlugin->getPermisoAccion($this->opcion_app, \Application\Constants\Accion::CONSULTAR);
-	
-			$UsuarioBO 				= new UsuarioBO();
-			$PerfilBO  				= new PerfilBO();
-			$GrupoEmpresarialBO  	= new GrupoEmpresarialBO();
-			
-			$UsuarioBO->setEntityManager($this->getEntityManager());
-			$PerfilBO->setEntityManager($this->getEntityManager());		
-			$GrupoEmpresarialBO->setEntityManager($this->getEntityManager());		
-		
-			$viewModel 			= new ViewModel();		
-			$request 			= $this->getRequest();
-			$id					= $this->params('id', "");
-			$contenedor_opcion 	= $request->getQuery('contenedor_opcion', "");
-			
-			list($UsuarioData, $PersonaData)	= $UsuarioBO->consultar($id);
-			$cboEstado 	 		= utf8_encode($UsuarioBO->getCboEstado($UsuarioData->getEstado()));
-			$cboPerfil 	 		= utf8_encode($PerfilBO->getCombo($UsuarioData->getPerfilId()));
-			$cboGrupoEmpresarial= utf8_encode($GrupoEmpresarialBO->getCombo($UsuarioData->getGrupoEmpresarialId()));
-	
-			$viewModel->UsuarioData 	  	= $UsuarioData;
-			$viewModel->PersonaData 	  	= $PersonaData;			
-			$viewModel->cboPerfil 		  	= $cboPerfil;
-			$viewModel->cboGrupoEmpresarial = $cboGrupoEmpresarial;
-			$viewModel->cboEstado  		  	= $cboEstado;
-			$viewModel->contenedor_opcion 	= $contenedor_opcion;
-			//La variable respuesta nos sirve para identificar si al momento de realizar una consulta de acuerdo a una redireccion
-			//de la accion grabar informacion (Ingreso ó Modificaciòn) lo ha realizado correctamente sin que se presente una Excepcion o Error
-			$viewModel->respuesta  		  	= 'OK';  
-			$viewModel->permisos	  		= $SesionUsuarioPlugin->getArrayPermisoAccion(); //all los permisos
-			$viewModel->habilitarAcciones			= array(\Application\Constants\Accion::VIRTUAL_REGRESAR 	=> true,
-															\Application\Constants\Accion::INGRESAR 			=> true,
-															\Application\Constants\Accion::ELIMINAR 			=> true,															
-															\Application\Constants\Accion::VIRTUAL_GRABAR		=> true,															
-															);
-			
 				
-			$viewModel->setTerminal(true);
-			$viewModel->setTemplate('Seguridad/usuario/mantenimiento.phtml');		
-			return $viewModel;	
+	
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
 			$response->setStatusCode(500);
 			$response->setContent($excepcion_msg);
-			return $response;			
-		}//end try
-*/	}//end function consultarAction
-
-	/*-----------------------------------------------------------------------------*/
-    public function indexAction(){
-	/*-----------------------------------------------------------------------------*/
-/*		return $this->listadoAction();
-*/    }//end function indexAction
-
-
-	/*-----------------------------------------------------------------------------*/		
-	public function nuevoAction(){
-	/*-----------------------------------------------------------------------------*/	
-/*		try
-		{
-			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->getPermisoOpcion(1);
-		
-			$UsuarioBO 				= new UsuarioBO();
-			$PerfilBO  				= new PerfilBO();
-			$GrupoEmpresarialBO  	= new GrupoEmpresarialBO();		
-			$UsuarioData 			= new UsuarioData();
-			$PersonaData			= new PersonaData();
-	
-			$UsuarioBO->setEntityManager($this->getEntityManager());
-			$PerfilBO->setEntityManager($this->getEntityManager());
-			$GrupoEmpresarialBO->setEntityManager($this->getEntityManager());
-
-			$viewModel 	= new ViewModel();
-			$request 	= $this->getRequest();
-			$contenedor_opcion = $request->getQuery('contenedor_opcion', "");
-
-			$cboEstado 							= utf8_encode($UsuarioBO->getCboEstado(''));
-			$cboPerfil 	 						= utf8_encode($PerfilBO->getCombo(''));
-			$cboGrupoEmpresarial				= utf8_encode($GrupoEmpresarialBO->getCombo(''));
-
-			$viewModel->UsuarioData 	  		= $UsuarioData;		
-			$viewModel->PersonaData 	  		= $PersonaData;						
-			$viewModel->cboPerfil 		  		= $cboPerfil;
-			$viewModel->cboGrupoEmpresarial 	= $cboGrupoEmpresarial;		
-			$viewModel->cboEstado  		  		= $cboEstado;
-			$viewModel->contenedor_opcion	 	= $contenedor_opcion;
-			$viewModel->permisos	  			= $SesionUsuarioPlugin->getArrayPermisoAccion(); //all los permisos
-			$viewModel->habilitarAcciones			= array(\Application\Constants\Accion::VIRTUAL_REGRESAR 	=> true,
-															\Application\Constants\Accion::INGRESAR 			=> true,
-															\Application\Constants\Accion::VIRTUAL_GRABAR		=> true,															
-															);
-
-	
-			$viewModel->setTerminal(true);
-			$viewModel->setTemplate('Seguridad/usuario/mantenimiento.phtml');		
-			return $viewModel;	
-		}catch (\Exception $e) {
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;			
-		}	
-*/	}//end function nuevoAction
+			return $response;
+		}
+	}//end function
 	
 	
-	/*-----------------------------------------------------------------------------*/
-	private function grabar($opcion)
-	/*-----------------------------------------------------------------------------*/
+	
+	
+	public function nuevodataAction()
 	{
-/*		$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-		$id_usuario = $SesionUsuarioPlugin->getUsuarioId();
-		$resultado = null;
-		$request 	= $this->getRequest();
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 	
-		$request 					= $this->getRequest();
-		$body 						= $this->getRequest()->getContent();
-		$json 						= json_decode($body, true);
-		$formData 					= $json['formData'];
-		$gridEmpresaSucursalData	= $json['gridEmpresaSucursalData'];
-		$gridExtensionData			= $json['gridExtensionData'];
-		$UsuarioBO = new UsuarioBO();
-		$UsuarioBO->setEntityManager($this->getEntityManager());
-		$contenedor_opcion = $request->getQuery('contenedor_opcion', "");
-
-		$UsuarioData = new UsuarioData();
-		$UsuarioData->setId						($formData['codigo_1']);
-		$UsuarioData->setPersonaId				($formData['persona_id_1']);
-		$UsuarioData->setPerfilId				($formData['perfil_1']);
-		$UsuarioData->setGrupoEmpresarialId		($formData['grupo_empresarial_1']);
-		$UsuarioData->setNombreUsuario			($formData['usuario_1']);
-		
-		if(isset($formData['cambio_clave_1']))
-		{
-			$UsuarioData->setEstadoCambioClave($formData['cambio_clave_1']);
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$UsuarioBO 				= new UsuarioBO();
+			$PerfilBO 				= new PerfilBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$response = new \stdClass();
+			$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido("","");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
 		}
-		else
+	}//end function nuevodataAction
+	
+	
+	
+	public function consultardataAction()
+	{
+		try
 		{
-			$UsuarioData->setEstadoCambioClave(0);
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$UsuarioBO 				= new UsuarioBO();
+			$PerfilBO 				= new PerfilBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$usuario_id		= $json['usuario_id'];
+	
+			$row					= $UsuarioBO->consultar($usuario_id, \Application\Constants\ResultType::MATRIZ);
+	
+			$response = new \stdClass();
+			$response->row					= $row;
+			$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido($row['perfil_id'],"");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
 		}
-		
-		if(isset($formData['generar_clave_1']))
+	}//end function consultarAction
+	
+	
+	
+	
+	public function grabardataAction()
+	{
+		try
 		{
-			$isGenerarClave	= $formData['generar_clave_1'];
-		}
-		else
-		{
-			$isGenerarClave = 0;
-		}
-		
-		$UsuarioData->setNroIntentos			($formData['nro_intentos_1']);
-		$UsuarioData->setUsuarioIngId			($id_usuario);
-		$UsuarioData->setUsuarioModId			($id_usuario);
-		$UsuarioData->setEstado					($formData['estado_1']);
-		$UsuarioData->setXmlXmlEmpresaSurcursal($gridEmpresaSucursalData);
-		$UsuarioData->setXmlExtension($gridExtensionData);
-
-		switch($opcion){
-			case 'ingresar':
-				$resultado = $UsuarioBO->ingresar($UsuarioData, $isGenerarClave);	
-				break;					
-			case 'modificar':
-				$resultado = $UsuarioBO->modificar($UsuarioData, $isGenerarClave);	
-				break;
-		}//end switch
-
-		if($isGenerarClave==1)
-		{
-			//Enviar Clave por correo electronico
-			$emailDestino = $resultado['correoUsuario'];
-			$emailTitulo = "Generacion de clave temporal para ingreso al Sistema ERP e-SIG";
-			$nombresUsuario = $resultado['nombresUsuario'];
-			$claveGenerada = $resultado['variableAleatoria'];
-			$cfgArchivos = $this->getServiceLocator()->get('Config');
-			$ruta_archivo	= $cfgArchivos['rutaArchivo']['formato_correo_cambio_clave'] . "/cuerpoCorreoCambioClaveTemporal.txt";
-			$formatoCuerpoEmail = file_get_contents($ruta_archivo);
-			$buscar  = array('vartitulo', 'varnombre', 'varusuario', 'varclave');
-			$reemplazar = array($emailTitulo, $nombresUsuario, $UsuarioData->getNombreUsuario(), $claveGenerada);
-			$emailCuerpo = str_replace($buscar, $reemplazar, $formatoCuerpoEmail);
-			$objEmail = new CorreoElectronico();
-			$resultadoEnvio = $objEmail->setEmail($emailDestino, $emailTitulo, $emailCuerpo);
-			if($resultadoEnvio!= "OK")
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$UsuarioData			= new UsuarioData();
+			$UsuarioBO 				= new UsuarioBO();
+			$PerfilBO 				= new PerfilBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$accion						= $json['accion'];  //I, M
+			$UsuarioData->setId			($json['id']);
+			$UsuarioData->setNombre		($json['nombre']);
+			$UsuarioData->setUsername	($json['username']);
+			$UsuarioData->setPassword	($json['password']);
+			$UsuarioData->setEmail		($json['email']);
+			$UsuarioData->setPerfilId	($json['perfil_id']);
+			$UsuarioData->setEstado		($json['estado']);
+	
+			$response = new \stdClass();
+			switch ($accion)
 			{
-				$response->setStatusCode(500);
-				$response->setContent($resultadoEnvio);
-			}
-		}
-		
-		$id = $resultado['idTran'];
-		
-		$this->plugin('redirect')->toRoute('seguridad-usuario', 
-											[	'action'=>'consultar',
-												'id'=>$id
-											], 
-											[	'query'=> ['contenedor_opcion'=>$contenedor_opcion]
-											]
-										 );
-*/	}//end function grabar
-
-	/*-----------------------------------------------------------------------------*/
-	public function modificarAction()
-	/*-----------------------------------------------------------------------------*/
-	{
-/*		try
-		{		
-			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->getPermisoAccion($this->opcion_app, \Application\Constants\Accion::MODIFICAR);
-			
-			$request 	= $this->getRequest();
-		
-			if ($request->isPost()) {
-				$this->grabar('modificar');			
-			}//end if
-		}catch (\Exception $e) {
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;			
-		}	
-*/	}//end function modificarAction
-
-
-	/*-----------------------------------------------------------------------------*/
-    public function ingresarAction()
-	/*-----------------------------------------------------------------------------*/
-	{
-/*		try
-		{
-			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->getPermisoAccion($this->opcion_app, \Application\Constants\Accion::INGRESAR);
-		
-			$request = $this->getRequest();
+				case 'I':
+					$UsuarioData->setUsuarioIngId($usuario_id);
+					$result = $UsuarioBO->ingresar($UsuarioData);
+					break;
+						
+				case 'M':
+					$UsuarioData->setUsuarioModId($usuario_id);
+					$result = $UsuarioBO->modificar($UsuarioData);
+					break;
+						
+				default:
+					$result['validacion_code'] 	= 'ERROR';
+					$result['respuesta_mensaje']= 'ACCESO NO VALIDO';
+					break;
+			}//end switch
 	
-			if ($request->isPost()) {
-				$this->grabar('ingresar');			
+			//Se consulta el registro siempre y cuando el validacion_code sea OK
+			if ($result['validacion_code']=='OK')
+			{
+				$row	= $UsuarioBO->consultar($json['id'], \Application\Constants\ResultType::MATRIZ);
+			}else{
+				$row	= null;
 			}//end if
+				
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->validacion_code 		= $result['validacion_code'];
+			$response->respuesta_mensaje	= $result['respuesta_mensaje'];
+			if ($row)
+			{
+				$response->row					= $row;
+				$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido($row['perfil_id'], " ");
+				$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			}else{
+				$response->row					= null;
+				$response->cbo_tipo				= '';
+				$response->cbo_estado			= '';
+			}//end if
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
 			$response->setStatusCode(500);
 			$response->setContent($excepcion_msg);
-			return $response;			
-		}			
-*/    }//end function insertarAction
-
-
-	/*-----------------------------------------------------------------------------*/
-	public function eliminarmasivoAction()
-	/*-----------------------------------------------------------------------------*/
-	{
-/*		try
-		{
-			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->getPermisoAccion($this->opcion_app, \Application\Constants\Accion::ELIMINAR);
-		
-			$request 	= $this->getRequest();
-		
-			if ($request->isPost()) {
-				$request 	= $this->getRequest();
-			
-				$UsuarioBO = new UsuarioBO();
-				$UsuarioBO->setEntityManager($this->getEntityManager());
-				$request 	= $this->getRequest();		
-
-				$arr_ids = $this->params()->fromPost('ids');
-								
-				foreach($arr_ids as $reg){
-					$UsuarioData = new UsuarioData();
-					$UsuarioData->setId($reg);
-
-					$arr_UsuarioData[] = $UsuarioData;
-				}//end foreach
-				
-				$respuesta = $UsuarioBO->eliminarMasivo($arr_UsuarioData);	
-
-				$json = new JsonModel(array('cod_msg'=>'OK'));
-				return $json;											 
-			}//end if
-		}catch (\Exception $e){
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;			
-		}			
-*/	}//end function eliminarmasivoAction
-
-	/*-----------------------------------------------------------------------------*/
-	public function eliminarAction()
-	/*-----------------------------------------------------------------------------*/
-	{
-/*		try
-		{
-			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->getPermisoAccion($this->opcion_app, \Application\Constants\Accion::ELIMINAR);
-		
-			$request 	= $this->getRequest();
-		
-			if ($request->isPost()) {
-				$request 	= $this->getRequest();
-			
-				$UsuarioBO = new UsuarioBO();
-				$UsuarioBO->setEntityManager($this->getEntityManager());
-				$request 	= $this->getRequest();		
-				
-				$contenedor_opcion = $request->getQuery('contenedor_opcion', "");
-
-				$UsuarioData = new UsuarioData();
-				$UsuarioData->setId					($this->params()->fromPost('codigo_1'));
-				$resultado = $UsuarioBO->eliminar($UsuarioData);	
-				$id = $resultado['idTran'];
-				//Si tiene asignado un contenedor_opcion se redireccion el ruteo para realizar la consulta del registro
-				//en caso de no tener valor se retornará un JSON como OK
-				if ($contenedor_opcion!=''){
-					$this->plugin('redirect')->toRoute('seguridad-usuario', 
-													 ['action'=>'consultar',
-													  'id'=>$id
-													 ], 
-													 ['query'=> ['contenedor_opcion'=>$contenedor_opcion]]
-													 );
-				}else{
-					$json = new JsonModel(array('cod_msg'=>'OK'));
-					return $json;
-				}//end if
-			}//end if
-		}catch (\Exception $e){
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;			
-		}			
-*/	}//end function eliminarAction
-
+			return $response;
+		}
+	}//end function consultarAction
+	
 
 }

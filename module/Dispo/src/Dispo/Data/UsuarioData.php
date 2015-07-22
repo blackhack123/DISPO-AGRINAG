@@ -49,6 +49,26 @@ class UsuarioData
 	 * @var int
 	 */	
 	protected $grupo_dispo_cab_id;
+	
+	/**
+	 * @var string
+	 */
+	protected $fec_ingreso;
+	
+	/**
+	 * @var string
+	 */
+	protected $fec_modifica;
+	
+	/**
+	 * @var int
+	 */
+	protected $usuario_ing_id;
+	
+	/**
+	 * @var int
+	 */
+	protected $usuario_mod_id;
 
 
 	
@@ -62,6 +82,10 @@ class UsuarioData
 	public function getClienteId() 							{return $this->cliente_id;}
 	public function getEstado() 							{return $this->estado;}
 	public function getGrupoDispoCabId() 					{return $this->grupo_dispo_cab_id;}
+	public function getFecIngreso() 						{return $this->fec_ingreso;}
+	public function getFecModifica() 						{return $this->fec_modifica;}
+	public function getUsuarioIngId() 						{return $this->usuario_ing_id;}
+	public function getUsuarioModId() 						{return $this->usuario_mod_id;}
 
 
 	//metodos SET
@@ -74,10 +98,11 @@ class UsuarioData
 	public function setClienteId($valor) 					{$this->cliente_id				= $valor;}
 	public function setEstado($valor) 						{$this->estado					= $valor;}
 	public function setGrupoDispoCabId($valor) 				{$this->grupo_dispo_cab_id		= $valor;}
-
+	public function setFecIngreso($valor) 					{$this->fec_ingreso				= $valor;}
+	public function setFecModifica($valor) 					{$this->fec_modifica			= $valor;}
+	public function SetUsuarioIngId($valor) 				{$this->usuario_ing_id			= $valor;}
+	public function SetUsuarioModId($valor) 				{$this->usuario_mod_id			= $valor;}
 
 }//fin class
 
 
-
-?>

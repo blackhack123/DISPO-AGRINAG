@@ -1,108 +1,47 @@
 <?php
 
-namespace Seguridad\BO;
+namespace Dispo\BO;
 
-use Seguridad\DAO\UsuarioDAO;
-use Seguridad\DAO\UsuarioEmpresaSucursalDAO;
 use Application\Classes\Conexion;
-use Seguridad\Data\UsuarioData;
+use Doctrine\ORM\EntityManager;
+use Zend\View\Model\JsonModel;
+use Dispo\DAO\UsuarioDAO;
+use Dispo\Data\UsuarioData;
 
-class UsuarioBO extends Conexion{
-	private $page		= null;
-	private	$limit		= null;
-	private $sidx		= null;
-	private $sord		= null;
 
-	function setPage($valor)					{$this->page = $valor;}
-	function setLimit($valor)					{$this->limit = $valor;}
-	function setSidx($valor)					{$this->sidx = $valor;}
-	function setSord($valor)					{$this->sord = $valor;}
-
-	function getPage()					{return $this->page;}
-	function getLimit()					{return $this->limit;}
-	function getSidx()					{return $this->sidx;}
-	function getSord()					{return $this->sord;}
-
-	
-	
-	function login($usuario, $clave, $ipAcceso, $nombreHost, $AgenteUsuario)
-	{
-		$UsuarioDAO = new UsuarioDAO;
-	
-		$UsuarioDAO->setEntityManager($this->getEntityManager());
-		$resultDatosUsuario = $UsuarioDAO->login($usuario, $clave, $ipAcceso, $nombreHost, $AgenteUsuario);
-		return $resultDatosUsuario;
-	}//end function login
-	
-	
-	
-	function encriptar($clave)
-	{
-		$UsuarioDAO = new UsuarioDAO;
-		
-		$UsuarioDAO->setEntityManager($this->getEntityManager());
-		
-		$clave_encriptada = $UsuarioDAO->encriptar($clave);
-		return $clave_encriptada;
-	}//end function encriptar
-	
-	
-	
-	function usuarioencriptar($username, $clave)
-	{
-		$UsuarioDAO = new UsuarioDAO;
-		
-		$UsuarioDAO->setEntityManager($this->getEntityManager());
-
-		$clave_encriptada = $UsuarioDAO->encriptar($clave);
-
-		$result = $UsuarioDAO->usuarioencriptar($username, $clave_encriptada);
-
-		return $result;
-		exit;
-	}//end function usuarioencriptar
-	
-	
-	
+class UsuarioBOxxxxxxxphp extends Conexion
+{
 
 	/**
 	 * 
-	 * @param string $cliente_id
+	 * @param int $usuario_id
 	 * @param string $texto_1er_elemento
 	 * @param string $color_1er_elemento
 	 * @return string
 	 */
-	function getComboPorCliente($cliente_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
-	{
+	function getComboTodos($usuario_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{	
 		$UsuarioDAO = new UsuarioDAO();
 		
 		$UsuarioDAO->setEntityManager($this->getEntityManager());
+
+		$result = $UsuarioDAO->consultarTodos();
 		
-		$result = $UsuarioDAO->consultarPorCliente($cliente_id);
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $usuario_id, $texto_1er_elemento, $color_1er_elemento);
+		 
+		return $opciones;
+	}//end function getComboTodos
+
+
+	function getComboTipo($tipo, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{	
+		$arrData = array('2'=>'VENDEDOR','3'=>'ADMINISTRADOR');
 		
-		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre_completo', $cliente_id, $texto_1er_elemento, $color_1er_elemento);
+		$opciones = \Application\Classes\Combo::getComboDataArray($arrData, $tipo, $texto_1er_elemento);
 			
-		return $opciones;		
-	}//end function getComboPorCliente
+		return $opciones;
+	}//end function getComboTipo
 
-	
-	
-	/**
-	 * Consultar
-	 *
-	 * @param string $id
-	 * @param int $resultType
-	 * @return Ambigous <\Dispo\Data\UsuarioData, NULL, array>
-	 */
-	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
-	{
-		$UsuarioDAO = new UsuarioDAO();
-		$UsuarioDAO->setEntityManager($this->getEntityManager());
-		$reg = $UsuarioDAO->consultar($id, $resultType);
-		return $reg;
-	}//end function consultar
-
-	
 	
 	/**
 	 * 
@@ -123,6 +62,21 @@ class UsuarioBO extends Conexion{
 	}//end function listado
 	
 
+	
+	/**
+	 * Consultar 
+	 * 
+	 * @param string $id
+	 * @param int $resultType
+	 * @return Ambigous <\Dispo\Data\UsuarioData, NULL, array>
+	 */
+	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$UsuarioDAO = new UsuarioDAO();
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+		$reg = $UsuarioDAO->consultar($id, $resultType);
+		return $reg;		
+	}//end function consultar
 	
 	
 	/**
@@ -195,5 +149,8 @@ class UsuarioBO extends Conexion{
 			$this->getEntityManager()->close();
 			throw $e;
 		}
-	}//end function modificar	
-}//end class UsuarioBO
+	}//end function modificar
+	
+	
+	
+}//end class

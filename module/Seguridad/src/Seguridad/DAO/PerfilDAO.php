@@ -1,6 +1,6 @@
 <?php
 
-namespace Dispo\DAO;
+namespace Seguridad\DAO;
 use Doctrine\ORM\EntityManager,
 	Application\Classes\Conexion;
 use Dispo\Data\PerfilData;

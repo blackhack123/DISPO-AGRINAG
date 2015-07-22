@@ -53,12 +53,10 @@ class VariedadDAO extends Conexion
 				'nombre'		                    => $VariedadData->getNombre(),
 				'colorbase'		                    => $VariedadData->getColorBase(),
 				'estado'                			=> $VariedadData->getEstado(),
-				'fec_ingreso'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
-				'usuario_ing_id'	                => $VariedadData->getUsuarioIngId(),
 				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),
-				'sincronizado'	                    => 0,
-				'fec_sincronizado'                  => \Application\Classes\Fecha::getFechaHoraActualServidor()
+				'sincronizado'	                    => 0
+				//'fec_sincronizado'                  => \Application\Classes\Fecha::getFechaHoraActualServidor()
 				
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
@@ -91,6 +89,7 @@ class VariedadDAO extends Conexion
 					$VariedadData->setId							($row['id']);				
 					$VariedadData->setNombre 						($row['nombre']);
 					$VariedadData->setColorBase 					($row['colorbase']);
+					$VariedadData->setEstado    					($row['estado']);
 					$VariedadData->setFecIngreso 					($row['fec_ingreso']);
 					$VariedadData->setFecModifica 					($row['fec_modifica']);
 					$VariedadData->setUsuarioIngId 					($row['usuario_ing_id']);
