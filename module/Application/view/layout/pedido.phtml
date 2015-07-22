@@ -79,7 +79,20 @@
         	window.location.href = '<?php echo($this->basePath()); ?>/dispo/pedido/consultarpedidoactual'
 			return false;
         });
-        
+		
+		
+        $("#opt_list_orders_client").on('click', function(event){ 
+        	window.location.href = '<?php echo($this->basePath()); ?>/dispo/pedido/listadocliente'
+			return false;
+        });
+		
+	    $(".link_opcion").on('click', function(event){ 
+			var url = $(this).attr('url');
+        	window.location.href = url;
+			return false;
+        });	
+		
+		
 		//Se esconde los mensajes
 		//$("#tasks_message").show();
 		$("#msg_order").hide();			//msg_orden - esto aparecera cuando se haga el ADD para anadir la orden
@@ -144,9 +157,20 @@
             </li>
             <li class="right-menu-item">
                 <a href="#/list-ordenes">
-                    <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png">
+                    <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png" id="opt_list_orders_client">
                 </a>
-            </li>           
+            </li>
+            <?php
+            if ($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN)
+			{ ?>
+                <li class="right-menu-item">
+                    <a class="pointer"  data-toggle="modal" data-target="#admin">
+                           <img class="tool" title="Admin" src="<?php echo($this->basePath()); ?>/images/side-menu-admin.png">
+                   </a>
+                </li>
+            <?php
+			}//end if
+			?>
             <li class="right-menu-item">
                 <a href="<?php echo($this->basePath()); ?>/seguridad/login/logout">
                     <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
@@ -201,7 +225,79 @@
     </div>
     
     
-	<div id="dialog-message" title=""></div>   
-	
- </body>
+	<div id="dialog-message" title=""></div>  
+    
+    
+    <!-- Modal Admin -->
+<div class="modal fade" id="admin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Menu de Administrador</h4>
+      </div>
+      <div class="modal-body clearfix">
+        <ul class="admin-menu">
+            <li>
+                <span class="img-circle back1 link_opcion" url="<?php echo($this->basePath()); ?>/dispo/disponibilidad/xxxxxx">
+                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/dispo.png">
+                </span>
+                <p class="back1">disponibilidad</p>
+            </li>
+            <li>
+                <span class="img-circle back2 link_opcion" url="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento">
+                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/variedad.png">
+                </span>
+                <p class="back2">variedad</p>
+            </li>
+            <li>
+                <span class="img-circle back3 link_opcion" url="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento">
+                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/agencia.png">
+                </span>
+                <p class="back3">agencias de carga</p>
+            </li>
+        </ul>
+
+        <ul class="admin-menu">
+            <li>
+                <span class="img-circle back4 link_opcion" url="<?php echo($this->basePath()); ?>/dispo/usuario/mantenimiento">
+                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/usuarios.png">
+                </span>
+                <p class="back4">usuarios</p>
+            </li>
+            <li>
+                <span class="img-circle back5 link_opcion" url="<?php echo($this->basePath()); ?>/dispo/cliente/mantenimiento">
+                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/clientes.png">
+                </span>
+                <p class="back5">clientes</p>
+            </li>
+            <li>
+                <span class="img-circle back6 link_opcion" url="<?php echo($this->basePath()); ?>/dispo/grupocliente/mantenimiento">
+                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/grupo_clientes.png">
+                </span>
+                <p class="back6">grupo de clientes</p>
+            </li> 
+        </ul>
+
+        <ul class="admin-menu">
+            <li>
+                <span class="img-circle back7 link_opcion" url="<?php echo($this->basePath()); ?>/dispo/cajamatriz/mantenimiento">
+                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/caja_matriz.png">
+                </span>
+                <p class="back7">caja matriz</p>
+            </li>
+            <li>
+                <span class="img-circle back8 link_opcion" url="<?php echo($this->basePath()); ?>/dispo/cajamarcacion/mantenimiento">
+                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/caja_marcacion.png">
+                </span>
+                <p class="back8">caja marcacion</p>
+            </li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+</div>
+ 
+</body>
 </html>

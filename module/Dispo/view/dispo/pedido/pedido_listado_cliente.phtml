@@ -1,0 +1,68 @@
+<meta charset="UTF-8">
+
+	<script>
+		$(document).ready(function () {
+	
+			$('.accordion-body-click').on('show.bs.collapse', function () {
+				var pedido_cab_idx = $(this).parent().attr('pedido_cab_id');
+				var view_order = $(this).find('.view_order');
+				view_order.html('loading...');				
+				var data = 	{
+							pedido_cab_id: pedido_cab_idx
+							}
+				data = JSON.stringify(data);
+				
+				var parameters = {	'type': 'POST',//'POST',
+									'contentType': 'application/json',
+									'url':'<?php echo($this->basePath()); ?>/dispo/pedido/listadoclientedetallehtml',
+									'cancel_process_previous':false,
+									'show_cargando':false,
+									//'method':'async'
+									'async': true,
+									'finish':function(response){
+											if (response.respuesta_code=='OK'){
+												view_order.html(response.html);
+											}else{
+												message_error('ERROR', response);
+											}//end if								
+									}							
+								 };
+				response = ajax_call(parameters, data);	
+				return true;
+			})
+
+		});//$(document).ready		
+	</script>
+
+
+    <div class="title-section">
+        <h1>
+            List of Orders
+        </h1>
+    </div>
+
+	<div class="table-container col-md-14 col-md-offset-1 col-sm-14 col-sm-offset-1">
+        <div class="accordion" id="accordion2">   
+<?php 
+	  $ind = 0;
+	  foreach($this->result as $reg)
+	  {
+		  $ind++;
+?>
+          <div class="accordion-group" style="padding-bottom:5px; border-bottom:#000000 solid 1px;" pedido_cab_id = "<?php echo($reg['id']); ?>">
+                <div class="accordion-heading">
+                	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse<?php echo($ind); ?>">
+                        <div class="pull-left" style="padding-right:5px">
+                            <img src="<?php echo($this->basePath()); ?>/images/status-<?php echo($reg['estado']); ?>.png" alt="">
+                        </div>
+                        <h5>Cliente:<b><?php echo($reg['cliente_nombre']); ?></b>  -  Orden  # <b><?php echo($reg['id']); ?></b>
+                        <div class="pull-right"><button type="button" class="btn btn-sm"><span class="glyphicon glyphicon-search"></span></button></div></h5> 
+                    </a>
+                </div>
+                <div id="collapse<?php echo($ind); ?>" aria-expanded="false" class="accordion-body-click collapsed">
+                	<div class="view_order"></div>
+                </div>
+           </div>
+<?php }//end foreach ?>			
+        </div>
+    </div>

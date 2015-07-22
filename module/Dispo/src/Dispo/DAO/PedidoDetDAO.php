@@ -549,5 +549,42 @@ class PedidoDetDAO extends Conexion
 	}//end function consultarPorPedidoCabIdUltimoRegistro
 	
 
+	
+	/**
+	 * 
+	 * @param array $condiciones  array(pedido_cab_id, cliente_id)
+	 * @return array
+	 */
+	public function listado($condiciones)
+	{
+		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
+				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id '.
+				' FROM pedido_cab INNER JOIN pedido_det '.
+				'				     ON pedido_det.pedido_cab_id= pedido_cab.id '.
+				'				  INNER JOIN variedad '.
+				'                    ON variedad.id				= pedido_det.variedad_id '.
+				'				  LEFT JOIN agencia_carga '.
+				'                    ON agencia_carga.id 		= pedido_det.agencia_carga_id '.
+				'				  LEFT JOIN marcacion '.
+				'					 ON marcacion.marcacion_sec	= pedido_det.marcacion_sec '.
+				' WHERE 1=1';
+
+		if (!empty($condiciones['pedido_cab_id']))
+		{
+			$sql = $sql."  and pedido_cab.id 			= '".$condiciones['pedido_cab_id']."'";
+		}
+		if (!empty($condiciones['cliente_id']))
+		{
+			$sql = $sql."  and pedido_cab.cliente_id 	= '".$condiciones['cliente_id']."'";
+		}
+		$sql = $sql.' ORDER BY pedido_det.pedido_cab_id, pedido_det.pedido_det_sec';
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		
+		$result = $stmt->fetchAll();
+		
+		return $result;		
+	}
 }//end class
 ?>

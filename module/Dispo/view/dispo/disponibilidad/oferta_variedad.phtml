@@ -25,14 +25,15 @@
         //$("body").on('change', '#oferta_cbo_tipo_caja_id', function(event){
         	oferta_consultar_nro_cajas();
 			return true;
-        });        
+         });        
+
 
 		 $("#oferta_cbo_order").on('change', function(event){
 			var variedad_id 		= $('#oferta_variedad_id').val();
 			var grado_id			= $('#oferta_grado_id').val();
 			var tipo_caja_id		= $('#oferta_cbo_tipo_caja_id').val(); 	
 			var nro_cajas_oferta 	= $('#oferta_cbo_order').val();
-						 		
+
         	consultar_oferta_detalle(variedad_id, grado_id, tipo_caja_id, nro_cajas_oferta);
 			return true;
         });        
@@ -54,8 +55,7 @@
 	});//$(document).ready
 	
 	
-	
-	
+
 	function oferta_consultar_nro_cajas()
 	{		
 		var variedad_id 	= $('#oferta_variedad_id').val();
@@ -173,21 +173,19 @@
 
 //		cargador_visibility('show');		
 
-		console.log('valor:',radioValue);
-		
 		var tr 						= $('#row_hueso_'+radioValue);
 		var hueso_variedad_id 			= tr.attr('variedad_id');
 		var hueso_grado_id 				= tr.attr('grado_id');
 		var hueso_tipo_caja_id 			= tr.attr('tipo_caja_id');		
 		var hueso_nro_cajas_requeridas	= tr.attr('nro_cajas_requeridas');
 		
-		console.log('hueso_variedad_id:',hueso_variedad_id, '*hueso_grado_id:',hueso_grado_id,'*hueso_tipo_caja_id:',hueso_tipo_caja_id,'*hueso_nro_cajas_requeridas:',hueso_nro_cajas_requeridas);
+		//console.log('hueso_variedad_id:',hueso_variedad_id, '*hueso_grado_id:',hueso_grado_id,'*hueso_tipo_caja_id:',hueso_tipo_caja_id,'*hueso_nro_cajas_requeridas:',hueso_nro_cajas_requeridas);
 		
 		var oferta_variedad_id			= $("#oferta_variedad_id").val();
 		var oferta_grado_id				= $("#oferta_grado_id").val();
 		var oferta_tipo_caja_id			= $("#oferta_cbo_tipo_caja_id").val();
 		var oferta_nro_cajas			= $("#oferta_cbo_order").val();
-		console.log('oferta_variedad_id:',oferta_variedad_id,'*oferta_grado_id:',oferta_grado_id,'*oferta_tipo_caja_id:',oferta_tipo_caja_id,'*oferta_nro_cajas:',oferta_nro_cajas);
+		//console.log('oferta_variedad_id:',oferta_variedad_id,'*oferta_grado_id:',oferta_grado_id,'*oferta_tipo_caja_id:',oferta_tipo_caja_id,'*oferta_nro_cajas:',oferta_nro_cajas);
 		
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{	variedad_id: 			oferta_variedad_id,

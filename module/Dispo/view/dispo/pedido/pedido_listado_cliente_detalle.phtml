@@ -1,0 +1,57 @@
+
+    <table class="table-dispo" style="margin-bottom:10px">
+    	<thead>
+            <tr>
+                <th class="th-inner"  width="70">ID</th>
+                <th class="th-inner"  width="150">Variedad</th>                                           
+                <th class="th-inner"  width="70">Grado</th>
+                <th class="th-inner"  width="70">Tipo Caja</th>
+                <th class="th-inner"  width="70"># Cajas</th>
+                <th class="th-inner"  width="70">Bunches</th>
+                <th class="th-inner"  width="70">Precio</th>
+                <th class="th-inner"  width="80">Total</th>
+                <th class="th-inner"  width="200">Marcacion</th>
+                <th class="th-inner"  width="200">Ag. Carga</th>
+            </tr>
+    	</thead>
+        <tbody>
+<?php 	foreach($this->result as $reg) 
+		{
+?>
+            <tr>                                
+                <td width="70">
+                    <?php echo($reg['pedido_det_sec']); ?>
+                </td>
+                <td width="150">
+                    <?php echo($reg['variedad_nombre']); ?>
+                </td>
+                <td width="70">
+                    <?php echo($reg['grado_id']); ?>
+                </td>
+                <td width="70">
+                    <?php echo($reg['tipo_caja_id']); ?>
+                </td>
+                <td width="70">
+                    <?php echo($reg['nro_cajas']); ?>
+                </td>
+                <td width="70">
+                    <?php echo($reg['cantidad_bunch']); ?>
+                </td>
+                <td width="70">
+                    <?php echo($reg['precio']); ?>
+                </td>
+                <td width="80">
+                    <?php echo($reg['total']); ?>
+                </td>
+                <td width="200">
+                    <?php echo($reg['marcacion_nombre']); ?>
+                </td>
+                <td width="200">
+                    <?php echo($reg['agencia_carga_nombre']); ?>
+                </td>
+            </tr>
+<?php
+		}//end foreach
+?>		
+        </tbody>
+    </table>

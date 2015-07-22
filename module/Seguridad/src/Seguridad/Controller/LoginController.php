@@ -77,7 +77,7 @@ class LoginController extends AbstractActionController
 					$nombreHost = $this->_nombreHost;
 					$agenteUsuario = $this->_agenteUsuario;					
 				
-					if (is_null($usuario)||is_null($clave)){
+					if (empty($usuario)||empty($clave)){
 						$this->flashmessenger()->addMessage("Usuario y/o Clave no válidos");
 						return $this->redirect()->toRoute('home');
 					}//end if

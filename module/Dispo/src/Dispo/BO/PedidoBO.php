@@ -747,4 +747,38 @@ class PedidoBO extends Conexion
 		}
 	}//end function actualizarNroCajas
 	
+	
+	/**
+	 * 
+	 * @param array $condiciones
+	 * @return array
+	 */
+	public function listado($condiciones)
+	{
+		$PedidoCabDAO 	= new PedidoCabDAO();
+		
+		$PedidoCabDAO->setEntityManager($this->getEntityManager());
+		
+		$result = $PedidoCabDAO->listado($condiciones);
+		
+		return $result;
+	}//end functino listado
+	
+	
+	/**
+	 * 
+	 * @param array $condiciones  array(pedido_cab_id, cliente_id)
+	 * @return array
+	 */
+	public function consultarPedidoDetalle($condiciones)
+	{
+		$PedidoDetDAO 	= new PedidoDetDAO();
+		
+		$PedidoDetDAO->setEntityManager($this->getEntityManager());
+
+		$result = $PedidoDetDAO->listado($condiciones);
+		
+		return $result;		
+	}//end function consultarPedidoDetalle
+	
 }//end class PedidoBO

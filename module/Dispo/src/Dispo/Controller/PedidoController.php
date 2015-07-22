@@ -136,69 +136,6 @@ class PedidoController extends AbstractActionController
 	}//end public function consultaritemsporpedidoAction
 
 	
-	
-/* 	public function consultarpedidoactualAction()
-	{
-		try
-		{
-			$viewModel 				= new ViewModel();
-			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
-				
-			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->isLoginClienteVendedor();
-
-			$config = $this->getServiceLocator()->get('Config');
-			
-			$PedidoBO				= new PedidoBO();
-			$AgenciaCargaBO			= new AgenciaCargaBO();
-
-			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-
-			//Se consulta la dispo, considerando los criterios de busqueda
-			$pedido_cab_actual_id		= $SesionUsuarioPlugin->getClientePedidoCabIdActual();
-
-			if (empty($pedido_cab_actual_id))
-			{				
-				$viewModel->pedido_cab_id				= '';
-				$viewModel->nro_pedido_formateado		= '';
-				$viewModel->marcacion_nombre			= '';
-				$viewModel->pedido_fecha				= '';
-				$viewModel->pedido_cab_estado			= '';
-				$viewModel->pedido_comentario			= '';
-				$viewModel->rs_pedido_det				= null;
-				$viewModel->cbo_agencia_carga			= null;				
-			}else{
-				list($reg_pedido_cab, $rs_pedido_det) 		= $PedidoBO->consultarPedido($pedido_cab_actual_id);
-	
-				$viewModel->pedido_cab_id				= $reg_pedido_cab['id'];
-				$viewModel->nro_pedido_formateado		= \Application\Classes\Mascara::getNroPedidoFormateado($reg_pedido_cab['id'], $config['mascara_pedido']);
-				$viewModel->marcacion_nombre			= $reg_pedido_cab['marcacion_nombre'];
-				$viewModel->pedido_fecha				= $reg_pedido_cab['fecha'];
-				$viewModel->pedido_cab_estado			= $reg_pedido_cab['estado'];
-				$viewModel->pedido_comentario			= $reg_pedido_cab['comentario'];
-				$viewModel->rs_pedido_det				= $rs_pedido_det;			
-				$viewModel->cbo_agencia_carga			= $AgenciaCargaBO->getComboTodos("", '&lt;Agencia de Carga&gt;');
-			}//end if
-
-			$data = $SesionUsuarioPlugin->getRecord();			
-			$viewModel->identidad_usuario 	= $data;			
-			
-			$this->layout($SesionUsuarioPlugin->getUserLayout());
-
-			$viewModel->setTemplate('Dispo/pedido/pedido_actual.phtml');
-			return $viewModel;
-			//false
-		}catch (\Exception $e) {
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;
-		}
-	}//end public consultarordenactualAction
- */	
-
 
 	public function consultarpedidoactualAction()
 	{
@@ -574,4 +511,96 @@ class PedidoController extends AbstractActionController
 	
 	
 	
+	
+	public function listadoclienteAction()
+	{
+		try
+		{
+			$viewModel 				= new ViewModel();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+		
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+			$cliente_id 		= $SesionUsuarioPlugin->getUserClienteId();
+			
+			$config = $this->getServiceLocator()->get('Config');
+				
+			$PedidoBO				= new PedidoBO();
+		
+			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			$condiciones = array('cliente_id' => $cliente_id);
+			$result	= $PedidoBO->listado($condiciones);
+			$viewModel->result				= $result;
+
+/*			$data = $SesionUsuarioPlugin->getRecord();
+			$viewModel->identidad_usuario 	= $data;
+*/
+			$this->layout($SesionUsuarioPlugin->getUserLayout());
+
+			$viewModel->setTemplate('dispo/pedido/pedido_listado_cliente.phtml');
+			return $viewModel;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadoclienteAction
+	
+	
+	
+	public function listadoclientedetallehtmlAction()
+	{
+		try
+		{
+			$viewModel 				= new ViewModel();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+		
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+			$cliente_id 			= $SesionUsuarioPlugin->getUserClienteId();
+					
+			$config = $this->getServiceLocator()->get('Config');
+		
+			$PedidoBO				= new PedidoBO();
+		
+			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+
+			$condiciones = array('pedido_cab_id' 	=> $json['pedido_cab_id'],
+								 'cliente_id'		=> $cliente_id
+								);
+			//Se pasa el ID del Cliente para evitar que se consulte registro de pedidos no autorizados (hacking)
+			$result = $PedidoBO->consultarPedidoDetalle($condiciones);
+
+			$viewModel->result 	= $result;
+		
+			$viewModel->setTemplate('dispo/pedido/pedido_listado_cliente_detalle.phtml');
+			$viewModel->setTerminal(true);
+			$viewRender = $this->getServiceLocator()->get('ViewRenderer');
+			$html = $viewRender->render($viewModel);
+		
+			$response = new \stdClass();
+			$response->respuesta_code 			= 'OK';
+			$response->respuesta_codex 			= 'OK'; //$result['respuesta'];
+			$response->respuesta_mensaje		= '';
+			$response->html = $html;
+		
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+		
+	}//end function listadoclientedetallehtml
 }//end controller
