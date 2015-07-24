@@ -23,8 +23,7 @@ class CalidadDAO extends Conexion
 		);
 		$record = array(
 				'id'								=> $CalidadData->getId(),
-				'nombre'		                    => $CalidadData->getNombre(),
-				'nivel'		            			=> $CalidadData->getNivel()
+				'nombre'		                    => $CalidadData->getNombre()
 
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
@@ -47,11 +46,10 @@ class CalidadDAO extends Conexion
 		);
 		$record = array(
 				'id'								=> $CalidadData->getId(),
-				'nombre'		                    => $CalidadData->getNombre(),
-				'nivel'		            			=> $CalidadData->getNivel()
+				'nombre'		                    => $CalidadData->getNombre()
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $AgenciaCargaData->getId();
+		return $CalidadData->getId();
 	}//end function modificar
 
 
@@ -63,7 +61,7 @@ class CalidadDAO extends Conexion
 	 */	
 	public function consultar($id)
 	{
-		$AgenciaCargaData 		    = new CalidadData();
+		$CalidadData 		    = new CalidadData();
 
 		$sql = 	' SELECT calidad.* '.
 				' FROM calidad '.
@@ -77,7 +75,6 @@ class CalidadDAO extends Conexion
 		if($row){
 			$CalidadData->setId				    ($row['id']);
 			$CalidadData->setNombre		   		($row['nombre']);
-			$CalidadData->setNivel			    ($row['nivel']);
 		
 			return $CalidadData;
 		}else{
@@ -87,6 +84,25 @@ class CalidadDAO extends Conexion
 	}//end function consultar
 
 
+	
+	/**
+	 * consultarTodos
+	 *
+	 * @return array
+	 */
+	public function consultarTodos()
+	{
+		$sql = 	' SELECT calidad.* '.
+				' FROM calidad ';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		//return new ViewModel(array(result'=>$result));
+		return $result;
+	}//end function consultarTodos
+	
 }//end class
 
 ?>

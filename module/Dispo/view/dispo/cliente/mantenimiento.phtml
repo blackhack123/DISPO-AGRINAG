@@ -24,27 +24,27 @@ $(document).ready(function () {
 
     $(".btn_edit").on('click', function(event){ 
 		var tr 						= $(this).closest('tr');
-		var variedad_id 			= tr.attr('variedad_id');
+		var cliente_id 			= tr.attr('cliente_id');
 
-		consultar_variedad(variedad_id);
+		consultar_cliente(cliente_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });
 
 	
     $("#tbl_registros tbody tr").on('dblclick', function(event){ 
 		var tr 						= $(this).closest('tr');
-		var variedad_id 		= tr.attr('variedad_id');
+		var cliente_id 		= tr.attr('cliente_id');
 
-		consultar_variedad(variedad_id);
+		consultar_cliente(cliente_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });	
 
 	
     $("#tbl_registros tbody tr").on('dblclick', function(event){ 
 		var tr 						= $(this).closest('tr');
-		var variedad_id 			= tr.attr('variedad_id');
+		var cliente_id 			= tr.attr('cliente_id');
 
-		consultar_variedad_id(variedad_id);
+		consultar_cliente_id(cliente_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });		
 
@@ -62,23 +62,20 @@ $(document).ready(function () {
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/variedad/nuevodata',
+							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/nuevodata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
 									ValidateControlsInit();
 									$("#accion").val("I");
-									$("#dialog_mantenimiento_variedad_nombre").html("NUEVO REGISTRO");
+									$("#dialog_mantenimiento_cliente_nombre").html("NUEVO REGISTRO");
 
-									$("#variedad_id").val('');
-									$("#variedad_id").prop('readonly',false);
+									$("#cliente_id").val('');
+									$("#cliente_id").prop('readonly',false);
 									$("#nombre").val('');
-									$("#calidad_id").html(response.cbo_calidad_id);
+									//$("#base").val('');
 									$("#colorbase").html(response.cbo_color_base);
-									$("#solido").html(response.cbo_solido);
-									$("#es_real").html(response.cbo_es_real);
-									$("#ciclo_prod").val('');
-									$("#obtentor_id").html(response.cbo_obtentor_id);
+									//$("#estad).val('');
 									$("#estado").html(response.cbo_estado);
 									$("#lbl_fec_sincronizado").html('');
 									$("#lbl_usuario_ing").html('');
@@ -105,21 +102,16 @@ $(document).ready(function () {
 		
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{	accion: $("#accion").val(),
-					 	id: $("#variedad_id").val(),
+					 	id: $("#cliente_id").val(),
 					 	nombre: $("#nombre").val(),
 					 	colorbase: $("#colorbase").val(),
-					 	calidad_id: $("#calidad_id").val(),
-					 	solido: $("#solido").html(response.cbo_solido),
-					 	es_real: $("#es_real").html(response.cbo_es_real),
-					 	ciclo_prod: $("#ciclo_prod").val(),
-					 	obtentor_id: $("#obtentor_id").val(),
 					 	estado: $("#estado").val(),
 					}
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/variedad/grabardata',
+							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/grabardata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
@@ -162,15 +154,15 @@ $(document).ready(function () {
 
 
 
-	function consultar_variedad(id)
+	function consultar_cliente(id)
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{variedad_id: id}
+		var data = 	{cliente_id: id}
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/variedad/consultardata',
+							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/consultardata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
@@ -182,7 +174,7 @@ $(document).ready(function () {
 		                 }
 		response = ajax_call(parameters, data);		
 		return false;		
-	}//end function consultar_variedad
+	}//end function consultar_cliente
 
 	function mostrar_registro(response)
 	{
@@ -191,13 +183,12 @@ $(document).ready(function () {
 		{
 			ValidateControlsInit();
 			$("#accion").val("M");			
-			$("#dialog_mantenimiento_variedad_nombre").html(row.nombre);
-			$("#variedad_id").val(row.id);
-			$("#variedad_id").prop('readonly',true);
+			$("#dialog_mantenimiento_cliente_nombre").html(row.nombre);
+			$("#cliente_id").val(row.id);
+			$("#cliente_id").prop('readonly',true);
 			$("#nombre").val(row.nombre);
-			$("#colorbase").html(response.cbo_color_base);
-			$("#calidad_id").html(response.cbo_calidad_id);
-			$("#estado").html(response.cbo_estado);
+			$("#direccion").html(response.cbo_color_base);
+			$("#pais_id").html(response.cbo_estado);
 			$("#lbl_fec_ingreso").html(row.fec_ingreso);
 			$("#lbl_fec_modifica").html(row.fec_modifica);
 			$("#lbl_usuario_ing").html(row.usuario_ing_user_name);
@@ -227,7 +218,7 @@ $(document).ready(function () {
 
 
 <div class="title-admin-section">
-	<h1>VARIEDAD</h1>
+	<h1>cliente</h1>
 </div>
 
 
@@ -239,13 +230,13 @@ $(document).ready(function () {
             </div>
         	<div class="pull-right">
             	<div class="form-inline">
-                	<form id="frm" action="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento" method="post" >
+                	<form id="frm" action="<?php echo($this->basePath()); ?>/dispo/cliente/mantenimiento" method="post" >
                     <input name="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
                     <select  name="busqueda_estado" class="select-class2">
                         <?php echo($this->busqueda_estado); ?>
                     </select>
                     <select name="busqueda_sincronizado" class="select-class2">
-                    	<?php echo($this->busqueda_estado); ?>
+                    	<?php echo($this->busqueda_sincronizado); ?>
                     </select>
                     <a id="btn_consultar" class="btn btn-small btn-success"  href="#" ><i class="glyphicon glyphicon-search icon-white"></i></a>
                     </form>
@@ -253,15 +244,17 @@ $(document).ready(function () {
             </div>
         </div>
 				<table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
-			<thead>
+		<thead>
 				<tr>
 				  <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
 					<th  width="100" rowspan="2" class="th-inner">ID</th>				
 					<th  width="0" rowspan="2" class="th-inner">NOMBRE</th>
-					<th  width="0" rowspan="2" class="th-inner">COLOR BASE</th>
+					<th  width="0" rowspan="2" class="th-inner">DIRECCION</th>
+					<th  width="150" rowspan="2" class="th-inner">PAIS</th>
+					<th  width="150" rowspan="2" class="th-inner">TELEFONO</th>
 					<th  width="70" colspan="2" class="th-inner">SINCRONIZACION</th>					
 					<th  width="70" rowspan="2" class="th-inner">ESTADO</th>
-					<th  width="70" rowspan="2" class="th-inner">EDITAR</th>
+					<th  width="70" rowspan="2" class="th-inner">&nbsp;</th>
 				</tr>
 				<tr>
 				  <th  width="70" class="th-inner">&nbsp;</th>
@@ -279,11 +272,13 @@ $(document).ready(function () {
 				$class_row = 'row_estado_inactivo';
 			}
 ?>            
-				<tr variedad_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
+				<tr agencia_carga_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
 				  <td><?php echo($i); ?></td>
 					<td><?php echo($reg['id']); ?></td>
 					<td align="left"><?php echo($reg['nombre']); ?></td>
-					<td align="left"><?php echo($reg['colorbase']); ?></td>
+					<td><?php echo($reg['direccion']); ?></td>
+					<td><?php echo($reg['pais_nombre']); ?></td>
+					<td><?php echo($reg['telefono1']); ?></td>
 					<td>
 					<?php if ($reg['sincronizado']==0){ ?>
 						<span class="glyphicon glyphicon-time icon-white" style="color:red"></span>
@@ -309,7 +304,7 @@ $(document).ready(function () {
 			    <div class="modal-content">
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			        <h4 class="modal-title" id="myModalLabel">VARIEDAD (<span id="dialog_mantenimiento_variedad_nombre"></span>)</h4>
+			        <h4 class="modal-title" id="myModalLabel">cliente (<span id="dialog_mantenimiento_cliente_nombre"></span>)</h4>
 			      </div>
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
@@ -318,7 +313,7 @@ $(document).ready(function () {
 			        	      <tr>
 			        	        <td><label class="control-label">ID:</label></td>
 			        	        <td>
-                                <input id="variedad_id" name="variedad_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" validate="required" validateMessage="Ingrese un codigo">
+                                <input id="cliente_id" name="cliente_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" validate="required" validateMessage="Ingrese un codigo">
                                 <input type="hidden" name="accion" id="accion" value="" /></td>
 		        	          </tr>
 			        	      <tr>
@@ -327,31 +322,7 @@ $(document).ready(function () {
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">COLOR BASE:</label></td>
-			        		    <td><select  name="colorbase" class="select-class2" id="colorbase" validate="required" validateMessage="Seleccione Color Base"></select></td>
-		        	          </tr>	
-		        	           <tr>
-			        	        <td><label class="control-label">CALIDAD:</label></td>
-			        		    <td><select  name="calidad_id" class="select-class2" id="calidad_id" validate="required"></select></td>
-		        	          </tr>	
-		        	            <tr>
-			        	        <td><label class="control-label">SOLIDO:</label></td>
-			        		    <td><select  name="solido" class="select-class2" id="solido" validate="required"></select></td>
-		        	          </tr>
-		        	            <tr>
-			        	        <td><label class="control-label">REAL:</label></td>
-			        		    <td><select  name="es_real" class="select-class2" id="es_real" validate="required"></select></td>
-		        	          </tr>
-		        	           <tr>
-			        	        <td><label class="control-label">CICLO:</label></td>
-			        	        <td><input name="ciclo_prod" type="text" class="form-control input-sm" id="ciclo_prod" style="width:350px" value="" maxlength="6"  validate="required" validateMessage="Ingrese ciclo"></td>
-		        	          </tr>
-		        	          <tr>
-			        	        <td><label class="control-label">OBTENTOR:</label></td>
-			        		    <td><select  name="obtentor_id" class="select-class2" id="obtentor_id" validate="required" validateMessage="Seleccione Color Base"></select></td>
-		        	          </tr>	
-		        	           <tr>
-			        	        <td><label class="control-label">ESTADO PROD. ESPECIAL:</label></td>
-			        	        <td><input type="checkbox" name="est_producto_especial" id="est_producto_especial"></td>
+			        		    <td><select  name="colorbase" class="select-class2" id="colorbase" validate="required"></select></td>
 		        	          </tr>	
 		        	           <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>

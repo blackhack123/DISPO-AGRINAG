@@ -9,6 +9,8 @@ use Dispo\BO\MarcacionBO;
 use Zend\View\Model\JsonModel;
 use Dispo\BO\VariedadBO;
 use Dispo\BO\ColoresBO;
+use Dispo\BO\CalidadBO;
+use Dispo\BO\ObtentorBO;
 use Dispo\Data\VariedadData;
 
 
@@ -65,15 +67,27 @@ class VariedadController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$VariedadBO 			= new VariedadBO();
 			$ColoresBO				= new ColoresBO();
+			$CalidadBO				= new CalidadBO();
+			$ObtentorBO				= new ObtentorBO();
 			
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ObtentorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 
-			$colorbase = null;
+			$colorbase 		= null;
+			$calidad_id		= null;
+			$solido			= 'S';
+			$es_real 		= 'S';
+			$obtentor		= null;
 			$response = new \stdClass();
 			$response->cbo_color_base		= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
+			$response->cbo_calidad_id		= $CalidadBO->getComboCalidad($calidad_id, "&lt;Seleccione&gt;");
+			$response->cbo_solido			= $VariedadBO->getComboSolido($solido, "&lt;Seleccione&gt;");
+			$response->cbo_es_real			= $VariedadBO->getComboEsReal($es_real, "&lt;Seleccione&gt;");
+			$response->cbo_obtentor_id		= $ObtentorBO->getCombo($ObtentorBO, "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
@@ -92,7 +106,6 @@ class VariedadController extends AbstractActionController
 	
 	
 	
-	
 	public function consultardataAction()
 	{
 		try
@@ -102,6 +115,7 @@ class VariedadController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$VariedadBO 			= new VariedadBO();
 			$ColoresBO				= new ColoresBO();
+			$CalidadBO				= new CalidadBO();
 				
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
@@ -118,6 +132,9 @@ class VariedadController extends AbstractActionController
 			$response = new \stdClass();
 			$response->row					= $row;
 			$response->cbo_color_base		= $ColoresBO->getCombo($row['colorbase'], "&lt;Seleccione&gt;");
+			$response->cbo_calidad			= $CalidadBO->getComboCalidad($calidad, "&lt;Seleccione&gt;");
+			$response->cbo_solido			= $VariedadBO->getComboSolido($calidad_id, "&lt;Seleccione&gt;");
+			$response->cbo_es_real			= $VariedadBO->getComboEsReal($calidad_id, "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
@@ -148,10 +165,11 @@ class VariedadController extends AbstractActionController
 			$VariedadData		= new VariedadData();
 			$VariedadBO 		= new VariedadBO();
 			$ColoresBO 			= new ColoresBO();
+			$CalidadBO 			= new CalidadBO();
 			
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			
+			$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
@@ -162,6 +180,9 @@ class VariedadController extends AbstractActionController
 			$VariedadData->setId		($json['id']); 
 			$VariedadData->setNombre	($json['nombre']);
 			$VariedadData->setColorBase	($json['colorbase']);
+			$VariedadData->setCalidadId	($json['calidad_id']);
+			$VariedadData->setSolido	($json['calidad_id']);
+			$VariedadData->setCalidadId	($json['calidad_id']);
 			$VariedadData->setEstado	($json['estado']);
 			$response = new \stdClass();
 			switch ($accion)
@@ -219,5 +240,5 @@ class VariedadController extends AbstractActionController
 		}
 	}//end function consultarAction	
 	
-	
+		
 }//end controller

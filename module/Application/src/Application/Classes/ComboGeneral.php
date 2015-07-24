@@ -39,5 +39,7 @@ class ComboGeneral {
 		return $opciones;
 	}//end function getComboEstado
 	
+
+	
 	
 }//end class Combo

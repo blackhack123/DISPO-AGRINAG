@@ -56,7 +56,7 @@ class AgenciaCargaData
 	protected $usuario_mod_id;
 	
 	/**
-	 * @var string
+	 * @var int
 	 */
 	protected $sincronizado;
 	
@@ -76,7 +76,7 @@ class AgenciaCargaData
 	public function getFecModifica() 				{return $this->fec_modifica;}
 	public function getUsuarioIngId()				{return $this->usuario_ing_id;}
 	public function getUsuarioModId()				{return $this->usuario_mod_id;}
-	public function getSincronizado() 			{return $this->sincronizado;}
+	public function getSincronizado() 				{return $this->sincronizado;}
 	public function getFecSincronizado() 			{return $this->fec_sincronizado;}
 	//metodos SET
 	public function setId($valor) 					{$this->id					= $valor;}

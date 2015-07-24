@@ -80,7 +80,7 @@ class ClienteDAO extends Conexion
 	 */	
 	public function consultar($id)
 	{
-		$AgenciaCargaData 		    = new ClienteData();
+		$ClienteData 		    = new ClienteData();
 
 		$sql = 	' SELECT cliente.* '.
 				' FROM cliente '.
@@ -120,9 +120,8 @@ class ClienteDAO extends Conexion
 	 */
 	public function consultarTodo()
 	{
-		$sql = 	' SELECT id, TRIM(nombre) as nombre '.
-				' FROM cliente '.
-				' ORDER BY nombre';
+		$sql = 	' SELECT cliente.* '.
+				' FROM cliente ';
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
@@ -146,6 +145,57 @@ class ClienteDAO extends Conexion
 	}//end function consultarUsuarioAsignado
 	
 	
+	/**
+	 *
+	 * En las condiciones se puede pasar los siguientes criterios de busqueda:
+	 *   1) criterio_busqueda,  utilizado para buscar en nombre, id, direccion, telefono
+	 *   2) estado
+	 *   3) sincronizado
+	 *
+	 * @param array $condiciones
+	 * @return array
+	 */
+	public function listado($condiciones)
+	{
+		
+			$sql = 	' SELECT cliente.*, pais.nombre as pais_nombre '.
+							' FROM cliente  LEFT JOIN pais '.
+							'		               ON pais.id      = cliente.pais_id '.	
+							' WHERE 1 = 1 ';
+		
+		if (!empty($condiciones['criterio_busqueda']))
+		{
+			$sql = $sql." and (pais.nombre like '%".$condiciones['criterio_busqueda']."%'".
+					"      or cliente.nombre like '%".$condiciones['criterio_busqueda']."%'".
+					"      or cliente.id like '%".$condiciones['criterio_busqueda']."%'".
+					"      or cliente.direccion like '%".$condiciones['criterio_busqueda']."%'".
+					"      or cliente.ciudad like '%".$condiciones['criterio_busqueda']."%'".
+					"      or cliente.telefono1 like '%".$condiciones['criterio_busqueda']."%')";
+		}//end if
+		
+		
+	
+		if (!empty($condiciones['estado']))
+		{
+			$sql = $sql." and estado = '".$condiciones['estado']."'";
+		}//end if
+	
+	
+		if (isset($condiciones['sincronizado']))
+		{
+			if ($condiciones['sincronizado']!='')
+			{
+				$sql = $sql." and sincronizado = ".$condiciones['sincronizado'];
+			}//end if
+		}//end if
+		$sql=$sql."order by cliente.nombre";
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function listado
+
 }//end class
 
 ?>

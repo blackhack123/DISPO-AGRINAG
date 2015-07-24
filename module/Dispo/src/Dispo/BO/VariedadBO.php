@@ -4,6 +4,7 @@ namespace Dispo\BO;
 
 use Application\Classes\Conexion;
 use Dispo\DAO\VariedadDAO;
+use Dispo\DAO\ProductoDAO;
 use Dispo\Data\VariedadData;
 
 
@@ -31,6 +32,62 @@ class VariedadBO extends Conexion
 		return $opciones;
 	}//end function getComboTodos
 	
+	
+	
+	/**
+	 *
+	 * @param int $obtentor
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getComboObtentor($obtentor, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$VariedadDAO = new VariedadDAO();
+	
+		$VariedadDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $VariedadDAO->consultarColores();
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $obtentor, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboTodos
+	
+	
+	
+	/**
+	 * 
+	 * @param string $solido
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	public static function getComboSolido($solido, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$arrData = array('S'=>'SI','N'=>'NO');
+		
+		$opciones = \Application\Classes\Combo::getComboDataArray($arrData, $solido, $texto_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboSolido
+	
+	
+	/**
+	 * 
+	 * @param string $es_real
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	public static function getComboEsReal($es_real, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$arrData = array('S'=>'SI','N'=>'NO');
+		
+		$opciones = \Application\Classes\Combo::getComboDataArray($arrData, $es_real, $texto_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboSolido
 	
 
 	/**

@@ -2,7 +2,7 @@
 
 namespace Dispo\Data;
 
-class ClienteData
+class ObtentorData
 {
 	/**
 	 * @var string
@@ -17,45 +17,12 @@ class ClienteData
 	/**
 	 * @var string
 	 */	
-	protected $direccion;
+	protected $rep_obtentor_id;
 	
 	/**
 	 * @var string
 	 */
-	protected $pais_id;
-	/**
-	 * @var string
-	 */
-	protected $ciudad;
-	/**
-	 * @var string
-	 */
-	protected $telefono1;
-
-	/**
-	 * @var string
-	 */
-	protected $telefono2;
-	
-	/**
-	 * @var string
-	 */
-	protected $fax1;
-	
-	/**
-	 * @var string
-	 */
-	protected $fax2;
-	
-	/**
-	 * @var string
-	 */
-	protected $email;
-		
-	/**
-	 * @var int
-	 */
-	protected $grupo_precio_cab_id;
+	protected $estado;
 	
 	/**
 	 * @var string
@@ -92,14 +59,8 @@ class ClienteData
 	//metodos GET
 	public function getId() 						{return $this->id;}
 	public function getNombre() 					{return $this->nombre;}
-	public function getPaisId() 					{return $this->pais_id;}
-	public function getCiudad() 					{return $this->ciudad;}
-	public function getTelefono1() 					{return $this->telefono1;}
-	public function getTelefono2() 					{return $this->telefono2;}
-	public function getFax1() 						{return $this->fax1;}
-	public function getFax2() 						{return $this->fax2;}
-	public function getEmail()	 					{return $this->email;}
-	public function getGrupoPrecioCabId() 			{return $this->grupo_precio_cab_id;}
+	public function getRepObtentorId() 				{return $this->rep_obtentor_id;}
+	public function getEstado() 					{return $this->estado;}
 	public function getFecIngreso() 				{return $this->fec_ingreso;}
 	public function getFecModifica() 				{return $this->fec_modifica;}
 	public function getUsuarioIngId() 				{return $this->usuario_ing_id;}
@@ -110,15 +71,10 @@ class ClienteData
 	
 	//metodos SET
 	public function setId($valor) 					{$this->id						= $valor;}
-	public function setPaisId($valor) 				{$this->pais_id					= $valor;}
-	public function setCiudad($valor) 				{$this->ciudad					= $valor;}
-	public function setTelefono1($valor) 			{$this->telefono1				= $valor;}
-	public function setTelefono2($valor) 			{$this->telefono2				= $valor;}
-	public function setFax1($valor) 				{$this->fax1					= $valor;}
-	public function setFax2($valor) 				{$this->fax2					= $valor;}
-	public function setEmail($valor) 				{$this->Email					= $valor;}
-	public function setGrupoPrecioCabId ($valor) 	{$this->grupo_precio_cab_id		= $valor;}
-	public function setFecIngreso($valor) 			{$this->fec_ingreso				= $valor;}
+	public function setNombre($valor) 				{$this->nombre					= $valor;}
+	public function setRepObtentorId($valor) 		{$this->rep_obtentor_id			= $valor;}
+	public function setEstado($valor) 				{$this->estado					= $valor;}
+	public function setFecIngreso($valor) 			{$this->fec_ingeso				= $valor;}
 	public function setFecModifica($valor) 			{$this->fec_modifica			= $valor;}
 	public function setUsuarioIngId($valor) 		{$this->usuario_ing_id			= $valor;}
 	public function setUsuarioModId($valor)			{$this->usuario_mod_id			= $valor;}

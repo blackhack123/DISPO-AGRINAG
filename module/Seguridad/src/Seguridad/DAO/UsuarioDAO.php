@@ -260,7 +260,7 @@ class UsuarioDAO extends Conexion {
 				$sql = $sql." and perfil_id = ".$condiciones['perfil_id'];
 			}//end if
 		}//end if
-		
+		$sql=$sql."order by usuario.nombre";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro

@@ -25,6 +25,7 @@ class VariedadDAO extends Conexion
 				'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
 				'colorbase'		                    => $VariedadData->getColorBase(),
+				'calidad_id'	                    => $VariedadData->getCalidadId(),
 				'estado'		                    => $VariedadData->getEstado(),
 				'fec_ingreso'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'fec_modifica'	                    => $VariedadData->getFecModifica(),
@@ -52,6 +53,7 @@ class VariedadDAO extends Conexion
 				'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
 				'colorbase'		                    => $VariedadData->getColorBase(),
+				'calidad_id'		                => $VariedadData->getCalidadId(),
 				'estado'                			=> $VariedadData->getEstado(),
 				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),
@@ -89,6 +91,7 @@ class VariedadDAO extends Conexion
 					$VariedadData->setId							($row['id']);				
 					$VariedadData->setNombre 						($row['nombre']);
 					$VariedadData->setColorBase 					($row['colorbase']);
+					$VariedadData->setCalidadId						($row['calidad_id']);
 					$VariedadData->setEstado    					($row['estado']);
 					$VariedadData->setFecIngreso 					($row['fec_ingreso']);
 					$VariedadData->setFecModifica 					($row['fec_modifica']);
