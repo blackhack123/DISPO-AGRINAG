@@ -21,7 +21,7 @@ $(document).ready(function () {
 		nuevo(); 
 		return false;
     });       
-
+/*
     $(".btn_edit").on('click', function(event){ 
 		var tr 						= $(this).closest('tr');
 		var variedad_id 			= tr.attr('variedad_id');
@@ -30,7 +30,7 @@ $(document).ready(function () {
 		//$("#dialog_mantenimiento").modal('show') 
     });
 
-	
+
     $("#tbl_registros tbody tr").on('dblclick', function(event){ 
 		var tr 						= $(this).closest('tr');
 		var variedad_id 		= tr.attr('variedad_id');
@@ -38,7 +38,7 @@ $(document).ready(function () {
 		consultar_variedad(variedad_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });	
-
+	*/
 	
     $("#tbl_registros tbody tr").on('dblclick', function(event){ 
 		var tr 						= $(this).closest('tr');
@@ -47,12 +47,12 @@ $(document).ready(function () {
 		consultar_variedad_id(variedad_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });		
-
+/*
     $("#btn_grabar").on('click', function(event){ 
     	grabar();
 		return false;
     });       
-
+*/
 	        
 	function nuevo()
 	{
@@ -244,9 +244,7 @@ $(document).ready(function () {
                     <select  name="busqueda_estado" class="select-class2">
                         <?php echo($this->busqueda_estado); ?>
                     </select>
-                    <select name="busqueda_sincronizado" class="select-class2">
-                    	<?php echo($this->busqueda_estado); ?>
-                    </select>
+               
                     <a id="btn_consultar" class="btn btn-small btn-success"  href="#" ><i class="glyphicon glyphicon-search icon-white"></i></a>
                     </form>
 				</div>

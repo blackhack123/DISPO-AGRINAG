@@ -16,7 +16,7 @@ $(document).ready(function () {
         $("#frm").submit();
 		return false;
     });
-
+    /*
     $("#btn_nuevo").on('click', function(event){
 		nuevo(); 
 		return false;
@@ -38,7 +38,7 @@ $(document).ready(function () {
 		consultar_cliente(cliente_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });	
-
+*/
 	
     $("#tbl_registros tbody tr").on('dblclick', function(event){ 
 		var tr 						= $(this).closest('tr');
@@ -47,13 +47,13 @@ $(document).ready(function () {
 		consultar_cliente_id(cliente_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });		
-
+/*
     $("#btn_grabar").on('click', function(event){ 
     	grabar();
 		return false;
     });       
 
-	        
+	 */       
 	function nuevo()
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras

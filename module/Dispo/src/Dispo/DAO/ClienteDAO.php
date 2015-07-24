@@ -188,7 +188,7 @@ class ClienteDAO extends Conexion
 				$sql = $sql." and sincronizado = ".$condiciones['sincronizado'];
 			}//end if
 		}//end if
-		$sql=$sql."order by cliente.nombre";
+		$sql=$sql." order by cliente.nombre";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro

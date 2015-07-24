@@ -119,6 +119,7 @@ class VariedadController extends AbstractActionController
 				
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
@@ -128,13 +129,15 @@ class VariedadController extends AbstractActionController
 			$variedad_id		= $json['variedad_id'];
 	
 			$row					= $VariedadBO->consultar($variedad_id, \Application\Constants\ResultType::MATRIZ);
-	
+			
+			$colorbase 		= null;
+			$calidad_id		= null;
 			$response = new \stdClass();
 			$response->row					= $row;
 			$response->cbo_color_base		= $ColoresBO->getCombo($row['colorbase'], "&lt;Seleccione&gt;");
-			$response->cbo_calidad			= $CalidadBO->getComboCalidad($calidad, "&lt;Seleccione&gt;");
-			$response->cbo_solido			= $VariedadBO->getComboSolido($calidad_id, "&lt;Seleccione&gt;");
-			$response->cbo_es_real			= $VariedadBO->getComboEsReal($calidad_id, "&lt;Seleccione&gt;");
+			$response->cbo_calidad_id		= $CalidadBO->getComboCalidad($calidad_id, "&lt;Seleccione&gt;");
+			$response->cbo_solido			= $VariedadBO->getComboSolido($solido, "&lt;Seleccione&gt;");
+			$response->cbo_es_real			= $VariedadBO->getComboEsReal($es_real, "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';

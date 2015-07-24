@@ -104,8 +104,8 @@ class ObtentorDAO extends Conexion
 	 */
 	public function consultarTodos()
 	{
-		$sql = 	' SELECT Obtentor.* '.
-				' FROM Obtentor '.
+		$sql = 	' SELECT obtentor.* '.
+				' FROM obtentor '.
 				' ORDER BY nombre ';
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
