@@ -5,6 +5,11 @@
 			$('#tbl_proveedor').tablesorter(); //Columna de Sueldo
 			$("#tbl_proveedor").stickyTableHeaders();
 		});//$(document).ready
+		
+		$('#tabs_disponibilidad a').click(function (e) {
+			e.preventDefault()
+			$(this).tab('show')
+		})
 	</script>
 
 
@@ -15,64 +20,73 @@
 		        </h1>
 		    </div>
 			
-            <div class="table-container col-md-16 col-sm-16 bs-example">	      
+            <div id="tabs_disponibilidad" class="table-container col-md-16 col-sm-16">	      
                   <!-- Nav tabs -->
                   <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#home" aria-controls="tab_home" role="tab" data-toggle="tab">SINCRONIZADOR</a></li>
-                    <li role="presentation"><a href="#profile" aria-controls="tab_profile" role="tab" data-toggle="tab">DISPONIBILIDAD</a></li>
-                    <li role="presentation"><a href="#messages" aria-controls="tab_messages" role="tab" data-toggle="tab">DISPO X GRUPO</a></li>
-                    <li role="presentation"><a href="#settings" aria-controls="tab_settings" role="tab" data-toggle="tab">PRECIO x GRUPO</a></li>
+                    <li role="presentation" class="active"><a href="#tab_dispo_sincronizacion" aria-controls="tab_dispo_sincronizacion" role="tab" data-toggle="tab">SINCRONIZADOR</a></li>
+                    <li role="presentation"><a href="#tab_dispo" aria-controls="tab_dis" role="tab" data-toggle="tab">DISPONIBILIDAD</a></li>
+                    <li role="presentation"><a href="#tab_dispo_x_grupo" aria-controls="tab_dispo_x_grupo" role="tab" data-toggle="tab">DISPO X GRUPO</a></li>
+                    <li role="presentation"><a href="#tab_precio_x_grupo" aria-controls="tab_precio_x_grupo" role="tab" data-toggle="tab">PRECIO x GRUPO</a></li>
                   </ul>
         
             
                   <!-- Tab panes -->
                   <div class="tab-content" style="margin-top:10px">
-                    <div role="tabpanel" class="tab-pane active" id="tab_home">
+                    <div role="tabpanel" class="tab-pane active" id="tab_dispo_sincronizacion">
                         <div class="panel panel-default">
-                            <div class="panel-body">
-                                <table id='tbl_proveedor'  class="clear table-head table-dispo tablesorter tableinit" style="width:0px">
-                                    <thead>
-                                        <tr>
-                                            <th class="th-inner">&nbsp;FINCA&nbsp;</th>
-                                            <th class="th-inner">&nbsp;FECHA&nbsp;</th>
-                                            <th class="th-inner" nowrap>&nbsp;NRO. REG.&nbsp;</th> 
-                                            <th class="th-inner">&nbsp;ACCION&nbsp;</th>                 
-                                            <th class="th-inner">&nbsp;OBSERVACION&nbsp;</th>
-                                        </tr>
-                                     </thead>
-                                     <tbody style="border: 1px solid #cdcdcd;">
-                                        <tr id="AGR">
-                                            <td>AGR</td>
-                                            <td class="fec_finca">2015-07-23</td>
-                                            <td class="nro_reg" >330</td>
-                                            <td>BOTONES</td>
-                                            <td class="observacion"></td>                        
-                                        </tr>
-                                        <tr id="HTC">
-                                            <td>HTC</td>
-                                            <td class="fec_finca">2015-07-23</td>
-                                            <td class="nro_reg">330</td>
-                                            <td>BOTONES</td>
-                                            <td class="observacion"></td>                    
-                                      </tr>
-                                        <tr id="RLM">
-                                            <td>RLM</td>
-                                            <td class="fec_finca">2015-07-23</td>
-                                            <td class="nro_reg">330</td>
-                                            <td>BOTONES</td>
-                                            <td class="observacion"></td>                      
-                                      </tr>
-                                     </tbody>
-                                </table>
-        						<div class="clear" style="padding: 5px"></div>
-        						<a id="btn_refrescar" href="#" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-refresh"></i> REFRESAR</a>
-                                <a id="btn_sincronizar"  href="#" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>                            
-                            </div> 
-                        </div>                                                        
+                            <table id='tbl_proveedor'  class="clear table-head table-dispo tablesorter tableinit" style="width:0px">
+                                <thead>
+                                    <tr>
+                                        <th class="th-inner">&nbsp;FINCA&nbsp;</th>
+                                        <th class="th-inner">&nbsp;FECHA&nbsp;</th>
+                                        <th class="th-inner" nowrap>&nbsp;NRO. REG.&nbsp;</th> 
+                                        <th class="th-inner">&nbsp;ACCION&nbsp;</th>                 
+                                        <th class="th-inner">&nbsp;OBSERVACION&nbsp;</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody style="border: 1px solid #cdcdcd;">
+                                    <tr id="AGR">
+                                        <td>AGR</td>
+                                        <td class="fec_finca">2015-07-23</td>
+                                        <td class="nro_reg" >330</td>
+                                        <td>BOTONES</td>
+                                        <td class="observacion"></td>                        
+                                    </tr>
+                                    <tr id="HTC">
+                                        <td>HTC</td>
+                                        <td class="fec_finca">2015-07-23</td>
+                                        <td class="nro_reg">330</td>
+                                        <td>BOTONES</td>
+                                        <td class="observacion"></td>                    
+                                  </tr>
+                                    <tr id="RLM">
+                                        <td>RLM</td>
+                                        <td class="fec_finca">2015-07-23</td>
+                                        <td class="nro_reg">330</td>
+                                        <td>BOTONES</td>
+                                        <td class="observacion"></td>                      
+                                  </tr>
+                                 </tbody>
+                            </table>
+                            <div class="clear" style="padding: 5px"></div>
+                            <a id="btn_refrescar" href="#" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-refresh"></i> REFRESAR</a>
+                            <a id="btn_sincronizar"  href="#" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>                        </div>                                                        
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="tab_profile">...</div>
-                    <div role="tabpanel" class="tab-pane" id="tab_messages">...</div>
-                    <div role="tabpanel" class="tab-pane" id="tab_settings">...</div>
+                    <div role="tabpanel" class="tab-pane" id="tab_dispo">
+                        <div class="panel panel-default">
+                            ...TAB DISPO
+                         </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="tab_dispo_x_grupo">
+                        <div class="panel panel-default">
+                            ...TAB DISPO X GRUPO
+                         </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="tab_precio_x_grupo">
+                        <div class="panel panel-default">
+                            ...TAB PRECIO X GRUPO
+                        </div>
+                    </div>
                   </div>     
             </div>            
        	 </form>	
