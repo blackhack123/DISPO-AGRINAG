@@ -455,5 +455,40 @@ class DisponibilidadController extends AbstractActionController
 			return $response;
 		}
 	}//end function getcajasofertaAction
+	
+	
+
+	public function panelAction()
+	{
+		try
+		{
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+	
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+	
+			$DispoBO				= new DispoBO();
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			//Se consulta la dispo, considerando los criterios de busqueda
+			$cliente_id 	= $SesionUsuarioPlugin->getUserClienteId();
+			$usuario_id 	= $SesionUsuarioPlugin->getClienteUsuarioId();
+			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
+	
+			$viewModel 							= new ViewModel();
+
+			//$viewModel->setTerminal(true);
+			$this->layout($SesionUsuarioPlugin->getUserLayout());
+			$viewModel->setTemplate('dispo/disponibilidad/panel.phtml');
+			return $viewModel;
+	
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadodispoAction	
 		
 }

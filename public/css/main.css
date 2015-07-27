@@ -24,12 +24,12 @@ body {
   font-size: 11px;
   min-height: 100%;
   position: relative;
-  color: #4d4d4d;
+  color: #4d4d4d;  /*MORONITOR*/
 }
 
 /* line 49, ../sass/main.scss */
 a {
-  color: #4d4d4d;
+/*  color: #4d4d4d;*/
 }
 
 /* line 53, ../sass/main.scss */
@@ -352,10 +352,10 @@ header {
   text-decoration: underline;
 }
 /* line 274, ../sass/main.scss */
-.table-container .table-dispo tr:last-child td {
+/*.table-container .table-dispo tr:last-child td {
   border-bottom: none;
 }
-
+*/
 
 .table-container .table-dispo thead th {
   padding: 8px 0;
@@ -371,10 +371,12 @@ header {
 }
 
 .table-container .table-dispo tbody td:first-child {
+  /*border-bottom: 1px solid #cdcdcd;	*/
   border-left: 1px solid #cdcdcd;
 }
 
 .table-container .table-dispo tbody td:last-child {
+  /*border-bottom: 1px solid #cdcdcd;	*/
   border-right: 1px solid #cdcdcd;
 }
 
