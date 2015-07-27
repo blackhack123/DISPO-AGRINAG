@@ -26,6 +26,12 @@ class VariedadDAO extends Conexion
 				'nombre'		                    => $VariedadData->getNombre(),
 				'colorbase'		                    => $VariedadData->getColorBase(),
 				'calidad_id'	                    => $VariedadData->getCalidadId(),
+				'colorbase'	                   		=> $VariedadData->getColorBase(),
+				'solido'	                   		=> $VariedadData->getSolido(),
+				'es_real'		                    => $VariedadData->getEsReal(),
+				'ciclo_prod'	                    => $VariedadData->getCicloProd(),
+				'obtentor_id'	                    => $VariedadData->getObtentorId(),
+				'est_producto_especial'	            => $VariedadData->getEstProductoEspecial(),
 				'estado'		                    => $VariedadData->getEstado(),
 				'fec_ingreso'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'fec_modifica'	                    => $VariedadData->getFecModifica(),
@@ -54,6 +60,11 @@ class VariedadDAO extends Conexion
 				'nombre'		                    => $VariedadData->getNombre(),
 				'colorbase'		                    => $VariedadData->getColorBase(),
 				'calidad_id'		                => $VariedadData->getCalidadId(),
+				'solido'		               		=> $VariedadData->getSolido(),
+				'es_real'		               		=> $VariedadData->getEsReal(),
+				'ciclo_prod'		                => $VariedadData->getCicloProd(),
+				'obtentor_id'		                => $VariedadData->getObtentorId(),
+				'est_producto_especial'		        => $VariedadData->getEstProductoEspecial(),
 				'estado'                			=> $VariedadData->getEstado(),
 				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),
@@ -92,6 +103,12 @@ class VariedadDAO extends Conexion
 					$VariedadData->setNombre 						($row['nombre']);
 					$VariedadData->setColorBase 					($row['colorbase']);
 					$VariedadData->setCalidadId						($row['calidad_id']);
+					$VariedadData->setColorBase						($row['colorbase']);
+					$VariedadData->setSolido						($row['solido']);
+					$VariedadData->setEsReal						($row['es_real']);
+					$VariedadData->setCicloProd						($row['ciclo_prod']);
+					$VariedadData->setObtentorId					($row['obtentor_id']);
+					$VariedadData->setEstProductoEspecial			($row['est_producto_especial']);
 					$VariedadData->setEstado    					($row['estado']);
 					$VariedadData->setFecIngreso 					($row['fec_ingreso']);
 					$VariedadData->setFecModifica 					($row['fec_modifica']);
@@ -209,7 +226,7 @@ class VariedadDAO extends Conexion
 				$sql = $sql." and sincronizado = ".$condiciones['sincronizado'];
 			}//end if
 		}//end if
-		
+		$sql= $sql. " order by nombre";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro

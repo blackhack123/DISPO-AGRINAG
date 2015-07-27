@@ -21,7 +21,7 @@ $(document).ready(function () {
 		nuevo(); 
 		return false;
     });       
-/*
+
     $(".btn_edit").on('click', function(event){ 
 		var tr 						= $(this).closest('tr');
 		var variedad_id 			= tr.attr('variedad_id');
@@ -38,26 +38,27 @@ $(document).ready(function () {
 		consultar_variedad(variedad_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });	
-	*/
+	
 	
     $("#tbl_registros tbody tr").on('dblclick', function(event){ 
 		var tr 						= $(this).closest('tr');
 		var variedad_id 			= tr.attr('variedad_id');
 
-		consultar_variedad_id(variedad_id);
+		consultar_variedad(variedad_id);
 		//$("#dialog_mantenimiento").modal('show') 
     });		
-/*
+
     $("#btn_grabar").on('click', function(event){ 
     	grabar();
 		return false;
     });       
-*/
+
 	        
 	function nuevo()
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
+		var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
@@ -79,6 +80,7 @@ $(document).ready(function () {
 									$("#es_real").html(response.cbo_es_real);
 									$("#ciclo_prod").val('');
 									$("#obtentor_id").html(response.cbo_obtentor_id);
+									$("#est_producto_especial").val('');
 									$("#estado").html(response.cbo_estado);
 									$("#lbl_fec_sincronizado").html('');
 									$("#lbl_usuario_ing").html('');
@@ -102,17 +104,21 @@ $(document).ready(function () {
 		if (!ValidateControls('frm')) {
 			return false;
 		}
-		
+
+		var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{	accion: $("#accion").val(),
 					 	id: $("#variedad_id").val(),
 					 	nombre: $("#nombre").val(),
-					 	colorbase: $("#colorbase").val(),
 					 	calidad_id: $("#calidad_id").val(),
-					 	solido: $("#solido").html(response.cbo_solido),
-					 	es_real: $("#es_real").html(response.cbo_es_real),
+					 	colorbase: $("#colorbase").val(),
+					 	solido:$("#solido").val(),
+					 	es_real:$("#es_real").val(),
+					 	//solido: $("#solido").html(response.cbo_solido),
+					 	//es_real: $("#es_real").html(response.cbo_es_real),
 					 	ciclo_prod: $("#ciclo_prod").val(),
 					 	obtentor_id: $("#obtentor_id").val(),
+					 	est_producto_especial: est_producto_especial,
 					 	estado: $("#estado").val(),
 					}
 		data = JSON.stringify(data);
@@ -186,6 +192,7 @@ $(document).ready(function () {
 
 	function mostrar_registro(response)
 	{
+		//var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
 		var row = response.row;
 		if (row!==null)
 		{
@@ -197,6 +204,19 @@ $(document).ready(function () {
 			$("#nombre").val(row.nombre);
 			$("#colorbase").html(response.cbo_color_base);
 			$("#calidad_id").html(response.cbo_calidad_id);
+			$("#solido").html(response.cbo_solido);
+			$("#es_real").html(response.cbo_es_real);
+			$("#ciclo_prod").val(row.ciclo_prod);
+			//$("#obtentor_id").val(row.obtentor_id);
+			$("#obtentor_id").html(response.cbo_obtentor_id);
+			if (row.est_producto_especial=='1')
+			{
+			    $("#est_producto_especial").prop('checked', true);
+			}
+			else
+			{
+			    $("#est_producto_especial").prop('checked', false);
+			}
 			$("#estado").html(response.cbo_estado);
 			$("#lbl_fec_ingreso").html(row.fec_ingreso);
 			$("#lbl_fec_modifica").html(row.fec_modifica);
@@ -204,9 +224,7 @@ $(document).ready(function () {
 			$("#lbl_usuario_mod").html(row.usuario_mod_user_name);
 			$("#lbl_fec_sincronizado").html(row.fec_sincronizado);
 			
-			
-			
-			
+
 			if (row.sincronizado==1)
 			{
 				$("#sincronizado_pendiente").hide();
@@ -257,6 +275,8 @@ $(document).ready(function () {
 					<th  width="100" rowspan="2" class="th-inner">ID</th>				
 					<th  width="0" rowspan="2" class="th-inner">NOMBRE</th>
 					<th  width="0" rowspan="2" class="th-inner">COLOR BASE</th>
+					<th  width="0" rowspan="2" class="th-inner">SOLIDO</th>
+					<th  width="0" rowspan="2" class="th-inner">REAL</th>
 					<th  width="70" colspan="2" class="th-inner">SINCRONIZACION</th>					
 					<th  width="70" rowspan="2" class="th-inner">ESTADO</th>
 					<th  width="70" rowspan="2" class="th-inner">EDITAR</th>
@@ -281,7 +301,17 @@ $(document).ready(function () {
 				  <td><?php echo($i); ?></td>
 					<td><?php echo($reg['id']); ?></td>
 					<td align="left"><?php echo($reg['nombre']); ?></td>
-					<td align="left"><?php echo($reg['colorbase']); ?></td>
+					<td><?php echo($reg['colorbase']); ?></td>
+					<td>
+					<?php if ($reg['solido']=="S"){ ?>
+						<span class="glyphicon glyphicon-ok" style="color:green"></span>
+					<?php }//end if ?>					
+					</td>
+					<td>
+						<?php if ($reg['es_real']=="S"){ ?>
+						<span class="glyphicon glyphicon-ok" style="color:green"></span>
+					<?php }//end if ?>	
+					</td>
 					<td>
 					<?php if ($reg['sincronizado']==0){ ?>
 						<span class="glyphicon glyphicon-time icon-white" style="color:red"></span>
@@ -349,7 +379,7 @@ $(document).ready(function () {
 		        	          </tr>	
 		        	           <tr>
 			        	        <td><label class="control-label">ESTADO PROD. ESPECIAL:</label></td>
-			        	        <td><input type="checkbox" name="est_producto_especial" id="est_producto_especial"></td>
+			        	        <td><input type="checkbox" name="est_producto_especial" id="est_producto_especial" value=""></td>
 		        	          </tr>	
 		        	           <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>

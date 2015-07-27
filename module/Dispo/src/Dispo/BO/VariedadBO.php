@@ -5,6 +5,7 @@ namespace Dispo\BO;
 use Application\Classes\Conexion;
 use Dispo\DAO\VariedadDAO;
 use Dispo\DAO\ProductoDAO;
+use Dispo\DAO\ObtentorDAO;
 use Dispo\Data\VariedadData;
 
 
@@ -43,11 +44,11 @@ class VariedadBO extends Conexion
 	 */
 	function getComboObtentor($obtentor, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
 	{
-		$VariedadDAO = new VariedadDAO();
+		$ObtentorDAO = new ObtentorDAO();
 	
-		$VariedadDAO->setEntityManager($this->getEntityManager());
+		$ObtentorDAO->setEntityManager($this->getEntityManager());
 	
-		$result = $VariedadDAO->consultarColores();
+		$result = $ObtentorDAO->consultarTodos();
 	
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $obtentor, $texto_1er_elemento, $color_1er_elemento);
 			
@@ -138,7 +139,7 @@ class VariedadBO extends Conexion
 		{
 			$VariedadDAO = new VariedadDAO();
 			$VariedadDAO->setEntityManager($this->getEntityManager());
-			//$AgenciaCargaData2 = $AgenciaCargaDAO->consultar($AgenciaCargaData->getId());
+			//$VariedadData2 = $VariedadDAO->consultar($VariedadData->getId());
 			$result = $VariedadDAO->consultarDuplicado('M',$VariedadData->getId(), $VariedadData->getNombre());
 			$id=		$VariedadData->getId();
 			$nombre=	$VariedadData->getNombre();

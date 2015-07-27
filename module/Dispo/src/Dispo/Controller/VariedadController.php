@@ -132,12 +132,15 @@ class VariedadController extends AbstractActionController
 			
 			$colorbase 		= null;
 			$calidad_id		= null;
+			$solido			= null;
+			$es_real 		= null;
 			$response = new \stdClass();
 			$response->row					= $row;
 			$response->cbo_color_base		= $ColoresBO->getCombo($row['colorbase'], "&lt;Seleccione&gt;");
-			$response->cbo_calidad_id		= $CalidadBO->getComboCalidad($calidad_id, "&lt;Seleccione&gt;");
-			$response->cbo_solido			= $VariedadBO->getComboSolido($solido, "&lt;Seleccione&gt;");
-			$response->cbo_es_real			= $VariedadBO->getComboEsReal($es_real, "&lt;Seleccione&gt;");
+			$response->cbo_calidad_id		= $CalidadBO->getComboCalidad($row['calidad_id'], "&lt;Seleccione&gt;");
+			$response->cbo_solido			= $VariedadBO->getComboSolido($row['solido'], "&lt;Seleccione&gt;");
+			$response->cbo_es_real			= $VariedadBO->getComboEsReal($row['es_real'], "&lt;Seleccione&gt;");
+			$response->cbo_obtentor_id		= $VariedadBO->getComboObtentor($row['obtentor_id'], "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
@@ -180,14 +183,17 @@ class VariedadController extends AbstractActionController
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 			$accion						= $json['accion'];  //I, M
-			$VariedadData->setId		($json['id']); 
-			$VariedadData->setNombre	($json['nombre']);
-			$VariedadData->setColorBase	($json['colorbase']);
-			$VariedadData->setCalidadId	($json['calidad_id']);
-			$VariedadData->setSolido	($json['calidad_id']);
-			$VariedadData->setCalidadId	($json['calidad_id']);
-			$VariedadData->setEstado	($json['estado']);
-			$response = new \stdClass();
+			$VariedadData->setId					($json['id']); 
+			$VariedadData->setNombre				($json['nombre']);
+			$VariedadData->setColorBase				($json['colorbase']);
+			$VariedadData->setCalidadId				($json['calidad_id']);
+			$VariedadData->setSolido				($json['solido']);
+			$VariedadData->setEsReal				($json['es_real']);
+			$VariedadData->setCicloProd				($json['ciclo_prod']);
+			$VariedadData->setObtentorId			($json['obtentor_id']);
+			$VariedadData->setEstProductoEspecial	($json['est_producto_especial']);
+			$VariedadData->setEstado				($json['estado']);
+
 			switch ($accion)
 			{
 				case 'I':
@@ -209,13 +215,13 @@ class VariedadController extends AbstractActionController
 			//Se consulta el registro siempre y cuando el validacion_code sea OK
 			if ($result['validacion_code']=='OK')
 			{
-				$row	= $VariedadBO->consultar($json['id'], \Application\Constants\ResultType::MATRIZ);
 			
 			}else{
 				$row	= null;				
 			}//end if
 			
 			//Retorna la informacion resultante por JSON
+			$row	= null;
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';
 			$response->validacion_code 		= $result['validacion_code'];
