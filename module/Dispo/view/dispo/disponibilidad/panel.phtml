@@ -34,14 +34,14 @@
                   <div class="tab-content" style="margin-top:10px">
                     <div role="tabpanel" class="tab-pane active" id="tab_dispo_sincronizacion">
                         <div class="panel panel-default">
-                            <table id='tbl_proveedor'  class="clear table-head table-dispo tablesorter tableinit" style="width:0px">
+                            <table id='tbl_proveedor'  class="clear table-head table-dispo tablesorter tableinit" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th class="th-inner">&nbsp;FINCA&nbsp;</th>
                                         <th class="th-inner">&nbsp;FECHA&nbsp;</th>
                                         <th class="th-inner" nowrap>&nbsp;NRO. REG.&nbsp;</th> 
                                         <th class="th-inner">&nbsp;ACCION&nbsp;</th>                 
-                                        <th class="th-inner">&nbsp;OBSERVACION&nbsp;</th>
+                                        <th width="100%" class="th-inner">&nbsp;OBSERVACION&nbsp;</th>
                                     </tr>
                                  </thead>
                                  <tbody style="border: 1px solid #cdcdcd;">
@@ -49,28 +49,29 @@
                                         <td>AGR</td>
                                         <td class="fec_finca">2015-07-23</td>
                                         <td class="nro_reg" >330</td>
-                                        <td>BOTONES</td>
-                                        <td class="observacion"></td>                        
+                                        <td><a id="btn_sincronizar_finca" href="#" class="btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a></td>
+                                        <td width="100%" class="observacion" align="left">NO SE PUDO CONECTAR AL SERVIDOR POR LA CONEXION NORMAL.</td>                        
                                     </tr>
                                     <tr id="HTC">
                                         <td>HTC</td>
                                         <td class="fec_finca">2015-07-23</td>
                                         <td class="nro_reg">330</td>
-                                        <td>BOTONES</td>
+                                        <td><a id="btn_sincronizar_finca" href="#" class="btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a></td>
                                         <td class="observacion"></td>                    
                                   </tr>
                                     <tr id="RLM">
                                         <td>RLM</td>
                                         <td class="fec_finca">2015-07-23</td>
                                         <td class="nro_reg">330</td>
-                                        <td>BOTONES</td>
+                                        <td><a id="btn_sincronizar_finca" href="#" class="btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a></td>
                                         <td class="observacion"></td>                      
                                   </tr>
                                  </tbody>
                             </table>
                             <div class="clear" style="padding: 5px"></div>
                             <a id="btn_refrescar" href="#" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-refresh"></i> REFRESAR</a>
-                            <a id="btn_sincronizar"  href="#" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>                        </div>                                                        
+                            <a id="btn_sincronizar"  href="#" class="btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
+                    	</div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="tab_dispo">
                         <div class="panel panel-default">

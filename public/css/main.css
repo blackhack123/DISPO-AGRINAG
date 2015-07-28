@@ -347,9 +347,10 @@ header {
   border-top-right-radius: 5px;
 }
 /* line 269, ../sass/main.scss */
-.table-container .table-dispo a {
-  color: #82cd00;
+.table-container .table-dispo a {  /*MORONITOR SE DESARMA LOS ESTILOS DEL BOOTSTRAP*/
+/*  color: #82cd00;
   text-decoration: underline;
+*/  
 }
 /* line 274, ../sass/main.scss */
 /*.table-container .table-dispo tr:last-child td {
