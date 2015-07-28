@@ -6,6 +6,7 @@ use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\JsonModel;
 use Dispo\BO\ClienteBO;
+use Dispo\BO\PaisBO;
 
 
 class ClienteController extends AbstractActionController
@@ -100,13 +101,16 @@ class ClienteController extends AbstractActionController
 	
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$ClienteBO 				= new ClienteBO();
+			$PaisBO 				= new PaisBO();
 			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 	
 			$response = new \stdClass();
-			$response->cbo_tipo				= $ClienteBO->getComboTipo("", " ");
+			$response->cbo_tipo				= $ClienteBO->getCombo("", " ");
+			$response->cbo_pais_id			= $PaisBO->getComboPais($row['nombre'], "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
@@ -145,6 +149,7 @@ class ClienteController extends AbstractActionController
 			$response = new \stdClass();
 			$response->row					= $row;
 			$response->cbo_tipo				= $ClienteBO->getComboTipo($row['tipo'], " ");
+			$response->cbo_pais_id			= $PaisBO->getComboPais($row['nombre'], "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';

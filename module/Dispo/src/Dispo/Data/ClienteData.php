@@ -60,6 +60,11 @@ class ClienteData
 	/**
 	 * @var string
 	 */
+	protected $estado;
+	
+	/**
+	 * @var string
+	 */
 	protected $fec_ingeso;
 	
 	/**
@@ -100,6 +105,7 @@ class ClienteData
 	public function getFax2() 						{return $this->fax2;}
 	public function getEmail()	 					{return $this->email;}
 	public function getGrupoPrecioCabId() 			{return $this->grupo_precio_cab_id;}
+	public function getEstado() 					{return $this->estado;}
 	public function getFecIngreso() 				{return $this->fec_ingreso;}
 	public function getFecModifica() 				{return $this->fec_modifica;}
 	public function getUsuarioIngId() 				{return $this->usuario_ing_id;}
@@ -117,7 +123,8 @@ class ClienteData
 	public function setFax1($valor) 				{$this->fax1					= $valor;}
 	public function setFax2($valor) 				{$this->fax2					= $valor;}
 	public function setEmail($valor) 				{$this->Email					= $valor;}
-	public function setGrupoPrecioCabId ($valor) 	{$this->grupo_precio_cab_id		= $valor;}
+	public function setGrupoPrecioCabId($valor) 	{$this->grupo_precio_cab_id		= $valor;}
+	public function setEstado($valor) 				{$this->estado					= $valor;}
 	public function setFecIngreso($valor) 			{$this->fec_ingreso				= $valor;}
 	public function setFecModifica($valor) 			{$this->fec_modifica			= $valor;}
 	public function setUsuarioIngId($valor) 		{$this->usuario_ing_id			= $valor;}

@@ -1,4 +1,6 @@
-
+<head >
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 <script>
 $(document).ready(function () {
 	InputData_UpperCaseAll();		
@@ -16,12 +18,13 @@ $(document).ready(function () {
         $("#frm").submit();
 		return false;
     });
-    /*
+  
     $("#btn_nuevo").on('click', function(event){
 		nuevo(); 
 		return false;
-    });       
-
+    });    
+       
+    /*
     $(".btn_edit").on('click', function(event){ 
 		var tr 						= $(this).closest('tr');
 		var cliente_id 			= tr.attr('cliente_id');
@@ -55,102 +58,56 @@ $(document).ready(function () {
 
 	 */       
 	function nuevo()
-	{
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/nuevodata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									ValidateControlsInit();
-									$("#accion").val("I");
-									$("#dialog_mantenimiento_cliente_nombre").html("NUEVO REGISTRO");
+{
+	//Se llama mediante AJAX para adicionar al carrito de compras
+	var data = 	{}
+	data = JSON.stringify(data);
+	
+	var parameters = {	'type': 'POST',//'POST',
+						'contentType': 'application/json',
+						'url':'<?php echo($this->basePath()); ?>/dispo/cliente/nuevodata',
+						'control_process':true,
+						'show_cargando':true,
+						'finish':function(response){
+								ValidateControlsInit();
+								$("#accion").val("I");
+								$("#dialog_mantenimiento_cliente_nombre").html("NUEVO REGISTRO");
 
-									$("#cliente_id").val('');
-									$("#cliente_id").prop('readonly',false);
-									$("#nombre").val('');
-									//$("#base").val('');
-									$("#colorbase").html(response.cbo_color_base);
-									//$("#estad).val('');
-									$("#estado").html(response.cbo_estado);
-									$("#lbl_fec_sincronizado").html('');
-									$("#lbl_usuario_ing").html('');
-									$("#lbl_fec_ingreso").html('');
-									$("#lbl_usuario_mod").html('');
-									$("#lbl_fec_modifica").html('');
-									$("#sincronizado_pendiente").show();
-									$("#sincronizado_ok").hide();
-									
-									$("#dialog_mantenimiento").modal('show')
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;				
-	}//end function nuevo
+								$('#myTabs a[href="#tab_informacion_general"]').tab('show') // Select tab by nombre
+								$('#myTabs a[href="#tab_marcacion"]').tab('show') 
+								$('#myTabs a[href="#tab_agencia_carga"]').tab('show') 
+								$('#myTabs a[href="#tab_usuarios"]').tab('show') 
+								$("#cliet_id").val('');
+								$("#nombre").val('');
+								$("#direccion").val('');
+								$("#pais_id").html(response.cbo_pais_id);
+								$("#ciudad").val('');
+								$("#telfono1").val('');
+								$("#telfono2").val('');
+								$("#fax1").val('');
+								$("#fax2").val('');
+								$("#email").val('');
+								$("#grupo_precio_cab_id").val('');
+								$("#estado").html(response.cbo_estado);
+								$("#lbl_fec_sincronizado").html('');
+								$("#lbl_usuario_ing").html('');
+								$("#lbl_fec_ingreso").html('');
+								$("#lbl_usuario_mod").html('');
+								$("#lbl_fec_modifica").html('');
+								$("#sincronizado_pendiente").show();
+								$("#sincronizado_ok").hide();
+								
+								$("#dialog_mantenimiento").modal('show')
+						}							
+	                 }
+	response = ajax_call(parameters, data);		
+	return false;	
+							
+}//end function nuevo
         
 
 
 
-    function grabar(){
-		if (!ValidateControls('frm')) {
-			return false;
-		}
-		
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{	accion: $("#accion").val(),
-					 	id: $("#cliente_id").val(),
-					 	nombre: $("#nombre").val(),
-					 	colorbase: $("#colorbase").val(),
-					 	estado: $("#estado").val(),
-					}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/grabardata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									if (response.validacion_code == 'OK')
-									{
-										mostrar_registro(response)
-										cargador_visibility('hide');
-										swal({  title: "Informacion grabada con exito!!",   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-											//html:true,
-											type: "success",
-											showCancelButton: false,
-											confirmButtonColor: "#DD6B55",
-											confirmButtonText: "OK",
-											cancelButtonText: "",
-											closeOnConfirm: false,
-											closeOnCancel: false,
-											/*timer: 2000*/
-										});
-									}else{
-										swal({title: response.respuesta_mensaje,   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-											//html:true,
-											type: "error",
-											showCancelButton: false,
-											confirmButtonColor: "#DD6B55",
-											confirmButtonText: "OK",
-											cancelButtonText: "",
-											closeOnConfirm: false,
-											closeOnCancel: false,
-											/*timer: 2000*/
-										});
-									
-									}									
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function grabar
 
 
 
@@ -185,10 +142,9 @@ $(document).ready(function () {
 			$("#accion").val("M");			
 			$("#dialog_mantenimiento_cliente_nombre").html(row.nombre);
 			$("#cliente_id").val(row.id);
-			$("#cliente_id").prop('readonly',true);
 			$("#nombre").val(row.nombre);
 			$("#direccion").html(response.cbo_color_base);
-			$("#pais_id").html(response.cbo_estado);
+			$("#pais_id").html(response.cbo_pais_id);
 			$("#lbl_fec_ingreso").html(row.fec_ingreso);
 			$("#lbl_fec_modifica").html(row.fec_modifica);
 			$("#lbl_usuario_ing").html(row.usuario_ing_user_name);
@@ -297,52 +253,89 @@ $(document).ready(function () {
     </div>
     
 
-            <!--  DIALOG DE MANTENIMIENTO -->
-            <form id="frm">
-			<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
+     <!--  DIALOG DE MANTENIMIENTO -->
+<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog ">
+		<div class="modal-content">
+		      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			        <h4 class="modal-title" id="myModalLabel">cliente (<span id="dialog_mantenimiento_cliente_nombre"></span>)</h4>
-			      </div>
-			      <div class="modal-body clearfix">
-			        <div class="clearfix">
-                        
-			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
-			        	      <tr>
-			        	        <td><label class="control-label">ID:</label></td>
-			        	        <td>
-                                <input id="cliente_id" name="cliente_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" validate="required" validateMessage="Ingrese un codigo">
-                                <input type="hidden" name="accion" id="accion" value="" /></td>
-		        	          </tr>
-			        	      <tr>
-			        	        <td><label class="control-label">NOMBRE:</label></td>
-			        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="30" max-lenght="3" validate="required" validateMessage="Ingrese un nombre"></td>
-		        	          </tr>
-			        	      <tr>
-			        	        <td><label class="control-label">COLOR BASE:</label></td>
-			        		    <td><select  name="colorbase" class="select-class2" id="colorbase" validate="required"></select></td>
-		        	          </tr>	
-		        	           <tr>
+			        <h4 class="modal-title" id="myModalLabel">CLIENTE (<span id="dialog_mantenimiento_cliente_nombre"></span>)</h4>
+		      </div>
+			  <div class="modal-body clearfix">
+				  <!-- Nav tabs -->
+				  <ul class="nav nav-tabs" role="tablist">
+				    <li role="presentation" class="active"><a href="#tab_informacion_general" aria-controls="tab_informacion_general" role="tab" data-toggle="tab">INFORMACION GENERAL</a></li>
+				    <li role="presentation"><a href="#tab_marcacion" aria-controls="tab_marcacion" role="tab" data-toggle="tab">MARCACION</a></li>
+				    <li role="presentation"><a href="#tab_agencia_carga" aria-controls="tab_agencia_carga" role="tab" data-toggle="tab">AGENCIA DE CARGA</a></li>
+				    <li role="presentation"><a href="#tab_usuarios" aria-controls="tab_usuarios" role="tab" data-toggle="tab">USUARIOS</a></li>
+				  </ul>
+			  		<!-- Tab panes -->
+			  		<div class="tab-content">
+		  				<div role="tabpanel" class="tab-pane active" id="tab_informacion_general">
+		  				<br>
+					    	<table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
+				        	      <tr>
+				        	        <td><label class="control-label">ID:</label></td>
+				        	        <td>
+	                                <input id="variedad_id" name="cliente_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="5" max-lenght="5" validate="required" validateMessage="Ingrese un codigo">
+	                                <input type="hidden" name="accion" id="accion" value="" /></td>
+			        	          </tr>
+				        	      <tr>
+				        	        <td><label class="control-label">NOMBRE:</label></td>
+				        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="30" max-lenght="3" validate="required" validateMessage="Ingrese un nombre"></td>
+			        	          </tr>
+			        	          <tr>
+				        	        <td><label class="control-label">DIRECCION:</label></td>
+				        	        <td><input name="direccion" type="text" class="form-control input-sm" id="direccion" style="width:350px" value="" maxlength="30" max-lenght="3" ></td>
+			        	         </tr>
+			        	         <tr>
+				        	        <td><label class="control-label">PAIS:</label></td>
+				        	        <td><select  name="pais_id" class="select-class2" id="pais_id" validate="required" validateMessage="Seleccione Pais"></select></td>
+			        	         </tr>
+			        	          <tr>
+				        	        <td><label class="control-label">CIUDAD:</label></td>
+				        	        <td><input name="ciudad" type="text" class="form-control input-sm" id="ciudad" style="width:350px" value="" maxlength="30" max-lenght="3" validate="required" validateMessage="Ingrese una Ciudad"></td>
+			        	         </tr>
+			        	         <tr>
+				        	        <td><label class="control-label">TELEFONO 1:</label></td>
+				        	        <td><input name="telefono1" type="text" class="form-control input-sm" id="telefono1" style="width:350px" value="" maxlength="30" max-lenght="3" validate="required" validateMessage="Ingrese un Telefono"></td>
+			        	         </tr>
+			        	         <tr>
+				        	        <td><label class="control-label">TELEFONO 2:</label></td>
+				        	        <td><input name="telefono2" type="text" class="form-control input-sm" id="telefono2" style="width:350px" value="" maxlength="30" max-lenght="3" ></td>
+			        	         </tr>
+			        	          <tr>
+				        	        <td><label class="control-label">FAX 1:</label></td>
+				        	        <td><input name="fax1" type="text" class="form-control input-sm" id="fax1" style="width:350px" value="" maxlength="30" max-lenght="3" ></td>
+			        	         </tr>
+			        	          <tr>
+				        	        <td><label class="control-label">FAX 2:</label></td>
+				        	        <td><input name="fax2" type="text" class="form-control input-sm" id="fax2" style="width:350px" value="" maxlength="30" max-lenght="3"></td>
+			        	         </tr>
+			        	         <tr>
+				        	        <td><label class="control-label">CORREO:</label></td>
+				        	        <td><input name="email" type="text" class="form-control input-sm" id="email" style="width:350px" value="" maxlength="30" max-lenght="3"></td>
+			        	         </tr>
+			        	         <tr>
+				        	        <td><label class="control-label">GRUPO PRECIO:</label></td>
+				        	        <td><input name="grupo_precio_cab_id" type="text" class="form-control input-sm" id="grupo_precio_cab_id" style="width:350px" value="" maxlength="30" max-lenght="3" validate="required" validateMessage="Seleccione un Grupo Precio"></td>
+			        	         </tr>
+			        	       <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>
 			        	        <td><select  name="estado" class="select-class2" id="estado"></select></td>
-		        	          </tr>		
+		        	          </tr>	
 		        	            <tr>
 			        	        <td><label class="control-label">SINCRONIZADO:</label></td>
 			        	        <td>
- 
-									<span id="sincronizado_pendiente" class="glyphicon glyphicon-time icon-white" style="color:red; display:none" ></span>
-									<span id="sincronizado_ok" class="glyphicon glyphicon-ok icon-white" style="color:green; display:none"></span>
-                                    <span id="lbl_fec_sincronizado"></span>
- 
+								<span id="sincronizado_pendiente" class="glyphicon glyphicon-time icon-white" style="color:red; display:none" ></span>
+								<span id="sincronizado_ok" class="glyphicon glyphicon-ok icon-white" style="color:green; display:none"></span>
+                                <span id="lbl_fec_sincronizado"></span>
                                 </td>
 		        	          </tr>        	   
 			        	      <tr>
 			        	        <td>&nbsp;</td>
 			        	        <td>&nbsp;</td>
 		        	        </tr>
-
 			        	      <tr>
 			        	        <td><label class="control-label">Ingreso:</label></td>
 			        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
@@ -351,16 +344,29 @@ $(document).ready(function () {
 			        	        <td><label class="control-label">Modificación:</label></td>
 			        	        <td><b><span id="lbl_usuario_mod"></span></b> - <span id="lbl_fec_modifica"></span></td>
 		        	          </tr>
-	        	      </table>
-                      <br>
-						<center><a id="btn_grabar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a></center>
-     
-                      
-		        	  <!--   div id="dialog_oferta_formulario"></div -->			
-			        </div>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-			</form>
+			        	  	</table>
+			        	  	<br>
+							<center>
+							<a id="btn_grabar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a>
+							</center>
+     						
+		  				</div>
+				   	
+					    <div role="tabpanel" class="tab-pane" id="tab_marcacion">
+					       MARCACION
+					    </div>
+					    
+					    <div role="tabpanel" class="tab-pane" id="tab_agencia_carga">
+					       AGENCIA DE CARGA 
+					   	</div>
+					   	
+					    <div role="tabpanel" class="tab-pane" id="tab_usuarios">...
+					       USUARIOS
+					 	</div>
+										
+					</div>
+			   </div>
+		</div>
+	</div>
+</div>
 	

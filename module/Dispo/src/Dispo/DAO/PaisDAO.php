@@ -84,6 +84,31 @@ class PaisDAO extends Conexion
 
 	}//end function consultar
 
+	
+	/**
+	 * consultarTodos
+	 *
+	 * @return array
+	 */
+	public function consultarTodos()
+	{
+		$sql = 	' SELECT pais.* '.
+				' FROM pais '.
+				' ORDER BY nombre ';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		//Elimina los espacios
+		foreach($result as &$reg)
+		{
+			$reg['nombre'] = trim($reg['nombre']);
+		}//end foreach
+	
+		return $result;
+	}//end function consultarTodos
+	
 
 }//end class
 
