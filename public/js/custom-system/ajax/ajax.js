@@ -39,37 +39,66 @@ function ajax_call(parameters, obj_data){
 		parameters.contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
 	}//end if
 
-	ajax_main_process = $.ajax({
-								type: parameters.type,
-								contentType: parameters.contentType,
-								url: parameters.url,
-								data: obj_data,
-								cache: parameters.cache,
-								async: parameters.async,
-								beforeSend : function(){ 
-									if (parameters.cancel_process_previous==true){
-										if (ajax_main_process) {
-											ajax_main_process.abort();
-										}	
-									}
-								},
-							}).done(function(msg) {
-								if ((msg.respuesta_code=='OK')||(msg.respuesta_code=='NOOK')){
-									parameters.finish(msg)
-								}else{
-									message_error('ERROR1.', msg, true);
-								}	
-								if (parameters.show_cargando==true){
-									cargador_visibility('hide');
-								}//end if
-							}).error(function(request, status, error) {
-								message_error('ERROR2', request.responseText, true);
-								console.log(request);
-								console.log(status);								
-								console.log(error);
-								if (parameters.show_cargando==true){
-									cargador_visibility('hide');
-								}//end if
-							});
+	if (parameters.async)
+	{
+		$.ajax({
+			type: parameters.type,
+			contentType: parameters.contentType,
+			url: parameters.url,
+			data: obj_data,
+			cache: parameters.cache,
+			async: parameters.async,
+		}).done(function(msg) {
+			if ((msg.respuesta_code=='OK')||(msg.respuesta_code=='NOOK')){
+				parameters.finish(msg)
+			}else{
+				message_error('ERROR1.', msg, true);
+			}	
+			if (parameters.show_cargando==true){
+				cargador_visibility('hide');
+			}//end if
+		}).error(function(request, status, error) {
+			message_error('ERROR2', request.responseText, true);
+			console.log(request);
+			console.log(status);								
+			console.log(error);
+			if (parameters.show_cargando==true){
+				cargador_visibility('hide');
+			}//end if
+		});		
+	}else{
+		ajax_main_process = $.ajax({
+									type: parameters.type,
+									contentType: parameters.contentType,
+									url: parameters.url,
+									data: obj_data,
+									cache: parameters.cache,
+									async: parameters.async,
+									beforeSend : function(){ 
+										if (parameters.cancel_process_previous==true){
+											if (ajax_main_process) {
+												ajax_main_process.abort();
+											}	
+										}
+									},
+								}).done(function(msg) {
+									if ((msg.respuesta_code=='OK')||(msg.respuesta_code=='NOOK')){
+										parameters.finish(msg)
+									}else{
+										message_error('ERROR1.', msg, true);
+									}	
+									if (parameters.show_cargando==true){
+										cargador_visibility('hide');
+									}//end if
+								}).error(function(request, status, error) {
+									message_error('ERROR2', request.responseText, true);
+									console.log(request);
+									console.log(status);								
+									console.log(error);
+									if (parameters.show_cargando==true){
+										cargador_visibility('hide');
+									}//end if
+								});
+	}//end if
 	return true;
 }//end function ajax_call
