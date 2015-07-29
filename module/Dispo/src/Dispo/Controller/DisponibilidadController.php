@@ -10,7 +10,8 @@ use Zend\View\Model\JsonModel;
 use Dispo\BO\DispoBO;
 use Dispo\BO\MarcacionBO;
 use Dispo\BO\AgenciaCargaBO;
-
+use Zend\Http\Client;
+use Zend\Http\Request;
 
 class DisponibilidadController extends AbstractActionController
 {
@@ -469,15 +470,8 @@ class DisponibilidadController extends AbstractActionController
 	
 			$DispoBO				= new DispoBO();
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-	
-			//Se consulta la dispo, considerando los criterios de busqueda
-			$cliente_id 	= $SesionUsuarioPlugin->getUserClienteId();
-			$usuario_id 	= $SesionUsuarioPlugin->getClienteUsuarioId();
-			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
-	
-			$viewModel 							= new ViewModel();
-
-			//$viewModel->setTerminal(true);
+		
+			$viewModel 				= new ViewModel();
 			$this->layout($SesionUsuarioPlugin->getUserLayout());
 			$viewModel->setTemplate('dispo/disponibilidad/panel.phtml');
 			return $viewModel;
@@ -490,5 +484,151 @@ class DisponibilidadController extends AbstractActionController
 			return $response;
 		}
 	}//end function listadodispoAction	
+	
+	
+	
+	
+	public function remotesincronizarpreviewAction()
+	{
+		try
+		{		
+			$config 				= $this->getServiceLocator()->get('Config');
+			
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+	
+			if(empty($json['agr_connect'])){
+				$agr_connect=0;
+			}else{
+				$agr_connect = $json['agr_connect'];
+			}//end if
+	
+			if(empty($json['htc_connect'])){
+				$htc_connect=0;
+			}else{
+				$htc_connect = $json['htc_connect'];
+			}//end if
+			
+			if(empty($json['lma_connect'])){
+				$lma_connect=0;
+			}else{
+				$lma_connect = $json['lma_connect'];
+			}//end if
+			
+			$uri = $config['url_server_integrador'].'/sincronizador/disponibilidad/sincronizarpreview';
+			$data = array(
+							'agr_connect' => $agr_connect,
+							'htc_connect' => $htc_connect,
+							'lma_connect' => $lma_connect
+			);
+			$json = json_encode($data);
+			
+			//Instantiate a client object
+			$client = new Client($uri, array('timeout'      => 60));
+			
+			$requestHeaders = $client->getRequest()->getHeaders();
+			$client->setRawBody($json);
+			$client->setMethod('post');
+			//setting header optional - some API need this;
+			$headerString = 'Accept: application/json';
+			$requestHeaders->addHeaderLine($headerString);
+
+			// The following request will be sent over a TLS secure connection.
+			$response = $client->send();
+			//if ($response->isSuccess()) {
+			$json_string = $response->getBody();
+			//echo("<pre>");var_dump($json); echo("</pre");
+			$json =  json_decode($json_string);
+			$json->respuesta_code 		= $json->response->code;
+			$json->respuesta_mensaje	= $json->response->message;
+			$json->respuesta_codex 		= 'OK';
+			//echo("<pre>");var_dump($json); echo("</pre");
+			$json = new JsonModel(get_object_vars($json));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}			
+	}//end function remotesincronizarpreviewAction
+		
+	
+	
+	public function remotesincronizarAction()
+	{
+		try
+		{
+			$config 				= $this->getServiceLocator()->get('Config');
+				
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+	
+			if(empty($json['agr_connect'])){
+				$agr_connect = 0;
+				$agr_fecha 	 = '';
+			}else{
+				$agr_connect = $json['agr_connect'];
+				$agr_fecha 	 = $json['agr_fecha'];				
+			}//end if
+	
+			if(empty($json['htc_connect'])){
+				$htc_connect = 0;
+				$htc_fecha 	 = '';
+			}else{
+				$htc_connect = $json['htc_connect'];
+				$htc_fecha 	 = $json['htc_fecha'];				
+			}//end if
+				
+			if(empty($json['lma_connect'])){
+				$lma_connect = 0;
+				$lma_fecha 	 = '';
+			}else{
+				$lma_connect = $json['lma_connect'];
+				$lma_fecha 	 = $json['lma_fecha'];				
+			}//end if
+				
+			$uri = $config['url_server_integrador'].'/sincronizador/disponibilidad/sincronizar';
+			$data = array(
+					'agr_connect' => $agr_connect,
+					'htc_connect' => $htc_connect,
+					'lma_connect' => $lma_connect,
+					'agr_fecha'	  => $agr_fecha,
+					'htc_fecha'	  => $htc_fecha,
+					'lma_fecha'	  => $lma_fecha
+			);
+			$json = json_encode($data);
+				
+			//Instantiate a client object
+			$client = new Client($uri, array('timeout'      => 60));
+				
+			$requestHeaders = $client->getRequest()->getHeaders();
+			$client->setRawBody($json);
+			$client->setMethod('post');
+			//setting header optional - some API need this;
+			$headerString = 'Accept: application/json';
+			$requestHeaders->addHeaderLine($headerString);
+	
+			// The following request will be sent over a TLS secure connection.
+			$response = $client->send();
+			//if ($response->isSuccess()) {
+			$json_string = $response->getBody();
+			//echo("<pre>");var_dump($json); echo("</pre");
+			$json =  json_decode($json_string);
+			$json->respuesta_code 		= $json->response->code;
+			$json->respuesta_mensaje	= $json->response->message;
+			$json->respuesta_codex 		= 'OK';
+			//echo("<pre>");var_dump($json); echo("</pre");
+			$json = new JsonModel(get_object_vars($json));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function remotesincronizarAction
 		
 }

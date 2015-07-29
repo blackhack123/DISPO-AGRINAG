@@ -30,7 +30,7 @@ function ajax_call(parameters, obj_data){
 
 	if (typeof(obj_data) == 'undefined') {obj_data = '';}
 	
-	if (parameters.show_cargando==true){
+	if (parameters.show_cargando==true){		
 		cargador_visibility('show');
 //		$(this).loading = true;
 	}//end if

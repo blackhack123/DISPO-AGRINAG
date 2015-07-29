@@ -4,13 +4,233 @@
 			//$("#tbl_proveedor").stickyTableHeaders();
 			$('#tbl_proveedor').tablesorter(); //Columna de Sueldo
 			$("#tbl_proveedor").stickyTableHeaders();
+			
+			$(".btn_refrescar").on('click', function(event){ 
+				var proveedor 		= $(this).data('proveedor');
+				consultarDispoRemote(proveedor);
+				return false;
+			});			
+
+			$(".btn_sincronizar_general, .btn_sincronizar").on('click', function(event){ 
+				var proveedor 		= $(this).data('proveedor');
+				sincronizarDispoRemote(proveedor);
+				return false;
+			});			
+
+			$('#tabs_disponibilidad a').click(function (e) {
+				e.preventDefault()
+				$(this).tab('show')
+			})
 		});//$(document).ready
 		
-		$('#tabs_disponibilidad a').click(function (e) {
-			e.preventDefault()
-			$(this).tab('show')
-		})
+		
+		function consultarDispoRemote(proveedor)		
+		{
+			limpiarSincronizar(proveedor, false);
+			if (proveedor=='ALL')
+			{
+				var data = 	{agr_connect: 1, htc_connect: 1, lma_connect:1}
+			}else{
+				switch (proveedor)
+				{
+					case 'AGR':
+						var data = 	{agr_connect: 1}
+						break;
+					case 'HTC':
+						var data = 	{htc_connect: 1}
+						break;
+					case 'LMA':
+						var data = 	{lma_connect: 1}
+						break;
+				}//end switch
+			}//end if
+			data = JSON.stringify(data);
+			var parameters = {	'type': 'POST',//'POST',
+								'contentType': 'application/json',
+								'url':'<?php echo($this->basePath()); ?>/dispo/disponibilidad/remotesincronizarpreview',
+								'control_process':true,
+								'show_cargando':true,
+								'async':true,
+								'finish':function(response){
+									if (response.respuesta_codex=="OK")
+									{
+									  // $(".btn_sincronizar").removeClass("disabled");
+									   $.each(response.result, function(key, reg) {
+											var tr 			= $("#"+reg.Proveedor.toUpperCase());
+											var fec_finca 	= tr.find('.fec_finca');
+											var nro_reg		= tr.find('.nro_reg');
+											fec_finca.html(reg.fecha);
+											nro_reg.html(reg.nro_reg);
+										});	
+										 $.each(response.connect, function(key, reg) {
+											var tr 				= $("#"+key.toUpperCase());
+											var observacion 	= tr.find('.observacion');
+											var btn_refrescar	= tr.find('.btn_refrescar');
+											var btn_sincronizar	= tr.find('.btn_sincronizar');
+											observacion.html(reg.message);
+											
+											if (reg.message!='')
+											{
+												btn_refrescar.removeClass('disabled');
+												btn_sincronizar.addClass('disabled');
+											}else{
+												btn_sincronizar.removeClass('disabled');
+											}//end if
+											
+										 });
+										 
+										$(".btn_sincronizar_general").removeClass('disabled');
+									}else{
+										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
+											type: "error",
+											html: false,
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											showConfirmButton: true,
+											});
+									}//end if
+								}//end finish				
+							 }
+			response = ajax_call(parameters, data);		
+			return false;				
+		}//end function consultarPreviewDispoRemote
+		
+		
+		function limpiarSincronizar(proveedor, CleanNroRegProcesados)
+		{
+			var tr 					= $("#AGR");
+			var agr_fecha			= tr.find('.fec_finca');
+			var agr_nro_reg			= tr.find('.nro_reg');
+			var agr_nro_procesados	= tr.find('.nro_procesados');
+			var agr_observacion		 = tr.find('.observacion');
+			
+			var tr 					= $("#LMA");
+			var lma_fecha			= tr.find('.fec_finca');
+			var lma_nro_reg 		= tr.find('.nro_reg');
+			var lma_nro_procesados	= tr.find('.nro_procesados');
+			var lma_observacion 	= tr.find('.observacion');
+
+			var tr 					= $("#HTC");
+			var htc_fecha			= tr.find('.fec_finca');		
+			var htc_nro_reg			= tr.find('.nro_reg');
+			var htc_nro_procesados	= tr.find('.nro_procesados');
+			var htc_observacion 	= tr.find('.observacion');
+			
+			if (proveedor=='ALL')
+			{
+				agr_nro_procesados.html('');
+				lma_nro_procesados.html('');
+				htc_nro_procesados.html('');
+				agr_observacion.html('');
+				lma_observacion.html('');
+				htc_observacion.html('');								
+								
+				if (CleanNroRegProcesados==false)
+				{
+					agr_fecha.html('');
+					lma_fecha.html('');
+					htc_fecha.html('');	
+					agr_nro_reg.html('');									
+					lma_nro_reg.html('');
+					htc_nro_reg.html('');
+				}//end if			
+			}else{
+				switch (proveedor)
+				{
+					case 'AGR':
+						agr_nro_procesados.html('');
+						agr_observacion.html('');
+						if (CleanNroRegProcesados==false){
+							agr_fecha.html('');
+							agr_nro_reg.html('');
+						}//end if
+						break;
+					case 'LMA':
+						lma_nro_procesados.html('');
+						lma_observacion.html('');
+						if (CleanNroRegProcesados==false){
+							lma_fecha.html('');
+							lma_nro_reg.html('');
+						}//end if
+						break;
+					case 'HTC':
+						htc_nro_procesados.html('');
+						htc_observacion.html('');						
+						if (CleanNroRegProcesados==false){
+							  htc_fecha.html('');
+							  htc_nro_reg.html('');
+						}//end if
+						break;
+				}//end switch				
+			}//end if
+		}//end function limpiarSincronizar
+		
+		
+		
+		function sincronizarDispoRemote(proveedor)
+		{
+			limpiarSincronizar(proveedor, true);
+			var tr 					= $("#AGR");
+			var agr_fecha 			= tr.find('.fec_finca').html();
+			var tr 					= $("#LMA");
+			var lma_fecha 			= tr.find('.fec_finca').html();
+			var tr 					= $("#HTC");
+			var htc_fecha 			= tr.find('.fec_finca').html();
+
+			if (proveedor=='ALL')
+			{
+				var data = 	{agr_connect: 1, htc_connect: 1, lma_connect:1,  agr_fecha: agr_fecha, lma_fecha: lma_fecha, htc_fecha: htc_fecha}
+			}else{				
+				switch (proveedor)
+				{
+					case 'AGR':
+						var data = 	{agr_connect: 1, agr_fecha: agr_fecha}
+						break;
+					case 'LMA':
+						var data = 	{lma_connect: 1, lma_fecha: lma_fecha}
+						break;
+					case 'HTC':
+						var data = 	{htc_connect: 1, htc_fecha: htc_fecha}
+						break;
+				}//end switch
+			}//end if
+			data = JSON.stringify(data);
+			var parameters = {	'type': 'POST',//'POST',
+								'contentType': 'application/json',
+								'url':'<?php echo($this->basePath()); ?>/dispo/disponibilidad/remotesincronizar',
+								'control_process':true,
+								'show_cargando':true,
+								'async':true,
+								'finish':function(response){
+									if (response.respuesta_codex=="OK")
+									{
+									   $.each(response.result, function(key, reg) {
+											var tr 				= $("#"+reg.proveedor_id.toUpperCase());
+											var nro_procesados	= tr.find('.nro_procesados');
+											nro_procesados.html(reg.nro_reg);
+										});	
+										 $.each(response.connect, function(key, reg) {
+											var tr 			= $("#"+key.toUpperCase());
+											var observacion = tr.find('.observacion');											 
+											observacion.html(reg.message);
+										 });																
+									}else{
+										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
+											type: "error",
+											html: false,
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											showConfirmButton: true,
+											});
+									}//end if
+								}//end finish				
+							 }
+			response = ajax_call(parameters, data);		
+			return false;				
+		}//end function sincronizarDispoRemote
 	</script>
+
+
 
 
 		<form id="frm" name="frm" action="<?php echo($this->basePath()); ?>/dispo/disponibilidad/asignarMarcacionAgencia" method="post">	
@@ -37,40 +257,57 @@
                             <table id='tbl_proveedor'  class="clear table-head table-dispo tablesorter tableinit" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th class="th-inner">&nbsp;FINCA&nbsp;</th>
+                                      <th rowspan="2" class="th-inner">&nbsp;FINCA&nbsp;</th>
+                                      <th colspan="2" class="th-inner">SERVER FINCAS</th>
+                                      <th class="th-inner">INTERNET</th>
+                                      <th rowspan="2" class="th-inner">&nbsp;ACCION&nbsp;</th>
+                                      <th width="100%" rowspan="2" class="th-inner">&nbsp;OBSERVACION&nbsp;</th>
+                                    </tr>
+                                    <tr>
                                         <th class="th-inner">&nbsp;FECHA&nbsp;</th>
-                                        <th class="th-inner" nowrap>&nbsp;NRO. REG.&nbsp;</th> 
-                                        <th class="th-inner">&nbsp;ACCION&nbsp;</th>                 
-                                        <th width="100%" class="th-inner">&nbsp;OBSERVACION&nbsp;</th>
+                                        <th class="th-inner" nowrap>&nbsp;NRO. REG.&nbsp;</th>
+                                        <th class="th-inner">PROCESADOS</th> 
                                     </tr>
                                  </thead>
                                  <tbody style="border: 1px solid #cdcdcd;">
                                     <tr id="AGR">
                                         <td>AGR</td>
-                                        <td class="fec_finca">2015-07-23</td>
-                                        <td class="nro_reg" >330</td>
-                                        <td><a id="btn_sincronizar_finca" href="#" class="btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a></td>
-                                        <td width="100%" class="observacion" align="left">NO SE PUDO CONECTAR AL SERVIDOR POR LA CONEXION NORMAL.</td>                        
+                                        <td class="fec_finca"></td>
+                                        <td class="nro_reg" ></td>
+                                        <td class="nro_procesados"></td>
+                                        <td nowrap>
+	                                       	<a data-proveedor="AGR" href="#" class="btn_refrescar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-refresh"></i> REFRESCAR</a>
+                                        	<a data-proveedor="AGR" href="#" class="btn_sincronizar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
+                                        </td>
+                                        <td width="100%" class="observacion" align="left">..</td>                        
                                     </tr>
                                     <tr id="HTC">
                                         <td>HTC</td>
-                                        <td class="fec_finca">2015-07-23</td>
-                                        <td class="nro_reg">330</td>
-                                        <td><a id="btn_sincronizar_finca" href="#" class="btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a></td>
-                                        <td class="observacion"></td>                    
+                                        <td class="fec_finca"></td>
+                                        <td class="nro_reg"></td>
+                                        <td class="nro_procesados"></td>
+                                        <td nowrap>
+	                                       	<a data-proveedor="HTC" href="#" class="btn_refrescar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-refresh"></i> REFRESCAR</a>
+                                        	<a data-proveedor="HTC" href="#" class="btn_sincronizar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
+                                        </td>
+                                        <td class="observacion" align="left">..</td>                    
                                   </tr>
-                                    <tr id="RLM">
+                                    <tr id="LMA">
                                         <td>RLM</td>
-                                        <td class="fec_finca">2015-07-23</td>
-                                        <td class="nro_reg">330</td>
-                                        <td><a id="btn_sincronizar_finca" href="#" class="btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a></td>
-                                        <td class="observacion"></td>                      
+                                        <td class="fec_finca"></td>
+                                        <td class="nro_reg"></td>
+                                        <td class="nro_procesados"></td>
+                                        <td nowrap>
+                                        	<a data-proveedor="LMA" href="#" class="btn_refrescar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-refresh"></i> REFRESCAR</a>
+                                        	<a data-proveedor="LMA" href="#" class="btn_sincronizar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
+                                        </td>
+                                        <td class="observacion" align="left">..</td>                      
                                   </tr>
                                  </tbody>
                             </table>
                             <div class="clear" style="padding: 5px"></div>
-                            <a id="btn_refrescar" href="#" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-refresh"></i> REFRESAR</a>
-                            <a id="btn_sincronizar"  href="#" class="btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
+                            <a  href="#" class="btn_refrescar btn btn-primary btn-xs" data-proveedor="ALL"><i class="glyphicon glyphicon-refresh"></i> REFRESCAR</a>
+                            <a href="#" class="btn_sincronizar_general btn btn-primary btn-xs disabled" data-proveedor="ALL"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
                     	</div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="tab_dispo">

@@ -31,5 +31,7 @@ return array(
 					'frontend' 	=> 'd-m-Y H:i:s',//'d-m-Y H:i:s',  //'Y-m-d H:i:s',
 					'servidor'  => 'Y-m-d H:i:s',
 			),
-	),		
+	),
+
+	'url_server_integrador' => 'http://181.198.42.202:8159/sincronizador/public'		
 );
