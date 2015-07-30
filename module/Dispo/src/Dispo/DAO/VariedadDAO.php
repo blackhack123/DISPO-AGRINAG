@@ -24,19 +24,23 @@ class VariedadDAO extends Conexion
 		$record = array(
 				'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
-				'colorbase'		                    => $VariedadData->getColorBase(),
+				'nombre_tecnico'		            => $VariedadData->getNombreTecnico(),
 				'calidad_id'	                    => $VariedadData->getCalidadId(),
+				'color'		   		                => $VariedadData->getColor(),
+				'color2'		   		            => $VariedadData->getColor2(),
+				'grupo_color_id'	                => $VariedadData->getGrupoColorId(),
 				'colorbase'	                   		=> $VariedadData->getColorBase(),
 				'solido'	                   		=> $VariedadData->getSolido(),
 				'es_real'		                    => $VariedadData->getEsReal(),
+				'est_producto_especial'	            => $VariedadData->getEstProductoEspecial(),
+				'mensaje'	        			    => $VariedadData->getMensaje(),
+				'cultivada'	    			        => $VariedadData->getCultivada(),
 				'ciclo_prod'	                    => $VariedadData->getCicloProd(),
 				'obtentor_id'	                    => $VariedadData->getObtentorId(),
-				'est_producto_especial'	            => $VariedadData->getEstProductoEspecial(),
+				'producto_id'	        		    => $VariedadData->getProductoId(),
 				'estado'		                    => $VariedadData->getEstado(),
 				'fec_ingreso'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
-				'fec_modifica'	                    => $VariedadData->getFecModifica(),
 				'usuario_ing_id'	                => $VariedadData->getUsuarioIngId(),
-				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),
 				'sincronizado'	                    => 0
 	);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
@@ -56,16 +60,23 @@ class VariedadDAO extends Conexion
 				'id'						        => $VariedadData->getId()
 		);
 		$record = array(
-				'id'								=> $VariedadData->getId(),
+			'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
-				'colorbase'		                    => $VariedadData->getColorBase(),
-				'calidad_id'		                => $VariedadData->getCalidadId(),
-				'solido'		               		=> $VariedadData->getSolido(),
-				'es_real'		               		=> $VariedadData->getEsReal(),
-				'ciclo_prod'		                => $VariedadData->getCicloProd(),
-				'obtentor_id'		                => $VariedadData->getObtentorId(),
-				'est_producto_especial'		        => $VariedadData->getEstProductoEspecial(),
-				'estado'                			=> $VariedadData->getEstado(),
+				'nombre_tecnico'		            => $VariedadData->getNombreTecnico(),
+				'calidad_id'	                    => $VariedadData->getCalidadId(),
+				'color'		   		                => $VariedadData->getColor(),
+				'color2'		   		            => $VariedadData->getColor2(),
+				'grupo_color_id'	                => $VariedadData->getGrupoColorId(),
+				'colorbase'	                   		=> $VariedadData->getColorBase(),
+				'solido'	                   		=> $VariedadData->getSolido(),
+				'es_real'		                    => $VariedadData->getEsReal(),
+				'est_producto_especial'	            => $VariedadData->getEstProductoEspecial(),
+				'mensaje'	        			    => $VariedadData->getMensaje(),
+				'cultivada'	    			        => $VariedadData->getCultivada(),
+				'ciclo_prod'	                    => $VariedadData->getCicloProd(),
+				'obtentor_id'	                    => $VariedadData->getObtentorId(),
+				'producto_id'	        		    => $VariedadData->getProductoId(),
+				'estado'		                    => $VariedadData->getEstado(),
 				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),
 				'sincronizado'	                    => 0
@@ -73,7 +84,7 @@ class VariedadDAO extends Conexion
 				
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $VariedadData->getid();
+		return $VariedadData->getId();
 	}//end function modificar
 
 
@@ -101,14 +112,19 @@ class VariedadDAO extends Conexion
 				if($row){
 					$VariedadData->setId							($row['id']);				
 					$VariedadData->setNombre 						($row['nombre']);
-					$VariedadData->setColorBase 					($row['colorbase']);
+					$VariedadData->setNombreTecnico					($row['nombre_tecnico']);
 					$VariedadData->setCalidadId						($row['calidad_id']);
+					$VariedadData->setColor							($row['color']);
+					$VariedadData->setColor2 						($row['color2']);
+					$VariedadData->setGrupoColorId					($row['grupo_color_id']);
 					$VariedadData->setColorBase						($row['colorbase']);
 					$VariedadData->setSolido						($row['solido']);
 					$VariedadData->setEsReal						($row['es_real']);
+					$VariedadData->setEstProductoEspecial			($row['est_producto_especial']);
+					$VariedadData->setMensaje						($row['mensaje']);
+					$VariedadData->setCultivada						($row['cultivada']);
 					$VariedadData->setCicloProd						($row['ciclo_prod']);
 					$VariedadData->setObtentorId					($row['obtentor_id']);
-					$VariedadData->setEstProductoEspecial			($row['est_producto_especial']);
 					$VariedadData->setEstado    					($row['estado']);
 					$VariedadData->setFecIngreso 					($row['fec_ingreso']);
 					$VariedadData->setFecModifica 					($row['fec_modifica']);

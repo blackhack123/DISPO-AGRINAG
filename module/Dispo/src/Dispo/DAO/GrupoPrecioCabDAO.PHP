@@ -86,5 +86,31 @@ class GrupoPrecioCabDAO extends Conexion
 	}//end function consultar
 
 
+	/**
+	 * consultarTodos
+	 *
+	 * @return array
+	 */
+	public function consultarTodos()
+	{
+		$sql = 	' SELECT grupo_precio_cab.* '.
+				' FROM grupo_precio_cab '.
+				' ORDER BY nombre ';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		//Elimina los espacios
+		foreach($result as &$reg)
+		{
+			$reg['nombre'] = trim($reg['nombre']);
+		}//end foreach
+	
+		return $result;
+	}//end function consultarTodos
+	
+	
+	
 }//end class
 

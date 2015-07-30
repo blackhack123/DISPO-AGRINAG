@@ -18,25 +18,25 @@ class MarcacionDAO extends Conexion
 	 */
 	public function ingresar(MarcacionData $MarcacionData)
 	{
-		$key    = array(
-				'marcacion_sec'						=> $MarcacionData->getMarcacionSec(),
-		);
+		//$key    = array(
+		//		'marcacion_sec'						=> $MarcacionData->getMarcacionSec(),
+		//);
 		$record = array(
-				'marcacion_sec'		                => $MarcacionData->getMarcacionSec(),
-				'cliente_id'		                => $MarcacionData->getClienteId(),
 				'nombre'		                    => $MarcacionData->getNombre(),
 				'direccion'		                    => $MarcacionData->getDireccion(),
 				'ciudad'		                    => $MarcacionData->getCiudad(),
 				'pais_id'		                    => $MarcacionData->getPaisId(),
 				'contacto'		                    => $MarcacionData->getContacto(),
 				'telefono'		                    => $MarcacionData->getTelefono(),
-				'zip'		                  		=> $MarcacionData->getZip()
-				
-				
+				'zip'		                  		=> $MarcacionData->getZip(),
+				'estado'                			=> $MarcacionData->getEstado(),
+				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_ing_id'                	=> $MarcacionData->getUsuarioIngId(),
+				'sincronizado'                		=> 0
 
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
-		//$marcacion_sec = $this->getEntityManager()->getConnection()->lastInsertmarcacion_sec();
+		$marcacion_sec= $this->getEntityManager()->getConnection()->lastInsertId();
 		return $marcacion_sec;
 	}//end function ingresar
 
@@ -90,7 +90,6 @@ class MarcacionDAO extends Conexion
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		if($row){
 			$MarcacionData->setMarcacionsec   		($row['marcacion_sec']);
-			$MarcacionData->setClienteId	   		($row['cliente_id']);
 			$MarcacionData->setNombre	   			($row['nombre']);
 			$MarcacionData->setDireccion		   	($row['direccion']);
 			$MarcacionData->setCiudad		   		($row['ciudad']);

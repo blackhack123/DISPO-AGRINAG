@@ -4,7 +4,7 @@ namespace Dispo\BO;
 
 use Application\Classes\Conexion;
 use Dispo\DAO\ClienteDAO;
-
+use Dispo\Data\ClienteData;
 
 class ClienteBO extends Conexion
 {
@@ -115,7 +115,7 @@ class ClienteBO extends Conexion
 			$ClienteDAO = new ClienteDAO();
 			$ClienteDAO->setEntityManager($this->getEntityManager());
 			//$ClienteData2 = $ClienteDAO->consultar($ClienteData->getId());
-			$result = $ClienteDAO->consultarDuplicado('M',$ClienteData->getId(), $ClienteData->getNombre());
+			$result = $ClienteDAO->consultar('M',$ClienteData->getId(), $ClienteData->getNombre());
 			$id=		$ClienteData->getId();
 			$nombre=	$ClienteData->getNombre();
 			if (!empty($result))

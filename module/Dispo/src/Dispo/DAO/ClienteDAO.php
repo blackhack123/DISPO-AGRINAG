@@ -14,11 +14,11 @@ class ClienteDAO extends Conexion
 	 * Ingresar
 	 *
 	 * @param ClienteData $ClienteData
-	 * @return array Retorna un Array $key el cual contiene el id
+	 * @return array Retorna un Array $id el cual contiene el id
 	 */
 	public function ingresar(ClienteData $ClienteData)
 	{
-		$key    = array(
+		$id   = array(
 				'id'						        => $ClienteData->getId(),
 		);
 		$record = array(
@@ -32,8 +32,11 @@ class ClienteDAO extends Conexion
 				'fax1'		            			=> $ClienteData->getFax1(),
 				'fax2'		            			=> $ClienteData->getFax2(),
 				'email'		            			=> $ClienteData->getEmail(),
-				'grupo'		            			=> $ClienteData->getGrupo(),
-				'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId()
+				'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId(),
+				'estado'                			=> $ClienteData->getEstado(),
+				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_ing_id'                	=> $ClienteData->getUsuarioIngId(),
+				'sincronizado'                		=> 0
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
 		//$id = $this->getEntityManager()->getConnection()->lastInsertId();
@@ -64,9 +67,12 @@ class ClienteDAO extends Conexion
 				'fax1'		            			=> $ClienteData->getFax1(),
 				'fax2'		            			=> $ClienteData->getFax2(),
 				'email'		            			=> $ClienteData->getEmail(),
-				'grupo'		            			=> $ClienteData->getGrupo(),
-				'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId()
-		);
+				'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId(),
+				'estado'                			=> $ClienteData->getEstado(),
+				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                	=> $ClienteData->getUsuarioModId()
+				
+				);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
 		return $ClienteData->getId();
 	}//end function modificar
@@ -74,43 +80,71 @@ class ClienteDAO extends Conexion
 
 	/**
 	 * Consultar
-	 *
+	 * 
 	 * @param string $id
-	 * @return ClienteData|null
-	 */	
-	public function consultar($id)
+	 * @param int $resultType
+	 * @return \Dispo\Data\ClienteData|NULL|array
+	 */
+	public function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
 	{
-		$ClienteData 		    = new ClienteData();
+		switch ($resultType)
+		{
+			case \Application\Constants\ResultType::OBJETO:
+				$ClienteData 		    = new ClienteData();
+				
+				$sql = 	' SELECT cliente.* '.
+						' FROM cliente '.
+						' WHERE cliente.id = :id ';
+				
+				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+				$stmt->bindValue(':id',$id);
+				$stmt->execute();
+				$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+				if($row){
+				 	$ClienteData->getId                     ($row['id']);               
+               	  	$ClienteData->getNombre                 ($row['nombre']);
+                  	$ClienteData->getDireccion              ($row['direccion']);
+                  	$ClienteData->getPaisId                 ($row['pais_id']);
+                  	$ClienteData->getCiudad                 ($row['ciudad']);
+                  	$ClienteData->getTelefono1              ($row['telefono1']);
+                  	$ClienteData->getTelefono2              ($row['telefono2']);
+                  	$ClienteData->getFax1                   ($row['fax1']);
+                 	$ClienteData->getFax2                   ($row['fax2']);
+                  	$ClienteData->getEmail                  ($row['email']);
+                  	$ClienteData->getGrupoPrecioCabId       ($row['grupo_precio_cab_id']);
+					$ClienteData->setEstado    				($row['estado']);
+					$ClienteData->setFecIngreso   			($row['fec_ingreso']);
+					$ClienteData->setFecModifica  			($row['fec_modifica']);
+					$ClienteData->setUsuarioIngId			($row['usuario_ing_id']);
+					$ClienteData->setUsuarioModId			($row['usuario_mod_id']);
+					$ClienteData->setSincronizado			($row['sincronizado']);
+					$ClienteData->setFecSincronizado		($row['fec_sincronizado']);
+				
+					return $ClienteData;
+				}else{
+					return null;
+				}//end if				
+				break;
+				
+			case \Application\Constants\ResultType::MATRIZ:
+				$sql = 	' SELECT cliente.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name  '.
+						' FROM cliente LEFT JOIN usuario as usuario_ing '.
+						'                           ON usuario_ing.id = cliente.usuario_ing_id '.
+						'					 LEFT JOIN usuario as usuario_mod '.
+						'                           ON usuario_mod.id = cliente.usuario_mod_id '.						
+						' WHERE cliente.id = :id ';
+				
+				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+				$stmt->bindValue(':id',$id);
+				$stmt->execute();
+				$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+				return $row;
+				break;
+		}//end switch
 
-		$sql = 	' SELECT cliente.* '.
-				' FROM cliente '.
-				' WHERE cliente.id = :id ';
-
-
-		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
-		$stmt->bindValue(':id',$id);
-		$stmt->execute();
-		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
-		if($row){
-
-				$ClienteData->getId						($row['id']);				
-				$ClienteData->getNombre 				($row['nombre']);
-				$ClienteData->getDireccion				($row['direccion']);
-				$ClienteData->getPaisId					($row['pais_id']);
-				$ClienteData->getCiudad					($row['ciudad']);
-				$ClienteData->getTelefono1				($row['telefono1']);
-				$ClienteData->getTelefono2				($row['telefono2']);
-				$ClienteData->getFax1					($row['fax1']);
-	      	    $ClienteData->getFax2					($row['fax2']);
-		        $ClienteData->getEmail					($row['email']);
-		        $ClienteData->getGrupo					($row['grupo']);
-				$ClienteData->getGrupoPrecioCabId		($row['grupo_precio_cab_id']);
-			return $ClienteData;
-		}else{
-			return null;
-		}//end if
 
 	}//end function consultar
+	
 
 
 

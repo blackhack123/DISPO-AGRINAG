@@ -97,6 +97,7 @@ class ClienteData
 	//metodos GET
 	public function getId() 						{return $this->id;}
 	public function getNombre() 					{return $this->nombre;}
+	public function getDireccion() 					{return $this->direccion;}
 	public function getPaisId() 					{return $this->pais_id;}
 	public function getCiudad() 					{return $this->ciudad;}
 	public function getTelefono1() 					{return $this->telefono1;}
@@ -116,13 +117,15 @@ class ClienteData
 	
 	//metodos SET
 	public function setId($valor) 					{$this->id						= $valor;}
+	public function setNombre($valor) 				{$this->nombre					= $valor;}
+	public function setDireccion($valor) 			{$this->direccion				= $valor;}
 	public function setPaisId($valor) 				{$this->pais_id					= $valor;}
 	public function setCiudad($valor) 				{$this->ciudad					= $valor;}
 	public function setTelefono1($valor) 			{$this->telefono1				= $valor;}
 	public function setTelefono2($valor) 			{$this->telefono2				= $valor;}
 	public function setFax1($valor) 				{$this->fax1					= $valor;}
 	public function setFax2($valor) 				{$this->fax2					= $valor;}
-	public function setEmail($valor) 				{$this->Email					= $valor;}
+	public function setEmail($valor) 				{$this->email					= $valor;}
 	public function setGrupoPrecioCabId($valor) 	{$this->grupo_precio_cab_id		= $valor;}
 	public function setEstado($valor) 				{$this->estado					= $valor;}
 	public function setFecIngreso($valor) 			{$this->fec_ingreso				= $valor;}

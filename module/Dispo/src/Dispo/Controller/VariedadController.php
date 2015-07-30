@@ -198,6 +198,7 @@ class VariedadController extends AbstractActionController
 			{
 				case 'I':
 					$VariedadData->setUsuarioIngId($usuario_id);
+					$VariedadData->setProductoId('ROS');
 					$result = $VariedadBO->ingresar($VariedadData);
 					break;
 					

@@ -118,6 +118,32 @@ class GrupoDispoCabDAO extends Conexion
 		return $row;
 	}//end function consultarPorUsuarioId
 
+	
+	
+	/**
+	 * consultarTodos
+	 *
+	 * @return array
+	 */
+	public function consultarTodos()
+	{
+		$sql = 	' SELECT grupo_dispo_cab.* '.
+				' FROM grupo_dispo_cab '.
+				' ORDER BY nombre ';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		//Elimina los espacios
+		foreach($result as &$reg)
+		{
+			$reg['nombre'] = trim($reg['nombre']);
+		}//end foreach
+	
+		return $result;
+	}//end function consultarTodos
+	
 }//end class
 
 ?>
