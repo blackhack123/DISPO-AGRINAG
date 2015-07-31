@@ -111,6 +111,27 @@
 	 				});//$(document).ready
 
 
+					function consultar_marcacion(){
+						var data = {texto_primer_elemento: "Marcación"}
+						data = JSON.stringify(data);
+						
+						//var data = '';
+						var parameters = {	'type': 'POST',//'POST',
+											'contentType': 'application/json',
+											'url':'<?php echo($this->basePath()); ?>/dispo/marcacion/getcombo',
+											'cancel_process_previous':false,
+											'show_cargando':true,
+											'finish':function(response){
+													if (response.respuesta_code=='OK'){
+														$("#marcacion_sec").html(response.opciones);									
+													}else{
+														message_error('ERROR', response);
+													}//end if								
+											}							
+										 }
+						response = ajax_call(parameters, data);		
+						return false;
+					}//end function consultar_marcacion	
 
 
 					function consultar_cliente(){
