@@ -39,9 +39,9 @@ function ajax_call(parameters, obj_data){
 		parameters.contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
 	}//end if
 
-	if (parameters.async)
+/*	if (parameters.async)
 	{
-		$.ajax({
+*/		$.ajax({
 			type: parameters.type,
 			contentType: parameters.contentType,
 			url: parameters.url,
@@ -66,7 +66,7 @@ function ajax_call(parameters, obj_data){
 				cargador_visibility('hide');
 			}//end if
 		});		
-	}else{
+/*	}else{
 		ajax_main_process = $.ajax({
 									type: parameters.type,
 									contentType: parameters.contentType,
@@ -100,5 +100,7 @@ function ajax_call(parameters, obj_data){
 									}//end if
 								});
 	}//end if
+*/	
+	
 	return true;
 }//end function ajax_call
