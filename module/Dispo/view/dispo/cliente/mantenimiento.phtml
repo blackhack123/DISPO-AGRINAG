@@ -364,12 +364,18 @@ $(document).ready(function () {
 
 		
 		function ListadoMarcacion_FormatterSincronizado(cellvalue, options, rowObject){	
-			if (rowObject.sincronizado=='0')
+			switch (rowObject.sincronizado)
 			{
-				new_format_value = '<i class="glyphicon glyphicon-time" style="color:red"></i>'; 
-			}else{
-				new_format_value = '';
-			}//end if
+			case '0':
+				new_format_value = '<span class="glyphicon glyphicon-time icon-white" style="color:red">'; 
+				break;
+			case '1':
+				new_format_value = '<i class="glyphicon glyphicon-ok icon-white" style="color:green">';
+				break;
+			default :
+				new_format_value = '<span class="glyphicon glyphicon-time icon-white" style="color:red">'; 
+				break;
+			}//end switch
 			return new_format_value;
 		}//end function ListadoMarcacion_FormatterSincronizado		
 
