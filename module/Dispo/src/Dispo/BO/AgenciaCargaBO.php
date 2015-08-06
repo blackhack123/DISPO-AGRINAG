@@ -37,7 +37,7 @@ class AgenciaCargaBO extends Conexion
 	
 	function getComboTipo($tipo, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
 	{	
-		$arrData = array('A'=>'A','B'=>'B','C'=>'C');
+		$arrData = array('A'=>'Agencia','B'=>'Ambas','C'=>'Cuarto Frio');
 		
 		$opciones = \Application\Classes\Combo::getComboDataArray($arrData, $tipo, $texto_1er_elemento);
 			

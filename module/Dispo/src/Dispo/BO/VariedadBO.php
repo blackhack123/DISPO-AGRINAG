@@ -90,6 +90,23 @@ class VariedadBO extends Conexion
 		return $opciones;
 	}//end function getComboSolido
 	
+	
+	/**
+	 *
+	 * @param string $cultivada
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	public static function getComboCultivada($cultivada, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$arrData = array('S'=>'SI','N'=>'NO');
+	
+		$opciones = \Application\Classes\Combo::getComboDataArray($arrData, $cultivada, $texto_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboSolido
+	
 
 	/**
 	 * Ingresar

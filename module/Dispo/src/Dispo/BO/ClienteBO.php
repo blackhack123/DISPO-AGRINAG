@@ -66,6 +66,8 @@ class ClienteBO extends Conexion
 		return $reg;
 	}//end function consultar
 	
+
+	
 	
 	/**
 	 * Ingresar

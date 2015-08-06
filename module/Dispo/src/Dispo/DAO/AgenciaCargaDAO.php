@@ -31,9 +31,7 @@ class AgenciaCargaDAO extends Conexion
 				'tipo'                				=> $AgenciaCargaData->getTipo(),
 				'estado'                			=> $AgenciaCargaData->getEstado(),
 				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
-				'fec_modifica'                		=> $AgenciaCargaData->getFecModifica(),
 				'usuario_ing_id'                	=> $AgenciaCargaData->getUsuarioIngId(),
-				'usuario_mod_id'                	=> $AgenciaCargaData->getUsuarioIngId(),
 				'sincronizado'                		=> 0
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
@@ -68,7 +66,6 @@ class AgenciaCargaDAO extends Conexion
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
 		return $AgenciaCargaData->getId();
 	}//end function modificar
-
 
 
 	/**

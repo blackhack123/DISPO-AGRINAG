@@ -7,7 +7,10 @@ $(document).ready(function () {
 	InputData_initNumberNoDecimal();
 	InputData_initNumberAndDecimal();
 	
-
+	$("#dialog_mantenimiento").draggable({	//TAB MOVIBLE
+	    handle: ".modal-header"
+	});
+	
 	$('table').tablesorter(); //Columna de Sueldo
 	$("table").stickyTableHeaders();
 
@@ -76,18 +79,18 @@ $(document).ready(function () {
 									$("#nombre").val('');
 									$("#nombre_tecnico").val('');
 									$("#calidad_id").html(response.cbo_calidad_id);
-									$("#color").val('');
-									$("#color2").val('');
-									$("#grupo_color_id").val('');
+									$("#color").html(response.cbo_color);
+									$("#color2").html(response.cbo_color2);
+									$("#grupo_color_id").html(response.cbo_grupo_color_id);
 									$("#colorbase").html(response.cbo_color_base);
 									$("#solido").html(response.cbo_solido);
 									$("#es_real").html(response.cbo_es_real);
 									$("#est_producto_especial").val('');
 									$("#mensaje").val('');
-									$("#cultivada").val('');
+									$("#cultivada").html(response.cbo_cultivada);
 									$("#ciclo_prod").val('');
 									$("#obtentor_id").html(response.cbo_obtentor_id);
-									$("#producto_id").val('');
+									//$("#producto_id").html(response.cbo_producto_id);
 									$("#estado").html(response.cbo_estado);
 									$("#lbl_fec_sincronizado").html('');
 									$("#lbl_usuario_ing").html('');
@@ -117,15 +120,20 @@ $(document).ready(function () {
 		var data = 	{	accion: $("#accion").val(),
 					 	id: $("#variedad_id").val(),
 					 	nombre: $("#nombre").val(),
+					 	nombre_tecnico: $("#nombre_tecnico").val(),
 					 	calidad_id: $("#calidad_id").val(),
+					 	color: $("#color").val(),
+					 	color2: $("#color2").val(),
+					 	grupo_color_id: $("#grupo_color_id").val(),
 					 	colorbase: $("#colorbase").val(),
 					 	solido:$("#solido").val(),
 					 	es_real:$("#es_real").val(),
-					 	//solido: $("#solido").html(response.cbo_solido),
-					 	//es_real: $("#es_real").html(response.cbo_es_real),
+					 	est_producto_especial: est_producto_especial,
+					 	mensaje:$("#mensaje").val(),
+					 	cultivada:$("#cultivada").val(),
 					 	ciclo_prod: $("#ciclo_prod").val(),
 					 	obtentor_id: $("#obtentor_id").val(),
-					 	est_producto_especial: est_producto_especial,
+					 	//producto_id: $("#producto_id").val(),
 					 	estado: $("#estado").val(),
 					}
 		data = JSON.stringify(data);
@@ -209,12 +217,17 @@ $(document).ready(function () {
 			$("#variedad_id").val(row.id);
 			$("#variedad_id").prop('readonly',true);
 			$("#nombre").val(row.nombre);
-			$("#colorbase").html(response.cbo_color_base);
+			$("#nombre_tecnico").val(row.nombre_tecnico);
 			$("#calidad_id").html(response.cbo_calidad_id);
+			$("#color").html(response.cbo_color);
+			$("#color2").html(response.cbo_color2);
+			$("#grupo_color_id").html(response.cbo_grupo_color_id);
+			$("#colorbase").html(response.cbo_color_base);
 			$("#solido").html(response.cbo_solido);
 			$("#es_real").html(response.cbo_es_real);
+			$("#mensaje").val(row.mensaje);
+			$("#cultivada").html(response.cbo_cultivada);
 			$("#ciclo_prod").val(row.ciclo_prod);
-			//$("#obtentor_id").val(row.obtentor_id);
 			$("#obtentor_id").html(response.cbo_obtentor_id);
 			if (row.est_producto_especial=='1')
 			{
@@ -312,7 +325,7 @@ $(document).ready(function () {
 					<td>
 					<?php if ($reg['solido']=="S"){ ?>
 						<span class="glyphicon glyphicon-ok" style="color:green"></span>
-					<?php }//end if ?>					
+					<?php } //end if ?>					
 					</td>
 					<td>
 						<?php if ($reg['es_real']=="S"){ ?>
@@ -358,15 +371,31 @@ $(document).ready(function () {
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">NOMBRE:</label></td>
-			        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="30" max-lenght="3" validate="required" validateMessage="Ingrese un nombre"></td>
+			        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="30" max-lenght="30" validate="required" validateMessage="Ingrese un nombre"></td>
 		        	          </tr>
+		        	          <tr>
+			        	        <td><label class="control-label">NOMBRE TECNICO:</label></td>
+			        	        <td><input name="nombre_tecnico" type="text" class="form-control input-sm" id="nombre_tecnico" style="width:350px" value="" maxlength="30" max-lenght="30" ></td>
+		        	          </tr>
+		        	             <tr>
+			        	        <td><label class="control-label">CALIDAD:</label></td>
+			        		    <td><select  name="calidad_id" class="select-class2" id="calidad_id" validate="required" validateMessage="Seleccione Calidad"></select></td>
+		        	          </tr>	
+		        	           <tr>
+			        	        <td><label class="control-label">COLOR :</label></td>
+			        		    <td><select  name="color" class="select-class2" id="color" ></select></td>
+		        	          </tr>	
+		        	           <tr>
+			        	        <td><label class="control-label">COLOR 2:</label></td>
+			        		    <td><select  name="color2" class="select-class2" id="color2" ></select></td>
+		        	          </tr>	
+		        	          <tr>
+			        	        <td><label class="control-label">GRUPO:</label></td>
+			        		    <td><select  name="grupo_color_id" class="select-class2" id="grupo_color_id" validate="required" validateMessage="Seleccione Grupo"></select></td>
+		        	          </tr>	
 			        	      <tr>
 			        	        <td><label class="control-label">COLOR BASE:</label></td>
 			        		    <td><select  name="colorbase" class="select-class2" id="colorbase" validate="required" validateMessage="Seleccione Color Base"></select></td>
-		        	          </tr>	
-		        	           <tr>
-			        	        <td><label class="control-label">CALIDAD:</label></td>
-			        		    <td><select  name="calidad_id" class="select-class2" id="calidad_id" validate="required"></select></td>
 		        	          </tr>	
 		        	            <tr>
 			        	        <td><label class="control-label">SOLIDO:</label></td>
@@ -380,14 +409,26 @@ $(document).ready(function () {
 			        	        <td><label class="control-label">CICLO:</label></td>
 			        	        <td><input name="ciclo_prod" type="text" class="inputdata-number-no-decimal" id="ciclo_prod" style="width:350px" value="" maxlength="6"  validate="required" validateMessage="Ingrese ciclo"></td>
 		        	          </tr>
+		        	           <tr>
+			        	        <td><label class="control-label">MENSAJE:</label></td>
+			        	        <td><input name="mensaje" type="text" class="form-control input-sm" id="mensaje" style="width:350px" value="" maxlength="70" ></td>
+		        	          </tr>
+		        	            <tr>
+			        	        <td><label class="control-label">CULTIVADA:</label></td>
+			        	        <td><select  name="cultivada" class="select-class2" id="cultivada" ></select></td>
+		        	          </tr>
 		        	          <tr>
 			        	        <td><label class="control-label">OBTENTOR:</label></td>
-			        		    <td><select  name="obtentor_id" class="select-class2" id="obtentor_id" validate="required" validateMessage="Seleccione Color Base"></select></td>
+			        		    <td><select  name="obtentor_id" class="select-class2" id="obtentor_id" ></select></td>
 		        	          </tr>	
 		        	           <tr>
 			        	        <td><label class="control-label">ESTADO PROD. ESPECIAL:</label></td>
 			        	        <td><input type="checkbox" name="est_producto_especial" id="est_producto_especial" value=""></td>
 		        	          </tr>	
+		        	      <!--  <tr>
+			        	        <td><label class="control-label">PRODUCTO:</label></td>
+			        		    <td><select  name="producto_id" class="select-class2" id="producto_id" validate="required" validateMessage="Seleccione Producto"></select></td>
+		        	          </tr>	 -->
 		        	           <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>
 			        	        <td><select  name="estado" class="select-class2" id="estado"></select></td>

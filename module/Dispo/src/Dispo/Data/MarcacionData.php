@@ -101,6 +101,7 @@ class MarcacionData
 
 	//metodos GET
 	public function getMarcacionSec() 				{return $this->marcacion_sec;}
+	public function getClienteId() 					{return $this->cliente_id;}
 	public function getNombre() 					{return $this->nombre;}
 	public function getDireccion() 					{return $this->direccion;}
 	public function getCiudad() 					{return $this->ciudad;}
@@ -120,6 +121,7 @@ class MarcacionData
 	//metodos SET
 	
 	public function setMarcacionsec($valor) 				{$this->marcacion_sec		= $valor;}
+	public function setClienteId($valor) 					{$this->cliente_id			= $valor;}
 	public function setNombre($valor) 						{$this->nombre				= $valor;}
 	public function setDireccion($valor) 					{$this->direccion			= $valor;}
 	public function setCiudad($valor) 						{$this->ciudad				= $valor;}

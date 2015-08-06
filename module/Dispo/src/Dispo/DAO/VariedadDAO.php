@@ -60,7 +60,6 @@ class VariedadDAO extends Conexion
 				'id'						        => $VariedadData->getId()
 		);
 		$record = array(
-			'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
 				'nombre_tecnico'		            => $VariedadData->getNombreTecnico(),
 				'calidad_id'	                    => $VariedadData->getCalidadId(),
@@ -75,7 +74,7 @@ class VariedadDAO extends Conexion
 				'cultivada'	    			        => $VariedadData->getCultivada(),
 				'ciclo_prod'	                    => $VariedadData->getCicloProd(),
 				'obtentor_id'	                    => $VariedadData->getObtentorId(),
-				'producto_id'	        		    => $VariedadData->getProductoId(),
+				//'producto_id'	        		    => $VariedadData->getProductoId(),
 				'estado'		                    => $VariedadData->getEstado(),
 				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),

@@ -2,9 +2,7 @@
 
 <script>
 $(document).ready(function () {
-/*	InputData_UpperCaseAll();		*/
 	InputData_TrimAll();
-/*		InputData_KeyEnterDisabled();*/
 /*	InputData_initNumberAndDecimal();*/
 	InputData_initNumberNoDecimal();
 	
@@ -23,22 +21,48 @@ $(document).ready(function () {
 		return false;
     });    
 
+    $("#btn_grabar_informacion_general").on('click', function(event){ 
+    	grabar_informacion_general();
+		return false;
+    });   
+    
+    
     $("#btn_nueva_marcacion").on('click', function(event){
     	nuevamarcacion(); 
 		return false;
     });
 
-    $("#btn_grabar_informacion_general").on('click', function(event){ 
-    	grabar_informacion_general();
-		return false;
-    });     
 
     $("#btn_grabar_marcacion").on('click', function(event){ 
     	grabar_marcacion();
 		return false;
-    });       
-      
+    });    
     
+
+    $("#btn_nueva_agencia_carga").on('click', function(event){
+    	nueva_agencia_carga(); 
+		return false;
+    });
+
+
+    $("#btn_grabar_agencia_carga").on('click', function(event){ 
+    	grabar_agencia_carga();
+		return false;
+    });     
+
+
+    $("#btn_nuevo_usuario").on('click', function(event){
+    	nuevo_usuario(); 
+		return false;
+    });
+
+
+    $("#btn_grabar_usuario").on('click', function(event){ 
+    	grabar_usuario();
+		return false;
+    });     
+
+
   
     $(".btn_edit").on('click', function(event){ 
 		var tr 						= $(this).closest('tr');
@@ -57,31 +81,36 @@ $(document).ready(function () {
 		//$("#dialog_mantenimiento").modal('show') 
     });	
 
-      
-
-     
+    
+/**
+ * ----------------------------------------------------------------------
+ * 		FUNCIONES DEL CLIENTE (INFORMACION GENERAL)
+ *-----------------------------------------------------------------------
+ */
+    
 	function nuevo()
-{
-		("#tab_agencia_carga").tabs( "disable" , index )
-	//Se llama mediante AJAX para adicionar al carrito de compras
-	var data = 	{}
-	data = JSON.stringify(data);
+		{
+		//Deshabilita los tabs excepto el primer TAB
+		$("#tabs_mantenimiento_cliente ul li:gt(0)").addClass('disabled').addClass('disabledTab');
 	
-	var parameters = {	'type': 'POST',//'POST',
-						'contentType': 'application/json',
-						'url':'<?php echo($this->basePath()); ?>/dispo/cliente/nuevodata',
-						'control_process':true,
-						'show_cargando':true,
-						'finish':function(response){
-								//ValidateControlsInit();
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/nuevodata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){		
+									//ValidateControlsInit();
+								
 								$("#accion").val("I");
 								$("#dialog_mantenimiento_cliente_nombre").html("NUEVO REGISTRO");
 
 								$('#myTabs a[href="#tab_informacion_general"]').tab('show') // Select tab by nombre
-								//$('#myTabs a[href="#tab_marcacion"]').tab('show') 
-								//$('#myTabs a[href="#tab_agencia_carga"]').tab('show') 
-								//$('#myTabs a[href="#tab_usuarios"]').tab('show') 
 								$("#cliente_id").val('');
+								$("#cliente_id").prop('readonly',false);
 								$("#nombre").val('');
 								$("#direccion").val('');
 								$("#pais_id").html(response.cbo_pais_id);
@@ -102,64 +131,21 @@ $(document).ready(function () {
 								$("#sincronizado_ok").hide();
 								
 								$("#dialog_mantenimiento").modal('show');
-						}							
-	                 }
-	response = ajax_call(parameters, data);		
-	return false;	
-							
-}//end function nuevo
+									}							
+				            }
+				response = ajax_call(parameters, data);		
+				return false;	
+										
+			}//end function nuevo
 
 
-
-
-function nuevamarcacion()
-{
-//Se llama mediante AJAX para adicionar al carrito de compras
-var data = 	{}
-data = JSON.stringify(data);
-
-var parameters={	'type': 'POST',//'POST',
-					'contentType': 'application/json',
-					'url':'<?php echo($this->basePath()); ?>/dispo/cliente/marcacionnuevodata',
-					'control_process':true,
-					'show_cargando':true,
-					'finish':function(response){
-						console.log(response);
-							//ValidateControlsInit();
-							$("#accion").val("I");
-							$("#dialog_nueva_marcacion_marcacion_nombre").html("NUEVO REGISTRO");
-
-							$("#marcacion_sec").val('');
-							$("#nombre").val('');
-							$("#direccion").val('');
-							$("#frm_marcacion #pais_id").html(response.cbo_pais_id);
-							$("#ciudad").val('');
-							$("#contacto").val('');
-							$("#telefono").val('');
-							$("#zip").val('');
-							$("#frm_marcacion #estado").html(response.cbo_estado);
-							$("#lbl_fec_sincronizado").html('');
-							$("#lbl_usuario_ing").html('');
-							$("#lbl_fec_ingreso").html('');
-							$("#lbl_usuario_mod").html('');
-							$("#lbl_fec_modifica").html('');
-							$("#sincronizado_pendiente").show();
-							$("#sincronizado_ok").hide();
-							
-							$("#dialog_nueva_marcacion").modal('show');
-					}							
-                 }
-response = ajax_call(parameters, data);		
-return false;	
-						
-}//end function nuevo
-
-
-	 function grabar_informacion_general(){
-			if (!ValidateControls('frm')) {
+	 function grabar_informacion_general()
+	 	{
+			if (!ValidateControls('frm_informacion_general')) 
+				{
 				return false;
-			}
-
+				}
+			$("#tabs_mantenimiento_cliente ul li").removeClass('disabled',false).removeClass('disabledTab',false);
 			//Se llama mediante AJAX para adicionar al carrito de compras
 			var data = 	{	accion: $("#accion").val(),
 						 	cliente_id: $("#cliente_id").val(),
@@ -222,21 +208,148 @@ return false;
 
 
 
-	 function grabar_marcacion(){
+		function mostrar_registro(response)
+		{
+			var row = response.row;
+			if (row!==null)
+			{
+			//	ValidateControlsInit();
+				$("#accion").val("M");			
+				$("#dialog_mantenimiento_cliente_nombre").html(row.nombre);
+				$("#cliente_id").val(row.id);
+				$("#cliente_id").prop('readonly',true);
+				$("#nombre").val(row.nombre);
+				$("#direccion").val(row.direccion);
+				$("#pais_id").html(response.cbo_pais_id);
+				$("#ciudad").val(row.ciudad);
+				$("#telefono1").val(row.telefono1);
+				$("#telefono2").val(row.telefono2);
+				$("#fax1").val(row.fax1);
+				$("#fax2").val(row.fax2);
+				$("#email").val(row.email);
+				$("#grupo_precio_cab_id").html(response.cbo_grupo_precio);
+				$("#estado").html(response.cbo_estado);
+				$("#lbl_fec_ingreso").html(row.fec_ingreso);
+				$("#lbl_fec_modifica").html(row.fec_modifica);
+				$("#lbl_usuario_ing").html(row.usuario_ing_user_name);
+				$("#lbl_usuario_mod").html(row.usuario_mod_user_name);
+				$("#lbl_fec_sincronizado").html(row.fec_sincronizado);
+				
+				
+				
+				
+				if (row.sincronizado==1)
+				{
+					$("#sincronizado_pendiente").hide();
+					$("#sincronizado_ok").show();
+				}else{
+					$("#sincronizado_pendiente").show();
+					$("#sincronizado_ok").hide();
+				}//end if
+			}//end if
+		}//end function mostrar_registro
+			
+
+
+
+
+		function consultar_cliente(id)
+		{
+			//Habilita todos los TABS
+			$("#tabs_mantenimiento_cliente ul li").removeClass('disabled').removeClass('disabledTab');
+		
+			//Se llama mediante AJAX para adicionar al carrito de compras
+			var data = 	{cliente_id:id}
+			data = JSON.stringify(data);
+			
+			var parameters = {	'type': 'POST',//'POST',
+								'contentType': 'application/json',
+								'url':'<?php echo($this->basePath()); ?>/dispo/cliente/consultardata',
+								'control_process':true,
+								'show_cargando':true,
+								'finish':function(response){
+										mostrar_registro(response)
+										cargador_visibility('hide');
+
+										$("#dialog_mantenimiento").modal('show')
+								}							
+			                 }
+			response = ajax_call(parameters, data);		
+			return false;		
+		}//end function consultar_cliente
+
+		
+/**
+ * ---------------------------------------------------------------------------------------------
+ *			FUNCIONES MARCACION
+ *---------------------------------------------------------------------------------------------
+ */
+
+
+			function nuevamarcacion()
+			{
+			//Se llama mediante AJAX para adicionar al carrito de compras
+			var data = 	{}
+			data = JSON.stringify(data);
+			
+			var parameters={	'type': 'POST',//'POST',
+					'contentType': 'application/json',
+					'url':'<?php echo($this->basePath()); ?>/dispo/cliente/marcacionnuevodata',
+					'control_process':true,
+					'show_cargando':true,
+					'finish':function(response){
+							//ValidateControlsInit();
+							$("#frm_marcacion #accion").val("I");
+							$("#dialog_nueva_marcacion_nombre").html("NUEVO REGISTRO");
+
+							$("#marcacion_sec").val('');
+							$("#frm_marcacion #cliente_id").val($("#frm_informacion_general #cliente_id").val());
+							$("#frm_marcacion #cliente_id").prop('readonly',true);
+							$("#nombre").val('');
+							$("#direccion").val('');
+							$("#frm_marcacion #pais_id").html(response.cbo_pais_id);
+							$("#ciudad").val('');
+							$("#contacto").val('');
+							$("#telefono").val('');
+							$("#zip").val('');
+							$("#frm_marcacion #estado").html(response.cbo_estado);
+							$("#lbl_fec_sincronizado").html('');
+							$("#lbl_usuario_ing").html('');
+							$("#lbl_fec_ingreso").html('');
+							$("#lbl_usuario_mod").html('');
+							$("#lbl_fec_modifica").html('');
+							$("#sincronizado_pendiente").show();
+							$("#sincronizado_ok").hide();
+							
+							$("#dialog_nueva_marcacion").modal('show');
+							}							
+		                 }
+			response = ajax_call(parameters, data);		
+			return false;	
+									
+			}//end function nuevo
+
+
+	
+
+
+	 function grabar_marcacion()
+	 	{
 			if (!ValidateControls('frm_marcacion')) {
 				return false;
 			}
 
 			//Se llama mediante AJAX para adicionar al carrito de compras
-			var data = 	{	accion: $("#accion").val(),
-						 	marcacion_sec: $("#marcacion_sec").val(),
-						 	nombre: $("#nombre").val(),
-						 	direccion: $("#direccion").val(),
-						 	ciudad: $("#ciudad").val(),
-						 	pais_id: $("#pais_id").val(),
-							contacto: $("#contacto").val(),
-							telefono: $("#telefono").val(),
-							zip:$("#zip").val(),
+			var data = 	{	accion: $("#frm_marcacion #accion").val(),
+						 	marcacion_sec: $("#frm_marcacion #marcacion_sec").val(),
+						 	cliente_id: $("#frm_marcacion #cliente_id").val(),
+						 	nombre: $(" #frm_marcacion #nombre").val(),
+						 	direccion: $(" #frm_marcacion #direccion").val(),
+						 	ciudad: $("#frm_marcacion #ciudad").val(),
+						 	pais_id: $("#frm_marcacion #pais_id").val(),
+							contacto: $("#frm_marcacion #contacto").val(),
+							telefono: $("#frm_marcacion #telefono").val(),
+							zip:$("#frm_marcacion #zip").val(),
 							estado: $("#frm_marcacion #estado").val(),
 						}
 			data = JSON.stringify(data);
@@ -285,74 +398,372 @@ return false;
 		}//end function grabar
 		
 
-		
-	function consultar_cliente(id)
+
+
+		function mostrar_registro_marcacion(response)
+		{
+			var row = response.row;
+			if (row!==null)
+			{
+			//	ValidateControlsInit();
+				$("#frm_marcacion #accion").val("M");			
+				$("#dialog_nueva_marcacion_marcacion_nombre").html(row.nombre);
+				$("#frm_marcacion #marcacion_sec").val(row.marcacion_sec);
+				$("#frm_marcacion #cliente_id").val(row.cliente_id);
+				$("#frm_marcacion #cliente_id").prop('readonly',true);
+				$("#frm_marcacion #nombre").val(row.nombre);
+				$("#frm_marcacion #direccion").val(row.direccion);
+				$("#frm_marcacion #pais_id").html(response.cbo_pais_id);
+				$("#frm_marcacion #ciudad").val(row.ciudad);
+				$("#frm_marcacion #contacto").val(row.contacto);
+				$("#frm_marcacion #telefono").val(row.telefono);
+				$("#frm_marcacion #zip").val(row.zip);
+				$("#frm_marcacion #estado").html(response.cbo_estado);
+				$("#frm_marcacion #lbl_fec_ingreso").html(row.fec_ingreso);
+				$("#frm_marcacion #lbl_fec_modifica").html(row.fec_modifica);
+				$("#frm_marcacion #lbl_usuario_ing").html(row.usuario_ing_user_name);
+				$("#frm_marcacion #lbl_usuario_mod").html(row.usuario_mod_user_name);
+				$("#frm_marcacion #lbl_fec_sincronizado").html(row.fec_sincronizado);
+				
+				if (row.sincronizado==1)
+				{
+					$("#frm_marcacion #sincronizado_pendiente").hide();
+					$("#frm_marcacion #sincronizado_ok").show();
+				}else{
+					$("#frm_marcacion #sincronizado_pendiente").show();
+					$("#frm_marcacion #sincronizado_ok").hide();
+				}//end if
+			}//end if
+		}//end function mostrar_registro
+
+ /**
+  * ---------------------------------------------------------------------------------------------
+  *			FUNCIONES AGENCIA CARGA
+  *---------------------------------------------------------------------------------------------
+  */
+
+  function nueva_agencia_carga()
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{cliente_id:id}
+		var data = 	{}
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/consultardata',
+							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/agenciacarganuevodata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
-									mostrar_registro(response)
-									cargador_visibility('hide');
+									ValidateControlsInit();
+									$("#frm_agencia_carga #accion").val("I");
+									$("#dialog_nueva_agenciacarga_nombre").html("NUEVO REGISTRO");
 
-									$("#dialog_mantenimiento").modal('show')
+									$("#agencia_carga_id").val('');
+									$("#agencia_carga_id").prop('readonly',false);
+									$("#nombre").val('');
+									$("#direccion").val('');
+									$("#telefono").val('');
+									$("#tipo").html(response.cbo_tipo);
+									$("#frm_agencia_carga #estado").html(response.cbo_estado);
+									$("#lbl_fec_sincronizado").html('');
+									$("#lbl_usuario_ing").html('');
+									$("#lbl_fec_ingreso").html('');
+									$("#lbl_usuario_mod").html('');
+									$("#lbl_fec_modifica").html('');
+									$("#sincronizado_pendiente").show();
+									$("#sincronizado_ok").hide();
+									
+									$("#dialog_nueva_agenciacarga").modal('show')
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;				
+	}//end function nuevo
+
+
+
+  function grabar_agencia_carga(){
+		if (!ValidateControls('frm_agencia_carga')) {
+			return false;
+		}//end FuncionGrabar
+		
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{	accion: $("#frm_agencia_carga #accion").val(),
+					 	id: $("#frm_agencia_carga #agencia_carga_id").val(),
+					 	nombre: $("#frm_agencia_carga #nombre").val(),
+					 	direccion: $("#frm_agencia_carga #direccion").val(),
+					 	telefono: $("#frm_agencia_carga #telefono").val(),
+					 	tipo: $("#frm_agencia_carga #tipo").val(),
+					 	estado: $("#frm_agencia_carga #estado").val(),
+					}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/agenciacargagrabardata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									if (response.validacion_code == 'OK')
+									{
+										mostrar_registro_agencia(response)
+										cargador_visibility('hide');
+										swal({  title: "Informacion grabada con exito!!",   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "success",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									}else{
+										swal({title: response.respuesta_mensaje,   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "error",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									
+									}									
 							}							
 		                 }
 		response = ajax_call(parameters, data);		
 		return false;		
-	}//end function consultar_cliente
-
-
+	}//end function grabar
 	
-	function mostrar_registro(response)
+
+	function mostrar_registro_agencia(response)
 	{
 		var row = response.row;
 		if (row!==null)
 		{
 		//	ValidateControlsInit();
-			$("#accion").val("M");			
-			$("#dialog_mantenimiento_cliente_nombre").html(row.nombre);
-			$("#cliente_id").val(row.id);
-			$("#cliente_id").prop('readonly',true);
-			$("#nombre").val(row.nombre);
-			$("#direccion").val(row.direccion);
-			$("#pais_id").html(response.cbo_pais_id);
-			$("#ciudad").val(row.ciudad);
-			$("#telefono1").val(row.telefono1);
-			$("#telefono2").val(row.telefono2);
-			$("#fax1").val(row.fax1);
-			$("#fax2").val(row.fax2);
-			$("#email").val(row.email);
-			$("#grupo_precio_cab_id").html(response.cbo_grupo_precio);
-			$("#estado").html(response.cbo_estado);
-			$("#lbl_fec_ingreso").html(row.fec_ingreso);
-			$("#lbl_fec_modifica").html(row.fec_modifica);
-			$("#lbl_usuario_ing").html(row.usuario_ing_user_name);
-			$("#lbl_usuario_mod").html(row.usuario_mod_user_name);
-			$("#lbl_fec_sincronizado").html(row.fec_sincronizado);
+			$("#frm_agencia_carga #accion").val("M");			
+			$("#dialog_nueva_agenciacarga_nombre").html(row.nombre);
+			$("#frm_agencia_carga #id").val(row.id);
+			$("#frm_agencia_carga #id").prop('readonly',true);
+			$("#frm_agencia_carga #nombre").val(row.nombre);
+			$("#frm_agencia_carga #direccion").val(row.direccion);
+			$("#frm_agencia_carga #telefono").val(row.telefono);
+			$("#frm_agencia_carga #tipo").val(row.tipo);
+			$("#frm_agencia_carga #estado").html(response.cbo_estado);
+			$("#frm_agencia_carga #lbl_fec_ingreso").html(row.fec_ingreso);
+			$("#frm_agencia_carga #lbl_fec_modifica").html(row.fec_modifica);
+			$("#frm_agencia_carga #lbl_usuario_ing").html(row.usuario_ing_user_name);
+			$("#frm_agencia_carga #lbl_usuario_mod").html(row.usuario_mod_user_name);
+			$("#frm_agencia_carga #lbl_fec_sincronizado").html(row.fec_sincronizado);
 			
 			
 			
 			
 			if (row.sincronizado==1)
 			{
-				$("#sincronizado_pendiente").hide();
-				$("#sincronizado_ok").show();
+				$("#frm_agencia_carga #sincronizado_pendiente").hide();
+				$("#frm_agencia_carga #sincronizado_ok").show();
 			}else{
-				$("#sincronizado_pendiente").show();
-				$("#sincronizado_ok").hide();
+				$("#frm_agencia_carga #sincronizado_pendiente").show();
+				$("#frm_agencia_carga #sincronizado_ok").hide();
 			}//end if
 		}//end if
 	}//end function mostrar_registro
+	
+
+
+ /**
+  * ---------------------------------------------------------------------------------------------
+  *			FUNCIONES USUARIO
+  *---------------------------------------------------------------------------------------------
+  */
+
+	function nuevo_usuario()
+	{
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/usuarionuevodata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									ValidateControlsInit();
+									$("#frm_nuevo_usuario #accion").val("I");
+									$("#dialog_nuevo_usuario_nombre").html("NUEVO REGISTRO");
+
+									$("#usuario_id").val('');
+									$("#usuario_id").prop('readonly',false);
+									$("#nombre").val('');
+									$("#username").val('');
+									$("#password").val('');
+									$("#email").val('');
+									$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
+									$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
+									$("#lbl_usuario_ing").html('');
+									$("#lbl_fec_ingreso").html('');
+									$("#lbl_usuario_mod").html('');
+									$("#lbl_fec_modifica").html('');									
+									$("#dialog_nuevo_usuario").modal('show')
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;				
+	}//end function nuevo
 
 
 
+	function ValidateControlAdicional()
+	{
+		//Validacion Customizada
+		var valor1 = $("#frm_nuevo_usuario #password").val();
+		var valor2 = $("#frm_nuevo_usuario #password2").val();
+		var accion = $("#frm_nuevo_usuario #accion").val(); 
+
+		if (accion == 'I'){
+			if ($("#frm_nuevo_usuario #password").val()==''){
+				mensaje = 'Debe ingresar una clave';
+				return mensaje;
+			}
+			if ($("#frm_nuevo_usuario #password2").val()==''){
+				mensaje = 'Debe ingresar la confirmacion de la clave';
+				return mensaje;
+			}//end if
+		}//end if
+
+		if ($("#frm_nuevo_usuario #password").val()!=''){
+			if ($("#frm_nuevo_usuario #password").val() != $("#frm_nuevo_usuario #password2").val()){
+				mensaje = 'La contraseña no coincide';
+				return mensaje;
+			}//end if
+		}//end if
+		if ($("#frm_nuevo_usuario #password2").val()!=''){
+			if ($("#frm_nuevo_usuario #password").val() != $("#frm_nuevo_usuario #password2").val()){
+				mensaje = 'La contraseña no coincide';
+				return mensaje;
+			}//end if
+		}//end if
+
+		return 'OK';
+	}//end function ValidateControlAdicional
+
+
+	function grabar_usuario(){
+
+		if (!ValidateControls('frm_nuevo_usuario')) {
+			return false;
+		}//end FuncionGrabar
+
+		var mensaje = ValidateControlAdicional();
+
+		if (mensaje!='OK')
+		{
+			swal({  title: mensaje,   
+				//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+				//html:true,
+				type: "warning",
+				showCancelButton: false,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "OK",
+				cancelButtonText: "",
+				closeOnConfirm: false,
+				closeOnCancel: false,
+				/*timer: 2000*/
+			});			
+			return false;
+		}//end if
+		
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{	accion: $("#frm_nuevo_usuario #accion").val(),
+					 	id: $("#frm_nuevo_usuario #usuario_id").val(),
+					 	nombre: $("#frm_nuevo_usuario #nombre").val(),
+					 	username: $("#frm_nuevo_usuario #username").val(),					 	
+					 	password: $("#frm_nuevo_usuario #password").val(),
+					 	password2: $("#frm_nuevo_usuario #password2").val(),
+					 	email: $("#frm_nuevo_usuario #email").val(),
+					 	perfil_id: $("#frm_nuevo_usuario #perfil_id").val(),
+					 	estado: $("#frm_nuevo_usuario #estado").val(),
+					}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/cliente/usuariograbardata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									if (response.validacion_code == 'OK')
+									{
+										mostrar_registro_usuario(response)
+										cargador_visibility('hide');
+										swal({  title: "Informacion grabada con exito!!",   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "success",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									}else{
+										swal({title: response.respuesta_mensaje,   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "error",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									
+									}									
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+			
+		return false;		
+	}//end function grabar
+
+
+	function mostrar_registro_usuario(response)
+	{
+		var row = response.row;
+		if (row!==null)
+		{
+			ValidateControlsInit();
+			$("#frm_nuevo_usuario #accion").val("M");			
+			$("#frm_nuevo_usuario #dialog_mantenimiento_usuario_nombre").html(row.nombre);
+			$("#frm_nuevo_usuario #usuario_id").val(row.id);
+			$("#frm_nuevo_usuario #usuario_id").prop('readonly',true);
+			$("#frm_nuevo_usuario #nombre").val(row.nombre);
+			$("#frm_nuevo_usuario #username").val(row.username);
+			$("#frm_nuevo_usuario #password").val('');
+			$("#frm_nuevo_usuario #password2").val('');
+			$("#frm_nuevo_usuario #email").val(row.email);
+			$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
+			$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
+			$("#frm_nuevo_usuario #lbl_usuario_ing").html(row.usuario_ing_user_name);
+			$("#frm_nuevo_usuario #lbl_fec_ingreso").html(row.fec_ingreso);
+			$("#frm_nuevo_usuario #lbl_usuario_mod").html(row.usuario_mod_user_name);
+			$("#frm_nuevo_usuario #lbl_fec_modifica").html(row.fec_modifica);
+
+		}//end if
+	}//end function mostrar_registro
 	
 	});//$(document).ready
     </script>
@@ -360,9 +771,8 @@ return false;
 
 
 <div class="title-admin-section">
-	<h1>cliente</h1>
+	<h1>Cliente</h1>
 </div>
-
 
 
 <div class="table-container col-md-16 col-sm-16">
@@ -447,7 +857,7 @@ return false;
 			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 			        <h4 class="modal-title" id="myModalLabel">CLIENTE (<span id="dialog_mantenimiento_cliente_nombre"></span>)</h4>
 		      </div>
-			  <div class="modal-body clearfix">
+			  <div id="tabs_mantenimiento_cliente" class="modal-body clearfix">
 				  <!-- Nav tabs -->
 				  <ul class="nav nav-tabs" role="tablist">
 				    <li role="presentation" class="active"><a href="#tab_informacion_general" aria-controls="tab_informacion_general" role="tab" data-toggle="tab">INFORMACION GENERAL</a></li>
@@ -458,79 +868,79 @@ return false;
 			  		<!-- Tab panes -->
 			  		<div class="tab-content">
 		  				<div role="tabpanel" class="tab-pane active" id="tab_informacion_general">
-		  				<br>
-		  				<form id="frm">
+		  					<br>
+		  				<form id="frm_informacion_general">
 					    	<table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
-				        	      <tr>
-				        	        <td><label class="control-label">ID:</label></td>
+					        	     <tr>
+					        	     <td><label class="control-label">ID:</label></td>
+					        	     <td>
+		                             <input id="cliente_id" name="cliente_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="5" max-lenght="5" validate="required" validateMessage="Ingrese un codigo" onkeyup="this.value=this.value.toUpperCase()">
+		                             <input type="hidden" name="accion" id="accion" value="" /></td>
+				        	         </tr>
+					        	     <tr>
+					        	     <td><label class="control-label">NOMBRE:</label></td>
+					        	     <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="50" max-lenght="50" validate="required" validateMessage="Ingrese un nombre" onkeyup="this.value=this.value.toUpperCase()"></td>
+				        	         </tr>
+				        	         <tr>
+					        	     <td><label class="control-label">DIRECCION:</label></td>
+					        	     <td><input name="direccion" type="text" class="form-control input-sm" id="direccion" style="width:350px" value="" maxlength="100" max-lenght="100"></td>
+				        	         </tr>
+				        	         <tr>
+					        	     <td><label class="control-label">PAIS:</label></td>
+					        	     <td><select  name="pais_id" class="select-class2" id="pais_id" validate="required" validateMessage="Seleccione Pais"></select></td>
+				        	         </tr>
+				        	         <tr>
+					        	     <td><label class="control-label">CIUDAD:</label></td>
+					        	     <td><input name="ciudad" type="text" class="form-control input-sm" id="ciudad" style="width:350px" value="" maxlength="50" max-lenght="50" validate="required" validateMessage="Ingrese una Ciudad" onkeyup="this.value=this.value.toUpperCase()"></td>
+				        	         </tr>
+				        	         <tr>
+					        	     <td><label class="control-label">TELEFONO 1:</label></td>
+					        	     <td><input name="telefono1" type="text" class="form-control input-sm" id="telefono1" style="width:350px" value="" maxlength="15" max-lenght="15" validate="required" validateMessage="Ingrese un Telefono"></td>
+				        	         </tr>
+				        	         <tr>
+					        	      <td><label class="control-label">TELEFONO 2:</label></td>
+					        	      <td><input name="telefono2" type="text" class="form-control input-sm " id="telefono2" style="width:350px" value="" maxlength="15" max-lenght="15" ></td>
+				        	         </tr>
+				        	          <tr>
+					        	      <td><label class="control-label">FAX 1:</label></td>
+					        	     <td><input name="fax1" type="text" id="fax1" class="form-control input-sm" style="width:350px" value="" maxlength="15" max-lenght="15" ></td>
+				        	         </tr>
+				        	         <tr>
+					        	     <td><label class="control-label">FAX 2:</label></td>
+					        	    <td><input name="fax2" type="text"  class="form-control input-sm" id="fax2" style="width:350px" value="" maxlength="15" max-lenght="15"></td>
+				        	        </tr>
+				        	        <tr>
+					        	    <td><label class="control-label">CORREO:</label></td>
+					        	    <td><input type="text" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="30" max-lenght="30"></td>
+				        	        </tr>
+				        	        <tr>
+					        	    <td><label class="control-label">GRUPO PRECIO:</label></td>
+					        	    <td><select  name="grupo_precio_cab_id" class="select-class2" id="grupo_precio_cab_id" validate="required" validateMessage="Seleccione Grupo Precio"></select></td>
+				        	        </tr>
+				        	       	<tr>
+				        	        <td><label class="control-label">ESTADO:</label></td>
+				        	        <td><select  name="estado" class="select-class2" id="estado"></select></td>
+			        	          	</tr>	
+			        	            <tr>
+				        	        <td><label class="control-label">SINCRONIZADO:</label></td>
 				        	        <td>
-	                                <input id="cliente_id" name="cliente_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="5" max-lenght="5" validate="required" validateMessage="Ingrese un codigo">
-	                                <input type="hidden" name="accion" id="accion" value="" /></td>
-			        	          </tr>
-				        	      <tr>
-				        	        <td><label class="control-label">NOMBRE:</label></td>
-				        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="50" max-lenght="50" validate="required" validateMessage="Ingrese un nombre" onkeyup="this.value=this.value.toUpperCase()"></td>
-			        	          </tr>
-			        	          <tr>
-				        	        <td><label class="control-label">DIRECCION:</label></td>
-				        	        <td><input name="direccion" type="text" class="form-control input-sm" id="direccion" style="width:350px" value="" maxlength="100" max-lenght="100"></td>
-			        	         </tr>
-			        	         <tr>
-				        	        <td><label class="control-label">PAIS:</label></td>
-				        	        <td><select  name="pais_id" class="select-class2" id="pais_id" validate="required" validateMessage="Seleccione Pais"></select></td>
-			        	         </tr>
-			        	          <tr>
-				        	        <td><label class="control-label">CIUDAD:</label></td>
-				        	        <td><input name="ciudad" type="text" class="form-control input-sm" id="ciudad" style="width:350px" value="" maxlength="50" max-lenght="50" validate="required" validateMessage="Ingrese una Ciudad" onkeyup="this.value=this.value.toUpperCase()"></td>
-			        	         </tr>
-			        	         <tr>
-				        	        <td><label class="control-label">TELEFONO 1:</label></td>
-				        	        <td><input name="telefono1" type="text" class="form-control input-sm" id="telefono1" style="width:350px" value="" maxlength="15" max-lenght="15" validate="required" validateMessage="Ingrese un Telefono"></td>
-			        	         </tr>
-			        	         <tr>
-				        	        <td><label class="control-label">TELEFONO 2:</label></td>
-				        	        <td><input name="telefono2" type="text" class="form-control input-sm " id="telefono2" style="width:350px" value="" maxlength="15" max-lenght="15" ></td>
-			        	         </tr>
-			        	          <tr>
-				        	        <td><label class="control-label">FAX 1:</label></td>
-				        	        <td><input name="fax1" type="text" id="fax1" class="form-control input-sm" style="width:350px" value="" maxlength="15" max-lenght="15" ></td>
-			        	         </tr>
-			        	          <tr>
-				        	        <td><label class="control-label">FAX 2:</label></td>
-				        	        <td><input name="fax2" type="text"  class="form-control input-sm" id="fax2" style="width:350px" value="" maxlength="15" max-lenght="15"></td>
-			        	         </tr>
-			        	         <tr>
-				        	        <td><label class="control-label">CORREO:</label></td>
-				        	        <td><input type="text" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="30" max-lenght="30"></td>
-			        	         </tr>
-			        	         <tr>
-				        	        <td><label class="control-label">GRUPO PRECIO:</label></td>
-				        	        <td><select  name="grupo_precio_cab_id" class="select-class2" id="grupo_precio_cab_id" validate="required" validateMessage="Seleccione Grupo Precio"></select></td>
-			        	         </tr>
-			        	       <tr>
-			        	        <td><label class="control-label">ESTADO:</label></td>
-			        	        <td><select  name="estado" class="select-class2" id="estado"></select></td>
-		        	          </tr>	
-		        	            <tr>
-			        	        <td><label class="control-label">SINCRONIZADO:</label></td>
-			        	        <td>
-								<span id="sincronizado_pendiente" class="glyphicon glyphicon-time icon-white" style="color:red; display:none" ></span>
-								<span id="sincronizado_ok" class="glyphicon glyphicon-ok icon-white" style="color:green; display:none"></span>
-                                <span id="lbl_fec_sincronizado"></span>
-                                </td>
-		        	          </tr>        	   
-			        	      <tr>
-			        	        <td>&nbsp;</td>
-			        	        <td>&nbsp;</td>
-		        	        </tr>
-			        	      <tr>
-			        	        <td><label class="control-label">Ingreso:</label></td>
-			        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
-		        	          </tr>
-			        	      <tr>
-			        	        <td><label class="control-label">Modificación:</label></td>
-			        	        <td><b><span id="lbl_usuario_mod"></span></b> - <span id="lbl_fec_modifica"></span></td>
-		        	          </tr>
+									<span id="sincronizado_pendiente" class="glyphicon glyphicon-time icon-white" style="color:red; display:none" ></span>
+									<span id="sincronizado_ok" class="glyphicon glyphicon-ok icon-white" style="color:green; display:none"></span>
+	                                <span id="lbl_fec_sincronizado"></span>
+	                                </td>
+			        	            </tr>        	   
+				        	        <tr>
+				        	        <td>&nbsp;</td>
+				        	   	    <td>&nbsp;</td>
+			        	       		</tr>
+				        	     	<tr>
+				        	        <td><label class="control-label">Ingreso:</label></td>
+				        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
+			        	          	</tr>
+				        	      	<tr>
+				        	        <td><label class="control-label">Modificación:</label></td>
+				        	        <td><b><span id="lbl_usuario_mod"></span></b> - <span id="lbl_fec_modifica"></span></td>
+			        	         	</tr>
 			        	  	</table>
 			        	  	<br>
 							<center>
@@ -539,46 +949,28 @@ return false;
      						</form>
 		  				</div>
 				   	
-					    <div role="tabpanel" class="tab-pane" id="tab_marcacion">
-					       <br>
-            				 <p><a id="btn_nueva_marcacion"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a></p> 
-					     
-		  				<form id="frm">
-					    	<table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
-				        	      <tr>
-				        	        <td><label class="control-label">ID:</label></td>
-				        	        <td>
-	                                <input id="marcacion_sec" name="marcacion_sec" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="5" max-lenght="5" validate="required" validateMessage="Ingrese un codigo">
-	                                <input type="hidden" name="accion" id="accion" value="" /></td>
-			        	          </tr>
-				        	      <tr>
-				        	        <td><label class="control-label">NOMBRE:</label></td>
-				        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="50" max-lenght="50" validate="required" validateMessage="Ingrese un nombre" onkeyup="this.value=this.value.toUpperCase()"></td>
-			        	          </tr>
-			        	         </table>
-			        	  	<br>
-							<center>
-							<a id="btn_grabar_informacion_general" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a>
-							</center>
-     						</form>
-					    </div>
+					    	<div role="tabpanel" class="tab-pane" id="tab_marcacion">
+					       			<br>
+            						 <p><a id="btn_nueva_marcacion"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a></p> 
+		  		
+					    	</div>
 					    
-					    <div role="tabpanel" class="tab_agencia_carga" id="tab_agencia_carga">
-					       AGENCIA DE CARGA 
+					    <div role="tabpanel" class="tab-pane" id="tab_agencia_carga">
+					     	<br>
+            				<p><a id="btn_nueva_agencia_carga"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a></p> 
 					   	</div>
 					   	
-					    <div role="tabpanel" class="tab-pane" id="tab_usuarios">...
-					       USUARIOS
+					    <div role="tabpanel" class="tab-pane" id="tab_usuarios">
+					       
+					       <p><a id="btn_nuevo_usuario"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a></p> 
+					     
 					 	</div>
-										
 					</div>
 			   </div>
 		</div>
 	</div>
 </div>
 
-
-		
 		
 		
 		 <!--  DIALOG DE NUEVA MARCACION-->
@@ -588,7 +980,7 @@ return false;
 			    <div class="modal-content">
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			        <h4 class="modal-title" id="myModalLabel">MARCACION (<span id="dialog_nueva_marcacion_marcacion_nombre"></span>)</h4>
+			        <h4 class="modal-title" id="myModalLabel">MARCACION (<span id="dialog_nueva_marcacion_nombre"></span>)</h4>
 			      </div>
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
@@ -599,9 +991,13 @@ return false;
 				        	        <td><label class="control-label">ID:</label></td>
 				        	        <td>
 	                                <input id="marcacion_sec" name="marcacion_sec" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="5" max-lenght="5" disabled >
-	                                <input type="hidden" name="accion" id="accion" value="" /></td>
+	                               <input type="hidden" name="accion" id="accion" value="" /></td>
 			        	          </tr>
 				        	      <tr>
+				        	        <td>
+	                                <input id="cliente_id" name="cliente_id" type="hidden" class="form-control input-sm" style="width:50px" value="" maxlength="5" max-lenght="5" disabled >
+	                                <input type="hidden" name="accion" id="accion" value="" /></td>
+			        	          </tr>
 				        	        <td><label class="control-label">NOMBRE:</label></td>
 				        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="60" max-lenght="60" validate="required" validateMessage="Ingrese un nombre" onkeyup="this.value=this.value.toUpperCase()"></td>
 			        	          </tr>
@@ -670,7 +1066,153 @@ return false;
 
 
 
-
-
-
+			
+<!--  DIALOG DE AGENCIA CARGA -->
+           
+			<div class="modal fade" id="dialog_nueva_agenciacarga" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			        <h4 class="modal-title" id="myModalLabel">AGENCIA DE CARGA (<span id="dialog_nueva_agenciacarga_nombre"></span>)</h4>
+			      </div>
+			      <div class="modal-body clearfix">
+			        <div class="clearfix">
+                         <form id="frm_agencia_carga">
+			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
+			        	      <tr>
+			        	        <td><label class="control-label">ID:</label></td>
+			        	        <td>
+                                <input id="agencia_carga_id" name="agencia_carga_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" validate="required" validateMessage="Ingrese un codigo">
+                                <input type="hidden" name="accion" id="accion" value="" /></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">NOMBRE:</label></td>
+			        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="30" max-lenght="3" validate="required" validateMessage="Ingrese un nombre"></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">DIRECCION:</label></td>
+			        	        <td><input name="direccion" type="text" class="form-control input-sm" id="direccion" style="width:350px" value="" maxlength="30" max-lenght="3"></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">TELEFONO:</label></td>
+			        	        <td><input type="text" name="telefono"  class="form-control input-sm inputdata-number-and-decimal" id="telefono" style="width:350px" value="" maxlength="15" max-lenght="3" ></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">TIPO:</label></td>
+			        	        <td><select  name="tipo" class="select-class2" id="tipo"></select></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">ESTADO:</label></td>
+			        	        <td><select  name="estado" class="select-class2" id="estado"></select></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td>&nbsp;</td>
+			        	        <td>&nbsp;</td>
+		        	        </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">SINCRONIZADO:</label></td>
+			        	        <td>
+ 
+									<span id="sincronizado_pendiente" class="glyphicon glyphicon-time icon-white" style="color:red; display:none" ></span>
+									<span id="sincronizado_ok" class="glyphicon glyphicon-ok icon-white" style="color:green; display:none"></span>
+                                    <span id="lbl_fec_sincronizado"></span>
+ 
+                                </td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">Ingreso:</label></td>
+			        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">Modificación:</label></td>
+			        	        <td><b><span id="lbl_usuario_mod"></span></b> - <span id="lbl_fec_modifica"></span></td>
+		        	          </tr>
+	        	      </table>
+                      <br><center>
+						<a id="btn_grabar_agencia_carga" class="btn btn-small btn-success " href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a>
+     					</center>
+                      		</form>
+		        	  <!--   div id="dialog_oferta_formulario"></div -->			
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
 	
+	
+	
+
+   <!--  DIALOG DE USUARIO NUEVO -->
+            
+			<div class="modal fade" id="dialog_nuevo_usuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			        <h4 class="modal-title" id="myModalLabel">USUARIO(<span id="dialog_nuevo_usuario_nombre"></span>)</h4>
+			      </div>
+			      <div class="modal-body clearfix">
+			        <div class="clearfix">
+                        <form id="frm_nuevo_usuario">
+			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
+			        	      <tr>
+			        	        <td><label class="control-label">ID:</label></td>
+			        	        <td>
+                                <input id="usuario_id" name="usuario_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" disabled="disabled">
+                                <input type="hidden" name="accion" id="accion" value="" /></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">NOMBRE:</label></td>
+			        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="50" max-lenght="3" validate="required" validateMessage="Ingrese un nombre" onkeyup="this.value=this.value.toUpperCase()" ></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">USUARIO:</label></td>
+			        	        <td><input name="username" type="text" class="form-control input-sm" id="username" style="width:350px" value="" maxlength="20" validate="required" max-lenght="3"></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">CLAVE:</label></td>
+			        	        <td><input type="password" name="password"  class="form-control input-sm" id="password" style="width:350px" value="" maxlength="15"></td>
+		        	          </tr>
+		        	           <tr>
+			        	        <td><label class="control-label">CONFIRMAR CLAVE:</label></td>
+			        	        <td><input type="password" name="password2"  class="form-control input-sm" id="password2" style="width:350px" value="" maxlength="15"></td>
+		        	          </tr>
+		        	           <tr>
+			        	        <td><label class="control-label">CORREO:</label></td>
+			        	        <td><input type="email" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="50" validate="required" max-lenght="3" ></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">TIPO:</label></td>
+			        	        <td><select  name="perfil_id" class="select-class2" id="perfil_id" validate="required"></select></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">ESTADO:</label></td>
+			        	        <td><select  name="estado" class="select-class2" id="estado"></select></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td>&nbsp;</td>
+			        	        <td>&nbsp;</td>
+		        	        </tr>
+			        	  
+			        	      <tr>
+			        	        <td><label class="control-label">Ingreso:</label></td>
+			        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">Modificación:</label></td>
+			        	        <td><b><span id="lbl_usuario_mod"></span></b> - <span id="lbl_fec_modifica"></span></td>
+		        	          </tr>
+	        	      </table>
+                      <br>
+						<center><a id="btn_grabar_usuario" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a></center>
+                      	</form>
+		        	  <!--   div id="dialog_oferta_formulario"></div -->			
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		
+	
+		

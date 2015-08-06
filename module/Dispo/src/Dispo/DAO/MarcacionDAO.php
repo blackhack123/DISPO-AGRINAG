@@ -4,6 +4,7 @@ namespace Dispo\DAO;
 use Doctrine\ORM\EntityManager,
 	Application\Classes\Conexion;
 use Dispo\Data\MarcacionData;
+use Dispo\Data\ClienteData;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class MarcacionDAO extends Conexion 
@@ -22,6 +23,7 @@ class MarcacionDAO extends Conexion
 		//		'marcacion_sec'						=> $MarcacionData->getMarcacionSec(),
 		//);
 		$record = array(
+				'cliente_id'		                => $MarcacionData->getClienteId(),
 				'nombre'		                    => $MarcacionData->getNombre(),
 				'direccion'		                    => $MarcacionData->getDireccion(),
 				'ciudad'		                    => $MarcacionData->getCiudad(),
@@ -90,6 +92,7 @@ class MarcacionDAO extends Conexion
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		if($row){
 			$MarcacionData->setMarcacionsec   		($row['marcacion_sec']);
+			$MarcacionData->setClienteId			($row['cliente_id']);
 			$MarcacionData->setNombre	   			($row['nombre']);
 			$MarcacionData->setDireccion		   	($row['direccion']);
 			$MarcacionData->setCiudad		   		($row['ciudad']);

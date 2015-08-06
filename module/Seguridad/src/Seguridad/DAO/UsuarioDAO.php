@@ -58,9 +58,7 @@ class UsuarioDAO extends Conexion {
 				'estado'                			=> $UsuarioData->getEstado(),
 				'grupo_dispo_cab_id'                => $UsuarioData->getGrupoDispoCabId(),
 				'fec_ingreso'           		    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
-				'fec_modifica'                		=> $UsuarioData->getFecModifica(),
-				'usuario_ing_id'                	=> $UsuarioData->getUsuarioIngId(),
-				'usuario_mod_id'                	=> $UsuarioData->getUsuarioModId()
+				'usuario_ing_id'                	=> $UsuarioData->getUsuarioIngId()
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
 		$id = $this->getEntityManager()->getConnection()->lastInsertId();
