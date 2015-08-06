@@ -97,4 +97,20 @@ class MarcacionBO extends Conexion
 		$MarcacionData = $MarcacionDAO->consultar($marcacion_sec);
 		return $MarcacionData;		
 	}//end function consultar
+	
+	
+	
+	/**
+	 * 
+	 * @param array $condiciones (cliente_id, nombre, estado)
+	 * @return array
+	 */
+	function listado($condiciones)
+	{
+		$MarcacionDAO = new MarcacionDAO();
+		$MarcacionDAO->setEntityManager($this->getEntityManager());
+		$MarcacionData = $MarcacionDAO->listado($condiciones);
+		return $MarcacionData;		
+	}//end function listado
+	
 }//end class PaisBO

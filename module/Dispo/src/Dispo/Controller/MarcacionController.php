@@ -13,6 +13,62 @@ use Dispo\BO\PaisBO;
 class MarcacionController extends AbstractActionController
 {
 
+	
+	/*-----------------------------------------------------------------------------*/
+	public function listadodataAction()
+	/*-----------------------------------------------------------------------------*/
+	{
+		try
+		{		
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+				
+			$MarcacionBO = new MarcacionBO();
+			$MarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+		
+			$request 		= $this->getRequest();
+			$cliente_id    	= $request->getQuery('cliente_id', "");			
+			$nombre      	= $request->getQuery('nombre', "");
+			$estado 		= $request->getQuery('estado', "");
+			$page 			= $request->getQuery('page');
+			$limit 			= $request->getQuery('rows');
+			$sidx			= $request->getQuery('sidx',1);
+			$sord 			= $request->getQuery('sord', "");
+			$MarcacionBO->setPage($page);
+			$MarcacionBO->setLimit($limit);
+			$MarcacionBO->setSidx($sidx);
+			$MarcacionBO->setSord($sord);
+			$condiciones = array(
+					"cliente_id"	=> $cliente_id,
+					"nombre"		=> $nombre,
+					"estado" 		=> $estado,
+			);
+			$result = $MarcacionBO->listado($condiciones);
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				$response->rows[$i] = $row;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadodataAction	
+	
+	
+	
 	public function getcomboAction()
 	{
 		try

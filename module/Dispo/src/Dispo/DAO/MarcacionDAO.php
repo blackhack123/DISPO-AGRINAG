@@ -130,6 +130,51 @@ class MarcacionDAO extends Conexion
 		return $result;
 	}//end function consultarPorClienteId
 	
+	
+	
+	/**
+	 * 
+	 * @param array $condiciones (cliente_id, nombre, estado)
+	 * @return array
+	 */
+	public function listado($condiciones)
+	{
+		$sql = 	' SELECT marcacion.*, pais.nombre as pais_nombre '.
+				' FROM marcacion LEFT JOIN pais '.
+				'		                ON pais.id      = marcacion.pais_id '.
+				' WHERE 1 = 1 ';
+
+		if (!empty($condiciones['cliente_id']))
+		{
+			$sql = $sql." and marcacion.cliente_id = '".$condiciones['cliente_id']."'";
+		}//end if
+				
+		if (!empty($condiciones['nombre']))
+		{
+			$sql = $sql." and marcacion.nombre like '%".$condiciones['nombre']."%'";
+		}//end if		
+		
+		if (!empty($condiciones['estado']))
+		{
+			$sql = $sql." and marcacion.estado = '".$condiciones['estado']."'";
+		}//end if
+		
+		
+		if (isset($condiciones['sincronizado']))
+		{
+			if ($condiciones['sincronizado']!='')
+			{
+				$sql = $sql." and marcacion.sincronizado = ".$condiciones['sincronizado'];
+			}//end if
+		}//end if
+		$sql=$sql." order by marcacion.nombre";
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		
+		return $result;		
+	}//end function listado
+	
 }//end class
 
 ?>

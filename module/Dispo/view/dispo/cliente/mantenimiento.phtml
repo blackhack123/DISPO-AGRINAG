@@ -268,7 +268,8 @@ $(document).ready(function () {
 								'control_process':true,
 								'show_cargando':true,
 								'finish':function(response){
-										mostrar_registro(response)
+										mostrar_registro(response);
+										$('#frm_marcacion_listado #grid_marcacion_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 										cargador_visibility('hide');
 
 										$("#dialog_mantenimiento").modal('show')
@@ -284,56 +285,149 @@ $(document).ready(function () {
  *			FUNCIONES MARCACION
  *---------------------------------------------------------------------------------------------
  */
+		/*-----------------Se configura los JQGRI's---------------------*/
+		jQuery("#grid_marcacion_listado").jqGrid({
+			url:'<?php echo($this->basePath()); ?>/dispo/marcacion/listadodata',
+			postData: {
+				cliente_id: function() { return $("#frm_informacion_general #cliente_id").val(); }, 
+				nombre: function() { return $("#frm_marcacion_listado #busqueda_nombre").val(); },
+				estado: function() { return $("#frm_marcacion_listado #busqueda_estado").val(); }				
+			},
+			datatype: "json",
+			loadonce: true,			
+			/*height:'400',*/
+		   	colNames:['','Código','Nombre','Pais','','Fec. Ultima Vez','Estado', ''],
+		   	colModel:[
+		   		{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
+		   		{name:'marcacion_sec',index:'marcacion_sec', width:50, align:"center", sorttype:"int"},
+		   		{name:'nombre',index:'nombre', width:230, sorttype:"string"},
+		   		{name:'pais_nombre',index:'pais_nombre', width:150, sorttype:"string"},	
+		   		{name:'sincronizado',index:'sincronizado', width:30, align:"center", sorttype:"number", formatter: ListadoMarcacion_FormatterSincronizado},
+		   		{name:'fec_sincronizado',index:'fec_sincronizado', width:130, sorttype:"string", align:"center"},
+		   		{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
+		        {name:'btn_editar',index:'', width:30, align:"center", formatter:ListadoMarcacion_FormatterEdit,
+		   		   cellattr: function () { return ' title=" Modificar"'; }
+		        },
+		   	],
+		   	rowNum:999999999,
+		   	pager: '#pager_marcacion_listado',
+				toppager:false,
+				pgbuttons:false,
+				pginput:false,
+				rowList:false,
+				jsonReader: {
+					repeatitems : false,
+				},		
+		   		/*caption:"Grilla de Prueba",*/
+				afterInsertRow : function(rowid, rowdata){
+					if (rowdata.estado == "I"){
+						$(this).jqGrid('setRowData', rowid, false, {color:'red'});
+					}//end if
+				},
+			ondblClickRow: function (rowid,iRow,iCol,e) {
+		            var data = $('#grid_marcacion_listado').getRowData(rowid);				
+					//consultar_listado(data.id)
+					console.log("consultar_listado("+data.marcacion_sec+")");
+		            return false;
+			},
+			loadBeforeSend: function (xhr, settings) {
+				this.p.loadBeforeSend = null; //remove event handler
+				return false; // dont send load data request
+			},				
+			loadError: function (jqXHR, textStatus, errorThrown) {
+				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+			}
+		});
 
+        $('#grid_marcacion_listado').setGroupHeaders(
+        {
+	        useColSpanStyle: true,
+	        groupHeaders: [{ "numberOfColumns": 2, "titleText": "Sincronizacion", "startColumnName": "sincronizado" }]
+        });		
+        
+		//Se configura el grid para que pueda navegar procesar la fila con el ENTER
+		jQuery("#grid_marcacion_listado").jqGrid('bindKeys', {
+			   "onEnter" : function( rowid ) { 
+					//consultar_listado(rowid);
+					var data = $('#grid_marcacion_listado').getRowData(rowid);
+					console.log("consultar_listado("+data.marcacion_sec+")");
+			   }
+		});
+	
+	
+		function ListadoMarcacion_FormatterEdit(cellvalue, options, rowObject){
+			var marcacion_sec = rowObject.marcacion_sec;	
+			//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
+			new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange"></i></a>'; 
+			return new_format_value
+		}//end function ListadoMarcacion_FormatterSincronizado
 
-			function nuevamarcacion()
+		
+		function ListadoMarcacion_FormatterSincronizado(cellvalue, options, rowObject){	
+			if (rowObject.sincronizado=='0')
 			{
-			//Se llama mediante AJAX para adicionar al carrito de compras
-			var data = 	{}
-			data = JSON.stringify(data);
-			
-			var parameters={	'type': 'POST',//'POST',
-					'contentType': 'application/json',
-					'url':'<?php echo($this->basePath()); ?>/dispo/cliente/marcacionnuevodata',
-					'control_process':true,
-					'show_cargando':true,
-					'finish':function(response){
-							//ValidateControlsInit();
-							$("#frm_marcacion #accion").val("I");
-							$("#dialog_nueva_marcacion_nombre").html("NUEVO REGISTRO");
+				new_format_value = '<i class="glyphicon glyphicon-time" style="color:red"></i>'; 
+			}else{
+				new_format_value = '';
+			}//end if
+			return new_format_value;
+		}//end function ListadoMarcacion_FormatterSincronizado		
 
-							$("#marcacion_sec").val('');
-							$("#frm_marcacion #cliente_id").val($("#frm_informacion_general #cliente_id").val());
-							$("#frm_marcacion #cliente_id").prop('readonly',true);
-							$("#nombre").val('');
-							$("#direccion").val('');
-							$("#frm_marcacion #pais_id").html(response.cbo_pais_id);
-							$("#ciudad").val('');
-							$("#contacto").val('');
-							$("#telefono").val('');
-							$("#zip").val('');
-							$("#frm_marcacion #estado").html(response.cbo_estado);
-							$("#lbl_fec_sincronizado").html('');
-							$("#lbl_usuario_ing").html('');
-							$("#lbl_fec_ingreso").html('');
-							$("#lbl_usuario_mod").html('');
-							$("#lbl_fec_modifica").html('');
-							$("#sincronizado_pendiente").show();
-							$("#sincronizado_ok").hide();
-							
-							$("#dialog_nueva_marcacion").modal('show');
-							}							
-		                 }
-			response = ajax_call(parameters, data);		
-			return false;	
+		
+		jQuery("#grid_marcacion_listado").jqGrid('navGrid','#pager_marcacion_listado',{edit:false,add:false,del:false});
+
+ 
+		
+ 
+
+	function nuevamarcacion()
+	{
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{}
+		data = JSON.stringify(data);
+		
+		var parameters={	'type': 'POST',//'POST',
+				'contentType': 'application/json',
+				'url':'<?php echo($this->basePath()); ?>/dispo/cliente/marcacionnuevodata',
+				'control_process':true,
+				'show_cargando':true,
+				'finish':function(response){
+						//ValidateControlsInit();
+						$("#frm_marcacion #accion").val("I");
+						$("#dialog_nueva_marcacion_nombre").html("NUEVO REGISTRO");
+
+						$("#marcacion_sec").val('');
+						$("#frm_marcacion #cliente_id").val($("#frm_informacion_general #cliente_id").val());
+						$("#frm_marcacion #cliente_id").prop('readonly',true);
+						$("#nombre").val('');
+						$("#direccion").val('');
+						$("#frm_marcacion #pais_id").html(response.cbo_pais_id);
+						$("#ciudad").val('');
+						$("#contacto").val('');
+						$("#telefono").val('');
+						$("#zip").val('');
+						$("#frm_marcacion #estado").html(response.cbo_estado);
+						$("#lbl_fec_sincronizado").html('');
+						$("#lbl_usuario_ing").html('');
+						$("#lbl_fec_ingreso").html('');
+						$("#lbl_usuario_mod").html('');
+						$("#lbl_fec_modifica").html('');
+						$("#sincronizado_pendiente").show();
+						$("#sincronizado_ok").hide();
+						
+						$("#dialog_nueva_marcacion").modal('show');
+						}							
+	                 }
+		response = ajax_call(parameters, data);		
+		return false;	
 									
-			}//end function nuevo
+	}//end function nuevo
 
 
 	
 
 
-	 function grabar_marcacion()
+	function grabar_marcacion()
 	 	{
 			if (!ValidateControls('frm_marcacion')) {
 				return false;
@@ -850,8 +944,8 @@ $(document).ready(function () {
     
 
      <!--  DIALOG DE MANTENIMIENTO -->
-<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog ">
+<div class="modal fade bs-example-modal-lg" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -949,10 +1043,23 @@ $(document).ready(function () {
      						</form>
 		  				</div>
 				   	
-					    	<div role="tabpanel" class="tab-pane" id="tab_marcacion">
-					       			<br>
-            						 <p><a id="btn_nueva_marcacion"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a></p> 
-		  		
+					    	<div role="tabpanel" class="tab-pane" id="tab_marcacion">   
+                            	<form id="frm_marcacion_listado">
+                                     <div class="clearfix">
+                                     	<div class="pull-left"><a id="btn_nueva_marcacion"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a></div>
+                                        <div class="pull-right">
+											<input name="busqueda_nombre" id="busqueda_nombre" type="text" class="select-class2" placeholder="Nombre" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+                                            <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
+                                                <?php echo($this->busqueda_estado); ?>
+                                            </select>
+                                            <a id="btn_consultar"  class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search"></i></a>
+                                        </div>
+                                     </div>
+                                     <div class="clearfix">
+                                         <table id="grid_marcacion_listado" class="grid"></table>
+                                         <div id="pager_marcacion_listado"></div>
+									 </div>
+                            	</form>		  		
 					    	</div>
 					    
 					    <div role="tabpanel" class="tab-pane" id="tab_agencia_carga">

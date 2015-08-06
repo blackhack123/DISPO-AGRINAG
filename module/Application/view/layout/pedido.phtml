@@ -8,8 +8,10 @@
     <!-- Le styles -->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
     					//->appendStylesheet($this->basePath('js/jquery-ui-1.10.2/css/ui-lightness/jquery-ui.css'))
-					    //->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))
+					    //->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))					    
 	                    ->appendStylesheet('http://fonts.googleapis.com/css?family=Muli')
+	                    ->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))
+	                    ->appendStylesheet($this->basePath('js/jquery-jqGrid-5.0.0/css/ui.jqgrid.css'))	                    
                         ->appendStylesheet($this->basePath('css/bootstrap.css'))
 						//->appendStylesheet('http://getbootstrap.com/2.3.2/assets/css/bootstrap.css')
                         ->appendStylesheet($this->basePath('css/sweet-alert.css'))
@@ -27,7 +29,10 @@
             //->appendFile($this->basePath('js/jquery-ui-1.10.2/jquery-ui-1.10.2.custom.min.js')
             //->appendFile($this->basePath('js/jquery-ui-1.10.2/i18n/jquery.ui.datepicker-es.js')))
     		->appendFile($this->basePath('js/jquery-ui-1.11.4/jquery-ui-1.11.4.custom.min.js'))    
-            ->appendFile($this->basePath('js/jquery-ui-1.11.4/i18n/jquery.ui.datepicker-es.js'))         
+            ->appendFile($this->basePath('js/jquery-ui-1.11.4/i18n/jquery.ui.datepicker-es.js'))
+            ->appendFile($this->basePath('js/jquery-jqGrid-5.0.0/js/i18n/grid.locale-es.js'))
+            ->appendFile($this->basePath('js/jquery-jqGrid-5.0.0/js/jquery.jqGrid.min.js'))
+ ///           ->appendFile($this->basePath('js/jquery-jqGrid-5.0.0/js/grid.loader.js'))
  //           ->appendFile($this->basePath('js/scripts/angular.min.js'))
  //           ->appendFile($this->basePath('js/scripts/angular-route.min.js'))
  //           ->appendFile($this->basePath('js/scripts/angular-animate.min.js'))
@@ -95,7 +100,23 @@
 		//Se pone los estilos para que no se sobrepongan al tooltips
 		$(".title-section, .dform-control").css("z-index","-1");
 		$(".title-section, .dform-control").css("position","relative");
-				
+
+
+		//Se setea configuracion por defecto para el JQGRID
+		$.extend($.jgrid.defaults, {
+			/*shrinkToFit: true,*/			
+			height: 'auto',
+			viewrecords: true, 
+			rowNum:20,
+			rowList:[20,50,100,200],
+			altRows: true,
+			toppager:true,
+			cloneToTop:true,  				
+			//loadtext: "Loading...",
+			emptyrecords: "No existen registros",
+		});
+
+		
 		//Se esconde los mensajes
 		//$("#tasks_message").show();
 		$("#msg_order").hide();			//msg_orden - esto aparecera cuando se haga el ADD para anadir la orden
