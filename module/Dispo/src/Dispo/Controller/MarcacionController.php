@@ -49,7 +49,13 @@ class MarcacionController extends AbstractActionController
 			$response = new \stdClass();
 			$i=0;
 			foreach($result as $row){
-				$response->rows[$i] = $row;
+				$row2["marcacion_sec"] 		= $row["marcacion_sec"];
+				$row2["nombre"] 			= trim($row["nombre"]);
+				$row2["pais_nombre"] 		= trim($row["pais_nombre"]);
+				$row2["sincronizado"] 		= $row["sincronizado"];
+				$row2["fec_sincronizado"] 	= $row["fec_sincronizado"];
+				$row2["estado"] 			= $row["estado"];
+				$response->rows[$i] = $row2;
 				$i++;
 			}//end foreach
 			$tot_reg = $i;
