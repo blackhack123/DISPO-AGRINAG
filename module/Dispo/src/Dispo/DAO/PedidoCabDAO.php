@@ -26,6 +26,8 @@ class PedidoCabDAO extends Conexion
 		//		'id'								=> $PedidoCabData->getId(),  //Se omite porque se configuro que la clave sea autoincrementable
 				'fecha'		                    	=> $PedidoCabData->getFecha(),
 				'cliente_id'                    	=> $PedidoCabData->getClienteId(),
+				'marcacion_sec'						=> $PedidoCabData->getMarcacionSec(),
+				'agencia_carga_id'					=> $PedidoCabData->getAgenciaCargaId(),
 				'total'		                    	=> $PedidoCabData->getTotal(),
 				'comentario'	                   	=> $PedidoCabData->getComentario(),
 				'estado'		                  	=> $PedidoCabData->getEstado(),
@@ -143,8 +145,12 @@ class PedidoCabDAO extends Conexion
 	{
 		$PedidoCabData 		    = new PedidoCabData();
 
-		$sql = 	' SELECT pedido_cab.* '.
-				' FROM pedido_cab '.
+		$sql = 	' SELECT pedido_cab.*, agencia_carga.nombre as agencia_carga_nombre, '.
+				'        marcacion.nombre as marcacion_nombre '.
+				' FROM pedido_cab LEFT JOIN agencia_carga '.
+				'                    ON agencia_carga.id 		= pedido_cab.agencia_carga_id '.
+				'				  LEFT JOIN marcacion '.
+				'					 ON marcacion.marcacion_sec	= pedido_cab.marcacion_sec '.
 				' WHERE pedido_cab.id = :id ';
 
 
@@ -227,11 +233,15 @@ class PedidoCabDAO extends Conexion
 	 */
 	public function consultarUltimoPedidoComprando($cliente_id)
 	{
-		$sql = 	' SELECT * '.
-				' FROM pedido_cab '. 
-				' WHERE cliente_id 	= :cliente_id '.
-				"	AND estado  = '".\Application\Constants\Pedido::ESTADO_COMPRANDO."'".
-				' ORDER BY id DESC '.
+		$sql = 	' SELECT pedido_cab.*, agencia_carga.nombre as agencia_carga_nombre, '.
+				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id '.
+				' FROM pedido_cab LEFT JOIN agencia_carga '.
+				'                    ON agencia_carga.id 		= pedido_cab.agencia_carga_id '.
+				'				  LEFT JOIN marcacion '.
+				'					 ON marcacion.marcacion_sec	= pedido_cab.marcacion_sec '.
+				' WHERE pedido_cab.cliente_id 	= :cliente_id '.
+				"	AND pedido_cab.estado  = '".\Application\Constants\Pedido::ESTADO_COMPRANDO."'".
+				' ORDER BY pedido_cab.id DESC '.
 				' LIMIT 0, 1 ';
 		
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);

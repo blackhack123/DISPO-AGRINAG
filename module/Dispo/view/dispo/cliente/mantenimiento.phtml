@@ -1,3 +1,8 @@
+<style>
+/*	.input-sm{
+		height:22px;
+	}*/
+</style>
 
 <script>
 	$(document).ready(function () {
@@ -1373,38 +1378,270 @@
 			  		<div class="tab-content">
 		  				<div role="tabpanel" class="tab-pane active" id="tab_informacion_general">
 		  					<br>
+<<<<<<< HEAD
                             
 		  				<form id="frm_informacion_general">
+=======
+		  				<form id="frm_informacion_general" class="form-horizontal">
+				    	  <div class="row" style="border:#9C0A0C solid 1px">
+                            	<div class="col-xs-14 col-md-8" style="border:#000A0C solid 1px">
+                            	  <table width="100%" border="0" class="tbl_formulario_mantenimiento">
+                            	    <tbody>
+                            	      <tr>
+                            	        <td><b>Cliente:</b></td>
+                            	        <td><input id="cliente_id2" name="cliente_id2" type="text" class="form-control input-sm" style="width:65px" value="" maxlength="5" max-lenght="5" validate="required" validatemessage="Ingrese un codigo" onKeyUp="this.value=this.value.toUpperCase()">
+                                        <input type="hidden" name="accion2" id="accion2" value="" /></td>
+                            	        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Created On:</td>
+                            	        <td><input id="cliente_id3" name="cliente_id3" type="text" class="form-control input-sm" style="width:130px" value="" validate="required" validatemessage="Ingrese un codigo" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	          </tr>
+                            	      <tr>
+                            	        <td>Nombre:</td>
+                            	        <td colspan="3"><input name="nombre2" type="text" class="form-control input-sm" id="nombre2" style="width:330px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Abrevia:</td>
+                            	        <td colspan="3"><input name="nombre3" type="text" class="form-control input-sm" id="nombre3" style="width:180px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Grupo:</td>
+                            	        <td colspan="3"><select  name="pais_id3" class="select-class2" id="pais_id3" validate="required" validatemessage="Seleccione Pais">
+                          	          </select></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Dirección:</td>
+                            	        <td colspan="3"><input name="direccion2" type="text" class="form-control input-sm" id="direccion2" style="width:300px" value="" maxlength="100" max-lenght="100"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Ciudad:</td>
+                            	        <td colspan="3"><input name="ciudad2" type="text" class="form-control input-sm" id="ciudad2" style="width:300px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese una Ciudad" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Estado:</td>
+                            	        <td colspan="3"><select  name="pais_id4" class="select-class2" id="pais_id4" validate="required" validatemessage="Seleccione Pais">
+                          	          </select></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Estado/Prov:</td>
+                            	        <td colspan="3"><input name="ciudad4" type="text" class="form-control input-sm" id="ciudad4" style="width:300px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese una Ciudad" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>País:</td>
+                            	        <td colspan="3"><select  name="pais_id2" class="select-class2" id="pais_id2" validate="required" validatemessage="Seleccione Pais">
+                          	          </select></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>ZIP:</td>
+                            	        <td colspan="3"><input name="nombre4" type="text" class="form-control input-sm" id="nombre4" style="width:100px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Comprador:</td>
+                            	        <td colspan="3"><input name="ciudad3" type="text" class="form-control input-sm" id="ciudad3" style="width:300px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese una Ciudad" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Fono1:</td>
+                            	        <td colspan="3" align="left">
+	                                        <div class="pull-left">
+                                           		<input name="telefono1" type="text" class="form-control input-sm" id="telefono1" style="width:210px" value="" maxlength="15" max-lenght="15" validate="required" validatemessage="Ingrese un Telefono">
+</div>
+                                            <div class="espacio_5px"></div>
+                                            <div class="pull-left">                                                  
+                           	           		 		<input name="nombre5" type="text" class="form-control input-sm" id="nombre5" style="width:90px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()" placeholder="EXT">
+                                            </div>
+                                        </td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Fono2:</td>
+                            	        <td colspan="3">
+                                            <div class="pull-left">
+                                                <input name="telefono2" type="text" class="form-control input-sm " id="telefono2" style="width:210px" value="" maxlength="15" max-lenght="15">	
+                                            </div>
+                                            <div class="espacio_5px"></div>
+                                            <div class="pull-left">
+                                                <input name="nombre6" type="text" class="form-control input-sm" id="nombre6" style="width:90px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()" placeholder="EXT">
+                                            </div>
+                                        </td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Fax1:</td>
+                            	        <td colspan="3">
+	                                        <div class="pull-left">
+                                        		<input name="fax3" type="text"  class="form-control input-sm" id="fax3" style="width:210px" value="" maxlength="15" max-lenght="15">
+											</div>
+                                            <div class="espacio_5px"></div>
+                                            <div class="pull-left">
+                           	            		<input name="nombre7" type="text" class="form-control input-sm" id="nombre7" style="width:90px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()" placeholder="EXT">
+											</div>                                                
+                                        </td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Fax2:</td>
+                            	        <td colspan="3">
+	                                        <div class="pull-left">
+                                        		<input name="fax2" type="text"  class="form-control input-sm" id="fax2" style="width:210px" value="" maxlength="15" max-lenght="15">
+</div>
+                                            <div class="espacio_5px"></div>
+                                            <div class="pull-left">                                                
+		                           	            <input name="nombre8" type="text" class="form-control input-sm" id="nombre8" style="width:90px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()" placeholder="EXT">
+											</div>                                                
+                                        </td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Email:</td>
+                            	        <td colspan="3"><input type="text" name="email2"  class="form-control input-sm" id="email2" style="width:300px" value="" maxlength="30" max-lenght="30"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>&nbsp;</td>
+                            	        <td colspan="3">&nbsp;</td>
+                          	        </tr>
+                          	        </tbody>
+                          	    </table>
+                            	</div>
+                            	<div class="col-xs-14 col-md-5" style="border:#FFFA0C solid 1px">
+                            	  <table width="100%" border="0" class="tbl_formulario_mantenimiento">
+                            	    <tbody>
+                            	      <tr>
+                            	        <td width="25%">Vendedor:</td>
+                            	        <td colspan="3"><input name="nombre10" type="text" class="form-control input-sm" id="nombre16" style="width:330px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()">                            	          <input type="hidden" name="accion3" id="accion3" value="" />                            	                                    	          </td>
+                           	          </tr>
+                            	      <tr>
+                            	        <td>Limite Credito:</td>
+                            	        <td colspan="3"><input name="nombre9" type="text" class="form-control input-sm" id="nombre9" style="width:120px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Interes:</td>
+                            	        <td colspan="3"><input name="nombre11" type="text" class="form-control input-sm" id="nombre10" style="width:120px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Credito Suspendido:</td>
+                            	        <td width="7%"><select  name="pais_id5" class="select-class2" id="pais_id5" validate="required" validatemessage="Seleccione Pais">
+                          	          </select></td>
+                            	        <td width="3%">Razon:</td>
+                            	        <td width="65%"><input name="nombre12" type="text" class="form-control input-sm" id="nombre17" style="width:120px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	          </tr>
+                            	      <tr>
+                            	        <td>Contacto:</td>
+                            	        <td colspan="3"><input name="direccion3" type="text" class="form-control input-sm" id="direccion3" style="width:300px" value="" maxlength="100" max-lenght="100"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Facturado A:</td>
+                            	        <td colspan="2"><input name="ciudad5" type="text" class="form-control input-sm" id="ciudad5" style="width:120px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese una Ciudad" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                            	        <td><input name="nombre13" type="text" class="form-control input-sm" id="nombre18" style="width:120px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                           	          </tr>
+                            	      <tr>
+                            	        <td>Comprador:</td>
+                            	        <td colspan="3"><input name="ciudad5" type="text" class="form-control input-sm" id="ciudad7" style="width:300px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese una Ciudad" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Fono1:</td>
+                            	        <td colspan="3" align="left"><div class="pull-left">
+                            	          <input name="telefono3" type="text" class="form-control input-sm" id="telefono3" style="width:210px" value="" maxlength="15" max-lenght="15" validate="required" validatemessage="Ingrese un Telefono">
+                          	          </div>
+                            	          <div class="espacio_5px"></div>
+                            	          <div class="pull-left">
+                            	            <input name="nombre9" type="text" class="form-control input-sm" id="nombre12" style="width:90px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()" placeholder="EXT">
+                          	            </div></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Fono2:</td>
+                            	        <td colspan="3"><div class="pull-left">
+                            	          <input name="telefono3" type="text" class="form-control input-sm " id="telefono4" style="width:210px" value="" maxlength="15" max-lenght="15">
+                          	          </div>
+                            	          <div class="espacio_5px"></div>
+                            	          <div class="pull-left">
+                            	            <input name="nombre9" type="text" class="form-control input-sm" id="nombre13" style="width:90px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()" placeholder="EXT">
+                          	            </div></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Fax1:</td>
+                            	        <td colspan="3"><div class="pull-left">
+                            	          <input name="fax4" type="text"  class="form-control input-sm" id="fax4" style="width:210px" value="" maxlength="15" max-lenght="15">
+                          	          </div>
+                            	          <div class="espacio_5px"></div>
+                            	          <div class="pull-left">
+                            	            <input name="nombre9" type="text" class="form-control input-sm" id="nombre14" style="width:90px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()" placeholder="EXT">
+                          	            </div></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Fax2:</td>
+                            	        <td colspan="3"><div class="pull-left">
+                            	          <input name="fax4" type="text"  class="form-control input-sm" id="fax5" style="width:210px" value="" maxlength="15" max-lenght="15">
+                          	          </div>
+                            	          <div class="espacio_5px"></div>
+                            	          <div class="pull-left">
+                            	            <input name="nombre9" type="text" class="form-control input-sm" id="nombre15" style="width:90px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()" placeholder="EXT">
+                          	            </div></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>Email:</td>
+                            	        <td colspan="3"><input type="text" name="email3"  class="form-control input-sm" id="email3" style="width:300px" value="" maxlength="30" max-lenght="30"></td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>&nbsp;</td>
+                            	        <td colspan="3">&nbsp;</td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>dsd</td>
+                            	        <td colspan="3">asd</td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>asdfsd</td>
+                            	        <td colspan="3">sdfsd</td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>sdfsd</td>
+                            	        <td colspan="3">sdfsd</td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>asdasd</td>
+                            	        <td colspan="3">asd</td>
+                          	        </tr>
+                            	      <tr>
+                            	        <td>asd</td>
+                            	        <td colspan="3">asdasd</td>
+                          	        </tr>
+                          	        </tbody>
+                          	    </table>
+                            	</div>                                
+                            	<div class="col-xs-14 col-md-4" style="border:#9C0DDC solid 1px">
+                                	COL-C
+                                </div>                                
+                          </div>
+                            <div class="row">
+                            	<div class="col-xs-14 col-md-8 col-xs-offset-1 col-md-offset-1" style="border:#ABAB0C solid 1px">
+                                	FIL-A
+                                </div>
+                            </div>
+                            
+                            
+>>>>>>> e3f365f59608465b812737bc4f0def20a6e869b2
 					    	<table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
 					        	     <tr>
 					        	     <td><label class="control-label">ID:</label></td>
-					        	     <td>
-		                             <input id="cliente_id" name="cliente_id" type="text" class="form-control input-sm" style="width:65px" value="" maxlength="5" max-lenght="5" validate="required" validateMessage="Ingrese un codigo" onkeyup="this.value=this.value.toUpperCase()">
-		                             <input type="hidden" name="accion" id="accion" value="" /></td>
+					        	     <td>&nbsp;</td>
 				        	         </tr>
 					        	     <tr>
 					        	     <td><label class="control-label">NOMBRE:</label></td>
-					        	     <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="50" max-lenght="50" validate="required" validateMessage="Ingrese un nombre" onkeyup="this.value=this.value.toUpperCase()"></td>
+					        	     <td>&nbsp;</td>
 				        	         </tr>
 				        	         <tr>
 					        	     <td><label class="control-label">DIRECCION:</label></td>
-					        	     <td><input name="direccion" type="text" class="form-control input-sm" id="direccion" style="width:350px" value="" maxlength="100" max-lenght="100"></td>
+					        	     <td>&nbsp;</td>
 				        	         </tr>
 				        	         <tr>
 					        	     <td><label class="control-label">PAIS:</label></td>
-					        	     <td><select  name="pais_id" class="select-class2" id="pais_id" validate="required" validateMessage="Seleccione Pais"></select></td>
+					        	     <td>&nbsp;</td>
 				        	         </tr>
 				        	         <tr>
 					        	     <td><label class="control-label">CIUDAD:</label></td>
-					        	     <td><input name="ciudad" type="text" class="form-control input-sm" id="ciudad" style="width:350px" value="" maxlength="50" max-lenght="50" validate="required" validateMessage="Ingrese una Ciudad" onkeyup="this.value=this.value.toUpperCase()"></td>
+					        	     <td>&nbsp;</td>
 				        	         </tr>
 				        	         <tr>
 					        	     <td><label class="control-label">TELEFONO 1:</label></td>
-					        	     <td><input name="telefono1" type="text" class="form-control input-sm" id="telefono1" style="width:350px" value="" maxlength="15" max-lenght="15" validate="required" validateMessage="Ingrese un Telefono"></td>
+					        	     <td>&nbsp;</td>
 				        	         </tr>
 				        	         <tr>
 					        	      <td><label class="control-label">TELEFONO 2:</label></td>
-					        	      <td><input name="telefono2" type="text" class="form-control input-sm " id="telefono2" style="width:350px" value="" maxlength="15" max-lenght="15" ></td>
+					        	      <td>&nbsp;</td>
 				        	         </tr>
 				        	          <tr>
 					        	      <td><label class="control-label">FAX 1:</label></td>
@@ -1412,11 +1649,11 @@
 				        	         </tr>
 				        	         <tr>
 					        	     <td><label class="control-label">FAX 2:</label></td>
-					        	    <td><input name="fax2" type="text"  class="form-control input-sm" id="fax2" style="width:350px" value="" maxlength="15" max-lenght="15"></td>
+					        	    <td>&nbsp;</td>
 				        	        </tr>
 				        	        <tr>
 					        	    <td><label class="control-label">CORREO:</label></td>
-					        	    <td><input type="text" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="30" max-lenght="30"></td>
+					        	    <td>&nbsp;</td>
 				        	        </tr>
 				        	        <tr>
 					        	    <td><label class="control-label">GRUPO PRECIO:</label></td>

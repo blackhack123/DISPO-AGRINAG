@@ -18,7 +18,24 @@ class PedidoCabData
 	 * @var string
 	 */
 	protected $cliente_id;
+		
+	/**
+	 * 
+	 * @var int
+	 */
+	protected $marcacion_sec;
 
+	/**
+	 *
+	 * @var string
+	 */
+	protected $agencia_carga_id;	
+	
+	/**
+	 * @var string
+	 */
+	protected $cuarto_frio_id;
+	
 	/**
 	 * @var float
 	 */
@@ -34,11 +51,6 @@ class PedidoCabData
 	 */
 	protected $estado;
 	
-	/**
-	 * @var string
-	 */
-	protected $fec_exportado;
-
 	/**
 	 * @var string
 	 */
@@ -72,11 +84,6 @@ class PedidoCabData
 	/**
 	 * @var int
 	 */
-	protected $usuario_exportado_id;
-		
-	/**
-	 * @var int
-	 */
 	protected $usuario_anulado_id;
 
 	/**
@@ -89,13 +96,27 @@ class PedidoCabData
 	 */
 	protected $usuario_mod_id;
 	
-
+	/**
+	 * 
+	 * @var int
+	 */
+	protected $sincronizado;
+	
+	/**
+	 * 
+	 * @var string
+	 */
+	protected $fec_sincronizado;
+	
 	
 	
 	//metodos GET
 	public function getId() 						{return $this->id;}
 	public function getFecha() 						{return $this->fecha;}
 	public function getClienteId() 					{return $this->cliente_id;}
+	public function getMarcacionSec()				{return $this->marcacion_sec;}
+	public function getAgenciaCargaId()				{return $this->agencia_carga_id;}
+	public function getCuartoFrioId()				{return $this->cuarto_frio_id;}
 	public function getTotal() 						{return $this->total;}
 	public function getComentario() 				{return $this->comentario;}
 	public function getEstado() 					{return $this->estado;}
@@ -110,6 +131,8 @@ class PedidoCabData
 	public function getUsuarioAnuladoId() 			{return $this->usuario_anulado_id;}
 	public function getUsuarioIngId() 				{return $this->usuario_ing_id;}
 	public function getUsuarioModId() 				{return $this->usuario_mod_id;}
+	public function getSincronizado()				{return $this->sincronizado;}
+	public function getFecSincronizado()			{return $this->fec_sincronizado;}
 	
 
 	
@@ -117,6 +140,9 @@ class PedidoCabData
 	public function setId($valor) 					{$this->id						= $valor;}
 	public function setFecha($valor) 				{$this->fecha					= $valor;}
 	public function setClienteId($valor) 			{$this->cliente_id				= $valor;}
+	public function setMarcacionSec($valor)			{$this->marcacion_sec			= $valor;}
+	public function setAgenciaCargaId($valor)		{$this->agencia_carga_id		= $valor;}
+	public function setCuartoFrioId($valor)			{$this->cuarto_frio_id			= $valor;}
 	public function setTotal($valor) 				{$this->total					= $valor;}
 	public function setComentario($valor) 			{$this->comentario				= $valor;}
 	public function setEstado($valor) 				{$this->estado					= $valor;}
@@ -131,7 +157,8 @@ class PedidoCabData
 	public function setUsuarioAnuladoId($valor) 	{$this->usuario_anulado_id		= $valor;}
 	public function setUsuarioIngId($valor) 		{$this->usuario_ing_id			= $valor;}
 	public function setUsuarioModId($valor) 		{$this->usuario_mod_id			= $valor;}
-		
+	public function setSincronizado($valor)			{$this->sincronizado			= $valor;}
+	public function setFecSincronizado($valor)		{$this->fec_sincronizado		= $valor;}
 
 }//fin class
 

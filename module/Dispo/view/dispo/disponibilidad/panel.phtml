@@ -81,7 +81,8 @@
 										 
 										$(".btn_sincronizar_general").removeClass('disabled');
 									}else{
-										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
+										console.log('response:',response);
+										swal({title: '('+ response.code + ') '+response.message,		    											
 											type: "error",
 											html: false,
 											showCancelButton: false,
@@ -202,6 +203,8 @@
 								'show_cargando':true,
 								'async':true,
 								'finish':function(response){
+									//console.log('response:',response);									
+									
 									if (response.respuesta_codex=="OK")
 									{
 									   $.each(response.result, function(key, reg) {
@@ -215,13 +218,15 @@
 											observacion.html(reg.message);
 										 });																
 									}else{
-										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
+										message_error(response.response.code, response.response.message, true);
+										/*swal({title: '('+ response.response.code + ') '+response.response.message,		    											
 											type: "error",
 											html: false,
 											showCancelButton: false,
 											confirmButtonColor: "#DD6B55",
 											showConfirmButton: true,
 											});
+										*/
 									}//end if
 								}//end finish				
 							 }

@@ -100,16 +100,29 @@ class UsuarioController extends AbstractActionController
 			{
 				$session = new Container('usuario');
 				$session->offsetSet('cliente_pedido_cab_id_actual', $reg_pedido['id']);
+				$session->offsetSet('cliente_seleccion_marcacion_sec', $reg_pedido['marcacion_sec']);
+				$session->offsetSet('cliente_seleccion_marcacion_nombre', $reg_pedido['marcacion_nombre']);
+				$session->offsetSet('cliente_seleccion_agencia_id', $reg_pedido['agencia_carga_id']);
 					
 				//Se consulta la marcacion y la agencia de carga del detalle de la factura
-				$reg_det	= $PedidoBO->consultarPedidoDetUltimoRegistro($reg_pedido['id']);//end if
+/*				$reg_det	= $PedidoBO->consultarPedidoDetUltimoRegistro($reg_pedido['id']);//end if
 				if ($reg_det)
 				{
-					$session->offsetSet('cliente_seleccion_marcacion_sec', $reg_det['marcacion_sec']);
+					if (!empty($reg_det['marcacion_sec']))
+					{
+						$session->offsetSet('cliente_seleccion_marcacion_sec', $reg_det['marcacion_sec']);
+					}else{
+						$session->offsetSet('cliente_seleccion_marcacion_sec', null);
+					}//end if
 					$session->offsetSet('cliente_seleccion_marcacion_nombre', $reg_det['marcacion_nombre']);
-					$session->offsetSet('cliente_seleccion_agencia_id', $reg_det['agencia_carga_id']);
+					if (!empty($reg_det['marcacion_sec']))
+					{					
+						$session->offsetSet('cliente_seleccion_agencia_id', $reg_det['agencia_carga_id']);
+					}else{
+						$session->offsetSet('cliente_seleccion_agencia_id', null);
+					}
 				}//end if
-			}//end if			
+*/			}//end if			
 			
 			
 			$json = new JsonModel(get_object_vars($response));

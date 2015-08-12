@@ -128,6 +128,8 @@ class PedidoBO extends Conexion
 				//$PedidoCabData->setId				($pedido_cab_id);
 				$PedidoCabData->setFecha			(\Application\Classes\Fecha::getFechaHoraActualServidor());
 				$PedidoCabData->setClienteId		($cliente_id);
+				$PedidoCabData->setMarcacionSec		($marcacion_sec);
+				$PedidoCabData->setAgenciaCargaId	($agencia_carga_id);
 				$PedidoCabData->setTotal			(0);
 				$PedidoCabData->setComentario		('');
 				$PedidoCabData->setEstado			(\Application\Constants\Pedido::ESTADO_COMPRANDO);
@@ -153,10 +155,10 @@ class PedidoBO extends Conexion
 				$precio 		= $reg_dispo['precio'];
 			}
 			$precio_total	= $tallos_total *  $precio; //Se multiplica el precio del tallo						
-			
+
 			$PedidoDetData->setPedidoCabId			($pedido_cab_id);
 			$PedidoDetData->setPedidoDetSec 		($pedido_cab_sec);
-			$PedidoDetData->setMarcacionSec			($marcacion_sec);
+//			$PedidoDetData->setMarcacionSec			($marcacion_sec);
 			$PedidoDetData->setInventarioId			($reg_dispo['inventario_id']);
 			$PedidoDetData->setVariedadId			($variedad_id);
 			$PedidoDetData->setGradoId				($grado_id);
@@ -169,8 +171,8 @@ class PedidoBO extends Conexion
 			$PedidoDetData->setTallosTotal			($tallos_total);
 			$PedidoDetData->setPrecio				($precio);
 			$PedidoDetData->setTotal				($precio_total);
-			$PedidoDetData->setAgenciaCargaId		($agencia_carga_id);
-			$PedidoDetData->setComentario			('');
+//			$PedidoDetData->setAgenciaCargaId		($agencia_carga_id);
+//			$PedidoDetData->setComentario			('');
 			if ($tipo_oferta=='oferta_hueso')
 			{
 				$PedidoDetData->setPedidoCabOfertaId 	($pedido_cab_id);
@@ -272,7 +274,7 @@ class PedidoBO extends Conexion
 		
 		$reg_pedido_cab 	= $PedidoCabDAO->consultar($pedido_cab_id, \Application\Constants\ResultType::MATRIZ);
 		$rs_pedido_det 		= $PedidoDetDAO->consultarPorPedidoCabId($pedido_cab_id);
-		$marcacion_nombre 	= '';
+/*		$marcacion_nombre 	= '';
 		if ($rs_pedido_det){
 			if ($rs_pedido_det[0]['marcacion_nombre'])
 			{
@@ -280,7 +282,7 @@ class PedidoBO extends Conexion
 			}
 		}//end if
 		$reg_pedido_cab['marcacion_nombre']	= $marcacion_nombre;
-		return array($reg_pedido_cab, $rs_pedido_det);
+*/		return array($reg_pedido_cab, $rs_pedido_det);
 	}//end function consultarPedido	
 
 	
