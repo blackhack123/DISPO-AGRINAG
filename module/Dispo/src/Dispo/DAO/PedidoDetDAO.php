@@ -25,7 +25,7 @@ class PedidoDetDAO extends Conexion
 		$record = array(
 				'pedido_cab_id'									=> $PedidoDetData->getPedidoCabId(),
 				'pedido_det_sec'	                			=> $PedidoDetData->getPedidoDetSec(),
-				'marcacion_sec'		            				=> $PedidoDetData->getMarcacionSec(),
+				//'marcacion_sec'		            				=> $PedidoDetData->getMarcacionSec(),
 				'inventario_id'  	             			 	=> $PedidoDetData->getInventarioId(),
 				'variedad_id'  		      						=> $PedidoDetData->getVariedadId(),
 				'grado_id'        								=> $PedidoDetData->getGradoId(),
@@ -38,11 +38,10 @@ class PedidoDetDAO extends Conexion
 				'tallos_total'    		    					=> $PedidoDetData->getTallosTotal(),
 				'precio'        								=> $PedidoDetData->getPrecio(),
 				'total'        									=> $PedidoDetData->getTotal(),
-				'agencia_carga_id'        						=> $PedidoDetData->getAgenciaCargaId(),
-				'comentario'        							=> $PedidoDetData->getComentario(),				
-				/*'sec'        									=> $PedidoDetData->getSec(),
-				'secc'        									=> $PedidoDetData->getSecc(),
-				*/
+				//'agencia_carga_id'        						=> $PedidoDetData->getAgenciaCargaId(),
+				//'comentario'        							=> $PedidoDetData->getComentario(),				
+				//'sec'        									=> $PedidoDetData->getSec(),
+				//'secc'        									=> $PedidoDetData->getSecc(),
 				'pedido_cab_oferta_id'        					=> $PedidoDetData->getPedidoCabOfertaId(),
 				'pedido_det_oferta_sec'        					=> $PedidoDetData->getPedidoDetOfertaSec(),
 				/*'estado_precio_contraoferta'        			=> $PedidoDetData->getEstadoPrecioContraoferta(),
@@ -241,7 +240,7 @@ class PedidoDetDAO extends Conexion
 		if($row){
 			$PedidoDetData->setPedidoCabId					($row['pedido_cab_id']);
 			$PedidoDetData->setPedidoDetSec					($row['pedido_det_sec']);
-			$PedidoDetData->setMarcacionSec	    			($row['marcacion_sec']);
+			//$PedidoDetData->setMarcacionSec	    			($row['marcacion_sec']);
 			$PedidoDetData->setInventarioId					($row['inventario_id']);
 			$PedidoDetData->setVariedadId					($row['variedad_id']);
 			$PedidoDetData->setGradoId						($row['grado_id']);
@@ -254,10 +253,10 @@ class PedidoDetDAO extends Conexion
 			$PedidoDetData->setTallosTotal					($row['tallos_total']);
 			$PedidoDetData->setPrecio						($row['precio']);
 			$PedidoDetData->setTotal						($row['total']);
-			$PedidoDetData->setAgenciaCargaId				($row['agencia_carga_id']);
-			$PedidoDetData->setComentario					($row['comentario']);
-			$PedidoDetData->setSec							($row['sec']);
-			$PedidoDetData->setSecc							($row['secc']);
+			//$PedidoDetData->setAgenciaCargaId				($row['agencia_carga_id']);
+			//$PedidoDetData->setComentario					($row['comentario']);
+			//$PedidoDetData->setSec							($row['sec']);
+			//$PedidoDetData->setSecc							($row['secc']);
 			$PedidoDetData->setPedidoCabOfertaId			($row['pedido_cab_oferta_id']);
 			$PedidoDetData->setPedidoDetOfertaSec			($row['pedido_det_oferta_sec']);
 			$PedidoDetData->setEstadoPrecioContraOferta		($row['estado_precio_contraoferta']);
@@ -473,8 +472,9 @@ class PedidoDetDAO extends Conexion
 	 */
 	public function consultarPorPedidoCabId($pedido_cab_id, $estado = null)
 	{
-		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
+/*		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
 				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id, '.
+*/		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, pedido_cab.cliente_id, '.				
 				'		 CASE pedido_det.estado_reg_oferta '.
 				'			WHEN 1 THEN variedad_hueso.nombre '.
 				'			WHEN 0 THEN variedad_carne.nombre '.
@@ -491,11 +491,11 @@ class PedidoDetDAO extends Conexion
 		}//end if
 		$sql .=	'				  INNER JOIN variedad '.
 				'                    ON variedad.id				= pedido_det.variedad_id '.
-				'				  LEFT JOIN agencia_carga '.
+/*				'				  LEFT JOIN agencia_carga '.
 				'                    ON agencia_carga.id 		= pedido_det.agencia_carga_id '.
 				'				  LEFT JOIN marcacion '.
 				'					 ON marcacion.marcacion_sec	= pedido_det.marcacion_sec '.
-				'                 LEFT JOIN pedido_det as pedido_det_vinculado_carne '.
+*/				'                 LEFT JOIN pedido_det as pedido_det_vinculado_carne '.
 				'					 ON pedido_det_vinculado_carne.pedido_cab_id	= pedido_det.pedido_cab_oferta_id '.
 				'				    AND pedido_det_vinculado_carne.pedido_det_sec	= pedido_det.pedido_det_oferta_sec '.
 				'                 LEFT JOIN variedad as variedad_carne '.
@@ -526,19 +526,26 @@ class PedidoDetDAO extends Conexion
 	 */
 	public function consultarPorPedidoCabIdUltimoRegistro($pedido_cab_id)
 	{
-		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
+/*		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
 				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id '.
 				' FROM pedido_det INNER JOIN pedido_cab '.
 				'				     ON pedido_cab.id			= pedido_det.pedido_cab_id '.
 				'				  INNER JOIN variedad '.
 				'                    ON variedad.id				= pedido_det.variedad_id '.
 				'				  LEFT JOIN agencia_carga '.
-				'                    ON agencia_carga.id 		= pedido_det.agencia_carga_id '.
+				'                    ON agencia_carga.id 		= pedido_cab.agencia_carga_id '.
 				'				  LEFT JOIN marcacion '.
-				'					 ON marcacion.marcacion_sec	= pedido_det.marcacion_sec '.
+				'					 ON marcacion.marcacion_sec	= pedido_cab.marcacion_sec '.
 				' WHERE pedido_det.pedido_cab_id	= :pedido_cab_id'.
 				' ORDER BY pedido_det.pedido_det_sec DESC'.
 				' LIMIT 0, 1';		
+*/
+		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre'.
+				' FROM pedido_det LEFT JOIN marcacion '.
+				'					 ON marcacion.marcacion_sec	= pedido_cab.marcacion_sec '.
+				' WHERE pedido_det.pedido_cab_id	= :pedido_cab_id'.
+				' ORDER BY pedido_det.pedido_det_sec DESC'.
+				' LIMIT 0, 1';
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->bindValue(':pedido_cab_id', $pedido_cab_id);

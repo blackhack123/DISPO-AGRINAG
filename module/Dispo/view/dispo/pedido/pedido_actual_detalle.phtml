@@ -5,123 +5,129 @@
 	
 	</script>
 
-	
+    <form class="clear frm_pedido" name="frm_pedido">	
+    
+    <div class="row help-block">            
+ 	   <div class="col-md-11 pull-left">
 
-	<div class="pull-left"> 
+			<div class="pull-left"> 
 
-            <p class="subtitle-section pull-left">
-                <b>Order ID :</b> 
-                 <?php echo($this->nro_pedido_formateado); ?>
-            </p>
-           <p class="subtitle-section pull-left">
-                <b> - Fecha: </b>
-                 <?php echo($this->pedido_fecha); ?>
-            </p>               
-            <p class="subtitle-section pull-left">
-                <b> - Marcacion: </b>
-                 <?php echo($this->marcacion_nombre); ?>
-            </p>            
+                    <p class="subtitle-section pull-left">
+                        <b>Order ID :</b> 
+                         <?php echo($this->nro_pedido_formateado); ?>
+                    </p>
+                   <p class="subtitle-section pull-left">
+                        <b> - Fecha: </b>
+                         <?php echo($this->pedido_fecha); ?>
+                    </p>               
+                    <p class="subtitle-section pull-left">
+                        <b> - Marcacion: </b>
+                         <?php echo($this->marcacion_nombre); ?>
+                    </p>
+                    <p class="subtitle-section pull-left">
+                        <b> - Agencia de Carga: </b>
+                         <?php echo($this->marcacion_nombre); ?>
+                        <span class="agencia_carga_nombre"><?php echo($this->agencia_carga_nombre); ?></span>                        
+                        <span data-toggle="modal" data-target="#CambiarAgenciaCarga">                                            
+                            <img class="tool pull-right pointer btn_mostrar_dialog_agencia_carga" style="margin-right: 8px" title="edit" src="<?php echo($this->basePath()); ?>/images/edit-icon.png" pedido_det_sec="<?php echo(""/*$reg['pedido_det_sec']*/); ?>">                                           
+                        </span>                   
+                    </p>                        
+            </div>
+
+                    <table class="table-dispo border" id="tbl_pedido_actual">
+                            <tr>
+                                <td class="th-inner"  width="60">ID Item</td>
+                                <td class="th-inner"  width="210">Variedad</td>
+                                <td class="th-inner"  width="100">Grado(cm)</td>
+                                <td class="th-inner"  width="100">Und/Bunch</td>
+                                <td class="th-inner"  width="100">Tipo Caja</td>
+                                <td class="th-inner"  width="100">Bunch/Caja</td> 
+                                <td class="th-inner"  width="100">Unidades</td>                                  
+                                <td class="th-inner"  width="50">Cajas</td>
+                                <td class="th-inner"  width="100">Price/Item</td>
+                                <td class="th-inner"  width="100">Total</td>                                                
+                                <!-- <td class="th-inner"  width="120">Marcacion</td> -->
+                                <td class="th-inner"  width="70">
+                                    Status
+                                    <span class="pointer yellow" data-toggle="popover" data-placement="top">
+                                        (*)
+                                    </span>
+                                </td>
+                                <td class="th-inner"  width="70">Eliminar</td>
+                            </tr>
+        <?php 	
+            if ($this->rs_pedido_det)
+            {
+                foreach ($this->rs_pedido_det as $reg)
+                {	
+        ?>
+                            <tr class="tr_det_<?php echo($reg['pedido_det_sec']); ?>" oferta="<?php echo($reg['estado_reg_oferta']); ?>" pedido_cab_oferta_id="<?php echo($reg['pedido_cab_oferta_id']); ?>" pedido_det_oferta_sec="<?php echo($reg['pedido_det_oferta_sec']); ?>" variedad_nombre_oferta_vinculada="<?php echo($reg['variedad_nombre_oferta_vinculada']); ?>">    
+                                <td>                                        
+                                    <?php echo($reg['pedido_det_sec']); ?>
+                                </td>                          
+                                <td>
+                                    <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span>
+                                    <?php if ($reg['estado_reg_oferta']==1){ ?>
+                                        <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange;">
+                                                    <span class="glyphicon glyphicon-star pointer"
+                                                    aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
+                                        </div>
+                                    <?php }//end if ?>
+                                    <?php if (!empty($reg['pedido_cab_oferta_id'])){ ?>
+                                        <div class="pull-right btn_oferta" style="margin-right: 10%; color: gray;">
+                                                    <span class="glyphicon glyphicon-star pointer"
+                                                    aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
+                                        </div>
+                                    <?php }//end if ?>
+                                </td>
+                                <td>
+                                    <?php echo($reg['grado_id']); ?>
+                                </td>
+                                <td>
+                                    <?php echo($reg['tallos_x_bunch']); ?>                        
+                                </td>
+                                <td>
+                                    <?php echo($reg['tipo_caja_id']); ?>
+                                </td>
+                                <td>
+                                    <?php echo($reg['cantidad_bunch']); ?>
+                                </td>
+                                <td>
+                                    <?php echo($reg['tallos_total']); ?>
+                                </td>
+                                <td>
+                                    <?php echo($reg['nro_cajas']); ?>
+                                </td>                                                
+                                <td>
+                                    <?php echo($reg['precio']); ?>                        
+                                </td>
+                                <td>
+                                    <?php echo($reg['total']); ?>                        
+                                </td>
+                                <td>
+                                    <img src="<?php echo($this->basePath()); ?>/images/status-<?php echo($this->pedido_cab_estado); ?>.png" alt="">
+                                </td>
+                                <td>
+                                    <img pedido_det_sec="<?php echo($reg['pedido_det_sec']); ?>" class="pointer btn_eliminar_detalle"  src="<?php echo($this->basePath()); ?>/images/delete-icon.png" alt="">
+                                </td>
+                            </tr>
+        <?php 	} //end foreach 
+            }//end if
+        ?>                    
+                  </table>
+			</div>
         </div>
-
-        <form class="clear frm_pedido" name="frm_pedido">
-            <table class="table-dispo border" id="tbl_pedido_actual">
-                    <tr>
-                        <td class="th-inner"  width="60">ID Item</td>
-                        <td class="th-inner"  width="110">Variedad</td>
-                        <td class="th-inner"  width="50">Grado(cm)</td>
-                        <td class="th-inner"  width="50">Und/Bunch</td>
-                        <td class="th-inner"  width="50">Tipo Caja</td>
-                        <td class="th-inner"  width="50">Bunch/Caja</td> 
-                        <td class="th-inner"  width="50">Unidades</td>                                  
-                        <td class="th-inner"  width="50">Cajas</td>
-                        <td class="th-inner"  width="50">Price/Item</td>
-                        <td class="th-inner"  width="50">Total</td>                                                
-                        <!-- <td class="th-inner"  width="120">Marcacion</td> -->
-                        <td class="th-inner"  width="130">Ag. Carga</td>
-                        <td class="th-inner"  width="60">
-                            Status
-                            <span class="pointer yellow" data-toggle="popover" data-placement="top">
-                                (*)
-                            </span>
-                        </td>
-                        <td class="th-inner"  width="60">Eliminar</td>
-                    </tr>
-<?php 	
-	if ($this->rs_pedido_det)
-	{
-		foreach ($this->rs_pedido_det as $reg)
-		{	
-?>
-                    <tr class="tr_det_<?php echo($reg['pedido_det_sec']); ?>" oferta="<?php echo($reg['estado_reg_oferta']); ?>" pedido_cab_oferta_id="<?php echo($reg['pedido_cab_oferta_id']); ?>" pedido_det_oferta_sec="<?php echo($reg['pedido_det_oferta_sec']); ?>" variedad_nombre_oferta_vinculada="<?php echo($reg['variedad_nombre_oferta_vinculada']); ?>">    
-                        <td>                                        
-                          	<?php echo($reg['pedido_det_sec']); ?>
-                        </td>                          
-                        <td>
-                        	<span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span>
-                            <?php if ($reg['estado_reg_oferta']==1){ ?>
-								<div class="pull-right btn_oferta" style="margin-right: 10%; color: orange;">
-											<span class="glyphicon glyphicon-star pointer"
-											aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
-								</div>
-							<?php }//end if ?>
-                            <?php if (!empty($reg['pedido_cab_oferta_id'])){ ?>
-                                <div class="pull-right btn_oferta" style="margin-right: 10%; color: gray;">
-                                            <span class="glyphicon glyphicon-star pointer"
-                                            aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
-                                </div>
-                            <?php }//end if ?>
-                        </td>
-                        <td>
-                            <?php echo($reg['grado_id']); ?>
-                        </td>
-                        <td>
-                            <?php echo($reg['tallos_x_bunch']); ?>                        
-                        </td>
-                        <td>
-                            <?php echo($reg['tipo_caja_id']); ?>
-                        </td>
-                        <td>
-                            <?php echo($reg['cantidad_bunch']); ?>
-                        </td>
-                        <td>
-                            <?php echo($reg['tallos_total']); ?>
-                        </td>
-                        <td>
-                            <?php echo($reg['nro_cajas']); ?>
-                        </td>                                                
-                        <td>
-                            <?php echo($reg['precio']); ?>                        
-                        </td>
-                        <td>
-                            <?php echo($reg['total']); ?>                        
-                        </td>
-                        <td>
-                            <span class="agencia_carga_nombre"><?php echo($reg['agencia_carga_nombre']); ?></span>                        
-                            <span data-toggle="modal" data-target="#CambiarAgenciaCarga">                                            
-                                <img class="tool pull-right pointer btn_mostrar_dialog_agencia_carga" style="margin-right: 8px" title="edit" src="<?php echo($this->basePath()); ?>/images/edit-icon.png" pedido_det_sec="<?php echo($reg['pedido_det_sec']); ?>">                                           
-                            </span>                             
-                        </td>
-                        <td>
-                            <img src="<?php echo($this->basePath()); ?>/images/status-<?php echo($this->pedido_cab_estado); ?>.png" alt="">
-                        </td>
-                        <td>
-                            <img pedido_det_sec="<?php echo($reg['pedido_det_sec']); ?>" class="pointer btn_eliminar_detalle"  src="<?php echo($this->basePath()); ?>/images/delete-icon.png" alt="">
-                        </td>
-                    </tr>
-<?php 	} //end foreach 
-	}//end if
-?>                    
-            </table>
-
         <div class="row help-block">            
             <div class="col-md-5 pull-left">
                 <span class="link_text pointer" data-toggle="modal" data-target="#dialog_comentario">Agregar Comentario</span>
             </div>
+            <div class="col-md-6 pull-left">
 <?php 		if ($this->rs_pedido_det){ ?>        
 		        <div class="clearfix">
 		             <input id="btn_confirmar" type="button" class="button-class pull-right" value="Confirmar" />
 		        </div>
 <?php 		}//end if ?>            
+            </div>            
         </div>
 
         </form>

@@ -614,11 +614,11 @@ class DisponibilidadController extends AbstractActionController
 			$response = $client->send();
 			//if ($response->isSuccess()) {
 			$json_string = $response->getBody();
-			//echo("<pre>");var_dump($json); echo("</pre");
+			//echo("<pre>");var_dump($json_string); echo("</pre");
 			$json =  json_decode($json_string);
-			$json->respuesta_code 		= $json->response->code;
+			$json->respuesta_code 		= 'OK';
 			$json->respuesta_mensaje	= $json->response->message;
-			$json->respuesta_codex 		= 'OK';
+			$json->respuesta_codex 		= $json->response->code;
 			//echo("<pre>");var_dump($json); echo("</pre");
 			$json = new JsonModel(get_object_vars($json));
 			return $json;

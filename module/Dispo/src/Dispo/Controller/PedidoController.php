@@ -218,6 +218,7 @@ class PedidoController extends AbstractActionController
 				$viewModel->pedido_cab_id				= $reg_pedido_cab['id'];
 				$viewModel->nro_pedido_formateado		= \Application\Classes\Mascara::getNroPedidoFormateado($reg_pedido_cab['id'], $config['mascara_pedido']);
 				$viewModel->marcacion_nombre			= $reg_pedido_cab['marcacion_nombre'];
+				$viewModel->agencia_carga_nombre		= $reg_pedido_cab['agencia_carga_nombre'];
 				$viewModel->pedido_fecha				= $reg_pedido_cab['fecha'];
 				$viewModel->pedido_cab_estado			= $reg_pedido_cab['estado'];
 				$viewModel->pedido_comentario			= $reg_pedido_cab['comentario'];

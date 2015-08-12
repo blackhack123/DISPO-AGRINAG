@@ -18,7 +18,7 @@ class PedidoDetData
 	/**
 	 * @var int
 	 */	
-	 protected $marcacion_sec;
+//	 protected $marcacion_sec;
 
 
 	/**
@@ -93,24 +93,24 @@ class PedidoDetData
 	/**
 	 * @var string
 	 */	
-	protected $agencia_carga_id;
+//	protected $agencia_carga_id;
 
 
 	/**
 	 * @var string
 	 */	
-	protected $comentario;
+//	protected $comentario;
 
 	/**
 	 * @var string
 	 */	
-	protected $sec;
+//	protected $sec;
 
 
 	/**
 	 * @var string
 	 */	
-	protected $secc;
+//	protected $secc;
 
 	/**
 	 * @var int
@@ -175,7 +175,6 @@ class PedidoDetData
 	//metodos GET
 	public function getPedidoCabId() 								{return $this->pedido_cab_id;}
 	public function getPedidoDetSec() 								{return $this->pedido_det_sec;}
-	public function getMarcacionSec() 								{return $this->marcacion_sec;}
 	public function getInventarioId() 								{return $this->inventario_id;}
 	public function getVariedadId() 								{return $this->variedad_id;}
 	public function getGradoId() 									{return $this->grado_id;}
@@ -188,10 +187,9 @@ class PedidoDetData
 	public function getTallosTotal()							 	{return $this->tallos_total;}
 	public function getPrecio() 									{return $this->precio;}
 	public function getTotal() 										{return $this->total;}
-	public function getAgenciaCargaId() 							{return $this->agencia_carga_id;}
-	public function getComentario() 								{return $this->comentario;}
-	public function getSec() 										{return $this->sec;}
-	public function getSecc()										{return $this->secc;}
+//	public function getComentario() 								{return $this->comentario;}
+//	public function getSec() 										{return $this->sec;}
+//	public function getSecc()										{return $this->secc;}
 	public function getPedidoCabOfertaId()	   				    	{return $this->pedido_ab_oferta_id;}
 	public function getPedidoDetOfertaSec() 						{return $this->pedido_det_oferta_sec;}
 	public function getEstadoPrecioContraoferta() 					{return $this->estado_precio_contraoferta;}
@@ -207,7 +205,6 @@ class PedidoDetData
 	//metodos SET
 	public function setPedidoCabId($valor) 							{$this->pedido_cab_id 				= $valor;}
 	public function setPedidoDetSec($valor) 						{$this->pedido_det_sec 				= $valor;}
-	public function setMarcacionSec($valor) 						{$this->marcacion_sec 				= $valor;}
 	public function setInventarioId($valor) 						{$this->inventario_id 				= $valor;}
 	public function setVariedadId($valor) 							{$this->variedad_id 				= $valor;}
 	public function setGradoId($valor) 								{$this->grado_id 					= $valor;}
@@ -220,10 +217,9 @@ class PedidoDetData
 	public function setTallosTotal($valor)						 	{$this->tallos_total 				= $valor;}
 	public function setPrecio($valor) 								{$this->precio 						= $valor;}
 	public function setTotal($valor) 								{$this->total 						= $valor;}
-	public function setAgenciaCargaId($valor) 						{$this->agencia_carga_id 			= $valor;}
-	public function setComentario($valor) 							{$this->comentario 					= $valor;}
-	public function setSec($valor) 									{$this->sec 						= $valor;}
-	public function setSecc($valor)									{$this->secc 						= $valor;}
+//	public function setComentario($valor) 							{$this->comentario 					= $valor;}
+//	public function setSec($valor) 									{$this->sec 						= $valor;}
+//	public function setSecc($valor)									{$this->secc 						= $valor;}
 	public function setPedidoCabOfertaId($valor)	   		    	{$this->pedido_ab_oferta_id 		= $valor;}
 	public function setPedidoDetOfertaSec($valor) 					{$this->pedido_det_oferta_sec 		= $valor;}
 	public function setEstadoPrecioContraoferta($valor) 			{$this->estado_precio_contraoferta 	= $valor;}
