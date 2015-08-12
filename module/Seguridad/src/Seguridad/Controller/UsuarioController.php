@@ -272,9 +272,9 @@ class UsuarioController extends AbstractActionController
 	
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
-			$usuario_id		= $json['usuario_id'];
+			$id		= $json['id'];
 	
-			$row					= $UsuarioBO->consultar($usuario_id, \Application\Constants\ResultType::MATRIZ);
+			$row					= $UsuarioBO->consultar($id, \Application\Constants\ResultType::MATRIZ);
 	
 			$response = new \stdClass();
 			$response->row					= $row;
@@ -380,5 +380,70 @@ class UsuarioController extends AbstractActionController
 		}
 	}//end function consultarAction
 	
-
+		
+		
+	/*-----------------------------------------------------------------------------*/
+	public function listadodataAction()
+	/*-----------------------------------------------------------------------------*/
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$UsuarioBO = new UsuarioBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 		= $this->getRequest();
+			$nombre      	= $request->getQuery('nombre', "");
+			$username      	= $request->getQuery('username', "");
+			$email     		= $request->getQuery('email', "");
+			$estado 		= $request->getQuery('estado', "");
+			$page 			= $request->getQuery('page');
+			$limit 			= $request->getQuery('rows');
+			$sidx			= $request->getQuery('sidx',1);
+			$sord 			= $request->getQuery('sord', "");
+			$UsuarioBO->setPage($page);
+			$UsuarioBO->setLimit($limit);
+			$UsuarioBO->setSidx($sidx);
+			$UsuarioBO->setSord($sord);
+			$condiciones = array(
+					"criterio_busqueda"		=> $nombre,
+					"username"				=> $nombre,
+					"estado" 				=> $estado,
+			);
+			$result = $UsuarioBO->listado($condiciones);
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				$row2["id"] 				= $row["id"];
+				$row2["nombre"] 			= trim($row["nombre"]);
+				$row2["username"] 			= trim($row["username"]);
+				$row2["email"] 				= trim($row["email"]);
+				//$row2["sincronizado"] 		= $row["sincronizado"];
+				//$row2["fec_sincronizado"] 	= $row["fec_sincronizado"];
+				$row2["estado"] 			= $row["estado"];
+				$response->rows[$i] = $row2;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadodataAction
+	
+	
+	
+	
 }

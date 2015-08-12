@@ -13,6 +13,69 @@ use Dispo\Data\AgenciaCargaData;
 
 class AgenciacargaController extends AbstractActionController
 {
+	
+
+	/*-----------------------------------------------------------------------------*/
+	public function agencialistadodataAction()
+	/*-----------------------------------------------------------------------------*/
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$AgenciaCargaBO = new AgenciaCargaBO();
+			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 		= $this->getRequest();
+			//$cliente_id    	= $request->getQuery('cliente_id', "");
+			$nombre      	= $request->getQuery('nombre', "");
+			$estado 		= $request->getQuery('estado', "");
+			$page 			= $request->getQuery('page');
+			$limit 			= $request->getQuery('rows');
+			$sidx			= $request->getQuery('sidx',1);
+			$sord 			= $request->getQuery('sord', "");
+			$AgenciaCargaBO->setPage($page);
+			$AgenciaCargaBO->setLimit($limit);
+			$AgenciaCargaBO->setSidx($sidx);
+			$AgenciaCargaBO->setSord($sord);
+			$condiciones = array(
+					//"id"			=> $id,
+					"criterio_busqueda"		=> $nombre,
+					"estado" 		=> $estado,
+			);
+			$result = $AgenciaCargaBO->listado($condiciones);
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				$row2["id"] 				= $row["id"];
+				$row2["nombre"] 			= trim($row["nombre"]);
+				$row2["telefono"] 			= trim($row["telefono"]);
+				$row2["tipo"] 				= trim($row["tipo"]);
+				$row2["sincronizado"] 		= $row["sincronizado"];
+				$row2["fec_sincronizado"] 	= $row["fec_sincronizado"];
+				$row2["estado"] 			= $row["estado"];
+				$response->rows[$i] = $row2;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadodataAction
+	
+	
 
 	public function getcomboAction()
 	{

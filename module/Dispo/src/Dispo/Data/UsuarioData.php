@@ -39,6 +39,11 @@ class UsuarioData
 	 * @var string
 	 */	
 	protected $cliente_id;
+	
+	/**
+	 * @var string
+	 */
+	protected $login_fox;
 
 	/**
 	 * @var string
@@ -80,6 +85,7 @@ class UsuarioData
 	public function getEmail() 								{return $this->email;}
 	public function getPerfilId() 							{return $this->perfil_id;}
 	public function getClienteId() 							{return $this->cliente_id;}
+	public function getLoginFox() 							{return $this->login_fox;}
 	public function getEstado() 							{return $this->estado;}
 	public function getGrupoDispoCabId() 					{return $this->grupo_dispo_cab_id;}
 	public function getFecIngreso() 						{return $this->fec_ingreso;}
@@ -96,6 +102,7 @@ class UsuarioData
 	public function setEmail($valor) 						{$this->email					= $valor;}
 	public function setPerfilId($valor)						{$this->perfil_id				= $valor;}
 	public function setClienteId($valor) 					{$this->cliente_id				= $valor;}
+	public function setLoginFox($valor) 					{$this->login_fox				= $valor;}
 	public function setEstado($valor) 						{$this->estado					= $valor;}
 	public function setGrupoDispoCabId($valor) 				{$this->grupo_dispo_cab_id		= $valor;}
 	public function setFecIngreso($valor) 					{$this->fec_ingreso				= $valor;}

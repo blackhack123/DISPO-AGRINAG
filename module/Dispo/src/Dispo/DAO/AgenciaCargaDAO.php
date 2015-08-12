@@ -75,7 +75,7 @@ class AgenciaCargaDAO extends Conexion
 	 * @param int $resultType
 	 * @return \Dispo\Data\AgenciaCargaData|NULL|array
 	 */
-	public function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	public function consultaragenciacarga($id, $resultType = \Application\Constants\ResultType::OBJETO)
 	{
 		switch ($resultType)
 		{
