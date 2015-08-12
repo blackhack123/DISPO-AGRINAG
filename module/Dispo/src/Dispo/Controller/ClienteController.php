@@ -360,12 +360,12 @@ class ClienteController extends AbstractActionController
 			{
 				case 'I':
 					$MarcacionData->setUsuarioIngId($usuario_id);
-					$result = $MarcacionBO->ingresar($MarcacionData);
+					$result = $MarcacionBO->ingresarmarcacion($MarcacionData);
 					break;
 	
 				case 'M':
 					$MarcacionData->setUsuarioModId($usuario_id);
-					$result = $MarcacionBO->modificar($MarcacionData);
+					$result = $MarcacionBO->modificarmarcacion($MarcacionData);
 					break;
 	
 				default:
@@ -377,7 +377,7 @@ class ClienteController extends AbstractActionController
 			//Se consulta el registro siempre y cuando el validacion_code sea OK
 			if ($result['validacion_code']=='OK')
 			{
-				$row	= $MarcacionBO->consultar($json['marcacion_sec'], \Application\Constants\ResultType::MATRIZ);
+				$row	= $MarcacionBO->consultarmarcacion($json['marcacion_sec'], \Application\Constants\ResultType::MATRIZ);
 			}else{
 				$row	= null;
 			}//end if
@@ -407,6 +407,46 @@ class ClienteController extends AbstractActionController
 			return $response;
 		}
 	}//end function grabarAction
+	
+	
+	
+	public function marcacionconsultardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$MarcacionBO 			= new MarcacionBO();
+			$PaisBO 				= new PaisBO();
+			$MarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$marcacion_sec		= $json['marcacion_sec'];
+
+			$row					= $MarcacionBO->consultarmarcacion($marcacion_sec, \Application\Constants\ResultType::MATRIZ);
+
+			$response = new \stdClass();
+			$response->row					= $row;
+			$response->cbo_pais_id			= $PaisBO->getComboPais($row['pais_id'], "&lt;Seleccione&gt;");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function consultarAction
 	
 	
 	
@@ -448,7 +488,7 @@ class ClienteController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function nuevodataAction
+	}//end function agenciacarganuevodataAction
 	
 	
 	
@@ -499,7 +539,7 @@ class ClienteController extends AbstractActionController
 			//Se consulta el registro siempre y cuando el validacion_code sea OK
 			if ($result['validacion_code']=='OK')
 			{
-				$row	= $AgenciaCargaBO->consultar($json['id'], \Application\Constants\ResultType::MATRIZ);
+				$row	= $AgenciaCargaBO->consultaragenciacarga($json['id'], \Application\Constants\ResultType::MATRIZ);
 			}else{
 				$row	= null;
 			}//end if
@@ -530,7 +570,47 @@ class ClienteController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
+	}//end function agenciacargagrabardataAction
+	
+	
+	
+	public function agenciacargaconsultardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$AgenciaCargaBO 		= new AgenciaCargaBO();
+			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$id	  = $json['id'];
+	
+			$row					= $AgenciaCargaBO->consultaragenciacarga($id, \Application\Constants\ResultType::MATRIZ);
+	
+			$response = new \stdClass();
+			$response->row					= $row;
+			$response->cbo_tipo				= $AgenciaCargaBO->getComboTipo($row['tipo'], " ");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
 	}//end function consultarAction
+
+
 	
 	
 	

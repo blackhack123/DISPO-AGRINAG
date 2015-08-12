@@ -15,7 +15,7 @@ class MarcacionDAO extends Conexion
 	 * Ingresar
 	 *
 	 * @param MarcacionData $MarcacionData
-	 * @return array Retorna un Array $key el cual contiene el marcacion_sec
+	 * @return array Retorna un Array $marcacion_sec el cual contiene el marcacion_sec
 	 */
 	public function ingresar(MarcacionData $MarcacionData)
 	{
@@ -63,49 +63,116 @@ class MarcacionDAO extends Conexion
 				'pais_id'		                    => $MarcacionData->getPaisId(),
 				'contacto'		                    => $MarcacionData->getContacto(),
 				'telefono'		                    => $MarcacionData->getTelefono(),
-				'zip'		                  		=> $MarcacionData->getZip()
+				'zip'		                  		=> $MarcacionData->getZip(),
+				'estado'                			=> $MarcacionData->getEstado(),
+				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                	=> $MarcacionData->getUsuarioModId()
 				
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $MarcacionData->getmarcacion_sec();
+		return $MarcacionData->getMarcacionSec();
 	}//end function modificar
 
 
-	/**
+/**
 	 * Consultar
+	 * 
+	 * @param string $marcacion_sec
+	 * @param int $resultType
+	 * @return \Dispo\Data\MarcacionData|NULL|array
+	 */
+	public function consultarmarcacion($marcacion_sec, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		switch ($resultType)
+		{
+			case \Application\Constants\ResultType::OBJETO:
+				$MarcacionData 		    = new MarcacionData ();
+				
+				$sql = 	' SELECT marcacion.* '.
+						' FROM marcacion '.
+						' WHERE marcacion.marcacion_sec = :marcacion_sec ';
+				
+				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+				$stmt->bindValue(':marcacion_sec',$marcacion_sec);
+				$stmt->execute();
+				$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+				if($row){
+					$MarcacionData->setMarcacionsec   		($row['marcacion_sec']);
+					$MarcacionData->setClienteId			($row['cliente_id']);
+					$MarcacionData->setNombre	   			($row['nombre']);
+					$MarcacionData->setDireccion		   	($row['direccion']);
+					$MarcacionData->setCiudad		   		($row['ciudad']);
+					$MarcacionData->setPaisId		   		($row['pais_id']);
+					$MarcacionData->setContacto		   		($row['contacto']);
+					$MarcacionData->setTelefono		   		($row['telefono']);
+					$MarcacionData->setZip		   			($row['zip']);
+					$MarcacionData->setEstado    			($row['estado']);
+					$MarcacionData->setFecIngreso   		($row['fec_ingreso']);
+					$MarcacionData->setFecModifica  		($row['fec_modifica']);
+					$MarcacionData->setUsuarioIngId			($row['usuario_ing_id']);
+					$MarcacionData->setUsuarioModId			($row['usuario_mod_id']);
+					$MarcacionData->setSinronizado			($row['sincronizado']);
+					$MarcacionData->setFecSincronizado		($row['fec_sincronizado']);
+						
+					return $MarcacionData;
+				}else{
+					return null;
+				}//end if				
+				break;
+				
+			case \Application\Constants\ResultType::MATRIZ:
+				$sql = 	' SELECT marcacion.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name  '.
+						' FROM marcacion LEFT JOIN usuario as usuario_ing '.
+						'                           ON usuario_ing.id = marcacion.usuario_ing_id '.
+						'					 LEFT JOIN usuario as usuario_mod '.
+						'                           ON usuario_mod.id = marcacion.usuario_mod_id '.						
+						' WHERE marcacion.marcacion_sec = :marcacion_sec ';
+				
+				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+				$stmt->bindValue(':marcacion_sec',$marcacion_sec);
+				$stmt->execute();
+				$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+				return $row;
+				break;
+		}//end switch
+
+
+	}//end function consultar
+	
+
+	/**
 	 *
 	 * @param int $marcacion_sec
-	 * @return MarcacionData|null
-	 */	
-	public function consultar($marcacion_sec)
+	 * @param string $nombre
+	 * @return array
+	 */
+	public function consultarDuplicado($accion, $marcacion_sec, $nombre)
 	{
-		$MarcacionData 		    = new MarcacionData();
-
-		$sql = 	' SELECT marcacion.* '.
-				' FROM marcacion '.
-				' WHERE marcacion.marcacion_sec = :marcacion_sec ';
-
-
+		$sql = 	' SELECT marcacion.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name  '.
+				' FROM marcacion LEFT JOIN usuario as usuario_ing '.
+				'                           ON usuario_ing.id = marcacion.usuario_ing_id '.
+				'					 LEFT JOIN usuario as usuario_mod '.
+				'                           ON usuario_mod.id = marcacion.usuario_mod_id ';
+		switch ($accion)
+		{
+			case 'I':
+				$sql = $sql." WHERE marcacion.marcacion_sec 	 = '".$marcacion_sec."'".
+						"    or marcacion.nombre = '".$nombre."'";
+				break;
+	
+			case 'M':
+				$sql = $sql." WHERE marcacion.marcacion_sec 	!= '".$marcacion_sec."'".
+						"   and marcacion.nombre = '".$nombre."'";
+				break;
+		}//end switch
+	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
-		$stmt->bindValue(':marcacion_sec',$marcacion_sec);
 		$stmt->execute();
-		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
-		if($row){
-			$MarcacionData->setMarcacionsec   		($row['marcacion_sec']);
-			$MarcacionData->setClienteId			($row['cliente_id']);
-			$MarcacionData->setNombre	   			($row['nombre']);
-			$MarcacionData->setDireccion		   	($row['direccion']);
-			$MarcacionData->setCiudad		   		($row['ciudad']);
-			$MarcacionData->setPaisId		   		($row['pais_id']);
-			$MarcacionData->setContacto		   		($row['contacto']);
-			$MarcacionData->setTelefono		   		($row['telefono']);
-			$MarcacionData->setZip		   			($row['zip']);
-			return $MarcacionData;
-		}else{
-			return null;
-		}//end if
-	}//end function consultar
-
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		return $result;
+	}//end function consultarDuplicado
+	
+	
 	
 	
 	

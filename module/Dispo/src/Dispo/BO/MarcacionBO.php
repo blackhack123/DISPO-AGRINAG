@@ -58,14 +58,16 @@ class MarcacionBO extends Conexion
 	 * @param MarcacionData $MarcacionData
 	 * @return array
 	 */
-	function ingresar(MarcacionData $MarcacionData)
+	function ingresarmarcacion(MarcacionData $MarcacionData)
 	{
 		$this->getEntityManager()->getConnection()->beginTransaction();
 		try
 		{
 			$MarcacionDAO = new MarcacionDAO();
 			$MarcacionDAO->setEntityManager($this->getEntityManager());
-			$MarcacionData2 = $MarcacionDAO->consultar($MarcacionData->getMarcacionSec());
+			$MarcacionData2 = $MarcacionDAO->consultarDuplicado('M',$MarcacionData->getMarcacionSec(), $MarcacionData->getNombre());
+			$marcacion_sec	= $MarcacionData->getMarcacionSec();
+			$nombre			= $MarcacionData->getNombre();
 			if (!empty($MarcacionData2))
 			{
 				$result['validacion_code'] 	= 'EXISTS';
@@ -87,17 +89,55 @@ class MarcacionBO extends Conexion
 	
 	
 	/**
+	 * Modificar
+	 *
+	 * @param MarcacionData $MarcacionData
+	 * @return array
+	 */
+	function modificarmarcacion(MarcacionData $MarcacionData)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try
+		{
+			$MarcacionDAO = new MarcacionDAO();
+			$MarcacionDAO->setEntityManager($this->getEntityManager());
+			//$MarcacionData2 = $MarcacionDAO->consultar($MarcacionData->getId());
+			$result = $MarcacionDAO->consultarDuplicado('M',$MarcacionData->getMarcacionSec(), $MarcacionData->getNombre());
+			$marcacion_sec=		$MarcacionData->getMarcacionSec();
+			$nombre=	$MarcacionData->getNombre();
+			if (!empty($result))
+			{
+	
+				$result['validacion_code'] 	= 'NO-EXISTS';
+				$result['respuesta_mensaje']= 'El registro  existe, no puede ser moficado!!';
+			}else{
+	
+				$id = $MarcacionDAO->modificar($MarcacionData);
+				$result['validacion_code'] 	= 'OK';
+				$result['respuesta_mensaje']= '';
+			}//end if
+	
+			$this->getEntityManager()->getConnection()->commit();
+			return $result;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function ingresar
+	
+	
+	/**
 	 * 
 	 * @param int $marcacion_sec
 	 * @return Ambigous <\Dispo\Data\MarcacionData, NULL>
 	 */
-	function consultar($marcacion_sec){
+	function consultarmarcacion($marcacion_sec, $resultType = \Application\Constants\ResultType::OBJETO){
 		$MarcacionDAO = new MarcacionDAO();
 		$MarcacionDAO->setEntityManager($this->getEntityManager());
-		$MarcacionData = $MarcacionDAO->consultar($marcacion_sec);
-		return $MarcacionData;		
+		$reg = $MarcacionDAO->consultarmarcacion($marcacion_sec, $resultType);
+		return $reg;		
 	}//end function consultar
-	
 	
 	
 	/**
