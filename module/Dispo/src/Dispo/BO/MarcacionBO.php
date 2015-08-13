@@ -28,7 +28,7 @@ class MarcacionBO extends Conexion
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'marcacion_sec', 'nombre', $marcacion_sec, $texto_1er_elemento, $color_1er_elemento);
 			
 		return $opciones;
-	}//end function listado
+	}//end function getComboPorClienteId
 
 	/**
 	 * 
@@ -49,7 +49,7 @@ class MarcacionBO extends Conexion
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'marcacion_sec', 'nombre', $marcacion_sec, $texto_1er_elemento, $color_1er_elemento);
 		 
 		return $opciones;
-	}//end function listado
+	}//end function getComboPorMarcacionId
 
 
 	/**
@@ -58,7 +58,7 @@ class MarcacionBO extends Conexion
 	 * @param MarcacionData $MarcacionData
 	 * @return array
 	 */
-	function ingresarmarcacion(MarcacionData $MarcacionData)
+	function ingresar(MarcacionData $MarcacionData)
 	{
 		$this->getEntityManager()->getConnection()->beginTransaction();
 		try
@@ -94,7 +94,7 @@ class MarcacionBO extends Conexion
 	 * @param MarcacionData $MarcacionData
 	 * @return array
 	 */
-	function modificarmarcacion(MarcacionData $MarcacionData)
+	function modificar(MarcacionData $MarcacionData)
 	{
 		$this->getEntityManager()->getConnection()->beginTransaction();
 		try
@@ -132,7 +132,7 @@ class MarcacionBO extends Conexion
 	 * @param int $marcacion_sec
 	 * @return Ambigous <\Dispo\Data\MarcacionData, NULL>
 	 */
-	function consultarmarcacion($marcacion_sec, $resultType = \Application\Constants\ResultType::OBJETO){
+	function consultar($marcacion_sec, $resultType = \Application\Constants\ResultType::OBJETO){
 		$MarcacionDAO = new MarcacionDAO();
 		$MarcacionDAO->setEntityManager($this->getEntityManager());
 		$reg = $MarcacionDAO->consultarmarcacion($marcacion_sec, $resultType);
