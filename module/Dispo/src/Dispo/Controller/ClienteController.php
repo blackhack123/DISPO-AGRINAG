@@ -13,6 +13,7 @@ use Seguridad\BO\PerfilBO;
 use Dispo\DATA\AgenciaCargaDATA;
 use Seguridad\DATA\UsuarioDATA;
 use Dispo\BO\PaisBO;
+use Dispo\BO\EstadosBO;
 use Dispo\Data\ClienteData;
 use Dispo\Data\MarcacionData;
 use Dispo\BO\GrupoPrecioCabBO;
@@ -111,9 +112,11 @@ class ClienteController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$ClienteBO 				= new ClienteBO();
 			$PaisBO 				= new PaisBO();
+			$EstadosBO 				= new EstadosBO();
 			$GrupoPrecioCabBO		= new GrupoPrecioCabBO();
 			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$EstadosBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
@@ -127,9 +130,11 @@ class ClienteController extends AbstractActionController
 			
 			$response 		= new \stdClass();
 			$pais 			= null;
+			$estados 			= null;
 			$grupoprecio	= null;
 			$response->cbo_tipo				= $ClienteBO->getCombo("", " ");
 			$response->cbo_pais_id			= $PaisBO->getComboPais($pais, "&lt;Seleccione&gt;");
+			$response->cbo_estado_id		= $EstadosBO->getComboEstados($estados, "&lt;Seleccione&gt;");
 			$response->cbo_grupo_precio		= $GrupoPrecioCabBO->getComboGrupoPrecio($grupoprecio, "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 		= 'OK';

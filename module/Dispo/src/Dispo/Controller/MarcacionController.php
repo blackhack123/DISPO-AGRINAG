@@ -111,5 +111,169 @@ class MarcacionController extends AbstractActionController
 		}
 	}//end function indexAction	
 	
+	
+	public function nuevodataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$PaisBO 				= new PaisBO();
+			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+	
+	
+	
+			$response 		= new \stdClass();
+			$pais 			= null;
+			$cliente_id 			= null;
+			$response->cbo_pais_id			= $PaisBO->getComboPais($pais, "&lt;Seleccione&gt;");
+			//	$response->cliente_id			=ClienteBO->
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function nuevodataAction
+	
+	
+	
+	
+	public function grabardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$MarcacionData			= new MarcacionData();
+			$MarcacionBO 			= new MarcacionBO();
+			$MarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$accion						= $json['accion'];  //I, M
+			$MarcacionData->setMarcacionSec			($json['marcacion_sec']);
+			$MarcacionData->setClienteId			($json['cliente_id']);
+			$MarcacionData->setNombre				($json['nombre']);
+			$MarcacionData->setDireccion			($json['direccion']);
+			$MarcacionData->setPaisId				($json['pais_id']);
+			$MarcacionData->setCiudad				($json['ciudad']);
+			$MarcacionData->setContacto				($json['contacto']);
+			$MarcacionData->setTelefono				($json['telefono']);
+			$MarcacionData->setZip					($json['zip']);
+			$MarcacionData->setEstado				($json['estado']);
+	
+			$response = new \stdClass();
+			switch ($accion)
+			{
+				case 'I':
+					$MarcacionData->setUsuarioIngId($usuario_id);
+					$result = $MarcacionBO->ingresarmarcacion($MarcacionData);
+					break;
+	
+				case 'M':
+					$MarcacionData->setUsuarioModId($usuario_id);
+					$result = $MarcacionBO->modificarmarcacion($MarcacionData);
+					break;
+	
+				default:
+					$result['validacion_code'] 	= 'ERROR';
+					$result['respuesta_mensaje']= 'ACCESO NO VALIDO';
+					break;
+			}//end switch
+	
+			//Se consulta el registro siempre y cuando el validacion_code sea OK
+			if ($result['validacion_code']=='OK')
+			{
+				$row	= $MarcacionBO->consultarmarcacion($json['marcacion_sec'], \Application\Constants\ResultType::MATRIZ);
+			}else{
+				$row	= null;
+			}//end if
+	
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->validacion_code 		= $result['validacion_code'];
+			$response->respuesta_mensaje	= $result['respuesta_mensaje'];
+			if ($row)
+			{
+				$response->row					= $row;
+				$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			}else{
+				$response->row					= null;
+				$response->cbo_estado			= '';
+			}//end if
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function grabarAction
+	
+	
+	
+	public function consultardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$MarcacionBO 			= new MarcacionBO();
+			$PaisBO 				= new PaisBO();
+			$MarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$marcacion_sec		= $json['marcacion_sec'];
+	
+			$row					= $MarcacionBO->consultarmarcacion($marcacion_sec, \Application\Constants\ResultType::MATRIZ);
+	
+			$response = new \stdClass();
+			$response->row					= $row;
+			$response->cbo_pais_id			= $PaisBO->getComboPais($row['pais_id'], "&lt;Seleccione&gt;");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function consultardataAction
 
 }//end controller

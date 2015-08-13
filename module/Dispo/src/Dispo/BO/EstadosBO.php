@@ -4,26 +4,26 @@ namespace Dispo\BO;
 
 use Application\Classes\Conexion;
 use Doctrine\ORM\EntityManager;
-use Dispo\DAO\PaisDAO;
+use Dispo\DAO\EstadosDAO;
 
 
-class PaisBO extends Conexion
+class EstadosBO extends Conexion
 {
 
 	/**
 	 * 
-	 * @param string $pais
+	 * @param string $estados
 	 * @param string $texto_1er_elemento
 	 * @param string $color_1er_elemento
 	 * @return string
 	 */
-	function getComboPais($estados, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	function getComboEstados($estados, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
 	{	
-		$PaisDAO = new PaisDAO();
+		$EstadosDAO = new EstadosDAO();
 		
-		$PaisDAO->setEntityManager($this->getEntityManager());
+		$EstadosDAO->setEntityManager($this->getEntityManager());
 
-		$result = $PaisDAO->consultarTodos();
+		$result = $EstadosDAO->consultarTodos();
 		
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $estados, $texto_1er_elemento, $color_1er_elemento);
 		 
