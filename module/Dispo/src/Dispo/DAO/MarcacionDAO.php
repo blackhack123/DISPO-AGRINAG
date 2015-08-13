@@ -177,17 +177,21 @@ class MarcacionDAO extends Conexion
 	
 	
 	/**
-	 * consultarPorClienteId
 	 * 
-	 * @param int $cliente_id
+	 * @param string $cliente_id
+	 * @param string $estado
 	 * @return array
 	 */
-	public function consultarPorClienteId($cliente_id)
+	public function consultarPorClienteId($cliente_id, $estado = null)
 	{
 		$sql = 	' SELECT marcacion.* '.
 				' FROM marcacion '.
 				" WHERE marcacion.cliente_id = :cliente_id ";
 
+		if (!empty($estado))
+		{
+			$sql = $sql." and marcacion.estado = '".$estado."'";
+		}//end if
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->bindValue(':cliente_id',$cliente_id);

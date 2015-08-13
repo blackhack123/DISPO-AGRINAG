@@ -1,5 +1,8 @@
-<link rel="stylesheet" href="http://localhost/dispo/public/css/bootstrap.css">
-
+<style>
+/*	.input-sm{
+		height:22px;
+	}*/
+</style>
 
 <script>
 	$(document).ready(function () {
@@ -1354,49 +1357,6 @@
 				
     </div>
     
-    
-	<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		<div class="modal-dialog modal-dialog-fullscreen" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                	<h4 class="modal-title" id="myModalLabel">CLIENTE (<span id="dialog_mantenimiento_cliente_nombre"></span>)</h4>
-					<div class="modal-body">
-                        <div class="col-lg-5">
-                            <div class="col-lg-16">
-                                <div class="col-lg-4">
-	                                <label for="cliente_id2">Cliente:</label>
-                                </div>
-                                <div class="col-lg-12">
-                                <input id="cliente_id2" name="cliente_id2" type="text" class="form-control input-sm" value="" maxlength="5" max-lenght="5" validate="required" validatemessage="Ingrese un codigo" onKeyUp="this.value=this.value.toUpperCase()">
-                                <input type="hidden" name="accion2" id="accion2" value="" />
-                            </div>
-                            
-                            <div class="col-lg-16">
-                                <div class="col-lg-4">
-	                                <label for="nombre">Nombre:</label>
-                                </div>
-                                <div class="col-lg-12">
-                                	<input name="nombre" type="text" class="form-control input-sm" id="nombre" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()">
-                                </div>
-                            </div>                              
-                        </div>
-                        <div class="col-lg-5">
-                            SEGUNDA COLUMNA
-                        </div>                        
-                        <div class="col-lg-5">
-                            TERCERA COLUMNA
-                        </div>                        
-                    </div> 
-                    <div class="modal-footer">
-                   		<a id="btn_grabar_informacion_general" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a>
-                    </div>                                       
-            	</div>
-    		</div>
-    	</div>
-    </div>   
-	    
-    
 
      <!--  DIALOG DE MANTENIMIENTO -->
 <div class="modal fade bs-example-modal-lg" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -1425,13 +1385,14 @@
                             	    <tbody>
                             	      <tr>
                             	        <td width="80"><b>Cliente:</b></td>
-                            	        <td>&nbsp;</td>
+                            	        <td><input id="cliente_id" name="cliente_id" type="text" class="form-control input-sm" style="width:65px" value="" maxlength="5" max-lenght="5" validate="required" validatemessage="Ingrese un codigo" onKeyUp="this.value=this.value.toUpperCase()">
+                                        <input type="hidden" name="accion2" id="accion2" value="" /></td>
                             	        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Created On:</td>
                             	        <td><input id="cliente_id3" name="cliente_id3" type="text" class="form-control input-sm" style="width:130px" value="" validate="required" validatemessage="Ingrese un codigo" onKeyUp="this.value=this.value.toUpperCase()"></td>
                           	          </tr>
                             	      <tr>
                             	        <td>Nombre:</td>
-                            	        <td colspan="3"></td>
+                            	        <td colspan="3"><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:330px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()"></td>
                           	        </tr>
                             	      <tr>
                             	        <td>Abrevia:</td>

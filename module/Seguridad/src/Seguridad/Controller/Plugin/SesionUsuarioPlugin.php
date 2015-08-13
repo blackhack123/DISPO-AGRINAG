@@ -116,7 +116,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	{
 		$session = new Container('usuario');
 		if (!isset($session)){
-			$this->getController()->flashmessenger()->addMessage("Debe de Iniciar Session");
+			$this->getController()->flashmessenger()->addMessage("Debe iniciar sesión");
 			$this->getController()->plugin('redirect')->toRoute('home'); //seguridad-login;
 			return false;
 		}
@@ -131,7 +131,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 		//Si no es cliente ni vendedor
 		if ((!$this->isLoginCliente())&&(!$this->isLoginVentas()))
 		{
-			$this->getController()->flashmessenger()->addMessage("Debe de Iniciar Session");
+			$this->getController()->flashmessenger()->addMessage("Debe iniciar sesión");
 			$this->getController()->plugin('redirect')->toRoute('home'); //seguridad-login;
 			return false;
 		}
@@ -164,7 +164,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 		
 		if (($respuesta==false)&&($redirect==true))
 		{
-			$this->getController()->flashmessenger()->addMessage("Debe de Iniciar Session");
+			$this->getController()->flashmessenger()->addMessage("Debe iniciar sesión");
 			$this->getController()->plugin('redirect')->toRoute('home'); //seguridad-login;
 		}//end if
 		

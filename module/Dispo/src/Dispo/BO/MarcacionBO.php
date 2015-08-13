@@ -29,6 +29,32 @@ class MarcacionBO extends Conexion
 			
 		return $opciones;
 	}//end function getComboPorClienteId
+	
+	
+	
+	/**
+	 *
+	 * @param string $cliente_id
+	 * @param int $marcacion_sec
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */	
+	function getComboActivosPorClienteId($cliente_id, $marcacion_sec, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$MarcacionDAO = new MarcacionDAO();
+	
+		$MarcacionDAO->setEntityManager($this->getEntityManager());
+	
+		$estado = "A";
+		$result = $MarcacionDAO->consultarPorClienteId($cliente_id, $estado);
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'marcacion_sec', 'nombre', $marcacion_sec, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboActivosPorClienteId
+	
+	
 
 	/**
 	 * 

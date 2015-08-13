@@ -6,10 +6,8 @@
 	</script>
 
     <form class="clear frm_pedido" name="frm_pedido">	
-    
     <div class="row help-block">            
- 	   <div class="col-md-11 pull-left">
-
+ 	   <div class="col-md-16 pull-left">
 			<div class="pull-left"> 
 
                     <p class="subtitle-section pull-left">
@@ -33,13 +31,17 @@
                         </span>                   
                     </p>                        
             </div>
-
+    	</div>
+	</div>
+    
+    <div class="row help-block">            
+ 	   <div class="col-md-15">
                     <table class="table-dispo border" id="tbl_pedido_actual">
                             <tr>
                                 <td class="th-inner"  width="60">ID Item</td>
-                                <td class="th-inner"  width="210">Variedad</td>
-                                <td class="th-inner"  width="100">Grado(cm)</td>
-                                <td class="th-inner"  width="100">Und/Bunch</td>
+                                <td class="th-inner">Variedad</td>
+                                <td class="th-inner"  width="90">Grado(cm)</td>
+                                <td class="th-inner"  width="90">Und/Bunch</td>
                                 <td class="th-inner"  width="100">Tipo Caja</td>
                                 <td class="th-inner"  width="100">Bunch/Caja</td> 
                                 <td class="th-inner"  width="100">Unidades</td>                                  
@@ -73,8 +75,8 @@
                                                     aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
                                         </div>
                                     <?php }//end if ?>
-                                    <?php if (!empty($reg['pedido_cab_oferta_id'])){ ?>
-                                        <div class="pull-right btn_oferta" style="margin-right: 10%; color: gray;">
+                                    <?php if (!empty($reg['pedido_cab_oferta_id'])){ ?>                                    
+										<div class="pull-right btn_oferta" style="margin-right: 10%; color: gray;">
                                                     <span class="glyphicon glyphicon-star pointer"
                                                     aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
                                         </div>
@@ -117,17 +119,19 @@
                   </table>
 			</div>
         </div>
-        <div class="row help-block">            
-            <div class="col-md-5 pull-left">
-                <span class="link_text pointer" data-toggle="modal" data-target="#dialog_comentario">Agregar Comentario</span>
+        <div class="row">            
+            <div class="col-md-4">
+            	<div class="pull-left">
+	                <span class="link_text pointer" data-toggle="modal" data-target="#dialog_comentario">Agregar Comentario</span>
+                </div>
             </div>
-            <div class="col-md-6 pull-left">
-<?php 		if ($this->rs_pedido_det){ ?>        
-		        <div class="clearfix">
-		             <input id="btn_confirmar" type="button" class="button-class pull-right" value="Confirmar" />
-		        </div>
-<?php 		}//end if ?>            
-            </div>            
+            <div class="col-md-11">                
+                <div class="pull-right">
+		<?php 		if ($this->rs_pedido_det){ ?>        
+                        <input id="btn_confirmar" type="button" class="btn btn-success pull-right" value="Confirmar" />
+        <?php 		}//end if ?>   
+                </div>
+            </div>           
         </div>
 
         </form>

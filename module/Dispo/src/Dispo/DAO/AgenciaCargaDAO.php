@@ -165,15 +165,20 @@ class AgenciaCargaDAO extends Conexion
 
 
 	/**
-	 * consultarTodos
 	 * 
+	 * @param string $estado
 	 * @return array
 	 */
-	public function consultarTodos()
+	public function consultarTodos($estado = NULL)
 	{
 		$sql = 	' SELECT agencia_carga.* '.
-				' FROM agencia_carga ';
+				' FROM agencia_carga '.
+				' WHERE 1=1';
 	
+		if (!empty($estado)){
+			$sql = $sql." and estado = '".$estado."'";
+		}//end if
+
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro

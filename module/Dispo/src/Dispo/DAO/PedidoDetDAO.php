@@ -474,7 +474,7 @@ class PedidoDetDAO extends Conexion
 	{
 /*		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
 				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id, '.
-*/		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, pedido_cab.cliente_id, '.				
+*/		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, pedido_cab.cliente_id, pedido_cab.marcacion_sec, pedido_cab.agencia_carga_id, '.				
 				'		 CASE pedido_det.estado_reg_oferta '.
 				'			WHEN 1 THEN variedad_hueso.nombre '.
 				'			WHEN 0 THEN variedad_carne.nombre '.
@@ -571,9 +571,9 @@ class PedidoDetDAO extends Conexion
 				'				  INNER JOIN variedad '.
 				'                    ON variedad.id				= pedido_det.variedad_id '.
 				'				  LEFT JOIN agencia_carga '.
-				'                    ON agencia_carga.id 		= pedido_det.agencia_carga_id '.
+				'                    ON agencia_carga.id 		= pedido_cab.agencia_carga_id '.
 				'				  LEFT JOIN marcacion '.
-				'					 ON marcacion.marcacion_sec	= pedido_det.marcacion_sec '.
+				'					 ON marcacion.marcacion_sec	= pedido_cab.marcacion_sec '.
 				' WHERE 1=1';
 
 		if (!empty($condiciones['pedido_cab_id']))

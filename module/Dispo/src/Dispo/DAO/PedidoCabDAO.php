@@ -167,13 +167,23 @@ class PedidoCabDAO extends Conexion
 					$PedidoCabData->setId							($row['id']);
 					$PedidoCabData->setFecha 						($row['fecha']);
 					$PedidoCabData->setClienteId 					($row['cliente_id']);
+					$PedidoCabData->setMarcacionSec					($row['marcacion_sec']);
+					$PedidoCabData->setAgenciaCargaId 				($row['agencia_carga_id']);
+					$PedidoCabData->setCuartoFrioId 				($row['cuarto_frio_id']);
 					$PedidoCabData->setTotal 						($row['total']);
 					$PedidoCabData->setComentario 					($row['comentario']);
 					$PedidoCabData->setEstado 						($row['estado']);
+					$PedidoCabData->setFecAprobado					($row['fec_aprobado']);
+					$PedidoCabData->setFecAnulado					($row['fec_anulado']);
+					$PedidoCabData->setFecIngreso					($row['fec_ingreso']);
+					$PedidoCabData->setFecModifica					($row['fec_modifica']);
 					$PedidoCabData->setUsuarioClienteId 			($row['usuario_cliente_id']);
 					$PedidoCabData->setUsuarioAprobadoId 			($row['usuario_aprobado_id']);
 					$PedidoCabData->setUsuarioAnuladoId 			($row['usuario_anulado_id']);
-					$PedidoCabData->setFecExportado 				($row['fec_exportado']);
+					$PedidoCabData->setUsuarioIngId					($row['usuario_ing_id']);
+					$PedidoCabData->setUsuarioModId					($row['usuario_mod_id']);
+					$PedidoCabData->setSincronizado					($row['sincronizado']);
+					$PedidoCabData->setFecSincronizado				($row['fec_sincronizado']);
 
 					return $PedidoCabData;
 					break;

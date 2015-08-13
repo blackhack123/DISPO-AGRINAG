@@ -65,7 +65,7 @@ class DisponibilidadController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$MarcacionBO 			= new MarcacionBO();
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
-						
+
 			$marcacion_sec		= $this->params()->fromPost('marcacion_sec','');
 			$agencia_carga_id	= $this->params()->fromPost('agencia_carga_id','');			
 			
@@ -319,9 +319,9 @@ class DisponibilidadController extends AbstractActionController
 			$cliente_id = $SesionUsuarioPlugin->getUserClienteId();
 			$marcacion_sec		= null;
 			$agencia_carga_id 	= null;
-		
-			$marcacion_opciones 	= $MarcacionBO->getComboPorClienteId($cliente_id, $marcacion_sec, $marcacion_texto_primer_elemento);
-			$agenciacarga_opciones 	= $AgenciaCargaBO->getComboTodos($agencia_carga_id, $agenciacarga_texto_primer_elemento);	
+
+			$marcacion_opciones 	= $MarcacionBO->getComboActivosPorClienteId($cliente_id, $marcacion_sec, $marcacion_texto_primer_elemento);
+			$agenciacarga_opciones 	= $AgenciaCargaBO->getComboActivos($agencia_carga_id, $agenciacarga_texto_primer_elemento);	
 
 			$response = new \stdClass();
 			$response->marcacion_opciones				= $marcacion_opciones;

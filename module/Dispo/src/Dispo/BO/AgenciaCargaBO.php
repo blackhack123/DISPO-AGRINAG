@@ -31,6 +31,28 @@ class AgenciaCargaBO extends Conexion
 		 
 		return $opciones;
 	}//end function getComboTodos
+	
+	
+	
+	/**
+	 * 
+	 * @param int $agencia_carga_id
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getComboActivos($agencia_carga_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$AgenciaCargaDAO = new AgenciaCargaDAO();
+	
+		$AgenciaCargaDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $AgenciaCargaDAO->consultarTodos("A");
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $agencia_carga_id, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboActivos	
 
 	
 	
