@@ -1,0 +1,34 @@
+#fondo-login{
+	background: url(../images/login-cont-back.jpg) no-repeat;
+	background-position:center;
+	background-size:100%;
+	border-radius: 14px 14px 14px 14px;	
+	/*margin: 0px 20px;*/
+}
+
+#contenedor-controles-login{
+	/*background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6a941), color-stop(100%, #fa7a17));
+	background-image: -webkit-linear-gradient(top, #f6a941, #fa7a17);
+	background-image: -moz-linear-gradient(top, #f6a941, #fa7a17);
+	background-image: -o-linear-gradient(top, #f6a941, #fa7a17);
+	background-image: linear-gradient(top, #f6a941, #fa7a17);
+	*/
+	background-color: rgba(0,0,0,0.8);
+	border-radius: 0px 0px 14px 14px;
+}
+
+.social-icon{
+	background-color:#000000 !important;
+    margin: 0 8px;
+}
+
+/* line 599, ../sass/main.scss */
+.body-login {
+  background: #232323;
+}
+
+.login-cont-header h2 {
+  font-family: 'Muli', sans-serif;
+  margin: 70px 0 0;
+  color: white;
+}

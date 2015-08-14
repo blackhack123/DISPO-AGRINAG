@@ -1,0 +1,13 @@
+/*Centrar contenido en la mitad de la pantalla*/
+.bootstrap-centered  {
+ 	/*background-color: teal;*/
+    text-align: center;
+}
+
+/*Poner un contenido en un circulo, por defecto color gris*/
+.bootstrap-circle {
+  border-radius: 50%;
+  background: gray;
+  padding: 5px 7px;
+  margin: 2px 2px;  
+}

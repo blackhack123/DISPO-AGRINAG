@@ -12,8 +12,10 @@
 	                    ->appendStylesheet('http://fonts.googleapis.com/css?family=Muli')
 	                    ->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))
 	                    ->appendStylesheet($this->basePath('js/jquery-jqGrid-5.0.0/css/ui.jqgrid.css'))	                    
-                        ->appendStylesheet($this->basePath('css/bootstrap.css'))
+                        // NO VALE ->appendStylesheet($this->basePath('css/bootstrap.css'))
 						//->appendStylesheet('http://getbootstrap.com/2.3.2/assets/css/bootstrap.css')
+    					->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap.min.css'))	  			//BOOTSTRAP
+    					->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap-theme.min.css'))	  	//BOOTSTRAP OPCIONAL
                         ->appendStylesheet($this->basePath('css/sweet-alert.css'))
                         ->appendStylesheet($this->basePath('css/main.css'))
                         ->appendStylesheet($this->basePath('css/mycustom.css'))                         
@@ -36,9 +38,11 @@
  //           ->appendFile($this->basePath('js/scripts/angular.min.js'))
  //           ->appendFile($this->basePath('js/scripts/angular-route.min.js'))
  //           ->appendFile($this->basePath('js/scripts/angular-animate.min.js'))
-            ->appendFile($this->basePath('js/scripts/bootstrap.min.js'))            
+ // NO VALE   ->appendFile($this->basePath('js/scripts/bootstrap.min.js'))            
  //           ->appendFile($this->basePath('js/scripts/ui-bootstrap-tpls-0.11.0.min.js'))
  //           ->appendFile($this->basePath('js/scripts/angular-animate.min.js'))
+ 
+    		->appendFile($this->basePath('js/bootstrap-3.3.5/js/bootstrap.min.js'))
             ->appendFile($this->basePath('js/scripts/sweet-alert.js'))     
             ->appendFile($this->basePath('js/scripts/behaviors.js'))
             

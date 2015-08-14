@@ -2,79 +2,102 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
     <?php echo $this->headTitle($this->translate('AGRINAG - Dispo')) ?>
 
     <!-- Styles -->
 	<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/images/favicon.ico'))								
-					->appendStylesheet('http://fonts.googleapis.com/css?family=Muli')						
-					->appendStylesheet($this->basePath() . '/css/bootstrap.css') 									
-					->appendStylesheet($this->basePath() . '/css/main.css') 									
+    				->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap.min.css'))	  			//BOOTSTRAP
+    				->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap-theme.min.css'))	  	//BOOTSTRAP OPCIONAL									
+					->appendStylesheet($this->basePath('css/login.css'))	
+					->appendStylesheet($this->basePath('css/custom-bootstrap.css'))
 	?>		
     
     <!-- Scripts -->
 	<?php echo $this->headScript()->appendFile($this->basePath() . '/js/scripts/jquery-1.11.1.min.js')
-								  ->appendFile($this->basePath() . '/js/scripts/angular.min.js')
-								  ->appendFile($this->basePath() . '/js/scripts/angular-route.js')
-								  ->appendFile($this->basePath() . '/js/scripts/bootstrap.js')
-								  ->appendFile($this->basePath() . '/js/scripts/behaviors.js')
+								  ->appendFile($this->basePath('js/bootstrap-3.3.5/js/bootstrap.min.js'))
+								 // ->appendFile($this->basePath() . '/js/scripts/behaviors.js')
 	?>	
 	
-    
+	<script>
+		$(document).ready(function ()
+		{
+	        $("#btnlogin").on('click', function(event){ 
+	        	$("#frm").submit();
+				return true;
+		    });
+		});//$(document).ready			        
+	</script>	
 </head>
 <body class="body-login">
-    <form method="post" name="frm" action="<?php echo($this->basePath()); ?>/seguridad/login/autenticar">" >
-        <div class="login-container">
-            <div class="login-cont-header clearfix">
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="login-cont-header clearfix">
                 <img class="flo-left" src="images/login-agr-logo.png" alt="Logo Agrinag">
                 <h2 class="pull-right">
                     DISPONIBILIDAD - <b>AGRINAG</b>
                 </h2>
             </div>
-            <div class="login-cont-body">
-                <div class="login-form-cont clearfix">
-                   <div class="input-group flo-left">
-                        <span class="input-group-addon">
-                            <img src="images/user-login.png" alt="">
-                        </span>
-                        <input class="form-control" type="text" name="username" placeholder="USERNAME">
-                   </div>
-                   <div class="input-group flo-left">
-                        <span class="input-group-addon">
-                            <img src="images/key-login.png" alt="">
-                        </span>
-                        <input class="form-control pass-input" type="password" name="password" placeholder="PASSWORD">
-                   </div>
-                   <input type="submit" class="btn-login flo-left" value="Login" name="btnlogin" />
-                   <p style="color:#FFFFFF">
-						<?php		
-						$mensaje = '';
-						if ($this->flashMessages){
-						    foreach($this->flashMessages as $message)
-						    {
-								$mensaje = $mensaje.$message;
-						    }
-							//echo '<script>message_alert("Mensaje del Sistema","'.$mensaje.'");</script>';	
 
-							echo $mensaje;
-						}//end if
-						?>                   
-                    </p>
-                </div>
-                                      
-            </div>
-            <div class="pull-right">
-                <div class="img-circle social-icon flo-left">
+			<div class="row" id="fondo-login" >
+				<div class="col-md-12 clearfix visible-sm-block visible-md-block visible-lg-block" id="espacio-fondo-login">
+						<br><br><br><br><br><br><br><br><br><br><br><br><br>
+				</div>
+
+				<div id="contenedor-controles-login" class="col-md-12">
+					<br><br>
+		            <form method="post" id="frm" name="frm"  action="<?php echo($this->basePath()); ?>/seguridad/login/autenticar" class="form-inline bootstrap-centered">
+		            	<input id="btnEnviar" type="submit" style="visibility:hidden" />
+						<div class="form-group">
+									<div class="input-group">
+									  	<span id="user-img" name="user-img" class="glyphicon glyphicon-user input-group-addon btn btn-lg"></span>
+									  	<input type="text" class="form-control input-lg" name="username" placeholder="User Name" aria-describedby="user-img">
+									</div>               
+						</div>
+						<div class="form-group">
+									<div class="input-group">
+									  	<span id="password-img" name="password-img" class="glyphicon glyphicon-lock input-group-addon btn btn-lg"></span>	
+									  	<input type="password" class="form-control input-lg"  name="password" id="password" placeholder="Password">
+									  	<a href="#" id="btnlogin" name="btnlogin" class="input-group-addon btn btn-lg" role="button" style="background-color: orange; color:white">
+										    <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+										 </a>
+									</div>							
+						</div>
+		                <p style="color:#FFFFFF">
+							<?php		
+							$mensaje = '';
+							if ($this->flashMessages){
+							    foreach($this->flashMessages as $message)
+							    {
+									$mensaje = $mensaje.$message;
+							    }
+								//echo '<script>message_alert("Mensaje del Sistema","'.$mensaje.'");</script>';	
+		
+								echo $mensaje;
+							}//end if
+							?>                   
+		                </p>
+		   				
+					</form>
+					<br><br><br>
+				</div>				
+			</div>
+			
+			<div class="col-md-12">
+                <div class="pull-right bootstrap-circle social-icon">
                     <a href="http://www.facebook.com/agrinagrose" target="_blank"><img src="images/facebook-icon.png" alt=""></a>
                 </div>
-                <div class="img-circle social-icon flo-left">
+                <div class="pull-right bootstrap-circle social-icon">
                     <a href="http://instagram.com/agrinagrose" target="_blank"><img src="images/instag-icon.png" alt=""></a>
                 </div>
-                <div class="img-circle social-icon flo-left">
+                <div class="pull-right bootstrap-circle social-icon">
                     <a href="http://www.pinterest.com/agrinagroses/" target="_blank"><img src="images/pint-icon.png" alt=""></a>
-                </div>
-            </div>
-        </div>
-    </form>
-
+                </div>				
+			</div>
+			
+		</div>
+	</div>	
+    
 </body>
 </html>
