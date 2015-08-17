@@ -1356,44 +1356,261 @@
     
     
 	<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		<div class="modal-dialog modal-dialog-fullscreen" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                	<h4 class="modal-title" id="myModalLabel">CLIENTE (<span id="dialog_mantenimiento_cliente_nombre"></span>)</h4>
-					<div class="modal-body">
-                        <div class="col-lg-5">
-                            <div class="col-lg-16">
-                                <div class="col-lg-4">
-	                                <label for="cliente_id2">Cliente:</label>
-                                </div>
-                                <div class="col-lg-12">
-                                <input id="cliente_id2" name="cliente_id2" type="text" class="form-control input-sm" value="" maxlength="5" max-lenght="5" validate="required" validatemessage="Ingrese un codigo" onKeyUp="this.value=this.value.toUpperCase()">
-                                <input type="hidden" name="accion2" id="accion2" value="" />
-                            </div>
-                            
-                            <div class="col-lg-16">
-                                <div class="col-lg-4">
-	                                <label for="nombre">Nombre:</label>
-                                </div>
-                                <div class="col-lg-12">
-                                	<input name="nombre" type="text" class="form-control input-sm" id="nombre" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()">
-                                </div>
-                            </div>                              
-                        </div>
-                        <div class="col-lg-5">
-                            SEGUNDA COLUMNA
-                        </div>                        
-                        <div class="col-lg-5">
-                            TERCERA COLUMNA
-                        </div>                        
-                    </div> 
-                    <div class="modal-footer">
-                   		<a id="btn_grabar_informacion_general" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a>
-                    </div>                                       
-            	</div>
-    		</div>
-    	</div>
+	<div class="modal-dialog modal-dialog-fullscreen" role="document">
+
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="close"><span arial-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel"> Cliente - NUEVO REGISTRO </h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" role="form">
+				<div class="col-lg-4 ">
+					<div class="col-lg-5 " >
+						<div class="col-lg-5"  >
+						<label for="c1" class="control-label"> Cliente: </label>
+						</div>
+						<div class="col-lg-7"  >
+						<input type="text" class="form-control " id="c1" ><br/>
+						</div>
+					</div>
+					<div class="col-lg-7" >
+						<div class="col-lg-5"  >
+						<label for="co1" class="control-label">Created On:</label>
+						</div>
+						<div class="col-lg-7">
+						<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+						<label for="co1" class="control-label"> Nombre: </label>
+						</div>
+						<div class="col-lg-10">
+						<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+						<label for="co1" class="control-label"> Abrevia: </label>
+						</div>
+						<div class="col-lg-3">
+						<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Grupo: </label>
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="co1">
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="d1" class="control-label"> Direccíon: </label>
+						</div>
+						<div class="col-lg-10">
+							<textarea class="form-control" rows="3" style="resize:none;"></textarea><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="c1" class="control-label"> Ciudad: </label>
+						</div>
+						<div class="col-lg-10">
+							<input type="text" id="c1" class="form-control"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Estado: </label>
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="co1">
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Pais: </label>
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="co1">
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+						<label for="co1" class="control-label"> ZIP: </label>
+						</div>
+						<div class="col-lg-3">
+						<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="c1" class="control-label"> Comprador: </label>
+						</div>
+						<div class="col-lg-10">
+							<input type="text" id="c1" class="form-control"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fono1: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="co1">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fono2: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="co1">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+										<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fax1: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="co1">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fax2: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="co1">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="c1" class="control-label"> Vendedor: </label>
+						</div>
+						<div class="col-lg-10">
+							<input type="text" id="c1" class="form-control"><br/>
+						</div>
+					</div>
+					<div class="col-lg-7">
+						<div class="col-lg-6"  >
+						<label for="c1" class="control-label"> Limite. Credito: </label>
+						</div>
+						<div class="col-lg-6"  >
+						<input type="text" class="form-control " id="c1" ><br/>
+						</div>
+					</div>
+					<div class="col-lg-5" >
+						<div class="col-lg-5"  >
+						<label for="co1" class="control-label">Interes:</label>
+						</div>
+						<div class="col-lg-7">
+						<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-5">
+							<label for="co1" class="control-label"> Crdto. Suspendido: </label>
+						</div>
+						<div class="col-lg-1">
+							<input type="text" class="form-control" id="co1">
+						</div>
+						<div class="col-lg-2"  >
+						<label for="co1" class="control-label">Interes:</label>
+						</div>
+						<div class="col-lg-4">
+						<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-4">
+							<label> Interes </label>
+						</div>
+						<div class="col-lg-8">
+							<input type="text" class="form-control"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-12">
+							<input type="file" class="form-control"><br/>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="col-lg-12">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input type="checkbox" aria-label="..."	>
+							</span>
+							<input type="text" class="form-control" disabled value="Inactivo">
+						</div>	
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="col-lg-12">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input type="checkbox" aria-label="..."	>
+							</span>
+							<input type="text" class="form-control" disabled value="Incobrable">
+						</div>	
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="col-lg-12">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input type="checkbox" aria-label="..."	>
+							</span>
+							<input type="text" class="form-control" disabled value="Tipo Cliente Especial">
+						</div>	
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="col-lg-12">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input type="checkbox" aria-label="..."	>
+							</span>
+							<input type="text" class="form-control" disabled value="Envia Estado de Cuenta">
+						</div>	
+					</div>
+				</div>
+			</div>
+		</form>
+			<div class="modal-footer">
+	      </div>
+		</div>
+			
+		</div>
+	</div>
+</div>
     </div>   
 	    
     
@@ -1976,7 +2193,6 @@
 			        	        <td>&nbsp;</td>
 			        	        <td>&nbsp;</td>
 		        	        </tr>
-			        	  
 			        	      <tr>
 			        	        <td><label class="control-label">Ingreso:</label></td>
 			        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
