@@ -189,10 +189,10 @@
 					<div class="menu-app-opcion">
                         <div class="animate-show alert message_add arrow_right animate-show" role="alert" id="msg_order" style="display: none;" > <!-- NOTIFICACION -->
                         </div>              
-                        <a href="#" >
-                            <span class="notification img-circle" id="msg_nro_items_comprando"> <!-- NOTIFICACION -->                       
-                            </span>
+                        <a href="#" >                            
                             <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png" id="opt_order">
+							<span class="notification img-circle" id="msg_nro_items_comprando"> <!-- NOTIFICACION -->                       
+                            </span>                            
                         </a>
                     </div>  
 					<div class="menu-app-opcion">
@@ -241,62 +241,89 @@
         <h4 class="modal-title" id="myModalLabel">Menu de Administrador</h4>
       </div>
       <div class="modal-body clearfix">
-        <ul class="admin-menu">
-            <li class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/disponibilidad/panel">
-                <span class="img-circle back1">
-                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/dispo.png">
-                </span>
-                <p class="back1">disponibilidad</p>
-            </li>
-            <li class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento">
-                <span class="img-circle back2">
-                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/variedad.png">
-                </span>
-                <p class="back2">variedad</p>
-            </li>
-            <li class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento">
-                <span class="img-circle back3">
-                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/agencia.png">
-                </span>
-                <p class="back3">agencias de carga</p>
-            </li>
-        </ul>
-
-        <ul class="admin-menu">
-            <li class="link_opcion" url="<?php echo($this->basePath()); ?>/seguridad/usuario/mantenimiento">
-                <span class="img-circle back4">
-                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/usuarios.png">
-                </span>
-                <p class="back4">usuarios</p>
-            </li>
-            <li class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/cliente/mantenimiento">
-                <span class="img-circle back5">
-                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/clientes.png">
-                </span>
-                <p class="back5">clientes</p>
-            </li>
-            <li class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/grupocliente/mantenimiento">
-                <span class="img-circle back6">
-                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/grupo_clientes.png">
-                </span>
-                <p class="back6">grupo de clientes</p>
-            </li> 
-        </ul>
-
-        <ul class="admin-menu">
-            <li class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/cajamatriz/mantenimiento">
-                <span class="img-circle back7">
-                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/caja_matriz.png">
-                </span>
-                <p class="back7">caja matriz</p>
-            </li>
-            <li class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/cajamarcacion/mantenimiento">
-                <span class="img-circle back8">
-                    <img src="<?php echo($this->basePath()); ?>/images/admin_icons/caja_marcacion.png">
-                </span>
-                <p class="back8">caja marcacion</p>
-            </li>
-        </ul>
+      
+        	<div class="row">
+            	<div class="col-md-4">
+                	<div class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/disponibilidad/panel">
+                        <div class="link-icono img-circle back1">
+                            <img src="<?php echo($this->basePath()); ?>/images/admin_icons/dispo.png">
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="link-title back1">DISPONIBILIDAD</div>
+                    </div>
+                </div>
+                
+            	<div class="col-md-4">
+                	<div class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento">
+                        <div class="link-icono img-circle back2">
+                             <img src="<?php echo($this->basePath()); ?>/images/admin_icons/variedad.png">
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="link-title back2">VARIEDAD</div>
+                    </div>                
+                </div>
+                
+            	<div class="col-md-4">
+                	<div class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento">
+                        <div class="link-icono img-circle back3">
+                             <img src="<?php echo($this->basePath()); ?>/images/admin_icons/agencia.png">
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="link-title back3">AGENCIA DE CARGA</div>
+                    </div>                  
+               	</div>                                
+            </div>
+     
+        	<div class="row">
+				<div class="col-md-4">
+                	<div class="link_opcion" url="<?php echo($this->basePath()); ?>/seguridad/usuario/mantenimiento">
+                        <div class="link-icono img-circle back4">
+                             <img src="<?php echo($this->basePath()); ?>/images/admin_icons/usuarios.png">
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="link-title back4">USUARIOS</div>
+                    </div>                  
+               	</div>
+ 				<div class="col-md-4">
+                	<div class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/cliente/mantenimiento">
+                        <div class="link-icono img-circle back5">
+                             <img src="<?php echo($this->basePath()); ?>/images/admin_icons/clientes.png">
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="link-title back5">CLIENTES</div>
+                    </div>                  
+               	</div>               
+ 				<div class="col-md-4">
+                	<div class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/grupocliente/mantenimiento">
+                        <div class="link-icono img-circle back6">
+                             <img src="<?php echo($this->basePath()); ?>/images/admin_icons/clientes.png">
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="link-title back6">GRUPO DE CLIENTES</div>
+                    </div>                  
+               	</div>
+            </div>     
+      
+        	<div class="row">
+ 				<div class="col-md-4">
+                	<div class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/cajamatriz/mantenimiento">
+                        <div class="link-icono img-circle back7">
+                             <img src="<?php echo($this->basePath()); ?>/images/admin_icons/caja_matriz.png">
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="link-title back7">CAJA MATRIZ</div>
+                    </div>                  
+               	</div>
+ 				<div class="col-md-4">
+                	<div class="link_opcion" url="<?php echo($this->basePath()); ?>/dispo/cajamarcacion/mantenimiento">
+                        <div class="link-icono img-circle back8">
+                             <img src="<?php echo($this->basePath()); ?>/images/admin_icons/caja_matriz.png">
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="link-title back8">CAJA MARCACION</div>
+                    </div>                  
+               	</div>
+			</div>
 
       </div>
     </div>
