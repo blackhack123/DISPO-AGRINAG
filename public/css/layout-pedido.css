@@ -1,0 +1,101 @@
+body{
+	margin-right:0px;
+	margin-left:0px;	
+}
+
+#layout-cabecera{
+	background: #9d0000 url(../images/header_back.png) repeat-x top;	
+}
+
+#icon-user{
+	font-size: 22px; 
+	color:#C0C0C0; 
+	background-color:black;
+    padding: 15px 17px;
+  	margin: 2px 7px;  
+}
+
+#identidad_usuario_administrativo{
+	color: #FFFFFF;	
+	font-weight:bold;
+    text-shadow: 1px 1px 2px black;	
+}
+
+#identidad_cliente{
+	color: #FFFFFF;	
+	font-weight:bold;
+    text-shadow: 1px 1px 2px black;
+}
+
+#seleccion_marcacion_cliente{
+	color: #fedd00;
+	font-weight:bold;
+    text-shadow: 1px 1px 2px black;
+	font-size:13px;
+}
+
+.menu-app{
+	background-color: #AFAFAF;
+	position: fixed; 
+	top: 0; 
+	right: 0; 
+	bottom:0px; 	
+	margin-bottom:0px;
+}
+
+.menu-app-adorno{
+	line-height: 75px;
+	background: #3d3d3d;	
+	font-size: 20px;
+	text-align: center;
+	color: #AFAFAF;
+}
+
+.menu-app-body{
+	padding: 0px 10px 0px;	
+}
+
+.menu-app-opcion{
+	line-height: 75px;
+	text-align: center;
+	font-size: 20px;
+	color: #afafaf;
+	cursor: pointer;
+	border-bottom: dotted 2px #808080;
+	width: 40px;	
+}
+
+
+.notification {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  z-index: 50;
+  top: 50%;
+  right: 5%;
+  background: green;
+  color: #fff;
+  font-size: 10px;
+  text-align: center;
+  line-height: 18px;
+}
+
+/* line 557, ../sass/main.scss */
+.message_add {
+  width: 120px;
+  right: 60px;
+  top: -10px;
+  background: #f6b900;
+  border-radius: 5px;
+  -webkit-box-shadow: #767676 1px 2px 4px;
+  -moz-box-shadow: #767676 1px 2px 4px;
+  box-shadow: #767676 1px 2px 4px;
+  padding: 15px;
+  border: 1px solid #e0a300;
+  position: absolute;
+  font-family: "Muli",sans-serif;
+  font-size: 12px;
+  text-align: center;
+  z-index: 20000;
+  color: #fff;
+}

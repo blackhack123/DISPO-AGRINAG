@@ -7,34 +7,44 @@
 
     <!-- Le styles -->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
-//NO ES NECESARIO	                    ->appendStylesheet('http://fonts.googleapis.com/css?family=Muli')
+    					//->appendStylesheet($this->basePath('js/jquery-ui-1.10.2/css/ui-lightness/jquery-ui.css'))
+					    //->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))					    
+	                    ->appendStylesheet('http://fonts.googleapis.com/css?family=Muli')
 	                    ->appendStylesheet($this->basePath('js/jquery-ui-1.11.4/css/ui-lightness/jquery-ui.css'))
 	                    ->appendStylesheet($this->basePath('js/jquery-jqGrid-5.0.0/css/ui.jqgrid.css'))	                    
                         // NO VALE ->appendStylesheet($this->basePath('css/bootstrap.css'))
 						//->appendStylesheet('http://getbootstrap.com/2.3.2/assets/css/bootstrap.css')
-	    				->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap.min.css'))	  			//BOOTSTRAP
-    					->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap-theme.min.css'))	  	//BOOTSTRAP OPCIONAL																			
+    					->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap.min.css'))	  			//BOOTSTRAP
+    					->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap-theme.min.css'))	  	//BOOTSTRAP OPCIONAL
                         ->appendStylesheet($this->basePath('css/sweet-alert.css'))
-//                        ->appendStylesheet($this->basePath('css/main.css'))
+                        ->appendStylesheet($this->basePath('css/main.css'))
                         ->appendStylesheet($this->basePath('css/mycustom.css'))                         
                         ->appendStylesheet($this->basePath('js/custom-alert/custom-alert.css'))   
                         ->appendStylesheet($this->basePath('js/custom-validate/custom-validate.css'))
                         ->appendStylesheet($this->basePath('js/custom-tips/custom-tips.css'))
-						->appendStylesheet($this->basePath('css/custom-bootstrap.css'))		
-						->appendStylesheet($this->basePath('css/layout-pedido.css'))
+                        
     ?>                        
     
     <!-- Scripts -->
     <?php echo $this->headScript()
             ->appendFile($this->basePath('js/scripts/jquery-1.11.1.min.js'))
+            //->appendFile($this->basePath('js/jquery-ui-1.10.2/jquery-ui-1.10.2.custom.min.js')
+            //->appendFile($this->basePath('js/jquery-ui-1.10.2/i18n/jquery.ui.datepicker-es.js')))
     		->appendFile($this->basePath('js/jquery-ui-1.11.4/jquery-ui-1.11.4.custom.min.js'))    
             ->appendFile($this->basePath('js/jquery-ui-1.11.4/i18n/jquery.ui.datepicker-es.js'))
             ->appendFile($this->basePath('js/jquery-jqGrid-5.0.0/js/i18n/grid.locale-es.js'))
             ->appendFile($this->basePath('js/jquery-jqGrid-5.0.0/js/jquery.jqGrid.min.js'))
  ///           ->appendFile($this->basePath('js/jquery-jqGrid-5.0.0/js/grid.loader.js'))
+ //           ->appendFile($this->basePath('js/scripts/angular.min.js'))
+ //           ->appendFile($this->basePath('js/scripts/angular-route.min.js'))
+ //           ->appendFile($this->basePath('js/scripts/angular-animate.min.js'))
+ // NO VALE   ->appendFile($this->basePath('js/scripts/bootstrap.min.js'))            
+ //           ->appendFile($this->basePath('js/scripts/ui-bootstrap-tpls-0.11.0.min.js'))
+ //           ->appendFile($this->basePath('js/scripts/angular-animate.min.js'))
+ 
     		->appendFile($this->basePath('js/bootstrap-3.3.5/js/bootstrap.min.js'))
             ->appendFile($this->basePath('js/scripts/sweet-alert.js'))     
- //           ->appendFile($this->basePath('js/scripts/behaviors.js'))
+            ->appendFile($this->basePath('js/scripts/behaviors.js'))
             
             ->appendFile($this->basePath('js/respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9',))
             ->appendFile($this->basePath('js/html5shiv.min.js'),   'text/javascript', array('conditional' => 'lt IE 9',))
@@ -53,6 +63,15 @@
 			->appendFile($this->basePath('js/custom-system/input_data.js'));
      ?>
     
+    
+<!--  
+  //  <script type="text/javascript" src="javascripts/behaviors.jsxx"></script>
+  //  <script type="text/javascript" src="javascripts/services/cart.jsxx"></script>
+  // <script type="text/javascript" src="javascripts/main.jsxxx"></script>
+  //  <script type="text/javascript" src="javascripts/controllers/homectrl.jsxxx"></script>
+  //  <script type="text/javascript" src="javascripts/controllers/orderctrl.jsxxx"></script>
+   // <script type="text/javascript" src="javascripts/controllers/ordenesctrl.jsxxx"></script>
+-->
 
 <script>
 	var btn = $.fn.button.noConflict() // reverts $.fn.button to jqueryui btn
@@ -132,102 +151,107 @@
 	}//end function consultarNroItemsPedidoComprando
 		
 </script>		
-
      
 </head>
-<body>                
-	<div class="container-fluid">
-        <div id="layout-cabecera" class="row clearfix">
-            <div class="pull-left">
-	            <a href="#/"><img src="<?php echo($this->basePath()); ?>/images/logo-agrinag-header.png" alt="logo agrinag"></a>
-            </div>
-			<div class="pull-right col-md-offset-1 col-xs-offset-1">&nbsp;&nbsp;&nbsp;
-            </div>              
-            <div class="pull-right">  
-                 <div class="pull-left">
-                    <span class="glyphicon glyphicon-user bootstrap-circle" id="icon-user"></span>
-                 </div>
-                 <div class="pull-left">
-                    <?php 
-                    if (($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_VENTAS)
-                         ||($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_ADMIN))
-                    {
-                        echo('<span id="identidad_usuario_administrativo">'.$this->identidad_usuario['nombre_usuario'].' </span><span style="color:yellow">(Vendedor)</span></<br></br>');
-                    }//end if								
-                    echo('<span id="identidad_cliente">'.$this->identidad_usuario['cliente_nombre']. ' - '.$this->identidad_usuario['cliente_usuario_nombre'].'</span>');
-                    ?>	
-                    <br>
-                    <?php 
-                         echo('<span id="seleccion_marcacion_cliente">'.$this->identidad_usuario['cliente_seleccion_marcacion_nombre'].'</span>');
-                    ?>	
-                 </div>             
-            </div>                       
+<body class="clearfix">                
+
+                  
+    <div class="menu-right" data-spy="affix" data-offset-bottom="0">
+        <ul class="esconderx">
+            <?php
+            if (($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_VENTAS)
+				||($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN))
+			{ ?>
+                <li class="right-menu-item">
+                    <span class="pointer" data-toggle="modal" data-target="#dialog_seleccion_cliente">
+                        <img class="tool" title="Cliente" src="<?php echo($this->basePath()); ?>/images/side-menu-cliente.png">
+                    </span>
+                </li>
+            <?php 
+			}//end if ?>
+            <li class="right-menu-item">
+                <a href="#/">
+                    <img id="inicio" class="tool" title="Home" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
+                </a>
+            </li>
+            <li class="right-menu-item"> 
+                <div class="animate-show alert message_add arrow_right animate-show" role="alert" id="msg_order" style="display: none;" > <!-- NOTIFICACION -->
+                </div>              
+                <a href="#/order-resume" >
+                    <span class="notification img-circle" id="msg_nro_items_comprando"> <!-- NOTIFICACION -->                       
+                    </span>
+                    <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png" id="opt_order">
+                </a>
+            </li>
+            <li class="right-menu-item">
+                <a href="#/list-ordenes">
+                    <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png" id="opt_list_orders_client">
+                </a>
+            </li>
+            <?php
+            if ($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN)
+			{ ?>
+                <li class="right-menu-item">
+                    <a class="pointer"  data-toggle="modal" data-target="#admin">
+                           <img class="tool" title="Admin" src="<?php echo($this->basePath()); ?>/images/side-menu-admin.png">
+                   </a>
+                </li>
+            <?php
+			}//end if
+			?>
+            <li class="right-menu-item">
+                <a href="<?php echo($this->basePath()); ?>/seguridad/login/logout">
+                    <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
+                </a>
+            </li>            
+        </ul>
+    </div>
+	<div id="page" class="clearfix">
+        <div id="head_fix">
+        	<header>
+                <a href="#/"><img src="<?php echo($this->basePath()); ?>/images/logo-agrinag-header.png" alt="logo agrinag"></a>
+
+                <div class="pull-right">
+                    <div class="user-info flo-left">
+                        <div class="icon-user img-circle flo-left">
+                            <img src="<?php echo($this->basePath()); ?>/images/user-icon.png">
+                        </div>
+                        <div class="flo-left">
+                            <h2>
+<?php 
+								if (($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_VENTAS)
+									||($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_ADMIN))
+								{
+									echo($this->identidad_usuario['nombre_usuario'].' <span style="color:yellow">(Vendedor)</span><br>');
+								}//end if								
+								echo('<div id="identidad_cliente">'.$this->identidad_usuario['cliente_nombre']. ' - '.$this->identidad_usuario['cliente_usuario_nombre'].'</div>');
+?>	
+                            </h2>
+                            <h3 class="flo-left">
+<?php 
+								echo($this->identidad_usuario['cliente_seleccion_marcacion_nombre']);
+?>								
+                            </h3>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="user-menu flo-left">
+                        <span class="glyphicon glyphicon-list"></span>
+                    </div>
+                </div>                
+            </header>           
         </div>
 
-        <div class="menu-app" data-spy="affix" data-offset-top="60" data-offset-bottom="0">
-        	<div class="pull-right">
-                <div class="menu-app-adorno">
-                     <span class="glyphicon glyphicon-list"></span>
-                </div>
-               <div class="menu-app-body">     
-					<?php
-                    if (($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_VENTAS)
-                        ||($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN))
-                    { ?>
-                        <div class="menu-app-opcion">
-                            <span class="pointer" data-toggle="modal" data-target="#dialog_seleccion_cliente">
-                                <img class="tool" title="Cliente" src="<?php echo($this->basePath()); ?>/images/side-menu-cliente.png">
-                            </span>
-                        </div>
-                    <?php 
-                    }//end if ?>               
-					<div class="menu-app-opcion">
-                    	<a href="#">
-                        	<img id="inicio" class="tool" title="Home" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
-                    	</a>
-                    </div>
-					<div class="menu-app-opcion">
-                        <div class="animate-show alert message_add arrow_right animate-show" role="alert" id="msg_order" style="display: none;" > <!-- NOTIFICACION -->
-                        </div>              
-                        <a href="#" >
-                            <span class="notification img-circle" id="msg_nro_items_comprando"> <!-- NOTIFICACION -->                       
-                            </span>
-                            <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png" id="opt_order">
-                        </a>
-                    </div>  
-					<div class="menu-app-opcion">
-                        <a href="#/list-ordenes">
-                            <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png" id="opt_list_orders_client">
-                        </a>
-					</div>                    
-					<?php
-                    if ($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN)
-                    { ?>
-                        <div class="menu-app-opcion">
-                            <a class="pointer"  data-toggle="modal" data-target="#admin">
-                                   <img class="tool" title="Admin" src="<?php echo($this->basePath()); ?>/images/side-menu-admin.png">
-                           </a>
-                        </div>
-                    <?php
-                    }//end if
-                    ?>
-					
-					<div class="menu-app-opcion">
-                        <a href="<?php echo($this->basePath()); ?>/seguridad/login/logout">
-                            <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
-                        </a>      
-					</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <section class="col-md-10 col-sm-11">
-                    <?php echo $this->content; ?>
+        <div class="content clearfix">
+            <section class="col-md-15 col-sm-15">
+                <!--  div class="title-section clearfix" -->        
+        			<?php echo $this->content; ?>
+                <!--  /div  -->
             </section>                    
-        </div>
- 	</div>  <!-- end container -->   
- 
+		</div>
+    </div>
+    
     
 	<div id="dialog-message" title=""></div>  
     

@@ -135,99 +135,93 @@
 
      
 </head>
-<body>                
-	<div class="container-fluid">
-        <div id="layout-cabecera" class="row clearfix">
-            <div class="pull-left">
-	            <a href="#/"><img src="<?php echo($this->basePath()); ?>/images/logo-agrinag-header.png" alt="logo agrinag"></a>
-            </div>
-			<div class="pull-right col-md-offset-1 col-xs-offset-1">&nbsp;&nbsp;&nbsp;
-            </div>              
-            <div class="pull-right">  
-                 <div class="pull-left">
-                    <span class="glyphicon glyphicon-user bootstrap-circle" id="icon-user"></span>
-                 </div>
-                 <div class="pull-left">
-                    <?php 
-                    if (($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_VENTAS)
-                         ||($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_ADMIN))
-                    {
-                        echo('<span id="identidad_usuario_administrativo">'.$this->identidad_usuario['nombre_usuario'].' </span><span style="color:yellow">(Vendedor)</span></<br></br>');
-                    }//end if								
-                    echo('<span id="identidad_cliente">'.$this->identidad_usuario['cliente_nombre']. ' - '.$this->identidad_usuario['cliente_usuario_nombre'].'</span>');
-                    ?>	
-                    <br>
-                    <?php 
-                         echo('<span id="seleccion_marcacion_cliente">'.$this->identidad_usuario['cliente_seleccion_marcacion_nombre'].'</span>');
-                    ?>	
-                 </div>             
-            </div>                       
-        </div>
+<body class="clearfix">                
 
-        <div class="menu-app" data-spy="affix" data-offset-top="60" data-offset-bottom="0">
-        	<div class="pull-right">
-                <div class="menu-app-adorno">
-                     <span class="glyphicon glyphicon-list"></span>
-                </div>
-               <div class="menu-app-body">     
-					<?php
-                    if (($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_VENTAS)
-                        ||($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN))
-                    { ?>
-                        <div class="menu-app-opcion">
-                            <span class="pointer" data-toggle="modal" data-target="#dialog_seleccion_cliente">
-                                <img class="tool" title="Cliente" src="<?php echo($this->basePath()); ?>/images/side-menu-cliente.png">
-                            </span>
-                        </div>
-                    <?php 
-                    }//end if ?>               
-					<div class="menu-app-opcion">
-                    	<a href="#">
-                        	<img id="inicio" class="tool" title="Home" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
-                    	</a>
-                    </div>
-					<div class="menu-app-opcion">
-                        <div class="animate-show alert message_add arrow_right animate-show" role="alert" id="msg_order" style="display: none;" > <!-- NOTIFICACION -->
-                        </div>              
-                        <a href="#" >
-                            <span class="notification img-circle" id="msg_nro_items_comprando"> <!-- NOTIFICACION -->                       
-                            </span>
-                            <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png" id="opt_order">
-                        </a>
-                    </div>  
-					<div class="menu-app-opcion">
-                        <a href="#/list-ordenes">
-                            <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png" id="opt_list_orders_client">
-                        </a>
-					</div>                    
-					<?php
-                    if ($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN)
-                    { ?>
-                        <div class="menu-app-opcion">
-                            <a class="pointer"  data-toggle="modal" data-target="#admin">
-                                   <img class="tool" title="Admin" src="<?php echo($this->basePath()); ?>/images/side-menu-admin.png">
-                           </a>
-                        </div>
-                    <?php
-                    }//end if
-                    ?>
-					
-					<div class="menu-app-opcion">
-                        <a href="<?php echo($this->basePath()); ?>/seguridad/login/logout">
-                            <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
-                        </a>      
-					</div>
-                </div>
-            </div>
+	<div id="layout-cabecera" class="row clearfix">
+    	<div class="col-md-1">
+        	 <div class="pull-left">
+        	 	<a href="#/"><img src="<?php echo($this->basePath()); ?>/images/logo-agrinag-header.png" alt="logo agrinag"></a>
+             </div>
         </div>
-        
-        <div class="row">
-            <section class="col-md-10 col-sm-11">
-                    <?php echo $this->content; ?>
-            </section>                    
-        </div>
- 	</div>  <!-- end container -->   
- 
+        <div class="col-md-3 pull-right">  
+             <div class="pull-left">
+                <span class="glyphicon glyphicon-user bootstrap-circle" id="icon-user"></span>
+             </div>
+             <div class="pull-left">
+                <?php 
+                if (($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_VENTAS)
+                     ||($this->identidad_usuario['perfil_id']== Application\Constants\Perfil::ID_ADMIN))
+                {
+                    echo('<span id="identidad_usuario_administrativo">'.$this->identidad_usuario['nombre_usuario'].' </span><span style="color:yellow">(Vendedor)</span></<br></br>');
+                }//end if								
+                echo('<span id="identidad_cliente">'.$this->identidad_usuario['cliente_nombre']. ' - '.$this->identidad_usuario['cliente_usuario_nombre'].'</span>');
+                ?>	
+                <br>
+                <?php 
+                     echo('<span id="seleccion_marcacion_cliente">'.$this->identidad_usuario['cliente_seleccion_marcacion_nombre'].'</span>');
+                ?>	
+             </div>             
+
+    	</div>
+	</div>
+          
+                              
+    <div class="menu-right" data-spy="affix" data-offset-bottom="0">
+        <ul class="esconderx">
+            <?php
+            if (($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_VENTAS)
+				||($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN))
+			{ ?>
+                <li class="right-menu-item">
+                    <span class="pointer" data-toggle="modal" data-target="#dialog_seleccion_cliente">
+                        <img class="tool" title="Cliente" src="<?php echo($this->basePath()); ?>/images/side-menu-cliente.png">
+                    </span>
+                </li>
+            <?php 
+			}//end if ?>
+            <li class="right-menu-item">
+                <a href="#/">
+                    <img id="inicio" class="tool" title="Home" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
+                </a>
+            </li>
+            <li class="right-menu-item"> 
+                <div class="animate-show alert message_add arrow_right animate-show" role="alert" id="msg_order" style="display: none;" > <!-- NOTIFICACION -->
+                </div>              
+                <a href="#/order-resume" >
+                    <span class="notification img-circle" id="msg_nro_items_comprando"> <!-- NOTIFICACION -->                       
+                    </span>
+                    <img class="tool" title="Order" src="<?php echo($this->basePath()); ?>/images/side-menu-item3.png" id="opt_order">
+                </a>
+            </li>
+            <li class="right-menu-item">
+                <a href="#/list-ordenes">
+                    <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png" id="opt_list_orders_client">
+                </a>
+            </li>
+            <?php
+            if ($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN)
+			{ ?>
+                <li class="right-menu-item">
+                    <a class="pointer"  data-toggle="modal" data-target="#admin">
+                           <img class="tool" title="Admin" src="<?php echo($this->basePath()); ?>/images/side-menu-admin.png">
+                   </a>
+                </li>
+            <?php
+			}//end if
+			?>
+            <li class="right-menu-item">
+                <a href="<?php echo($this->basePath()); ?>/seguridad/login/logout">
+                    <img class="tool" title="Quit" src="<?php echo($this->basePath()); ?>/images/side-menu-item5.png">
+                </a>
+            </li>            
+        </ul>
+    </div>
+    <div class="row">
+        <section class="col-md-10 col-sm-11">
+                <?php echo $this->content; ?>
+        </section>                    
+    </div>
+    
     
 	<div id="dialog-message" title=""></div>  
     
