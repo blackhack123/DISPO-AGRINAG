@@ -241,29 +241,7 @@ body{
 /*-------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------CLASE PARA LAS TABLAS----------------------------------------*/
 /*-------------------------------------------------------------------------------------------------------*/
-/* line 238, ../sass/main.scss */
-.table-container {
-  position: relative;
-}
-/* line 240, ../sass/main.scss */
-.table-container .table-dispo {
-  text-align: center;
-  font-size: 11px;
-  border-radius: 6px;
-  width: 100%;
-}
-/* line 246, ../sass/main.scss */
-.table-container .table-dispo td {
-  padding: 8px 0;
-  border-bottom: 1px solid #cdcdcd;
-  border-right: 1px solid #cdcdcd;
-}
-/* line 250, ../sass/main.scss */
-.table-container .table-dispo td:last-child {
-  border-right: none;
-}
-/* line 254, ../sass/main.scss */
-.table-container .table-dispo .th-inner {
+.table-dispo .th-inner {
   background: #000;
   color: #fff;
   font-family: 'Muli', sans-serif;
@@ -276,11 +254,153 @@ body{
   background-image: -o-linear-gradient(top, #6b6b6b, #363636);
   background-image: linear-gradient(top, #6b6b6b, #363636);
 }
-/* line 262, ../sass/main.scss */
-.table-container .table-dispo .th-inner:first-child {
+
+.table-dispo .th-inner:first-child {
   border-top-left-radius: 5px;
 }
-/* line 265, ../sass/main.scss */
-.table-container .table-dispo .th-inner:last-child {
+
+.table-dispo .th-inner:last-child {
   border-top-right-radius: 5px;
+}
+
+.table-dispo thead th {
+  padding: 8px 0;
+  border-bottom: 1px solid #cdcdcd;
+  border-right: 1px solid #cdcdcd;
+}
+
+.table-dispo tbody td {
+  padding: 3px 5px;
+  border-bottom: 1px solid #cdcdcd;
+  border-right: 1px solid #cdcdcd;
+}
+
+.table-dispo tbody td:first-child {
+  border-left: 1px solid #cdcdcd;
+}
+
+.table-container .table-dispo tbody td:last-child {
+  border-right: 1px solid #cdcdcd;
+}
+
+/*--------------------------------------------------------------------------------*/
+/*---------------------------NOTIFICACIONES DE COMPRAS----------------------------*/
+/*--------------------------------------------------------------------------------*/
+.arrow_right:after, .arrow_right:before {
+  left: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: relative;
+  pointer-events: none;
+}
+/* line 12, ../sass/_arrow.scss */
+.arrow_right:after {
+  border-left-color: #f6b900;
+  border-width: 10px;
+  top: 40px;
+  margin-top: -10px;
+}
+/* line 18, ../sass/_arrow.scss */
+.arrow_right:before {
+  border-left-color: #999999;
+  border-width: 11px;
+  top: 40px;
+  margin-top: -11px;
+}
+
+
+/*------------------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------CARGADOR------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------------------------*/
+.loading-state {
+  position: absolute;
+  top: 0;
+  z-index: 9999;
+  background: #444;
+  opacity: 0.4;
+  width: 100%;
+  min-height: 100%;
+}
+
+.loader {
+  font-size: 90px;
+  text-indent: -9999em;
+  overflow: hidden;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -0.5em;
+  margin-left: -0.5em;
+  -webkit-animation: load6 1.7s infinite ease;
+  animation: load6 1.7s infinite ease;
+}
+
+
+@-webkit-keyframes load6 {
+  /* line 702, ../sass/main.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.11em -0.83em 0 -0.42em #fff, -0.11em -0.83em 0 -0.44em #fff, -0.11em -0.83em 0 -0.46em #fff, -0.11em -0.83em 0 -0.477em #fff;
+  }
+
+  /* line 708, ../sass/main.scss */
+  5%,
+  95% {
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.11em -0.83em 0 -0.42em #fff, -0.11em -0.83em 0 -0.44em #fff, -0.11em -0.83em 0 -0.46em #fff, -0.11em -0.83em 0 -0.477em #fff;
+  }
+
+  /* line 711, ../sass/main.scss */
+  30% {
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.51em -0.66em 0 -0.42em #fff, -0.75em -0.36em 0 -0.44em #fff, -0.83em -0.03em 0 -0.46em #fff, -0.81em 0.21em 0 -0.477em #fff;
+  }
+
+  /* line 714, ../sass/main.scss */
+  55% {
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.29em -0.78em 0 -0.42em #fff, -0.43em -0.72em 0 -0.44em #fff, -0.52em -0.65em 0 -0.46em #fff, -0.57em -0.61em 0 -0.477em #fff;
+  }
+
+  /* line 717, ../sass/main.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.11em -0.83em 0 -0.42em #fff, -0.11em -0.83em 0 -0.44em #fff, -0.11em -0.83em 0 -0.46em #fff, -0.11em -0.83em 0 -0.477em #fff;
+  }
+}
+
+@keyframes load6 {
+  /* line 724, ../sass/main.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.11em -0.83em 0 -0.42em #fff, -0.11em -0.83em 0 -0.44em #fff, -0.11em -0.83em 0 -0.46em #fff, -0.11em -0.83em 0 -0.477em #fff;
+  }
+
+  /* line 730, ../sass/main.scss */
+  5%,
+  95% {
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.11em -0.83em 0 -0.42em #fff, -0.11em -0.83em 0 -0.44em #fff, -0.11em -0.83em 0 -0.46em #fff, -0.11em -0.83em 0 -0.477em #fff;
+  }
+
+  /* line 733, ../sass/main.scss */
+  30% {
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.51em -0.66em 0 -0.42em #fff, -0.75em -0.36em 0 -0.44em #fff, -0.83em -0.03em 0 -0.46em #fff, -0.81em 0.21em 0 -0.477em #fff;
+  }
+
+  /* line 736, ../sass/main.scss */
+  55% {
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.29em -0.78em 0 -0.42em #fff, -0.43em -0.72em 0 -0.44em #fff, -0.52em -0.65em 0 -0.46em #fff, -0.57em -0.61em 0 -0.477em #fff;
+  }
+
+  /* line 739, ../sass/main.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+    box-shadow: -0.11em -0.83em 0 -0.4em #fff, -0.11em -0.83em 0 -0.42em #fff, -0.11em -0.83em 0 -0.44em #fff, -0.11em -0.83em 0 -0.46em #fff, -0.11em -0.83em 0 -0.477em #fff;
+  }
 }

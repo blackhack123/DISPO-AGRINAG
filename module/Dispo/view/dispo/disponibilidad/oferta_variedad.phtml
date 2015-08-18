@@ -239,7 +239,7 @@
 	<div class="table-container">  
   		 <input type="hidden" id="oferta_variedad_id" value="<?php echo($this->reg_dispo_precio_oferta['variedad_id']); ?> " />
   		 <input type="hidden" id="oferta_grado_id" value="<?php echo($this->reg_dispo_precio_oferta['grado_id']); ?> " />         
-          <table class="table-dispo border">
+          <table class="table-dispo border" width="100%">
               <tr>
                   <td class="th-inner"  width="90">Precio Normal</td>
                   <td class="th-inner"  width="90">Precio Oferta</td>
@@ -260,7 +260,7 @@
                       <?php echo($this->reg_dispo_precio_oferta['grado_id']); ?>                           
                   </td>                            
                   <td width="80">
-                      <select id="oferta_cbo_tipo_caja_id" class="form-control select-class">
+                      <select id="oferta_cbo_tipo_caja_id" class="form-control">
                         	<?php echo($options_cbo_caja); ?>
                       </select>
                   </td>
@@ -268,7 +268,7 @@
                        <span id="oferta_stock"><?php echo($this->reg_dispo_precio_oferta['nro_cajas']); ?></span> 
                   </td>
                   <td width="90">
-                       <select id="oferta_cbo_order" class="form-control select-class">
+                       <select id="oferta_cbo_order" class="form-control">
                        		<?php echo($options_cbo_order); ?>
                        </select>
                   </td>
@@ -276,9 +276,11 @@
           </table>
   	</div>  
 
-  	<div class="space-around">
+  	<div class="space-around pull-left" style="margin-top:10px">
       	Variedades para Seleccionar
   	</div>
+    
+    <div class="clearfix"></div>
 
   	<div id="oferta_tbl_hueso" class="table-container">  
           <table class="table-dispo border">
@@ -314,6 +316,8 @@
           </table>
   	</div>
 
-    <button type="button" class="btn btn-xs btn-success pull-right space-around" id="btn_aplicar_oferta">
-      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Aplicar OFERTA
-    </button>    
+	<div style="margin-top:10px">
+        <button type="button" class="btn btn-md btn-success pull-right space-around" id="btn_aplicar_oferta">
+          <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Aplicar OFERTA
+        </button>    
+	</div>

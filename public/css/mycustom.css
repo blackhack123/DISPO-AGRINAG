@@ -211,29 +211,3 @@ background-color:#DFEFFF;
 /*--------------------------------------------------------*/
 /* END - Estilos Controles JQGrid        		  	      */
 /*--------------------------------------------------------*/
-
-
-.espacio_5px, .espacio_10px, .espacio_15px, .espacio_20px{
-	float:left;		
-	right: auto;
-	display: block;;
-	height:1px;
-	/*background-color:#000000;*/
-	clear:none;
-}
-
-.espacio_5px{
-	width:5px;
-}
-
-.espacio_10px{
-	width:10px;
-}
-
-.espacio_15px{
-	width:15px;
-}
-
-.espacio_20px{
-	width:20px;
-}

@@ -326,7 +326,17 @@
         </h1>
     </div>
 
-    <div class="table-container col-md-16 col-sm-16">
+	<div class="container">
+        <div class="row clearfix">
+            <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+                <div id="detalle_pedido"></div>
+                <div id="detalle_pedido_sin_stock"></div>
+            </div>
+        </div>
+	</div>
+
+
+    
         <!-- start message -->
         <div class="alert alert-success" role="alert" id="dialog_confirm_msn" style="display:none">
             <div class="clearfix">
@@ -334,21 +344,18 @@
                     <b>Su pedido fue enviado con exito.</b> Desea continuar utilizando la misma marcacion?
                 </p>  
         
-                <div class="add-label flo-right pointer" ng-click="ctrl.question(ctrl.valor = false)">
+                <div class="add-label flo-right pointer">
                    No
                 </div>               
         
-                <div class="add-label flo-right pointer" ng-click="ctrl.question(ctrl.valor = true)">
+                <div class="add-label flo-right pointer">
                    Si
                 </div>                            
             </div>
         </div>
         <!-- end message -->
 
-		<div id="detalle_pedido"></div>        
-        
-        <div id="detalle_pedido_sin_stock"></div>
-</section>
+
 
 
 	<!-- Modal -->
@@ -363,16 +370,15 @@
 	        </h4>
 	      </div>
 	      <div class="modal-body clearfix">
-	        <div class="marca-container clearfix" style="width: 100%">
-	                    <div class="carga-info flo-left clearfix">
-	                        <img class="flo-left" src="<?php echo($this->basePath()); ?>/images/carga-icon.png" alt="">
-	                        <select class="form-control flo-left" id="dialog_cbo_agencia_carga" style="width: 230px">
+	        <div class="marca-container clearfix">
+	                    <div class="carga-info">
+	                        <img class="pull-left" src="<?php echo($this->basePath()); ?>/images/carga-icon.png" alt="">
+	                        <select class="form-control pull-left" id="dialog_cbo_agencia_carga" style="width: 230px; margin-left:10px; margin-right:10px">
 	                            <?php echo($this->cbo_agencia_carga); ?>
 	                        </select>
-	                    </div>
-	
-	                    <div id="btn_cambiar_agencia_carga" class="add-label flo-right pointer" style="margin: 0" data-dismiss="modal">
+                            <span id="btn_cambiar_agencia_carga" class="btn btn-default pull-right" data-dismiss="modal">
 	                            Save This
+		                    </span>
 	                    </div>
 	         </div>
 	      </div>
@@ -383,23 +389,22 @@
 	
 	<!-- Modal -->
 	<div id="dialog_comentario" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	        <h4 class="modal-title" id="myModalLabel">Comentario - Orden : <?php echo($this->nro_pedido_formateado); ?></h4>
-	      </div>
-	      <div class="modal-body clearfix">
-	        <div class="clearfix">
-	            <textarea id="pedido_comentario" class="form-control" style="margin-bottom: 10px; height:200px"><?php echo($this->pedido_comentario)?></textarea>                        
-	
-	            <div id="btn_grabar_comentario" class="add-label flo-right pointer"  data-dismiss="modal">
-	                Save This
-	            </div>
-	        </div>
-	      </div>
-	    </div>
-	  </div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Comentario - Orden : <?php echo($this->nro_pedido_formateado); ?></h4>
+                </div>
+                <div class="modal-body clearfix">
+                <div class="clearfix">
+                    <textarea id="pedido_comentario" class="form-control" style="margin-bottom: 10px; height:200px"><?php echo($this->pedido_comentario)?></textarea>                        
+                    
+                    <span id="btn_grabar_comentario" class="btn btn-default"  data-dismiss="modal">
+                   	 	Save This
+                    </span>
+                </div>
+            </div>
+        </div>
 	</div>
 	
 

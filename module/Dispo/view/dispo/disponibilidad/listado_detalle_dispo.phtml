@@ -1,6 +1,32 @@
 <meta charset="UTF-8">
 
 
+<style>
+	#tbl_dispo td{
+		text-align:center;	
+	}
+
+	#tbl_dispo .btn_add_order{
+		width:45px; 
+		padding-left:3px; 
+		padding-right:3px; 
+		margin-left:2px; 
+		margin-right:2px;
+		font-weight:bold;
+		font-size:12px;
+		cursor: pointer;
+	}	
+
+	#tbl_dispo .cantidad_order{
+		 width:60px;
+	}
+
+	#tbl_dispo .cbo_tipo_caja_detalle{
+		width:inherit;
+	}
+
+</style>
+
 <script>
 	var ajax_process_dispo_det_cajas = null;
 
@@ -180,12 +206,10 @@
 </script>
 
 
-    <!--  div class="clearfix" ng-show="view_dispo"  --> 
-
-        <!-- div class="table-container col-md-14 col-md-offset-1 col-sm-14 col-sm-offset-1" -->                        
+                      
 
 
-                <table id="tbl_dispo" class="clear table-head table-dispo tablesorter tableinit">
+                <table id="tbl_dispo" class="clear table-head table-dispo tablesorter tableinit" width="100%">
                 	<thead>
                         <tr>
                             <th class="th-inner"  width="300">Description</th>
@@ -290,7 +314,7 @@
 	                            <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span>
 
 								<?php if (!empty($reg['precio_oferta'])){ ?>
-		                            <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange;">
+		                            <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange; cursor:pointer">
 		                                <span class="glyphicon glyphicon-star pointer"
 		                                aria-hidden="true" data-toggle="modal" data-target="#dialog_oferta"></span>
 		                            </div>
@@ -320,17 +344,20 @@
 	                        <td>
 	                            <?php echo($precio_110); ?>
 	                        </td>
-	                        <td>
-	                            <select class="form-control select-class cbo_tipo_caja_detalle" id="<?php echo($ind); ?>_tipo_caja_id"><?php echo($options_cbo_caja); ?></select>                            
+	                        <td align="center">
+	                            <select class="form-control cbo_tipo_caja_detalle" id="<?php echo($ind); ?>_tipo_caja_id"><?php echo($options_cbo_caja); ?></select>                            
 	                        </td>
 	                        <td>
 	                        	<span id="<?php echo($ind); ?>_stock"><?php echo($reg['nro_cajas']); ?></span>
 	                        </td>
-	                        <td>
-                               		<select class="form-control select-class" id="<?php echo($ind); ?>_cantidad_order"><?php echo($options_cbo_order); ?></select>
-                                    <div id="<?php echo($ind); ?>_add" class="btn_add_order btn btn-xs btn-success pull-right" indice="<?php echo($ind); ?>">
+	                        <td nowrap >
+                            	<div class="pull-right" style="display:block">
+                               		<select class="form-control input-sm pull-left cantidad_order" id="<?php echo($ind); ?>_cantidad_order"><?php echo($options_cbo_order); ?></select>
+                            
+                                    <div id="<?php echo($ind); ?>_add" class="btn_add_order btn-sm btn-success pull-left" indice="<?php echo($ind); ?>">
                                         <span class="glyphicon glyphicon-plus-sign"></span> Add
-                                    </div>
+                                    </div>                            		
+                                </div>
  	                        </td>
 	                    </tr>
 <?php 
@@ -339,9 +366,6 @@
 ?>                  	
 						</tbody>    
                 	</table>
-                <!-- /div --> <!-- class="border" -->
-            <!-- /div --> <!-- class="table-scroll" -->
-            
             
             
             <!--  DIALOG DE OFERTA -->

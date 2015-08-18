@@ -1,0 +1,39 @@
+
+/*===================================ESTILOS DEL TABLE SORTER====================================*/
+.row_even {
+background-color:#FFFFFF;   
+}
+.row_odd {
+background-color:#EFEFEF;   
+}
+.row_even_over {
+background-color:#DFEFFF;   
+}
+.row_odd_over {
+background-color:#DFEFFF;   
+}
+.tablesorter thead tr th{
+	cursor: pointer; cursor:hand;
+}
+.color_inactivo_td{
+	color: red;
+}
+
+
+.tableinit tbody tr td{
+	height:22px;
+	padding-left:5px;
+	padding-right:5px; 
+}
+
+.tableinit tfoot tr th{
+	padding-left:5px;
+	padding-right:5px; 
+}
+
+.tablesorter .number_row{
+	color: #FFFFFF;
+	background:#666666;
+}
+
+
