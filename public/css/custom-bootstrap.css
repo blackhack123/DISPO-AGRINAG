@@ -14,7 +14,7 @@
 
 /*Setea el ancho de la ventana del bootstrap al 90% de ancho*/
 .modal-dialog-fullscreen {
-  width: 90%;
+  width: 95%;
   height: auto;
   padding: 0;
 }
