@@ -89,29 +89,34 @@
 </script>
 		<form id="frm" name="frm" action="<?php echo($this->basePath()); ?>/dispo/disponibilidad/asignarMarcacionAgencia" method="post">	
 		    <div class="title-section">
-		        <h1>
-		            Disponibilidad
-		        </h1>
+		        <h1>Disponibilidad</h1>
 		    </div>
 		    	
-	        <div class="marca-container pull-right">
-	            <div class="marca-info separator flo-left clearfix">
-	                <img class="flo-left" src="<?php echo($this->basePath()); ?>/images/marca-icon.png" alt="">
-	                <select class="form-control flo-left" name="marcacion_sec" id="marcacion_sec">
-	                </select>	                
-	            </div>
-	
-	            <div class="carga-info flo-left separator clearfix">
-	                <img class="flo-left" src="<?php echo($this->basePath()); ?>/images/carga-icon.png" alt="">
-	                <select class="form-control flo-left" name="agencia_carga_id" id="agencia_carga_id">
-	                </select>
-	            </div>
-	
-	            <div class="add-label flo-left pointer" id="btn_save">
-	                    Save This
-	            </div>
-	        </div>
-       	 </form>	
+	        <div class="container-fluid pull-right">
+            	<div class="row marca-container">
+            		<div class="pull-left">
+	                	<div class="pull-left">
+	                    	<img src="<?php echo($this->basePath()); ?>/images/marca-icon.png" alt="">
+	                     </div>
+	                     <div class="pull-left separator" >
+		                	<select class="form-control" name="marcacion_sec" id="marcacion_sec"></select>
+	                    </div>
+	                </div>
+                    <div class="pull-left">
+	                    <div class="pull-left">
+	                    	<img src="<?php echo($this->basePath()); ?>/images/carga-icon.png" alt="">
+	                    </div>
+	                    <div class="pull-left separator">
+		                    <select class="form-control" name="agencia_carga_id" id="agencia_carga_id"></select>
+	                    </div>
+	                </div>
+                    <div class="pull-left">
+                    	<input  class="btn btn-default" type="button" id="btn_save" value="Save This" />
+                    </div>
+				</div>
+                
+			</div>
+		</form>	
 
 
 

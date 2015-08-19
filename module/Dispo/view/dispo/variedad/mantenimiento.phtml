@@ -265,89 +265,101 @@ $(document).ready(function () {
 
 
 <div class="title-admin-section">
-	<h1>VARIEDAD</h1>
+	<h1>VARIEDADES</h1>
 </div>
 
 
 
-<div class="table-container col-md-16 col-sm-16">
-  <div class="clearfix">
-        	<div class="pull-left">
-            	<a id="btn_nuevo" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-white"></i> Nuevo</a>
+<div class="row">   
+	<section class="body-admin-section">    	
+    	<div class="accion-admin-section"> 	
+        	<div class="botonera-admin-section pull-left separator">
+            	<a id="btn_nuevo" class="btn btn-primary btn-xs" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
             </div>
-        	<div class="pull-right">
-            	<div class="form-inline">
-                	<form id="frm" action="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento" method="post" >
-                    <input name="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
-                    <select  name="busqueda_estado" class="select-class2">
-                        <?php echo($this->busqueda_estado); ?>
-                    </select>
+        	<div class="busqueda-admin-section pull-left">	
+            	<!--- div class="form-inline" -->
+                	
+                <form id="frm" action="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento" method="post" >
+                <div class="input-group" style="display:inline-flex">    
+                	<input name="criterio_busqueda" type="text" class="form-control input-sm" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+                     <div class="input-group">
+						<select  name="busqueda_estado" class="form-control input-sm" style="width:130px">
+	    	                <?php echo($this->busqueda_estado); ?>
+    	                </select>                                       
+                    </div>
+ 					<span class="input-group-btn">
+                    	<button id="btn_consultar" class="btn btn-sm btn-primary" type="button"><i class="glyphicon glyphicon-search icon-white"></i></button>
+                    </span>                        
+                </div>                
                
-                    <a id="btn_consultar" class="btn btn-small btn-success"  href="#" ><i class="glyphicon glyphicon-search icon-white"></i></a>
-                    </form>
-				</div>
+                </form>                  
+				<!--- /div -->
             </div>
-        </div>
-				<table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
-			<thead>
-				<tr>
-				  <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
-					<th  width="100" rowspan="2" class="th-inner">ID</th>				
-					<th  width="0" rowspan="2" class="th-inner">NOMBRE</th>
-					<th  width="0" rowspan="2" class="th-inner">COLOR BASE</th>
-					<th  width="0" rowspan="2" class="th-inner">SOLIDO</th>
-					<th  width="0" rowspan="2" class="th-inner">REAL</th>
-					<th  width="70" colspan="2" class="th-inner">SINCRONIZACION</th>					
-					<th  width="70" rowspan="2" class="th-inner">ESTADO</th>
-					<th  width="70" rowspan="2" class="th-inner">EDITAR</th>
-				</tr>
-				<tr>
-				  <th  width="70" class="th-inner">&nbsp;</th>
-				  <th class="th-inner">FEC. ULTIMA VEZ</th>
-		      </tr>
-			</thead>
-			<tbody class="searchable" style="border: 1px solid #cdcdcd;">
-<?php  
-		$i=0;
-		foreach($this->result as $reg)
-		{
-			$i++;
-			$class_row = '';
-			if ($reg['estado']=='I'){
-				$class_row = 'row_estado_inactivo';
-			}
-?>            
-				<tr variedad_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
-				  <td><?php echo($i); ?></td>
-					<td><?php echo($reg['id']); ?></td>
-					<td align="left"><?php echo($reg['nombre']); ?></td>
-					<td><?php echo($reg['colorbase']); ?></td>
-					<td>
-					<?php if ($reg['solido']=="S"){ ?>
-						<span class="glyphicon glyphicon-ok" style="color:green"></span>
-					<?php } //end if ?>					
-					</td>
-					<td>
-						<?php if ($reg['es_real']=="S"){ ?>
-						<span class="glyphicon glyphicon-ok" style="color:green"></span>
-					<?php }//end if ?>	
-					</td>
-					<td>
-					<?php if ($reg['sincronizado']==0){ ?>
-						<span class="glyphicon glyphicon-time icon-white" style="color:red"></span>
-					<?php }else{ ?>
-						<i class="glyphicon glyphicon-ok icon-white" style="color:green"></i>
-					<?php }//end if ?>	
-					</td>
-					<td><?php echo($reg['fec_sincronizado']); ?></td>
-					<td><?php echo($reg['estado']); ?></td>
-					<td><a href="#" class="btn_edit"><i class="glyphicon glyphicon-pencil icon-white" style="color:orange"></i></a></td>
-				</tr>
-<?php	}//end foreach ?>		
-			</tbody>
-		</table>   
-				
-    </div>
+		</div>
+		<div class="clearfix"></div>
+    	<div>
+                <table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
+                <thead>
+                    <tr>
+                      <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
+                        <th  width="100" rowspan="2" class="th-inner">ID</th>				
+                        <th  width="0" rowspan="2" class="th-inner">NOMBRE</th>
+                        <th  width="0" rowspan="2" class="th-inner">COLOR BASE</th>
+                        <th  width="0" rowspan="2" class="th-inner">SOLIDO</th>
+                        <th  width="0" rowspan="2" class="th-inner">REAL</th>
+                        <th  width="70" colspan="2" class="th-inner">SINCRONIZACION</th>					
+                        <th  width="70" rowspan="2" class="th-inner">ESTADO</th>
+                        <th  width="70" rowspan="2" class="th-inner">EDITAR</th>
+                    </tr>
+                    <tr>
+                      <th  width="70" class="th-inner">&nbsp;</th>
+                      <th class="th-inner">FEC. ULTIMA VEZ</th>
+                  </tr>
+                </thead>
+                <tbody class="searchable" style="border: 1px solid #cdcdcd;">
+    <?php  
+            $i=0;
+            foreach($this->result as $reg)
+            {
+                $i++;
+                $class_row = '';
+                if ($reg['estado']=='I'){
+                    $class_row = 'row_estado_inactivo';
+                }
+    ?>            
+                    <tr variedad_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
+                      <td><?php echo($i); ?></td>
+                        <td align="center"><?php echo($reg['id']); ?></td>
+                        <td><?php echo($reg['nombre']); ?></td>
+                        <td align="center"><?php echo($reg['colorbase']); ?></td>
+                        <td align="center">
+                        <?php if ($reg['solido']=="S"){ ?>
+                            <span class="glyphicon glyphicon-ok" style="color:green"></span>
+                        <?php } //end if ?>					
+                        </td>
+                        <td>
+                            <?php if ($reg['es_real']=="S"){ ?>
+                            <span class="glyphicon glyphicon-ok" style="color:green"></span>
+                        <?php }//end if ?>	
+                        </td>
+                        <td align="center">
+                        <?php if ($reg['sincronizado']==0){ ?>
+                            <span class="glyphicon glyphicon-time icon-white" style="color:red"></span>
+                        <?php }else{ ?>
+                            <i class="glyphicon glyphicon-ok icon-white" style="color:green"></i>
+                        <?php }//end if ?>	
+                        </td>
+                        <td><?php echo($reg['fec_sincronizado']); ?></td>
+                        <td align="center"><?php echo($reg['estado']); ?></td>
+                        <td align="center"><a href="#" class="btn_edit"><i class="glyphicon glyphicon-pencil icon-white" style="color:orange"></i></a></td>
+                    </tr>
+    <?php	}//end foreach ?>		
+                </tbody>
+            </table>   
+		</div>
+	</section>
+</div>				
+
     
 
             <!--  DIALOG DE MANTENIMIENTO -->
