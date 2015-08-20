@@ -409,14 +409,17 @@ class PedidoBO extends Conexion
 	
 	/**
 	 * 
-	 * @param PedidoDetData $PedidoDetData
+	 * @param PedidoCabData $PedidoCabData
 	 */
-	public function cambiarAgenciaCarga(PedidoDetData $PedidoDetData)
+	public function cambiarAgenciaCarga(PedidoCabData $PedidoCabData)
 	{
-		$PedidoDetDAO	= new PedidoDetDAO();
+		//$PedidoDetDAO	= new PedidoDetDAO();
+		$PedidoCabDAO	= new PedidoCabDAO();
 
-		$PedidoDetDAO->setEntityManager($this->getEntityManager());
-		$PedidoDetDAO->cambiarAgenciaCarga($PedidoDetData);
+		//$PedidoDetDAO->setEntityManager($this->getEntityManager());
+		//$PedidoDetDAO->cambiarAgenciaCarga($PedidoDetData);
+		$PedidoCabDAO->setEntityManager($this->getEntityManager());
+		$PedidoCabDAO->cambiarAgenciaCarga($PedidoCabData);
 		return true;
 	}//end function cambiarAgenciaCarga
 	

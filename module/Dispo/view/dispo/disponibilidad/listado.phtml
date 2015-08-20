@@ -11,14 +11,15 @@
             var rex = new RegExp($(this).val(), 'i');
             $('.searchable tr').hide();
             $('.searchable tr').filter(function () {
-                return rex.test($(this).text());
+                return rex.test($.trim($(this).text()));
             }).show();
         })	       
         
         $('#cbo_filter').change(function () 
         {
         	$('#filter_text').val('');
-			var regexp2 = new RegExp('^'+$("#cbo_filter").val(),'i');            
+			var regexp2 = new RegExp('^'+$("#cbo_filter").val(),'i');
+			//console.log('regexp2:',regexp2);
             $('.searchable tr').hide();
             $('.searchable tr .variedad').filter(function () {
                 return regexp2.test($.trim($(this).text()));
@@ -77,11 +78,9 @@
             <div class="row container-fluid">
             	<div class="pull-right" style="margin-bottom:5px; line-height:35px">
                      <div class="search pull-left">
-                        <div class="input-group">
+                        <div class="input-group" style="width:200px">                        
                             <input id="filter_text" type="text" class="form-control" placeholder="Search...">
-							<a href="#" class="input-group-addon btn glyphicon glyphicon-search" role="button">
-										    
-							</a>                                                     
+							<a href="#" class="input-group-addon btn glyphicon glyphicon-search" role="button"></a>
                         </div>                        
                     </div>
         			

@@ -140,28 +140,6 @@ class PedidoDetDAO extends Conexion
 		
 	/**
 	 * 
-	 * @param PedidoDetData $PedidoDetData
-	 * @return array
-	 */
-	public function	cambiarAgenciaCarga(PedidoDetData $PedidoDetData)
-	{
-		$key    = array(
-				'pedido_cab_id'			=> $PedidoDetData->getPedidoCabId(),
-				'pedido_det_sec'		=> $PedidoDetData->getPedidoDetSec()
-		);	
-
-		$record = array(
-				'agencia_carga_id'		=> $PedidoDetData->getAgenciaCargaId()
-		);
-		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		
-		return $key;
-	}//end function cambiarAgenciaCarga
-		
-	
-
-	/**
-	 * 
 	 * @param int $pedido_cab_id
 	 * @param int $pedido_det_sec
 	 * @return boolean

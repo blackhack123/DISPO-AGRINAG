@@ -292,6 +292,25 @@ class PedidoCabDAO extends Conexion
 	}//end function listado
 	
 	
+	/**
+	 *
+	 * @param PedidoCabData $PedidoCabData
+	 * @return array
+	 */
+	public function	cambiarAgenciaCarga(PedidoCabData $PedidoCabData)
+	{
+		$key    = array(
+				'id'			=> $PedidoCabData->getId()
+		);
+	
+		$record = array(
+				'agencia_carga_id'		=> $PedidoCabData->getAgenciaCargaId()
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+	
+		return $key;
+	}//end function cambiarAgenciaCarga
+	
 }//end class
 
 ?>

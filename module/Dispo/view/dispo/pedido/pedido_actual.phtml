@@ -154,7 +154,7 @@
 	    							'async': false,
 	    							'finish':function(response){
 	    									if (response.respuesta_code=='OK'){
-	    										control_agencia_carga_nombre.html(response.agencia_carga_nombre);
+	    										$(".agencia_carga_nombre").html(response.agencia_carga_nombre);
 	    										//return true;
 	    									}//end if									
 	    							}
@@ -370,10 +370,10 @@
 	        </h4>
 	      </div>
 	      <div class="modal-body clearfix">
-	        <div class="marca-container clearfix">
+	        <div class="bootstrap-marco clearfix">
 	                    <div class="carga-info">
 	                        <img class="pull-left" src="<?php echo($this->basePath()); ?>/images/carga-icon.png" alt="">
-	                        <select class="form-control pull-left" id="dialog_cbo_agencia_carga" style="width: 230px; margin-left:10px; margin-right:10px">
+	                        <select class="form-control pull-left" id="dialog_cbo_agencia_carga" style="width: 210px; margin-left:10px; margin-right:10px">
 	                            <?php echo($this->cbo_agencia_carga); ?>
 	                        </select>
                             <span id="btn_cambiar_agencia_carga" class="btn btn-default pull-right" data-dismiss="modal">

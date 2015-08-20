@@ -72,8 +72,8 @@ body{
   height: 20px;
   position: absolute;
   z-index: 50;
-  margin-top:40px;
-  right: 5%;
+  margin-top:35px;
+  right: 10px;
   background: green;
   color: #fff;
   font-size: 10px;
@@ -186,6 +186,21 @@ body{
 /*------------------------------------------------------------------------*/
 /*-------------------CONTENEDORES PARA EL PORTAL WEB----------------------*/
 /*------------------------------------------------------------------------*/
+.bootstrap-marco{
+  padding: 8px;
+  border: 1px solid #c4c5c5;
+ /* display: inline-block;*/
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fbfbfb), color-stop(100%, #e5e5e5));
+  background-image: -webkit-linear-gradient(top, #fbfbfb, #e5e5e5);
+  background-image: -moz-linear-gradient(top, #fbfbfb, #e5e5e5);
+  background-image: -o-linear-gradient(top, #fbfbfb, #e5e5e5);
+  background-image: linear-gradient(top, #fbfbfb, #e5e5e5);
+  -webkit-box-shadow: white 1px 1px 0, #f2f2f2 -1px -1px 0 inset;
+  -moz-box-shadow: white 1px 1px 0, #f2f2f2 -1px -1px 0 inset;
+  box-shadow: white 1px 1px 0, #f2f2f2 -1px -1px 0 inset;	
+}
+
+
 .marca-container {
   padding: 8px;
   border: 1px solid #c4c5c5;

@@ -356,6 +356,7 @@ class PedidoController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$PedidoBO 				= new PedidoBO();
 			$PedidoDetData			= new PedidoDetData();
+			$PedidoCabData			= new PedidoCabData();
 	
 			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 
@@ -366,15 +367,21 @@ class PedidoController extends AbstractActionController
 			$pedido_det_sec		= intval($this->params()->fromPost('pedido_det_sec',''));			
 			$agencia_carga_id	= $this->params()->fromPost('agencia_carga_id','');
 
-			$PedidoDetData->setPedidoCabId($pedido_cab_id);
+			/*$PedidoDetData->setPedidoCabId($pedido_cab_id);
 			$PedidoDetData->setPedidoDetSec($pedido_det_sec);
 			$PedidoDetData->setAgenciaCargaId($agencia_carga_id);
 			$PedidoDetData->setUsuarioModId	($usuario_id);
+			*/
+			$PedidoCabData->setId($pedido_cab_id);
+			$PedidoCabData->setAgenciaCargaId($agencia_carga_id);
+			$PedidoCabData->setUsuarioModId($usuario_id);
 
 			//Realiza el cambio de la marcacion
-			$result		= $PedidoBO->cambiarAgenciaCarga($PedidoDetData);
-			$result		= $PedidoBO->consultarDetallePedido($pedido_cab_id, $pedido_det_sec, \Application\Constants\ResultType::MATRIZ);
-			//$nro_reg_det = $PedidoBO->eliminarPorPedidoCabIdPorPedidoDetSec($pedido_cab_id, $pedido_det_sec);
+			//$result		= $PedidoBO->cambiarAgenciaCarga($PedidoDetData);
+			//$result		= $PedidoBO->consultarDetallePedido($pedido_cab_id, $pedido_det_sec, \Application\Constants\ResultType::MATRIZ);
+			$result		= $PedidoBO->cambiarAgenciaCarga($PedidoCabData);
+			$result		= $PedidoBO->consultarPedidoCabecera($pedido_cab_id);
+		
 
 			//En caso de ser CERO los detalles de los registros, la variable de session de PedidoCabIdActual debe de encerarse
 			$response = new \stdClass();
