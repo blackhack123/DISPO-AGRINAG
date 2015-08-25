@@ -144,9 +144,10 @@ class DispoDAO extends Conexion
 	 * @param int $grupo_dispo_cab_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param string $clasifica_fox
 	 * @return array
 	 */
-	public function consultarInventarioPorCliente($cliente_id, $inventario_id, $grupo_dispo_cab_id, $variedad_id, $grado_id)
+	public function consultarInventarioPorCliente($cliente_id, $inventario_id, $grupo_dispo_cab_id, $variedad_id, $grado_id, $clasifica_fox)
 	{
 		$sql = 	' SELECT variedad.nombre as variedad_nombre,'.
 				'		dispo.variedad_id, '.
@@ -169,6 +170,7 @@ class DispoDAO extends Conexion
 				"					 ON dispo.inventario_id	= '".$inventario_id."'".
 				'					AND dispo.variedad_id	= grupo_precio_det.variedad_id'.
 				'					AND dispo.grado_id		= grupo_precio_det.grado_id'.
+				"					AND dispo.clasifica		= '".$clasifica_fox."'".
 				'					AND dispo.cantidad_bunch_disponible > 0'.
 				'		 	 INNER JOIN variedad'.
 				'					 ON variedad.id			= dispo.variedad_id'.
@@ -177,10 +179,11 @@ class DispoDAO extends Conexion
 				'                   AND grupo_dispo_det.variedad_id				= dispo.variedad_id'.
 				'					AND grupo_dispo_det.grado_id    			= dispo.grado_id '.
 				" WHERE cliente.id = '".$cliente_id."'".
-				" AND dispo.clasifica = '1'".//PARA TOMAR CALIDAD DE FLOR (RECIEN ADICIONADO)
+				//" AND dispo.clasifica = '1'".//PARA TOMAR CALIDAD DE FLOR (RECIEN ADICIONADO)
 				' GROUP BY variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.proveedor_id, grupo_dispo_det.cantidad_bunch_disponible, grupo_precio_det.precio, grupo_precio_det.precio_oferta '.
 				' ORDER BY variedad.nombre, dispo.variedad_id, dispo.grado_id, tot_bunch_disponible DESC';
 
+		//die($sql);
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$result = $stmt->fetchAll();
 		return $result;		

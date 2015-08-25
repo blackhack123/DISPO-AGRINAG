@@ -62,6 +62,7 @@ class DispoBO extends Conexion
 			}else{
 				$grupo_dispo_cab_id = $row_usuario['grupo_dispo_cab_id'];
 				$inventario_id 		= $row_usuario['inventario_id'];
+				$clasifica_fox		= $row_usuario['clasifica_fox'];;
 			}//end if
 			
 			
@@ -76,9 +77,26 @@ class DispoBO extends Conexion
 						'respuesta_msg'		=> 'Usuario no tiene inventario, comuniquese con su asesor'
 				);
 				return $result;
+			}//end if
+
+			if (empty($clasifica_fox))
+			{
+				$result = array('respuesta_code' 	=> '02',
+						'respuesta_msg'		=> 'Calidad no tiene clasifica, comuniquese con su asesor'
+				);
+				return $result;
 			}//end if			
+
+			if (empty($grupo_dispo_cab_id))
+			{
+				$result = array('respuesta_code' 	=> '02',
+						'respuesta_msg'		=> 'Cliente no tiene asignado GRUPO PRECIO, comuniquese con su asesor'
+				);
+				return $result;
+			}//end if
+					
 			
-			$result = $DispoDAO->consultarInventarioPorCliente($cliente_id, $inventario_id, $grupo_dispo_cab_id, $variedad_id, $grado_id);			
+			$result = $DispoDAO->consultarInventarioPorCliente($cliente_id, $inventario_id, $grupo_dispo_cab_id, $variedad_id, $grado_id, $clasifica_fox);			
 			
 			/**
 			 *Ajusta el stock de los bunch de las fincas para mostrar la dispo de acuerdo al GRUPO_DISPO_DET

@@ -325,13 +325,17 @@ class UsuarioDAO extends Conexion {
 	 */
 	function consultarGrupoDispoCab($usuario_id)
 	{
-		$sql = 	" SELECT usuario.grupo_dispo_cab_id, grupo_dispo_cab.inventario_id ".
+		$sql = 	" SELECT usuario.grupo_dispo_cab_id, grupo_dispo_cab.inventario_id, calidad.clasifica_fox ".
 				" FROM usuario INNER JOIN grupo_dispo_cab ".
-				"                      ON grupo_dispo_cab.id   			= usuario.grupo_dispo_cab_id".
+				"                      ON grupo_dispo_cab.id   		= usuario.grupo_dispo_cab_id".
 				"              LEFT JOIN cliente ".
-				"                      ON cliente.id	= usuario.cliente_id".
+				"                      ON cliente.id				= usuario.cliente_id".
+				"			   LEFT JOIN  grupo_precio_cab ".
+				"              		   ON grupo_precio_cab.id		= cliente.grupo_precio_cab_id".
+				"			   LEFT JOIN calidad ".
+				"                      ON calidad.id				= grupo_precio_cab.calidad_id ".
 				" WHERE usuario.id = :usuario_id";
-		
+
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->bindValue('usuario_id', $usuario_id);
 		$stmt->execute();
