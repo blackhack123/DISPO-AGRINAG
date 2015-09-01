@@ -22,6 +22,23 @@ class ComboGeneral {
 		return $opciones;
 	}//end function getComboEstado
 	
+	
+	/**
+	 *
+	 * @param string $formato_estado_cta
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	public static function getComboFormatoEnvio($formato_estado_cta, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$arrData = array('P'=>'PDF','E'=>'EXCEL');
+	
+		$opciones = \Application\Classes\Combo::getComboDataArray($arrData, $formato_estado_cta, $texto_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboEstado
+	
 
 	/**
 	 *

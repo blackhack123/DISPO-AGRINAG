@@ -1,8 +1,3 @@
-<style>
-/*	.input-sm{
-		height:22px;
-	}*/
-</style>
 
 <script>
 	$(document).ready(function () {
@@ -466,6 +461,62 @@
 	});//$(document).ready
 
 
+/*
+ *************************************************************************** 
+ *		FUNCION DE CONTROL DE PROGRAMACION DIARIA-SEMANAL-INMEDIATA
+ ***************************************************************************
+ */
+
+ function tipoProgramacion(obj){
+		var tP = $(obj).prop("value");
+		
+		// 0 -> Semanal 1 -> Claendario 2  -> Inmedaito
+		if(tP == 0){
+			if($("#calendario").css("display") != "none"){
+				$('#semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}else if($("#inmediato").css("display") != "none"){
+				$('#semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}else if($("#semnal").css("display") != "none"){
+				//$('#semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}else{
+				$('#semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}
+		}
+
+		if(tP == 1){
+			if($("#semanal").css("display") != "none"){
+				$('#calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}else if($("#inmediato").css("display") != "none"){
+				$('#calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}else if($("#calendario").css("display") != "none"){
+				//$('#semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}else{
+				$('#calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}
+		}
+
+		if(tP == 2){
+			if($("#semanal").css("display") != "none"){
+				$('#calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}else if($("#calendario").css("display") != "none"){
+				$('#inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}else if($("#inmediato").css("display") != "none"){
+				//$('#semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}else{
+				$('#inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+			}
+		}
+
+	}
+
+ 
+	
 
 /**
  * ----------------------------------------------------------------------
@@ -1284,26 +1335,34 @@
 </div>
 
 
-<div class="table-container col-md-16 col-sm-16">
-  <div class="clearfix">
-        	<div class="pull-left">
-            	<a id="btn_nuevo" class="btn btn-success btn" href="#"><i class="glyphicon glyphicon-plus icon-white"></i> Nuevo</a>
+<div class="row">   
+	<section class="body-admin-section">    	
+    	<div class="accion-admin-section"> 	
+        	<div class="botonera-admin-section pull-left separator">
+            	<a id="btn_nuevo" class="btn btn-primary btn-xs" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
             </div>
-        	<div class="pull-right">
-            	<div class="form-inline">
-                	<form id="frm" action="<?php echo($this->basePath()); ?>/dispo/cliente/mantenimiento" method="post" >
-                    <input name="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
-                    <select  name="busqueda_estado" class="select-class2">
-                        <?php echo($this->busqueda_estado); ?>
-                    </select>
-                    <select name="busqueda_sincronizado" class="select-class2">
-                    	<?php echo($this->busqueda_sincronizado); ?>
-                    </select>
-                    <a id="btn_consultar" class="btn btn-small btn-success"  href="#" ><i class="glyphicon glyphicon-search icon-white"></i></a>
-                    </form>
+        	<div class="busqueda-admin-section pull-left">	
+            	<!--- div class="form-inline" -->
+                	
+                <form id="frm" action="<?php echo($this->basePath()); ?>/dispo/cliente/mantenimiento" method="post" >
+                <div class="input-group" style="display:inline-flex">    
+                	<input name="criterio_busqueda" type="text" class="form-control input-sm" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+                     <div class="input-group">
+						<select  name="busqueda_estado" class="form-control input-sm" style="width:130px">
+	    	                <?php echo($this->busqueda_estado); ?>
+    	                </select>                                       
+                    </div>
+ 					<span class="input-group-btn">
+                    	<button id="btn_consultar" class="btn btn-sm btn-primary" type="button"><i class="glyphicon glyphicon-search icon-white"></i></button>
+                    </span>                        
+                </div>                
+               
+                </form>    
 				</div>
             </div>
         </div>
+        <div class="clearfix"></div>
+        <div>
 				<table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
 		<thead>
 				<tr>
@@ -1354,8 +1413,465 @@
 <?php	}//end foreach ?>		
 			</tbody>
 		</table>   
-				
-    </div>
+		</div>
+	</section>
+</div>
+
+
+<!-- DIALOGO MANTENIMIENTO CLIENTE -->
+   <div class="container" style="margin-top:100px;">
+	<div class="modal fade" role="dialog" id="dialog_mantenimiento" tabindex="-1" aria-labelledby="myModalLabel" >
+		<div class="modal-dialog modal-dialog-fullscreen" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="close"><span arial-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel"> CLIENTE (<span id="dialog_mantenimiento_cliente_nombre"></span>)</h4>
+			</div>
+			<div class="modal-body">
+			<form class="form-horizontal" role="form">
+				<div class="col-lg-4 table-striped " style="margin:0px; padding:0px;">
+					<div class="col-lg-5 " >
+						<div class="col-lg-5"  >
+						<label for="c1" class="control-label"> Cliente: </label>
+						</div>
+						<div class="col-lg-7"  >
+						<input type="text" class="form-control " id="cliente_id" name="cliente_id"  ><br/>
+						</div>
+					</div>
+					<div class="col-lg-7" >
+						<div class="col-lg-5"  >
+						<label for="co1" class="control-label">Created On:</label>
+						</div>
+						<div class="col-lg-7">
+						<input type="text" class="form-control" id="fecha_creacion"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+						<label for="co1" class="control-label"> Nombre: </label>
+						</div>
+						<div class="col-lg-10">
+						<input type="text" class="form-control" id="nombre" name="nombre"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+						<label for="co1" class="control-label"> Abrevia: </label>
+						</div>
+						<div class="col-lg-3">
+						<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Grupo: </label>
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="grupo_precio_cab_id" name="grupo_precio_cab_id">
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="co1"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="d1" class="control-label"> Direccíon: </label>
+						</div>
+						<div class="col-lg-10">
+							<textarea class="form-control" rows="3" style="resize:none;" id="direccion" name="direccion"></textarea><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="c1" class="control-label"> Ciudad: </label>
+						</div>
+						<div class="col-lg-10">
+							<input type="text" id="ciudad" class="form-control" name="ciudad"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Estado: </label>
+						</div>
+						<div class="col-lg-8">
+							<select  name="estado_id" class="form-control " id="estado_id">
+						</div>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="nombre_estado"><br/>
+						</div> 
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Pais: </label>
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="pais_id" name="pais_id">
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="nombre_pais" name="nombre_pais"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+						<label for="co1" class="control-label"> ZIP: </label>
+						</div>
+						<div class="col-lg-3">
+						<input type="text" class="form-control" id="codigo_postal" name="codigo_postal"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="c1" class="control-label"> Comprador: </label>
+						</div>
+						<div class="col-lg-10">
+							<input type="text" id="comprador" name="comprador" class="form-control"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fono1: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="telefono1" name="telefono1">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="telefono1_ext" name="telefono1_ext"placeholder="Ext"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fono2: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="telefono2" name="telefono2">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="telefono2_ext" name="telefono2_ext" placeholder="Ext"><br/>
+						</div>
+					</div>
+										<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fax1: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="fax1" name="fax1">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="fax1_ext" placeholder="Ext" name="fax1_ext"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fax2: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="fax2" name="fax2">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="fax2_ext" placeholder="Ext" name="fax2_ext"><br/>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="c1" class="control-label"> Vendedor: </label>
+						</div>
+						<div class="col-lg-10">
+							<input type="text" id="usuario_vendedor_id" name="usuario_vendedor_id" class="form-control"><br/>
+						</div>
+					</div>
+					<div class="col-lg-7">
+						<div class="col-lg-6"  >
+						<label for="c1" class="control-label"> Limite. Credito: </label>
+						</div>
+						<div class="col-lg-6"  >
+						<input type="text" class="form-control " id="limite_credito" name="limite_credito" ><br/>
+						</div>
+					</div>
+					<div class="col-lg-5" >
+						<div class="col-lg-5"  >
+						<label for="co1" class="control-label">Interes:</label>
+						</div>
+						<div class="col-lg-7">
+						<input type="text" class="form-control" id="tc_interes" name="tc_interes"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-5">
+							<label for="co1" class="control-label"> Crdto. Suspendido:
+								<input type="checkbox" id="est_credito_suspendido" name="est_credito_suspendido">
+							</label>
+						</div>
+						<div class="col-lg-2">
+							<label for="co1" class="control-label">Razon:</label>
+						</div>
+						<div class="col-lg-5">
+							<input type="text" class="form-control" id="credito_suspendido_razon" name="credito_suspendido_razon"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="c1" class="control-label">Contacto: </label>
+						</div>
+						<div class="col-lg-10">
+							<input type="text" id="contacto" name="contacto" class="form-control"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-3">
+							<label for="co1" class="control-label"> Facturado A: </label>
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="FacturadoA">
+						</div>
+						<div class="col-lg-6">
+							<input type="text" class="form-control" id="nombre_facturado"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="c1" class="control-label">Comprador: </label>
+						</div>
+						<div class="col-lg-10">
+							<input type="text" id="comprador" name="comprador" class="form-control"><br/>
+						</div>
+					</div>
+						<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fono1: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="telefono_fact1"  name="telefono_fact1_ext">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="telefono_fact1_ext" name="telefono_fact1_ext" placeholder="Ext"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fono2: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="telefono_fact2" name="telefono_fact2">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="telefono_fact2_ext" name="telefono_fact2_ext" placeholder="Ext"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fax1: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="fax_fact1" name="fax_fact1">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="fax_fact1_ext"  name="fax_fact1_ext" placeholder="Ext"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="co1" class="control-label"> Fax2: </label>
+						</div>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" id="fax_fact2" name="fax_fact2">
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="fax_fact2_ext" name="fax_fact2_ext" placeholder="Ext"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-2">
+							<label for="c1" class="control-label">Email: </label>
+						</div>
+						<div class="col-lg-10">
+							<input type="text" id="email" name="email_factura" class="form-control"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-3">
+						<label for="co1" class="control-label"> Comercializadora: </label>
+						</div>
+						<div class="col-lg-5">
+						<input type="text" class="form-control" id="comercializadora" name="comercializadora"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-3">
+						<label for="co1" class="control-label"> Pais FUE: </label>
+						</div>
+						<div class="col-lg-5">
+						<input type="text" class="form-control" id="pais_FUE" name="pais_FUE"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-3">
+						<label for="co1" class="control-label">Facturacion SRI: </label>
+						</div>
+						<div class="col-lg-5">
+						<input type="text" class="form-control" id="facturacion_SRI"><br/>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="col-lg-3">
+						<label for="co1" class="control-label">% IVA: </label>
+						</div>
+						<div class="col-lg-5">
+						<input type="text" class="form-control" id="porc_iva" name="porc_iva"><br/>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+						<div class="col-lg-4">
+							<label for="co1" class="control-label"> Inactivo:</label>
+						</div>
+						<div class="col-lg-4">
+						<label for="co1" class="control-label">	<input type="checkbox" name="estado" id="estado"></label>
+						</div>
+				</div>
+				<div class="col-lg-4">
+						<div class="col-lg-4">
+							<label for="co1" class="control-label"> Incobrable:</label>
+						</div>
+						<div class="col-lg-4">
+						<label for="co1" class="control-label">	<input type="checkbox" name="incobrable" id="incobrable"></label>
+						</div>
+				</div>
+				<div class="col-lg-4">
+						<div class="col-lg-4">
+							<label for="co1" class="control-label">Tip. Cliente. Espe.:</label>
+						</div>
+						<div class="col-lg-4">
+						<label for="co1" class="control-label">	<input type="checkbox" id="cliente_especial" name="cliente_especial"></label>
+						</div>
+				</div>
+				<div class="col-lg-4">
+						<div class="col-lg-4">
+							<label for="co1" class="control-label">Enviar Est. de Cta:</label>
+						</div>
+						<div class="col-lg-4">
+						<label for="co1" class="control-label">	<input type="checkbox"></label>
+						</div>
+				</div><br><br>
+				<div class="col-lg-4">
+						<div class="col-lg-4">
+							<label for="co1" class="control-label">Formato Est. de Cta:</label>
+						</div>
+						<div class="col-lg-3">
+							<input type="text" class="form-control" id="formato_estado_cta" name="formato_estado_cta"><br/>
+						</div>
+						<div class="col-lg-5">
+							<input type="text" class="form-control" id="nombre_formato_estado_cta" name="nombre_formato_estado_cta"><br/>
+						</div>
+				</div>
+				<div class="col-lg-4">
+						<div class="col-lg-6">
+					 	<span class="additional-info-wrap"> 
+						  	<label class="radio-inline" for="dia_semana">   
+						  	<input type="radio" name="dia_semana" id="dia_semana"  onclick="tipoProgramacion(this);" value="0">Dia Semana</label>
+						 </div>                    
+					   	</span> 
+				</div>
+				<div class="col-lg-4">
+						<div class="col-lg-6">
+					 	<span class="additional-info-wrap"> 
+						  	<label class="radio-inline" for="dia_calendario">   
+						  	<input type="radio" name="dia_calendario" id="dia_calendario" onclick="tipoProgramacion(this);" value="1">Dia Calendario</label>
+						 </div>                   
+					   	</span> 
+				</div>
+				<div class="col-lg-4">
+						<div class="col-lg-6">
+					 	<span class="additional-info-wrap"> 
+						  	<label class="radio-inline" for="inmediato">   
+						  	<input type="radio" name="inmediato" id="inmediato" onclick="tipoProgramacion(this);" value="2">Inmediato</label>
+						 </div>                  
+					   	</span>
+				</div>
+				<div class="col-lg-4">
+					<div class="col-lg-12" id="semanal" style="display:none;">
+						<div class="col-lg-12">
+							<br/><p><label> Programación semanal </label></p>
+							<div class="col-lg-1">
+								<label> L </label>
+							</div>
+							<div class="col-lg-1">
+								<label> M </label>
+							</div>
+							<div class="col-lg-1">
+								<label> M </label>
+							</div>
+							<div class="col-lg-1">
+								<label> J </label>
+							</div>
+							<div class="col-lg-1">
+								<label> V </label>
+							</div>
+							<div class="col-lg-1">
+								<label> S </label>
+							</div>
+							<div class="col-lg-1">
+								<label> D </label>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="col-lg-1">
+								<input type="checkbox" aria-label="...">
+							</div>
+							<div class="col-lg-1">
+								<input type="checkbox" aria-label="...">
+							</div>
+							<div class="col-lg-1">
+								<input type="checkbox" aria-label="...">
+							</div>
+							<div class="col-lg-1">
+								<input type="checkbox" aria-label="...">
+							</div>
+							<div class="col-lg-1">
+								<input type="checkbox" aria-label="...">
+							</div>
+							<div class="col-lg-1">
+								<input type="checkbox" aria-label="...">
+							</div>
+							<div class="col-lg-1">
+								<input type="checkbox" aria-label="...">
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-12" id="calendario" style="display:none;">
+						<div class="col-lg-12">
+							<br/><p><label> Programación calendario </label><p>
+							<div class="col-lg-3">
+								<input type="text" class="form-control" maxlength="2" pattern="[0-9]" name="dia_calendario1"/>
+							</div>
+							<div class="col-lg-3">
+								<input type="text" class="form-control" maxlength="2" pattern="[0-9]"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-12" id="inmediato" style="display:none;">
+						<div class="col-lg-12">
+							<br/><p><label> Programación inmediato </label><p>
+							<div class="col-lg-12">
+								<label><input type="checkbox" aria-label="..."> Inmediato </label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4"><br><br><br>
+					<a id="btn_grabar_informacion_general" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a>
+				</div>
+			</div>
+
+	<div class="modal-footer">
+	</div>
+		</div>
+
+	</div>	
+	</div>
+	</form>
+</div>
     
 
      <!--  DIALOG DE MANTENIMIENTO -->
@@ -1385,14 +1901,13 @@
                             	    <tbody>
                             	      <tr>
                             	        <td width="80"><b>Cliente:</b></td>
-                            	        <td><input id="cliente_id" name="cliente_id" type="text" class="form-control input-sm" style="width:65px" value="" maxlength="5" max-lenght="5" validate="required" validatemessage="Ingrese un codigo" onKeyUp="this.value=this.value.toUpperCase()">
-                                        <input type="hidden" name="accion2" id="accion2" value="" /></td>
+                            	        <td>&nbsp;</td>
                             	        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Created On:</td>
                             	        <td><input id="cliente_id3" name="cliente_id3" type="text" class="form-control input-sm" style="width:130px" value="" validate="required" validatemessage="Ingrese un codigo" onKeyUp="this.value=this.value.toUpperCase()"></td>
                           	          </tr>
                             	      <tr>
                             	        <td>Nombre:</td>
-                            	        <td colspan="3"><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:330px" value="" maxlength="50" max-lenght="50" validate="required" validatemessage="Ingrese un nombre" onKeyUp="this.value=this.value.toUpperCase()"></td>
+                            	        <td colspan="3"></td>
                           	        </tr>
                             	      <tr>
                             	        <td>Abrevia:</td>
@@ -1937,7 +2452,6 @@
 			        	        <td>&nbsp;</td>
 			        	        <td>&nbsp;</td>
 		        	        </tr>
-			        	  
 			        	      <tr>
 			        	        <td><label class="control-label">Ingreso:</label></td>
 			        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>

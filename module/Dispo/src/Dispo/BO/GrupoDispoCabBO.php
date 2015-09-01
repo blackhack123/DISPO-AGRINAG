@@ -12,12 +12,12 @@ class GrupoDispoCabBO extends Conexion
 
 	/**
 	 * 
-	 * @param string $grupoprecio
+	 * @param string $grupodispo
 	 * @param string $texto_1er_elemento
 	 * @param string $color_1er_elemento
 	 * @return string
 	 */
-	function getComboGrupoPrecio($grupoprecio, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	function getComboGrupoDispo($grupodispo, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
 	{	
 		$GrupoDispoCabDAO = new GrupoDispoCabDAO();
 		
@@ -25,7 +25,7 @@ class GrupoDispoCabBO extends Conexion
 
 		$result = $GrupoDispoCabDAO->consultarTodos();
 		
-		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $grupoprecio, $texto_1er_elemento, $color_1er_elemento);
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $grupodispo, $texto_1er_elemento, $color_1er_elemento);
 		 
 		return $opciones;
 	}//end function getCombo

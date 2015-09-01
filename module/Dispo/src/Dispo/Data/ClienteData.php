@@ -18,6 +18,16 @@ class ClienteData
 	
 	/**
 	 * @var string
+	 */
+	protected $abreviatura;
+	
+	/**
+	 * @var string
+	 */
+	protected $grupo;
+	
+	/**
+	 * @var string
 	 */	
 	protected $direccion;
 	
@@ -152,6 +162,11 @@ class ClienteData
 	protected $email_factura;
 	
 	/**
+	 * @var string
+	 */
+	protected $tipo_cartera;
+	
+	/**
 	 * @var int
 	 */
 	protected $usuario_vendedor_id;
@@ -166,10 +181,36 @@ class ClienteData
 	 */
 	protected $credito_suspendido_razon;
 	
+	
 	/**
-	 * @var int
+	 * @var string
 	 */
-	protected $est_incobrable;
+	protected $tipo_persona;
+	
+	/**
+	 * @var string
+	 */
+	protected $ruc;
+	
+	/**
+	 * @var string
+	 */
+	protected $ciaf;
+	
+	/**
+	 * @var string
+	 */
+	protected $moneda;
+	
+	/**
+	 * @var string
+	 */
+	protected $facturacion_sri;
+	
+	/**
+	 * @var string
+	 */
+	protected $pais_fue;
 	
 	/**
 	 * @var float
@@ -239,6 +280,36 @@ class ClienteData
 	/**
 	 * @var int
 	 */
+	protected $envia_estadocta;
+	
+	/**
+	 * @var string
+	 */
+	protected $tipo_envio_estcta;
+	
+	/**
+	 * @var string
+	 */
+	protected $dia_semana;
+	
+	/**
+	 * @var string
+	 */
+	protected $diacal_fecha2;
+	
+	/**
+	 * @var string
+	 */
+	protected $diacal_fecha1;
+	
+	/**
+	 * @var int
+	 */
+	protected $inmediato;
+	
+	/**
+	 * @var int
+	 */
 	protected $grupo_precio_cab_id;
 	
 	/**
@@ -281,6 +352,8 @@ class ClienteData
 	//metodos GET
 	public function getId() 						{return $this->id;}
 	public function getNombre() 					{return $this->nombre;}
+	public function getAbreviatura() 				{return $this->abreviatura;}
+	public function getGrupo() 						{return $this->grupo;}
 	public function getDireccion() 					{return $this->direccion;}
 	public function getCiudad() 					{return $this->ciudad;}
 	public function getEstadosId() 					{return $this->estados_id;}
@@ -308,10 +381,16 @@ class ClienteData
 	public function getFaxFact2() 					{return $this->fax_fact2;}
 	public function getFaxFact2Ext() 				{return $this->fax_fact2_ext;}
 	public function getEmailFactura() 				{return $this->email_factura;}
+	public function getTipoCartera() 				{return $this->tipo_cartera;}
 	public function getUsuarioVendedorId() 			{return $this->usuario_vendedor_id;}
 	public function getEstCreditoSuspendido() 		{return $this->est_credito_suspendido;}
 	public function getCreditoSuspendidoRazon() 	{return $this->credito_suspendido_razon;}
-	public function getEstIncobrable() 				{return $this->est_incobrable;}
+	public function getTipoPersona() 				{return $this->tipo_persona;}
+	public function getRuc() 						{return $this->ruc;}
+	public function getCiaf() 						{return $this->ciaf;}
+	public function getMoneda() 					{return $this->moneda;}
+	public function getFacturacionSRI() 			{return $this->facturacion_sri;}
+	public function getPaisFUE() 					{return $this->pais_fue;}
 	public function getTcInteres() 					{return $this->tc_interes;}
 	public function getTcLimiteCredito() 			{return $this->tc_limite_credito;}
 	public function getTcFormaPago() 				{return $this->tc_forma_pago;}
@@ -325,6 +404,12 @@ class ClienteData
 	public function getPorcIva() 					{return $this->porc_iva;}
 	public function getClienteEspecial() 			{return $this->cliente_especial;}
 	public function getIncobrable() 				{return $this->incobrable;}
+	public function getEnviaEstadoCta() 			{return $this->envia_estadocta;}
+	public function getTipoEnvioEstCta() 			{return $this->tipo_envio_estcta;}
+	public function getDiaSemana() 					{return $this->dia_semana;}
+	public function getDiaCalFecha2() 				{return $this->diacal_fecha2;}
+	public function getDiaCalFecha1() 				{return $this->diacal_fecha1;}
+	public function getInmediato() 					{return $this->inmediato;}
 	public function getGrupoPrecioCabId() 			{return $this->grupo_precio_cab_id;}
 	public function getEstado() 					{return $this->estado;}
 	public function getFecIngreso() 				{return $this->fec_ingreso;}
@@ -338,6 +423,8 @@ class ClienteData
 	//metodos SET
 	public function setId($valor) 						{$this->id						= $valor;}
 	public function setNombre($valor) 					{$this->nombre					= $valor;}
+	public function setAbreviatura($valor) 				{$this->abreviatura				= $valor;}
+	public function setGrupo($valor) 					{$this->grupo					= $valor;}
 	public function setDireccion($valor) 				{$this->direccion				= $valor;}
 	public function setCiudad($valor) 					{$this->ciudad					= $valor;}
 	public function setEstadosId($valor) 				{$this->estados_id				= $valor;}
@@ -365,14 +452,20 @@ class ClienteData
 	public function setFaxFact2($valor) 				{$this->fax_fact2				= $valor;}
 	public function setFaxFact2Ext($valor) 				{$this->fax_fact2_ext			= $valor;}
 	public function setEmailFactura($valor) 			{$this->email_factura			= $valor;}
+	public function setTipoCartera($valor) 				{$this->tipo_cartera			= $valor;}
 	public function setUsuarioVendedorId($valor) 		{$this->usuario_vendedor_id		= $valor;}
 	public function setEstCreditoSuspendido($valor) 	{$this->est_credito_suspendido	= $valor;}
 	public function setCreditoSuspendidoRazon($valor) 	{$this->credito_suspendido_razon= $valor;}
-	public function setEstIncobrable($valor) 			{$this->est_incobrable			= $valor;}
+	public function setTipoPersona($valor) 				{$this->tipo_persona			= $valor;}
+	public function setRuc($valor) 						{$this->ruc						= $valor;}
+	public function setCiaf($valor) 					{$this->ciaf					= $valor;}
+	public function setMoneda($valor) 					{$this->moneda					= $valor;}
+	public function setFacturacionSRI($valor) 			{$this->facturacion_sri			= $valor;}
+	public function setPaisFUE($valor) 					{$this->pais_fue				= $valor;}
 	public function setTcInteres($valor) 				{$this->tc_interes				= $valor;}
 	public function setTcLimiteCredito($valor) 			{$this->tc_limite_credito		= $valor;}
 	public function setTcFormaPago($valor) 				{$this->tc_forma_pago			= $valor;}
-	public function setNroCuotas($valor) 				{$this->tc_nro_cuotas			= $valor;}
+	public function setTcNroCuotas($valor) 				{$this->tc_nro_cuotas			= $valor;}
 	public function setTcPlazo($valor) 					{$this->tc_plazo				= $valor;}
 	public function setTc1erCierre($valor) 				{$this->tc_1er_cierre			= $valor;}
 	public function setTc1erCierrePago($valor) 			{$this->tc_1er_cierre_pago		= $valor;}
@@ -382,6 +475,12 @@ class ClienteData
 	public function setPorcIva($valor) 					{$this->porc_iva				= $valor;}
 	public function setClienteEspecial($valor) 			{$this->cliente_especial		= $valor;}
 	public function setIncobrable($valor) 				{$this->incobrable				= $valor;}
+	public function setEnviaEStadoCta($valor) 			{$this->envia_estadocta			= $valor;}
+	public function setTipoEnvioEstCta($valor) 			{$this->tipo_envio_estcta		= $valor;}
+	public function setDiaSemana($valor) 				{$this->dia_semana				= $valor;}
+	public function setDiaCalFecha2($valor) 			{$this->diacal_fecha2			= $valor;}
+	public function setDiaCalFecha1($valor) 			{$this->diacal_fecha1			= $valor;}
+	public function setInmediato($valor) 				{$this->inmediato				= $valor;}
 	public function setGrupoPrecioCabId($valor) 		{$this->grupo_precio_cab_id		= $valor;}
 	public function setEstado($valor) 					{$this->estado					= $valor;}
 	public function setFecIngreso($valor) 				{$this->fec_ingreso				= $valor;}

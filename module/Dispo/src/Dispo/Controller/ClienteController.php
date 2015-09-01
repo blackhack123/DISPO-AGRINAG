@@ -16,7 +16,7 @@ use Dispo\BO\PaisBO;
 use Dispo\BO\EstadosBO;
 use Dispo\Data\ClienteData;
 use Dispo\Data\MarcacionData;
-use Dispo\BO\GrupoPrecioCabBO;
+use Dispo\BO\GrupoDispoCabBO;
 
 
 class ClienteController extends AbstractActionController
@@ -113,11 +113,11 @@ class ClienteController extends AbstractActionController
 			$ClienteBO 				= new ClienteBO();
 			$PaisBO 				= new PaisBO();
 			$EstadosBO 				= new EstadosBO();
-			$GrupoPrecioCabBO		= new GrupoPrecioCabBO();
+			$GrupoDispoCabBO		= new GrupoDispoCabBO();
 			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$EstadosBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
@@ -130,13 +130,14 @@ class ClienteController extends AbstractActionController
 			
 			$response 		= new \stdClass();
 			$pais 			= null;
-			$estados 			= null;
-			$grupoprecio	= null;
+			$estados 		= null;
+			$grupodispo		= null;
 			$response->cbo_tipo				= $ClienteBO->getCombo("", " ");
 			$response->cbo_pais_id			= $PaisBO->getComboPais($pais, "&lt;Seleccione&gt;");
 			$response->cbo_estado_id		= $EstadosBO->getComboEstados($estados, "&lt;Seleccione&gt;");
-			$response->cbo_grupo_precio		= $GrupoPrecioCabBO->getComboGrupoPrecio($grupoprecio, "&lt;Seleccione&gt;");
+			$response->cbo_grupo_dispo		= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->cbo_formato_estado_cta = \Application\Classes\ComboGeneral::getComboFormatoEnvio("","");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
 	
@@ -160,11 +161,13 @@ class ClienteController extends AbstractActionController
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$ClienteBO 				= new ClienteBO();
+			$EstadosBO 				= new EstadosBO();
 			$PaisBO 				= new PaisBO();
-			$GrupoPrecioCabBO		= new GrupoPrecioCabBO();
+			$GrupoDispoCabBO		= new GrupoDispoCabBO();
 			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$EstadosBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 	
@@ -177,8 +180,10 @@ class ClienteController extends AbstractActionController
 			$response = new \stdClass();
 			$response->row					= $row;
 			$response->cbo_pais_id			= $PaisBO->getComboPais($row['pais_id'], "&lt;Seleccione&gt;");
-			$response->cbo_grupo_precio		= $GrupoPrecioCabBO->getComboGrupoPrecio($row['grupo_precio_cab_id'], "&lt;Seleccione&gt;");
+			$response->cbo_grupo_dispo		= $GrupoDispoCabBO->getComboGrupoDispo($row['grupo_precio_cab_id'], "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			$response->cbo_estado_id		= $EstadosBO->getComboEstados($row['estados_id'], "&lt;Seleccione&gt;");
+			$response->cbo_formato_estado_cta	= \Application\Classes\ComboGeneral::getComboFormatoEnvio($row['formato_estado_cta'],"");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
 	
@@ -217,16 +222,55 @@ class ClienteController extends AbstractActionController
 			$accion						= $json['accion'];  //I, M
 			$ClienteData->setId					($json['cliente_id']);
 			$ClienteData->setNombre				($json['nombre']);
+			$ClienteData->setAbreviatura		($json['abreviatura']);
+			$ClienteData->setGrupoPrecioCabId	($json['grupo_precio_cab_id']);
 			$ClienteData->setDireccion			($json['direccion']);
-			$ClienteData->setPaisId				($json['pais_id']);
 			$ClienteData->setCiudad				($json['ciudad']);
+			$ClienteData->setEstadosId			($json['estados_id']);
+			$ClienteData->setPaisId				($json['pais_id']);
+			$ClienteData->setCodigoPostal		($json['codigo_postal']);
+			$ClienteData->setEstadoNombre		($json['estado_nombre']);
 			$ClienteData->setTelefono1			($json['telefono1']);
+			$ClienteData->setTelefono1Ext		($json['telefono1_ext']);
 			$ClienteData->setTelefono2			($json['telefono2']);
+			$ClienteData->setTelefono2Ext		($json['telefono2_ext']);
 			$ClienteData->setFax1				($json['fax1']);
+			$ClienteData->setFax1Ext			($json['fax1_ext']);
 			$ClienteData->setFax2				($json['fax2']);
+			$ClienteData->setFax2Ext			($json['fax2_ext']);
 			$ClienteData->setEmail				($json['email']);
+			$ClienteData->setContacto			($json['contacto']);
+			$ClienteData->setComprador			($json['comprador']);
+			$ClienteData->setClienteFacturaId	($json['cliente_factura_id']);
+			$ClienteData->setTelefonoFact1		($json['telefono_fact1']);
+			$ClienteData->setTelefonoFact1Ext	($json['telefono_fact1_ext']);
+			$ClienteData->setTelefonoFact2		($json['telefono_fact2']);
+			$ClienteData->setTelefonoFact2Ext	($json['telefono_fact2_ext']);
+			$ClienteData->setFaxFact1			($json['fax_fact1']);
+			$ClienteData->setFaxFact1Ext		($json['fax_fact1_ext']);
+			$ClienteData->setFaxFact2			($json['fax_fact2']);
+			$ClienteData->setFaxFact2Ext		($json['fax_fact2_ext']);
+			$ClienteData->setEmailFactura		($json['email_factura']);
+			$ClienteData->setUsuarioVendedorId	($json['usuario_vendedor_id']);
+			$ClienteData->setEstCreditoSuspendido($json['est_credito_suspendido']);
+			$ClienteData->setCreditoSuspendidoRazon($json['credito_suspendido_razon']);
+			$ClienteData->setFacturacionSRI		($json['facturacion_sri']);
+			$ClienteData->setPaisFUE			($json['pais_fue']);
+			$ClienteData->setTcInteres			($json['tc_interes']);
+			$ClienteData->setTcLimiteCredito	($json['tc_limite_credito']);
+			$ClienteData->setFormatoEstadoCta	($json['formato_estado_cta']);
+			$ClienteData->setPorcIva			($json['porc_iva']);
+			$ClienteData->setClienteEspecial	($json['cliente_especial']);
+			$ClienteData->setIncobrable			($json['incobrable']);
+			$ClienteData->setEnviaEstadoCta		($json['envia_estadocta']);
+			$ClienteData->setTipoEnvioEstCta	($json['tipo_envio_estcta']);
+			$ClienteData->setDiaSemana			($json['dia_semana']);
+			$ClienteData->setDiaCalFecha2		($json['diacal_fecha2']);
+			$ClienteData->setDiaCalFecha1		($json['diacal_fecha1']);
+			$ClienteData->setInmediato			($json['inmediato']);
 			$ClienteData->setGrupoPrecioCabId	($json['grupo_precio_cab_id']);
 			$ClienteData->setEstado				($json['estado']);
+			
 	
 			$response = new \stdClass();
 			switch ($accion)
