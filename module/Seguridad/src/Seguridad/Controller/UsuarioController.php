@@ -83,7 +83,8 @@ class UsuarioController extends AbstractActionController
 			$SesionUsuarioPlugin->setUserClienteNombre			($reg_usuario['cliente_nombre']);			
 			$SesionUsuarioPlugin->setClienteUsuarioId			($usuario_id);
 			$SesionUsuarioPlugin->setClienteUsuarioNombre		($reg_usuario['nombre']);
-			$SesionUsuarioPlugin->setClienteUsuarioUserName		($reg_usuario['username']);			
+			$SesionUsuarioPlugin->setClienteUsuarioUserName		($reg_usuario['username']);
+			$SesionUsuarioPlugin->setClienteCalidadId			($reg_usuario['calidad_id']);
 
 			$response = new \stdClass();
 			$response->respuesta_code 			= 'OK';
@@ -103,7 +104,7 @@ class UsuarioController extends AbstractActionController
 				$session->offsetSet('cliente_seleccion_marcacion_sec', $reg_pedido['marcacion_sec']);
 				$session->offsetSet('cliente_seleccion_marcacion_nombre', $reg_pedido['marcacion_nombre']);
 				$session->offsetSet('cliente_seleccion_agencia_id', $reg_pedido['agencia_carga_id']);
-					
+
 				//Se consulta la marcacion y la agencia de carga del detalle de la factura
 /*				$reg_det	= $PedidoBO->consultarPedidoDetUltimoRegistro($reg_pedido['id']);//end if
 				if ($reg_det)

@@ -27,6 +27,7 @@ class PedidoProveedorDAO extends Conexion
 				'pedido_cab_id'		=> $PedidoProveedorData->getPedidoCabId(),
 				'pedido_det_sec'    => $PedidoProveedorData->getPedidoDetSec(),
 				'proveedor_id'		=> $PedidoProveedorData->getProveedorId(),
+				'eq_fb'				=> $PedidoProveedorData->getEqFb(),
 				'nro_cajas'  	    => $PedidoProveedorData->getNroCajas(),
 				'cantidad_bunch'    => $PedidoProveedorData->getCantidadBunch(),
 				'tallos_x_bunch'	=> $PedidoProveedorData->getTallosxBunch(),

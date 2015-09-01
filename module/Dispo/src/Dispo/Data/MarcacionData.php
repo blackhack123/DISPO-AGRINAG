@@ -54,11 +54,15 @@ class MarcacionData
 	 */	
 	protected $telefono;
 
-
 	/**
 	 * @var string
 	 */	
 	protected $zip;
+
+	/** 
+	 * @var int
+	 */
+	protected $punto_corte;
 	
 	/**
 	 * @var string
@@ -109,6 +113,7 @@ class MarcacionData
 	public function getContacto() 					{return $this->contacto;}
 	public function getTelefono() 					{return $this->telefono;}
 	public function getZip() 						{return $this->zip;}
+	public function getPuntoCorte()					{return $this->punto_corte;}
 	public function getEstado() 					{return $this->estado;}
 	public function getFecIngreso() 				{return $this->fec_ingreso;}
 	public function getFecModifica() 				{return $this->fec_modifica;}
@@ -129,6 +134,7 @@ class MarcacionData
 	public function setContacto($valor) 					{$this->contacto			= $valor;}
 	public function setTelefono($valor) 					{$this->telefono			= $valor;}
 	public function setZip($valor) 							{$this->zip					= $valor;}
+	public function setPuntoCorte($valor)					{$this->punto_corte			= $valor;}
 	public function setEstado($valor) 						{$this->estado				= $valor;}
 	public function setFecIngreso($valor) 					{$this->fec_ingreso			= $valor;}
 	public function setFecModifica($valor) 					{$this->fec_modifica		= $valor;}

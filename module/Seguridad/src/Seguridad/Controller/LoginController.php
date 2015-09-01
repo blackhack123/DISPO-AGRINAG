@@ -104,6 +104,7 @@ class LoginController extends AbstractActionController
 								$session->offsetSet('perfil_nombre', $rsUsuario['perfil_nombre']);
 								$session->offsetSet('cliente_id', $rsUsuario['cliente_id']);
 								$session->offsetSet('cliente_nombre', $rsUsuario['cliente_nombre']);
+								$session->offsetSet('cliente_calidad_id', $rsUsuario['calidad_id']);								
 								$session->offsetSet('cliente_seleccion_marcacion_sec', null);
 								$session->offsetSet('cliente_seleccion_agencia_id', null);
 								//Variables de sesion usadas por el usuario de vendedor para emular a los clientes
@@ -128,7 +129,8 @@ class LoginController extends AbstractActionController
 											$session->offsetSet('cliente_pedido_cab_id_actual',	 		$reg_pedido['id']);
 											$session->offsetSet('cliente_seleccion_marcacion_sec', 		$reg_pedido['marcacion_sec']);
 											$session->offsetSet('cliente_seleccion_marcacion_nombre', 	$reg_pedido['marcacion_nombre']);
-											$session->offsetSet('cliente_seleccion_agencia_id', 		$reg_pedido['agencia_carga_id']);											
+											$session->offsetSet('cliente_seleccion_agencia_id', 		$reg_pedido['agencia_carga_id']);
+											$session->offsetSet('cliente_seleccion_marcacion_puntocorte',$reg_pedido['marcacion_punto_corte']);
 											
 											//Se consulta la marcacion y la agencia de carga del detalle de la factura
 /*											$reg_det	= $PedidoBO->consultarPedidoDetUltimoRegistro($reg_pedido['id']);//end if

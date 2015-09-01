@@ -74,6 +74,7 @@ class DisponibilidadController extends AbstractActionController
 			//Consulta la marcacion para obtener el nombre
 			$MarcacionData = $MarcacionBO->consultar($marcacion_sec);
 			$SesionUsuarioPlugin->setClienteSeleccionMarcacionNombre($MarcacionData->getNombre());
+			$SesionUsuarioPlugin->setClienteSeleccionMarcacionPuntoCorte($MarcacionData->getPuntoCorte());
 			unset($MarcacionData, $MarcacionBO);
 			 
 			//Consulta la carga para obtener el nombre
@@ -182,19 +183,19 @@ class DisponibilidadController extends AbstractActionController
 				
 			$DispoBO				= new DispoBO();
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-		
+
 			//Se pregunta si se ha seleccionado una marcacion y una agencia, caso contrario lo rutea
 			//para obligarlo a seleccionar
 			$marcacion_id	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
 			$agencia_id		= $SesionUsuarioPlugin->getClienteSeleccionAgenciaId();
-		
+
 			//Se pregunta si ya existe una marcacion y agencia seleccionada por el cliente
 			//en caso de no estar, se lo dirige a la pantalla para que lo seleccione
 /*			if ((empty($marcacion_id))||(empty($agencia_id)))
 			{
 				return $this->redirect()->toRoute('dispo-disponibilidad-seleccionar-marcacion-agencia');
 			}//end if
-*/		
+*/
 			//Se consulta la dispo, considerando los criterios de busqueda
 			$cliente_id 	= $SesionUsuarioPlugin->getUserClienteId();
 			$usuario_id 	= $SesionUsuarioPlugin->getClienteUsuarioId();
@@ -206,7 +207,7 @@ class DisponibilidadController extends AbstractActionController
 			$viewModel->respuesta_dispo_code	= $result['respuesta_code'];
 			$viewModel->respuesta_dispo_msg		= $result['respuesta_msg'];	
 			if (!empty($result['result_dispo']))
-			{			
+			{
 				$viewModel->result					= $result['result_dispo'];
 			}else{
 				$viewModel->result					= null;
@@ -631,4 +632,33 @@ class DisponibilidadController extends AbstractActionController
 		}
 	}//end function remotesincronizarAction
 		
+	
+	
+	public function disponibilidadgeneralAction()
+	{
+		try
+		{
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+		
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+		
+			$DispoBO				= new DispoBO();
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$viewModel 				= new ViewModel();
+			$this->layout($SesionUsuarioPlugin->getUserLayout());
+			$viewModel->setTemplate('dispo/disponibilidad/disponibilidadgeneral.phtml');
+			return $viewModel;
+		
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function disponiblidadgeneralAction
+	
+	
 }

@@ -38,12 +38,19 @@ class PedidoController extends AbstractActionController
 			$marcacion_sec 		= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
 			$agencia_carga_id 	= $SesionUsuarioPlugin->getClienteSeleccionAgenciaId();
 			$pedido_cab_id		= $SesionUsuarioPlugin->getClientePedidoCabIdActual();
+			$cliente_calidad_id = $SesionUsuarioPlugin->getClienteCalidadId();
+			$marcacion_punto_corte = $SesionUsuarioPlugin->getClienteSeleccionMarcacionPuntoCorte();
 			$variedad_id		= $json['variedad_id'];
 			$grado_id			= $json['grado_id'];
 			$tipo_caja_id		= $json['tipo_caja_id'];
 			$cantidad_order		= $json['cantidad_order'];
 			$flag_oferta		= false;
 			
+			//CONFIGURACION ADICIONAL
+			$PedidoBO->setCalidadId($cliente_calidad_id);		//Setea clasifica al PedidoBO (Calidad de la Flor)
+			$PedidoBO->setPuntoCorte($marcacion_punto_corte);	//Setea el punto de corte del Pedido
+			
+
 			//Se obtiene la bandera de oferta y el hueso
 			if (!(empty($json['hueso_variedad_id'])))
 			{

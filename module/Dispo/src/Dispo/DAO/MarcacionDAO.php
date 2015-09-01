@@ -113,7 +113,8 @@ class MarcacionDAO extends Conexion
 					$MarcacionData->setUsuarioModId			($row['usuario_mod_id']);
 					$MarcacionData->setSinronizado			($row['sincronizado']);
 					$MarcacionData->setFecSincronizado		($row['fec_sincronizado']);
-						
+					$MarcacionData->setPuntoCorte			($row['punto_corte']);
+					
 					return $MarcacionData;
 				}else{
 					return null;

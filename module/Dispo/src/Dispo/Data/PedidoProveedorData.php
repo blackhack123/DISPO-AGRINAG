@@ -25,6 +25,11 @@ class PedidoProveedorData
 	protected $nro_cajas;
 
 	/**
+	 * @var float
+	 */
+	protected $eq_fb;
+	
+	/**
 	 * @var int
 	 */	
 	protected $cantidad_bunch;
@@ -74,6 +79,7 @@ class PedidoProveedorData
 	public function getPedidoDetSec() 					{return $this->pedido_det_sec;}
 	public function getProveedorId() 					{return $this->proveedor_id;}
 	public function getNroCajas() 						{return $this->nro_cajas;}
+	public function getEqFb()							{return $this->eq_fb;}
 	public function getCantidadBunch() 					{return $this->cantidad_bunch;}
 	public function getTallosxBunch() 					{return $this->tallos_x_bunch;}
 	public function getTallosTotal() 					{return $this->tallos_total;}
@@ -90,6 +96,7 @@ class PedidoProveedorData
 	public function setPedidoDetSec($valor) 			{$this->pedido_det_sec		= $valor;}
 	public function setProveedorId($valor) 				{$this->proveedor_id		= $valor;}
 	public function setNroCajas($valor) 				{$this->nro_cajas			= $valor;}
+	public function setEqFb($valor)						{$this->eq_fb				= $valor;}	
 	public function setCantidadBunch($valor)			{$this->cantidad_bunch		= $valor;}
 	public function setTallosxBunch($valor)				{$this->tallos_x_bunch		= $valor;}
 	public function setTallosTotal($valor) 				{$this->tallos_total		= $valor;}
