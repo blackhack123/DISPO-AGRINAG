@@ -13,22 +13,22 @@ $(document).ready(function () {
 		//$("#dialog_mantenimiento").modal('show') 
 	});
 	
-	$("#frm_informacion_general #btn_consultar").on('click', function(event){ 
+	$("#btn_consultar").on('click', function(event){ 
 		$("#frm").submit();
 		return false;
 	});
 
-	$("#frm_informacion_general #btn_nuevo").on('click', function(event){
+	$(" #btn_nuevo_cliente").on('click', function(event){
 		nuevo(); 
 		return false;
 	});    
 
-	$("#frm_informacion_general #btn_grabar_informacion_general").on('click', function(event){ 
+	$("#btn_grabar_informacion_general").on('click', function(event){ 
 		grabar_informacion_general();
 		return false;
 	});   
 	
-	$("#frm_informacion_general #tbl_registros tbody tr").on('dblclick', function(event){ 
+	$(" #tbl_registros tbody tr").on('dblclick', function(event){ 
 		var tr 						= $(this).closest('tr');
 		var cliente_id 				= tr.attr('cliente_id');
 
@@ -55,9 +55,9 @@ $(document).ready(function () {
 			if($("#frm_informacion_general #calendario").css("display") != "none"){
 				$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
-			}else if($("#frm_informacion_general #inmediato").css("display") != "none"){
+			}else if($("#frm_informacion_general #p_inmediato").css("display") != "none"){
 				$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
-				$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else if($("#frm_informacion_general #semanal").css("display") != "none"){
 				//$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else{
@@ -69,9 +69,9 @@ $(document).ready(function () {
 			if($("#frm_informacion_general #semanal").css("display") != "none"){
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
 				$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
-			}else if($("#frm_informacion_general #inmediato").css("display") != "none"){
+			}else if($("#frm_informacion_general #p_inmediato").css("display") != "none"){
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
-				$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else if($("#frm_informacion_general #calendario").css("display") != "none"){
 				//$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else{
@@ -84,12 +84,12 @@ $(document).ready(function () {
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
 				$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else if($("#frm_informacion_general #calendario").css("display") != "none"){
-				$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else if($("#frm_informacion_general #inmediato").css("display") != "none"){
 				//$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else{
-				$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}
 		}
 		
@@ -113,14 +113,16 @@ $(document).ready(function () {
 	
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
-		var estado 					= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
-		var incobrable 				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
-		var dia_semana 				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
-		var inmediato 				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
-		var tipo_envio_estcta 		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
+		
 		var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
+		var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
+		var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
 		var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
 		var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
+		var tipo_envio_estcta		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
+		var dia_semana 				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
+		var inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
+		
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
@@ -156,7 +158,7 @@ $(document).ready(function () {
 								$("#frm_informacion_general #fax2").val('');
 								$("#frm_informacion_general #fax2_ext").val('');
 								$("#frm_informacion_general #email").val('');
-								$("#frm_informacion_general #usuario_vendedor_id").val('');
+								$("#frm_informacion_general #usuario_vendedor_id").html(response.cbo_usuario_vendedor_id);
 								$("#frm_informacion_general #tc_limite_credito").val('');
 								$("#frm_informacion_general #tc_interes").val('');
 								$("#frm_informacion_general #est_credito_suspendido").val('');
@@ -184,7 +186,7 @@ $(document).ready(function () {
 								$("#frm_informacion_general #tipo_envio_estcta").val('');
 								$("#frm_informacion_general #dia_semana").val('');
 								$("#frm_informacion_general #inmediato").val('');
-								$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+								$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 								$("#frm_informacion_general #diacal_fecha2").val('');
 								$("#frm_informacion_general #diacal_fecha1").val('');
 								
@@ -226,17 +228,19 @@ $(document).ready(function () {
 				{
 				return false;
 				}
-			
-			var cliente_especial 		= ($("#cliente_especial").is(':checked') ? 1 : 0);
-			var envia_estadocta 		= ($("#envia_estadocta").is(':checked') ? 1 : 0);
-			var est_credito_suspendido 	= ($("#est_credito_suspendido").is(':checked') ? 1 : 0);
-			var estado				 	= ($("#estado").is(':checked') ? 1 : 0);
-			var incobrable				= ($("#incobrable").is(':checked') ? 1 : 0);
-			var inmediato				= ($("#day_inmediato").is(':checked') ? 1 : 0);
-			
+		
+			var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
+			var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
+			var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
+			var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
+			var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
+			var tipo_envio_estcta		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
+			var dia_semana				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
+			var inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
+	
 			$("#tabs_mantenimiento_cliente ul li").removeClass('disabled',false).removeClass('disabledTab',false);
 			//Se llama mediante AJAX para adicionar al carrito de compras
-			var data = 	{	accion: 							$("#frm_informacion_general #accion").val(),
+			var data = 	{	accion: 							$("#accion").val(),
 						 	cliente_id: 						$("#frm_informacion_general #cliente_id").val(),
 						 	nombre: 							$("#frm_informacion_general #nombre").val(),
 						 	abreviatura: 						$("#frm_informacion_general #abreviatura").val(),
@@ -273,7 +277,6 @@ $(document).ready(function () {
 							fax_fact2:							$("#frm_informacion_general #fax_fact2").val(),
 							fax_fact2_ext:						$("#frm_informacion_general #fax_fact2_ext").val(),
 							email_factura:						$("#frm_informacion_general #email_factura").val(),
-							comercializadora:					$("#frm_informacion_general #comercializadora").val(),
 							pais_fue:							$("#frm_informacion_general #pais_fue").val(),
 							facturacion_sri:					$("#frm_informacion_general #facturacion_sri").val(),
 							porc_iva:							$("#frm_informacion_general #porc_iva").val(),
@@ -283,11 +286,13 @@ $(document).ready(function () {
 							envia_estadocta						:envia_estadocta,
 							formato_estado_cta					:$("#frm_informacion_general #formato_estado_cta").val(),
 							tipo_envio_estcta					:$('input[name="tipo_envio_estcta"]:checked', '#frm_informacion_general').val(),
-							dia_semana							:$("input:radio[name='dia_semana']:checked").val(),
-							inmediato							:inmediato,
+							dia_semana							:dia_semana,
 							diacal_fecha2:						$("#frm_informacion_general #diacal_fecha2").val(),
 							diacal_fecha1:						$("#frm_informacion_general #diacal_fecha1").val(),
+							inmediato							:inmediato
+							
 						}
+	
 			data = JSON.stringify(data);
 			var parameters = {	'type': 'POST',//'POST',
 								'contentType': 'application/json',
@@ -338,14 +343,14 @@ $(document).ready(function () {
 		{
 			var row = response.row;
 			
-			var est_credito_suspendido	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
-			var estado 					= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
-			var incobrable 				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
-			var dia_semana 				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
-			var inmediato 				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
+			var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
+			var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
+			var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
 			var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
 			var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
-			var tipo_envio_estcta 		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
+			var tipo_envio_estcta		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
+			var dia_semana				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
+			var inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
 			if (row!==null)
 			{
 			//	ValidateControlsInit();
@@ -373,7 +378,7 @@ $(document).ready(function () {
 				$("#frm_informacion_general #fax2").val(row.fax2);
 				$("#frm_informacion_general #fax2_ext").val(row.fax2_ext);
 				$("#frm_informacion_general #email").val(row.email);
-				$("#frm_informacion_general #usuario_vendedor_id").val(row.usuario_vendedor_id);
+				$("#frm_informacion_general #usuario_vendedor_id").html(response.cbo_usuario_vendedor_id);
 				$("#frm_informacion_general #tc_limite_credito").val(row.tc_limite_credito);
 				$("#frm_informacion_general #tc_interes").val(row.tc_interes);
 				if (row.est_credito_suspendido=='1')
@@ -384,7 +389,6 @@ $(document).ready(function () {
 				{
 				    $("#frm_informacion_general #est_credito_suspendido").prop('checked', false);
 				}
-				
 				
 				$("#frm_informacion_general #credito_suspendido_razon").val(row.credito_suspendido_razon);
 				$("#frm_informacion_general #contacto").val(row.contacto);
@@ -489,11 +493,11 @@ $(document).ready(function () {
 
 				if (row.inmediato=='1')
 				{
-				    $("#frm_informacion_general #day_inmediato").prop('checked', true);
+				    $("#frm_informacion_general #inmediato").prop('checked', true);
 				}
 				else
 				{
-				    $("#frm_informacion_general #day_inmediato").prop('checked', false);
+				    $("#frm_informacion_general #inmediato").prop('checked', false);
 				}
 				
 				$("#frm_informacion_general #diacal_fecha2").val(row.diacal_fecha2);
