@@ -20,6 +20,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	public function getUserClienteNombre()				{return $this->getRecord()['cliente_nombre'];}
 	public function getClienteSeleccionMarcacionSec()	{return $this->getRecord()['cliente_seleccion_marcacion_sec'];}
 	public function getClienteSeleccionMarcacionNombre(){return $this->getRecord()['cliente_seleccion_marcacion_nombre'];}	
+	public function getClienteSeleccionMarcacionPuntoCorte(){return $this->getRecord()['cliente_seleccion_marcacion_puntocorte'];}
 	public function getClienteSeleccionAgenciaId()		{return $this->getRecord()['cliente_seleccion_agencia_id'];}
 	public function getClientePedidoCabIdActual()		{return $this->getRecord()['cliente_pedido_cab_id_actual'];}
 	public function getVendedorUsuarioId()				{return $this->getRecord()['vendedor_usuario_id'];}
@@ -28,12 +29,14 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	public function getClienteUsuarioId()				{return $this->getRecord()['cliente_usuario_id'];}
 	public function getClienteUsuarioNombre()			{return $this->getRecord()['cliente_usuario_nombre'];}	
 	public function getClienteUsuarioUserName()			{return $this->getRecord()['cliente_usuario_username'];}
+	public function getClienteCalidadId()				{return $this->getRecord()['cliente_calidad_id'];}
+	
 	
 	public function getUserLayout(){
 		$record = $this->getRecord();
 		$this->getController()->layout()->identidad_usuario = $record;
 		return $record['layout'];
-	}
+	}//end public getUserLayout
 	
 	
 	public function setUserClienteId($valor){
@@ -51,6 +54,11 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	public function setClienteSeleccionMarcacionNombre($valor){
 		$session = new Container('usuario');
 		$session->offsetSet('cliente_seleccion_marcacion_nombre', $valor);
+	}//end function
+	
+	public function setClienteSeleccionMarcacionPuntoCorte($valor){
+		$session = new Container('usuario');
+		$session->offsetSet('cliente_seleccion_marcacion_puntocorte', $valor);
 	}//end function
 	
 	public function setClienteSeleccionAgenciaId($valor){
@@ -73,6 +81,11 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 		$session = new Container('usuario');
 		$session->offsetSet('cliente_usuario_username', $valor);
 	}//end function
+	public function setClienteCalidadId($valor){
+		$session = new Container('usuario');
+		$session->offsetSet('cliente_calidad_id', $valor);
+	}//end function
+	
 	
 	/*-----------------------------------------------------------------------------*/
 	public function getRecord()
@@ -95,6 +108,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 					'cliente_seleccion_marcacion_sec'	=> $session->offsetGet('cliente_seleccion_marcacion_sec'),
 					'cliente_seleccion_marcacion_nombre'=> $session->offsetGet('cliente_seleccion_marcacion_nombre'),
 					'cliente_seleccion_agencia_id'		=> $session->offsetGet('cliente_seleccion_agencia_id'),
+					'cliente_seleccion_marcacion_puntocorte'=> $session->offsetGet('cliente_seleccion_marcacion_puntocorte'),
 					'cliente_pedido_cab_id_actual'		=> $session->offsetGet('cliente_pedido_cab_id_actual'),
 					'vendedor_usuario_id'				=> $session->offsetGet('vendedor_usuario_id'),
 					'vendedor_nombre_usuario'			=> $session->offsetGet('vendedor_nombre_usuario'),
@@ -102,7 +116,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 					'cliente_usuario_id'				=> $session->offsetGet('cliente_usuario_id'),
 					'cliente_usuario_nombre'			=> $session->offsetGet('cliente_usuario_nombre'),
 					'cliente_usuario_username'			=> $session->offsetGet('cliente_usuario_username'),
-								
+					'cliente_calidad_id'				=> $session->offsetGet('cliente_calidad_id'),
 					];
 		return $result;
 	}//end function getRecord

@@ -49,6 +49,9 @@ class PedidoDetDAO extends Conexion
 				'estado_mixto'        							=> $PedidoDetData->getEstadoMixto(),
 				*/
 				'estado_reg_oferta'        						=> $PedidoDetData->getEstadoRegOferta(),
+				'calidad_id'									=> $PedidoDetData->getCalidadId(),
+				'punto_corte'									=> $PedidoDetData->getPuntoCorte(),
+				'eq_fb'											=> $PedidoDetData->getEqFb(),
 				'usuario_ing_id'								=> $PedidoDetData->getUsuarioIngId(),
 				'usuario_mod_id'								=> $PedidoDetData->getUsuarioModId(),
 				'fec_ingreso'									=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
@@ -100,7 +103,8 @@ class PedidoDetDAO extends Conexion
 				'estado_pedido_adicional'        				=> $PedidoDetData->getEstadoPedidoAdicional(),
 				'estado_mixto'        							=> $PedidoDetData->getEstadoMixto(),
 				'estado_reg_oferta'        						=> $PedidoDetData->getEstadoRegOferta()
-				
+				'calidad_id'									=> $PedidoDetData->getCalidadId(),
+				'punto_corte'									=> $PedidoDetData->getPuntoCorte(),				
 				
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
@@ -117,11 +121,14 @@ class PedidoDetDAO extends Conexion
 	 */
 	public function actualizarNroCajas(PedidoDetData $PedidoDetData)
 	{
+		$cajas_fb = \Application\Classes\CajaConversion::equivalenciaFB($PedidoDetData->getTipoCajaId(), $PedidoDetData->getNroCajas());
+				
 		$key    = array(
 				'pedido_cab_id'			      		  		  => $PedidoDetData->getPedidoCabId(),
 				'pedido_det_sec'						      => $PedidoDetData->getPedidoDetSec()
 		);
 		$record = array(
+				'eq_fb'											=> $cajas_fb,
 				'nro_cajas'        								=> $PedidoDetData->getNroCajas(),
 				'cantidad_bunch'   		     					=> $PedidoDetData->getCantidadBunch(),
 				//'tallos_x_bunch'	        					=> $PedidoDetData->getTallosxBunch(),
@@ -241,6 +248,8 @@ class PedidoDetDAO extends Conexion
 			$PedidoDetData->setEstadoPedidoAdicional		($row['estado_pedido_adicional']);
 			$PedidoDetData->setEstadoMixto					($row['estado_mixto']);
 			$PedidoDetData->setEstadoRegOferta				($row['estado_reg_oferta']);
+			$PedidoDetData->setCalidadId					($row['calidad_id']);
+			$PedidoDetData->setPuntoCorte					($row['punto_corte']);
 			
 			return $PedidoDetData;
 		}else{

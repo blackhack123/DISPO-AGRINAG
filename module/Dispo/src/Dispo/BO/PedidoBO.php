@@ -19,6 +19,17 @@ use Dispo\Exception\PedidoException;
 
 class PedidoBO extends Conexion
 {
+	private $calidad_id 	= null;
+	private $punto_corte 	= null;
+	
+	
+	public function getCalidadId()	{return $this->calidad_id;}
+	public function getPuntoCorte()	{return $this->punto_corte;}
+	
+	public function setCalidadId($valor)	{$this->calidad_id 		= $valor;}
+	public function setPuntoCorte($valor)	{$this->punto_corte		= $valor;}
+	
+	
 	
 	public function addItemOferta(	$pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
 								    $variedad_id, $grado_id, $tipo_caja_id, $nro_cajas_seleccionada,
@@ -187,6 +198,13 @@ class PedidoBO extends Conexion
 			}else{
 				$PedidoDetData->setEstadoRegOferta		(0);				
 			}//end if
+			$PedidoDetData->setCalidadId			($this->calidad_id);
+			$PedidoDetData->setPuntoCorte			($this->punto_corte);  //MORONITOR
+
+			//conversion a caja FB
+			$cajas_fb = \Application\Classes\CajaConversion::equivalenciaFB($tipo_caja_id, $nro_cajas_seleccionada);
+			$PedidoDetData->setEqFb					($cajas_fb);
+			
 			$PedidoDetData->setUsuarioIngId			($usuario_ing_id);
 			$PedidoDetData->setUsuarioModId			($usuario_ing_id);
 			$key_det =  $PedidoDetDAO->ingresar($PedidoDetData);
@@ -196,7 +214,7 @@ class PedidoBO extends Conexion
 			 */
 			$PedidoCabDAO->actualizarTotal($pedido_cab_id);
 			
-			
+
 			/*
 			 * 6. Devuelve el resultado del registro del PEDIDO
 			 */
@@ -447,7 +465,7 @@ class PedidoBO extends Conexion
 		$DispoBO				= new DispoBO();
 		
 		$PedidoProveedorData	= new PedidoProveedorData();
-		
+
 		
 		$this->getEntityManager()->getConnection()->beginTransaction();
 
@@ -559,7 +577,7 @@ class PedidoBO extends Conexion
 					foreach($reg_dispo_actual['proveedores_dispo'] as $proveedor_dispo)
 					{
 						//var_dump($proveedor_dispo->nro_cajas); exit;
-							
+
 						if ($pedido_nro_cajas > $proveedor_dispo['nro_cajas'])
 						{
 							$nro_cajas 			= $proveedor_dispo['nro_cajas'];
@@ -568,11 +586,11 @@ class PedidoBO extends Conexion
 							$nro_cajas 			= $pedido_nro_cajas;
 							$pedido_nro_cajas 	=  0;
 						}//end if
-							
+
 						$cantidad_bunchs	= $nro_cajas * $reg_dispo_actual['cantidad_bunch'];  //HASTA AQUI ME QUEDE
 						$tallos_total		= $cantidad_bunchs * $reg_dispo_actual['tallos_x_bunch'];
 						$total				= $tallos_total * $reg_dispo_actual['precio'];
-						
+
 						//Se crea la Data para PedidoProveedorData
 						$PedidoProveedorData	= new PedidoProveedorData();
 						$PedidoProveedorData->setPedidoCabId	($reg_pedido['pedido_cab_id']);
@@ -586,6 +604,10 @@ class PedidoBO extends Conexion
 						$PedidoProveedorData->setGradoId		($reg_pedido['grado_id']);
 						$PedidoProveedorData->setPrecio			($reg_pedido['precio']);
 						$PedidoProveedorData->setTotal			($total);
+						
+						//Equivalencias de Caja FB
+						$cajas_fb	= \Application\Classes\CajaConversion::equivalenciaFB($reg_pedido['tipo_caja_id'], $nro_cajas) ;
+						$PedidoProveedorData->setEqFb			($cajas_fb);
 
 						$key_pedidoproveedor = $PedidoProveedorDAO->ingresar($PedidoProveedorData);
 							 	

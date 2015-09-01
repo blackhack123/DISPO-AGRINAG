@@ -144,13 +144,16 @@ class UsuarioDAO extends Conexion {
 				
 			case \Application\Constants\ResultType::MATRIZ:
 				$sql = 	' SELECT usuario.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name, '.
-						'        cliente.nombre cliente_nombre'.
+						'        cliente.nombre cliente_nombre, '.
+						'        grupo_precio_cab.calidad_id '.
 						' FROM usuario LEFT JOIN usuario as usuario_ing '.
 						'                           ON usuario_ing.id = usuario.usuario_ing_id '.
 						'					 LEFT JOIN usuario as usuario_mod '.
 						'                           ON usuario_mod.id = usuario.usuario_mod_id '.	
-						'				LEFT JOIN cliente '.
-						'              				ON cliente.id	= usuario.cliente_id'.				
+						'					 LEFT JOIN cliente '.
+						'              				ON cliente.id	= usuario.cliente_id'.	
+						'              	     LEFT JOIN grupo_precio_cab '.
+						'                     		ON grupo_precio_cab.id = cliente.grupo_precio_cab_id '.
 						' WHERE usuario.id = :id ';
 				
 				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
@@ -274,11 +277,14 @@ class UsuarioDAO extends Conexion {
 				"        usuario.email, usuario.perfil_id, ".
 				"        usuario.cliente_id, usuario.estado, usuario.grupo_dispo_cab_id,".
 				"        perfil.nombre as perfil_nombre, ".
-				"        cliente.nombre as cliente_nombre ".
+				"        cliente.nombre as cliente_nombre, ".
+				"        grupo_precio_cab.calidad_id ".
 				" FROM usuario INNER JOIN perfil ".
 				"                      ON perfil.id		= usuario.perfil_id".
 				"              LEFT JOIN cliente ".
 				"                      ON cliente.id	= usuario.cliente_id".
+				'              LEFT JOIN grupo_precio_cab '.
+				'                      ON grupo_precio_cab.id = cliente.grupo_precio_cab_id '.
 				" WHERE username = :username";
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
@@ -325,7 +331,7 @@ class UsuarioDAO extends Conexion {
 	 */
 	function consultarGrupoDispoCab($usuario_id)
 	{
-		$sql = 	" SELECT usuario.grupo_dispo_cab_id, grupo_dispo_cab.inventario_id, calidad.clasifica_fox ".
+		$sql = 	" SELECT usuario.grupo_dispo_cab_id, grupo_dispo_cab.inventario_id, grupo_precio_cab.calidad_id, calidad.clasifica_fox ".
 				" FROM usuario INNER JOIN grupo_dispo_cab ".
 				"                      ON grupo_dispo_cab.id   		= usuario.grupo_dispo_cab_id".
 				"              LEFT JOIN cliente ".
