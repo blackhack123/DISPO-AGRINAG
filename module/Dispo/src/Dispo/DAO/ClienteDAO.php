@@ -164,6 +164,7 @@ class ClienteDAO extends Conexion
 				'cliente_especial'					=> $ClienteData->getClienteEspecial(),
 				'incobrable'						=> $ClienteData->getIncobrable(),
 				'envia_estadocta'		        	=> $ClienteData->getEnviaEstadoCta(),
+				'tipo_envio_estcta'					=>$ClienteData->getTipoEnvioEstCta(),
 				'dia_semana'		        		=> $ClienteData->getDiaSemana(),
 				'diacal_fecha2'		        		=> $ClienteData->getDiaCalFecha2(),
 				'diacal_fecha1'		        		=> $ClienteData->getDiaCalFecha1(),
