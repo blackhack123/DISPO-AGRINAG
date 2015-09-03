@@ -12,6 +12,10 @@ use Dispo\BO\MarcacionBO;
 use Dispo\BO\AgenciaCargaBO;
 use Zend\Http\Client;
 use Zend\Http\Request;
+use Dispo\BO\Dispo\BO;
+use Dispo\BO\CalidadBO;
+use Dispo\BO\InventarioBO;
+use Dispo\BO\ProveedorBO;
 
 class DisponibilidadController extends AbstractActionController
 {
@@ -487,13 +491,13 @@ class DisponibilidadController extends AbstractActionController
 	}//end function listadodispoAction	
 	
 	
-	
+
 	
 	public function remotesincronizarpreviewAction()
 	{
 		try
 		{		
-			$config 				= $this->getServiceLocator()->get('Config');
+			$config 			= $this->getServiceLocator()->get('Config');
 			
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
@@ -634,23 +638,49 @@ class DisponibilidadController extends AbstractActionController
 		
 	
 	
-	public function disponibilidadgeneralAction()
+	public function disponibilidaddataAction()
 	{
 		try
 		{
-			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
-		
-			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->isLoginAdmin();
-		
-			$DispoBO				= new DispoBO();
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+
+			$DispoBO = new DispoBO();
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-		
-			$viewModel 				= new ViewModel();
-			$this->layout($SesionUsuarioPlugin->getUserLayout());
-			$viewModel->setTemplate('dispo/disponibilidad/disponibilidadgeneral.phtml');
-			return $viewModel;
-		
+
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+
+			$request 		= $this->getRequest();
+			$inventario_id  = $request->getQuery('inventario_id', "");
+			$proveedor_id  	= $request->getQuery('proveedor_id', "");
+			$clasifica  	= $request->getQuery('clasifica', "");
+			$page 			= $request->getQuery('page');
+			$limit 			= $request->getQuery('rows');
+			$sidx			= $request->getQuery('sidx',1);
+			$sord 			= $request->getQuery('sord', "");
+			$DispoBO->setPage($page);
+			$DispoBO->setLimit($limit);
+			$DispoBO->setSidx($sidx);
+			$DispoBO->setSord($sord);
+			$condiciones = array(
+					"inventario_id"	=> $inventario_id,
+					"proveedor_id"	=> $proveedor_id,
+					"clasifica"		=> $clasifica
+			);
+			$result = $DispoBO->listado($condiciones);
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){	
+				$row['variedad'] = trim($row['variedad']);	
+				$response->rows[$i] = $row;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
@@ -658,7 +688,161 @@ class DisponibilidadController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function disponiblidadgeneralAction
+	}//end function disponibilidaddataAction
+
+	
+
+	
+	public function initcontrolsAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+
+			$InventarioBO 	= new InventarioBO();
+			$CalidadBO		= new CalidadBO();
+			$ProveedorBO	= new ProveedorBO();
+
+			$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ProveedorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+
+			$opcion						= $json['opcion'];
+			$inventario_1er_elemento	= $json['inventario_1er_elemento'];
+			$calidad_1er_elemento		= $json['calidad_1er_elemento'];
+			$proveedor_1er_elemento		= $json['proveedor_1er_elemento'];
+			$inventario_id	= null;
+			$clasifica_fox	= null;
+			$proveedor_id	= null;
+
+			$inventario_opciones 	= $InventarioBO->getCombo($inventario_id, $inventario_1er_elemento);
+			$calidad_opciones 		= $CalidadBO->getComboCalidadFox($clasifica_fox, $calidad_1er_elemento);
+			$proveedor_opciones 	= $ProveedorBO->getCombo($proveedor_id, $proveedor_1er_elemento);
+
+			$response = new \stdClass();
+			$response->inventario_opciones		= $inventario_opciones;
+			$response->calidad_opciones			= $calidad_opciones;
+			$response->proveedor_opciones		= $proveedor_opciones;
+			$response->respuesta_code 			= 'OK';
+
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function initcontrolsAction
+	
+	
+	
+	function consultarPorInventarioPorCalidadPorProveedorPorGradoAction()
+	{
+			try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			
+			$DispoBO 			= new DispoBO();
+			
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$inventario_id		= $json['inventario_id'];
+			$clasifica_fox		= $json['clasifica_fox'];
+			$proveedor_id		= $json['proveedor_id'];
+			$variedad_id		= $json['variedad_id'];
+			$grado_id			= $json['grado_id'];
+
+			$row				= $DispoBO->consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+
+			$response = new \stdClass();
+			$response->row					= $row;
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function consultarPorInventarioPorCalidadPorProveedorPorGradoAction
+	
+	
+	
+	function grabarstockproveedorAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+				
+			$DispoBO 			= new DispoBO();
+				
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+
+			$inventario_id  	= $json['inventario_id'];
+			$producto			= 'ROS';
+			$clasifica_fox  	= $json['clasifica_fox'];
+			$proveedor_id  		= $json['proveedor_id'];
+			$variedad_id  		= $json['variedad_id'];
+			$grado_id  			= $json['grado_id'];
+			$stock['AGR'] 		= $json['stock_agr'];
+			$stock['HTC'] 		= $json['stock_htc'];
+			$stock['LMA'] 		= $json['stock_lma'];
+			$result = $DispoBO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id,  $stock);
+
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->validacion_code 		= $result['validacion_code'];
+			$response->respuesta_mensaje	= $result['respuesta_mensaje'];
+			if ($row)
+			{
+				$response->row					= $row;
+				$response->cbo_tipo				= $AgenciaCargaBO->getComboTipo($row['tipo'], " ");
+				$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			}else{
+				$response->row					= null;
+				$response->cbo_tipo				= '';
+				$response->cbo_estado			= '';
+			}//end if
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function grabarstockproveedorAction
 	
 	
 }

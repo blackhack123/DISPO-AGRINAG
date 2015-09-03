@@ -449,5 +449,83 @@ class DispoBO extends Conexion
 		
 		return $result_hueso;
 	}//end function consultarPrecioOfertaPorClienteHueso	
+
+	
+	
+	/**
+	 * 
+	 * @param array $condiciones (inventario_id, proveedor_id, $clasifica)
+	 * @return array:
+	 */
+	public function listado($condiciones)
+	{
+		$DispoDAO = new DispoDAO();
+		$DispoDAO->setEntityManager($this->getEntityManager());
+		$result = $DispoDAO->listado($condiciones);
+		return $result;		
+	}//end function listado
+	
+
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $clasifica_fox
+	 * @param string $proveedor_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @return Ambigous <NULL, array>
+	 */
+	public function consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id)
+	{
+		$DispoDAO = new DispoDAO();
+		$DispoDAO->setEntityManager($this->getEntityManager());
+		$result = $DispoDAO->consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+		
+		$row = null;
+		foreach($result as $reg)
+		{
+			$row[$reg['proveedor_id']]['tot_bunch_disponible'] = $reg['tot_bunch_disponible'];
+		}//end if
+
+		return $row;
+	}//end function consultarPorInventarioPorCalidadPorProveedorPorGrado
+	
+	
+	
+	
+	public function actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id,  $stock)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try
+		{
+			$DispoDAO = new DispoDAO();
+			$DispoDAO->setEntityManager($this->getEntityManager());
+
+			if (empty($proveedor_id))
+			{
+				//TODAS LAS FINCAS
+				foreach($stock as $clave => $valor)
+				{
+					$DispoDAO->actualizarStock($inventario_id, $producto, $clasifica_fox, $clave, $variedad_id, $grado_id, $valor);
+				}//end foreach
+			}else{
+
+				//UNA SOLA FINCA
+				$stock = $stock[$proveedor_id];
+				$DispoDAO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $stock);
+			}//end if
+
+			$result['validacion_code'] 	= 'OK';
+			$result['respuesta_mensaje']= '';
+		
+			$this->getEntityManager()->getConnection()->commit();
+			return $result;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}		
+	}//end function actualizarStock
+	
 	
 }//end class DispoBO

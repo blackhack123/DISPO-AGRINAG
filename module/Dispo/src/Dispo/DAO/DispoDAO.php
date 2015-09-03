@@ -80,7 +80,7 @@ class DispoDAO extends Conexion
 	 */	
 	public function consultar($id)
 	{
-		$AgenciaCargaData 		    = new DispoData();
+		$DispoData 		    = new DispoData();
 
 		$sql = 	' SELECT dispo.* '.
 				' FROM dispo '.
@@ -120,7 +120,7 @@ class DispoDAO extends Conexion
 	 * @param array $condiciones  ($cliente_id, $usuario_id, $marcacion_sec)
 	 * @return array
 	 */
-	public function listado($condiciones)
+/*	public function listado($condiciones)
 	{
 		$sql = 	' SELECT *'.
 				' FROM dispo '.
@@ -130,7 +130,7 @@ class DispoDAO extends Conexion
 		$result = $stmt->fetchAll();
 		return $result;
 	}//end function listado
-
+*/
 	
 	
 	/**
@@ -240,6 +240,204 @@ class DispoDAO extends Conexion
 		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
 		return $count;		
 	}//end function rebajar
+	
+	
+	
+
+	/**
+	 *
+	 * @param array $condiciones (inventario_id, proveedor_id, $clasifica)
+	 * @return array:
+	 */
+	public function listado($condiciones)
+	{
+		$sql = 	' SELECT variedad.nombre as variedad, dispo.variedad_id, '.
+				" 		 SUM(if(dispo.grado_id=40,  dispo.cantidad_bunch_disponible, 0)) as '40',".
+				" 		 SUM(if(dispo.grado_id=50,  dispo.cantidad_bunch_disponible, 0)) as '50',".
+				" 		 SUM(if(dispo.grado_id=60,  dispo.cantidad_bunch_disponible, 0)) as '60',".
+				" 		 SUM(if(dispo.grado_id=70,  dispo.cantidad_bunch_disponible, 0)) as '70',".
+				" 		 SUM(if(dispo.grado_id=80,  dispo.cantidad_bunch_disponible, 0)) as '80',".
+				" 		 SUM(if(dispo.grado_id=90, dispo.cantidad_bunch_disponible, 0)) as '90',".
+				" 		 SUM(if(dispo.grado_id=100, dispo.cantidad_bunch_disponible, 0)) as '100',".
+				" 		 SUM(if(dispo.grado_id=110, dispo.cantidad_bunch_disponible, 0)) as '110'".				
+				' FROM dispo LEFT JOIN variedad '.
+				'		                ON variedad.id      = dispo.variedad_id '.
+				' WHERE 1 = 1 ';
+
+		if (!empty($condiciones['inventario_id']))
+		{
+			$sql = $sql." and dispo.inventario_id = '".$condiciones['inventario_id']."'";
+		}//end if
+		
+		if (!empty($condiciones['proveedor_id']))
+		{
+			$sql = $sql." and dispo.proveedor_id = '".$condiciones['proveedor_id']."'";
+		}//end if
+		
+		if (!empty($condiciones['clasifica']))
+		{
+			$sql = $sql." and dispo.clasifica = '".$condiciones['clasifica']."'";
+		}//end if
+
+		$sql=$sql.' GROUP BY variedad.nombre, dispo.variedad_id ';
+		$sql=$sql." ORDER BY variedad.nombre ";
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		
+		return $result;		
+	}//end function listado
+	
+	
+	
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $clasifica_fox
+	 * @param string $proveedor_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @return array
+	 */
+	public function consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id)
+	{
+		$sql = 	' SELECT proveedor_id, sum(cantidad_bunch_disponible) as tot_bunch_disponible '.
+				' FROM dispo '.
+				" WHERE inventario_id 	= '".$inventario_id."'".
+				"   and clasifica		= '".$clasifica_fox."'".
+				"   and variedad_id		= '".$variedad_id."'".
+				"   and grado_id		= '".$grado_id."'";
+
+		if (!empty($proveedor_id))
+		{
+			$sql = $sql."  and proveedor_id = '".$proveedor_id."'";	
+		}//end if
+		
+		$sql = $sql." GROUP BY proveedor_id";
+
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+
+/*		$row_consolidado = null;
+		foreach($result as $reg)
+		{
+			$row_consolidado[$reg['proveedor_id']]['cantidad_bunch_disponible'] = $reg['cantidad_bunch_disponible'];
+		}//end foreach
+*/
+		return $result;		
+	}//end function consultarPorInventarioPorCalidadPorProveedorPorGrado
+	
+	
+	
+
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $producto
+	 * @param string $clasifica_fox
+	 * @param string $proveedor_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @return \Dispo\Data\DispoData|NULL
+	 */
+	public function consultarMaximoRegistroPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id)
+	{
+		$DispoData 		    = new DispoData();
+		
+		$sql = 	' SELECT *  '.
+				' FROM dispo '.
+				" WHERE inventario_id 	= '".$inventario_id."'".
+				"   and producto		= '".$producto."'".
+				"   and clasifica		= '".$clasifica_fox."'".
+				"   and proveedor_id	= '".proveedor_id."'".				
+				"   and variedad_id		= '".$variedad_id."'".
+				"   and grado_id		= '".$grado_id."'".
+				" ORDER BY id DESC".
+				" LIMIT BY 1";
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+
+		if($row){
+		
+			$DispoData->getId						($row['id']);
+			$DispoData->getFecha 					($row['Fecha']);
+			$DispoData->getInventarioId				($row['inventario_id']);
+			$DispoData->getFechaBunch				($row['fecha_bunch']);
+			$DispoData->getProveedorId				($row['proveedor_id']);
+			$DispoData->getProducto					($row['producto']);
+			$DispoData->getVariedadId				($row['variedad_id']);
+			$DispoData->getGradoId					($row['grado_id']);
+			$DispoData->getTallosxBunch				($row['tallos_x_bunch']);
+			$DispoData->getClasifica				($row['clasifica']);
+			$DispoData->getCantidadBunch			($row['cantidad_bunch']);
+			$DispoData->getCantidadBunchDisponible	($row['cantidad_bunch_disponible']);
+		
+			return $DispoData;
+		}else{
+			return null;
+		}//end if				
+	}//end function consultarMaximoRegistroPorStock
+	
+	
+	
+	
+	public function actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $stock)
+	{
+		//Consulta el ultimo registro para obtener el ID
+		$DispoData = $this->consultarMaximoRegistroPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+		
+		if ($DispoData)
+		{
+			//Actualiza
+			if ($DispoData->getCantidad_bunch() < $stock){
+				$DispoData->setCantidadBunch($stock);
+			}//end if
+			$DispoData->setCantidadBunchDisponible($stock);
+			$id = $this->modificar($DispoData);
+		}else{
+			//Ingresa
+			//$DispoData->setId($valor);
+			$DispoData->setFecha($valor);
+			$DispoData->setInventarioId($inventario_id);
+			$DispoData->setFechaBunch($valor);
+			$DispoData->setProveedorId($proveedor_id);
+			$DispoData->setProducto($producto);
+			$DispoData->setVariedadId($variedad_id);
+			$DispoData->setGradoId($grado_id);
+			$DispoData->setTallosxBunch($valor);
+			$DispoData->setClasifica($clasifica_fox);
+			if ($DispoData->getCantidad_bunch() < $stock){
+				$DispoData->setCantidadBunch($stock);
+			}//end if
+			$DispoData->setCantidadBunchDisponible($stock);
+			
+			$id = $this->ingresar($DispoData);
+		}//end if
+		
+		//Con el registro identificadado se procede a realizar la actualizacion
+		
+		$key    = array(
+				'id'						        => $AgenciaCargaData->getId(),
+		);
+		$record = array(
+				'nombre'		                    => $AgenciaCargaData->getNombre(),
+				'direccion'		            		=> $AgenciaCargaData->getDireccion(),
+				'telefono'                			=> $AgenciaCargaData->getTelefono(),
+				'tipo'                				=> $AgenciaCargaData->getTipo(),
+				'estado'                			=> $AgenciaCargaData->getEstado(),
+				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                	=> $AgenciaCargaData->getUsuarioModId(),
+				'sincronizado'       	         	=> 0
+				//'fecha_mod'							=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $DispoData->getId();		
+	}//end function actualizarStock
+	
+	
 	
 }//end class
 

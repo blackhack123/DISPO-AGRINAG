@@ -80,6 +80,25 @@ class InventarioDAO extends Conexion
 
 	}//end function consultar
 
+	
+	/**
+	 * consultarTodos
+	 *
+	 * @return array
+	 */
+	public function consultarTodos()
+	{
+		$sql = 	' SELECT inventario.* '.
+				' FROM inventario ';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		//return new ViewModel(array(result'=>$result));
+		return $result;
+	}//end function consultarTodos
+		
 }//end class
 
 ?>

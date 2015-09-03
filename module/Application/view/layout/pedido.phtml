@@ -50,7 +50,9 @@
     		->appendFile($this->basePath('js/custom-validate/i18n/custom-validate-fecha-es.js'))
     		->appendFile($this->basePath('js/custom-validate/custom-validate-cedula.js'))	
     		->appendFile($this->basePath('js/custom-tips/custom-tips.js'))
-			->appendFile($this->basePath('js/custom-system/input_data.js'));
+			->appendFile($this->basePath('js/custom-system/input_data.js'))
+			->appendFile($this->basePath('js/custom-jqGrid/jqGrid-rutinas-extras.js'))
+			->appendFile($this->basePath('js/custom-resize/custom-resize.js'));
      ?>
     
 
@@ -82,6 +84,13 @@
 			return false;
         });	
 		
+		//Se esconde los mensajes
+		//$("#tasks_message").show();
+		$("#msg_order").hide();			//msg_orden - esto aparecera cuando se haga el ADD para anadir la orden
+		consultarNroItemsPedidoComprando();
+
+		
+
 		//Se pone los estilos para que no se sobrepongan al tooltips
 		$(".title-section, .dform-control").css("z-index","-1");
 		$(".title-section, .dform-control").css("position","relative");
@@ -100,12 +109,53 @@
 			//loadtext: "Loading...",
 			emptyrecords: "No existen registros",
 		});
-
 		
-		//Se esconde los mensajes
-		//$("#tasks_message").show();
-		$("#msg_order").hide();			//msg_orden - esto aparecera cuando se haga el ADD para anadir la orden
-		consultarNroItemsPedidoComprando();
+
+		/*------Eventos para el End Resize Window ------*/
+		
+		   var waitForFinalEvent = (function () {
+			  var timers = {};
+			  return function (callback, ms, uniqueId) {
+			    if (!uniqueId) {
+			      uniqueId = "Don't call this twice without a uniqueId";
+			    }
+			    if (timers[uniqueId]) {
+			      clearTimeout (timers[uniqueId]);
+			    }
+			    timers[uniqueId] = setTimeout(callback, ms);
+			  };
+			})();
+		
+		/*-------------------------------------------------*/
+
+		/*
+		$(window).resize(function () {
+		    waitForFinalEvent(function(){
+		    	  resize_JqGrid_Refresh($(this));
+		    }, 500, "some unique string");
+		});			
+						
+		function resize_JqGrid_Refresh()
+		{
+			//var innerWidth = window.frameElement.scrollWidth - 25;
+			var innerWidth = window.scrollWidth - 25;
+			$('.grid-resize').setGridWidth(innerWidth);
+		}//end function function resize_JQGrid
+		*/
+		
+		/*-----Se redimensiona el alto del GRID de acuerdo a la pantalla------*/
+		 var timer = window.setTimeout(function() {}, 0);
+		 $(window).on('resize', function() {
+		        window.clearTimeout(timer);
+		        timer = window.setTimeout(function() {
+		        	$.each($('.grid-autoheight'), function() {
+		        		autoHeight_JqGrid_Refresh(this.id)
+		        	});
+		            //$window.trigger('resizeend');
+		        }, 500);
+		});
+		/*--------------------------------------------------------------------*/
+		
 	});//$(document).ready
 
 
@@ -164,7 +214,7 @@
             </div>                       
         </div>
 
-        <div class="menu-app" data-spy="affix" data-offset-top="60" data-offset-bottom="0">
+        <div class="menu-app"  data-offset-top="60" data-offset-bottom="0">
         	<div class="pull-right">
                 <div class="menu-app-adorno">
                      <span class="glyphicon glyphicon-list"></span>

@@ -211,3 +211,19 @@ background-color:#DFEFFF;
 /*--------------------------------------------------------*/
 /* END - Estilos Controles JQGrid        		  	      */
 /*--------------------------------------------------------*/
+
+[role="gridcell"] a:link{
+	text-decoration:underline;	
+}
+
+[role="gridcell"] a:visited {
+	text-decoration:underline;	
+}
+
+[role="gridcell"] a:hover{
+	text-decoration:underline;	
+}
+
+[role="gridcell"] a:active{
+	text-decoration:underline;	
+}

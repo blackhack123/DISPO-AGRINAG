@@ -1,6 +1,9 @@
 <meta charset="UTF-8">
+	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/disponibilidad.js')); ?>"></script>
 	<script>
 		$(document).ready(function () {
+			InputData_TrimAll();
+			
 			//$("#tbl_proveedor").stickyTableHeaders();
 			$('#tbl_proveedor').tablesorter(); //Columna de Sueldo
 			$("#tbl_proveedor").stickyTableHeaders();
@@ -238,7 +241,7 @@
 
 
 
-<form id="frm" name="frm" action="<?php echo($this->basePath()); ?>/dispo/disponibilidad/asignarMarcacionAgencia" method="post">	
+
     <div class="title-admin-section">
         <h1>PANEL DE CONTROL DE DISPONIBILIDAD</h1>
     </div>            
@@ -318,7 +321,83 @@
                     </div>
                     <div role="tabpanel" class="tab-pane" id="tab_dispo">
                         <div class="panel panel-default">
-                            ...TAB DISPO
+                        	<form id="frm_dispo" name="frm_dispo" action="#" method="post" class="form-inline">
+                                <div class="form-group">
+                                     <select  id="inventario_id" class="form-control input-sm" style="width:130px"></select>
+                                     <select  id="calidad_id" class="form-control input-sm" style="width:130px"></select>
+                                     <select  id="proveedor_id" class="form-control input-sm" style="width:130px"></select>         
+                                     <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
+                                </div>
+								<p>
+                                    <table id="grid_dispo_general" class="grid grid-autoheight"></table>
+                                    <div id="pager_dispo_general"></div>
+                                </p>
+                            </form>
+                            
+                            <!-- Modal -->
+                            <form id="frm_dispo_proveedor" name="frm_dispo_proveedor" action="#" method="post" class="form-group" />
+                            	<input type="text" id="inventario_id" value="" />
+                            	<input type="text" id="calidad_id" value="" />
+                            	<input type="text" id="proveedor_id" value="" />
+                            	<input type="text" id="variedad_id" value="" />
+                                <input type="text" id="grado_id" value="" />                                
+                                <div class="modal fade" id="dialog_dispo_proveedores" tabindex="-1" role="dialog" aria-labelledby="Dialogo para Configurar el Stock de los Proveedores">
+                                    <div class="modal-dialog modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="myModalLabel"><span id="dialog_dispo_proveedores_titulo"></span></h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="col-md-12 text-center">
+                                                                AGR
+                                                            </div>
+                                                            <div class="col-md-12 text-center">
+                                                                <input id="stock_agr" max-lenght="3" class="form-control" type="text" style="text-align:center" value="">
+                                                            </div>
+                                                         </div>
+                                                    </div>
+                                                    
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="col-md-12 text-center">
+                                                                HTC
+                                                            </div>
+                                                            <div class="col-md-12 text-center">
+                                                                <input id="stock_htc" max-lenght="3" class="form-control" type="text" style="text-align:center" value="">
+                                                            </div>
+                                                         </div>
+                                                    </div>
+    
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="col-md-12 text-center">
+                                                                LMA
+                                                            </div>
+                                                            <div class="col-md-12 text-center">
+                                                                <input id="stock_lma" max-lenght="3" class="form-control" type="text" style="text-align:center" value="">
+                                                            </div>
+                                                         </div>
+                                                    </div>                                               	
+                                                    
+                                                </div>
+                                                
+                                                <p>
+                                                <div class="row">
+                                                    <div class="col-md-12 text-right">
+                                                        <button id="btn_grabar" type="button" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok"></i> GRABAR</button>
+                                                    </div>
+                                                </div>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                       		</form>
+                                                                               
                          </div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="tab_dispo_x_grupo">
@@ -335,7 +414,7 @@
             </div>            
         </section>
     </div>	            
- </form>	
+
 
 
 
