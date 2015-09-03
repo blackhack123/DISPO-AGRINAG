@@ -22,7 +22,7 @@
 	<section class="body-admin-section">    	
     	<div class="accion-admin-section"> 	
         	<div class="botonera-admin-section pull-left separator">
-            	<a id="btn_nuevo" class="btn btn-primary btn-xs" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
+            	<a id="btn_nuevo_cliente" class="btn btn-primary btn-xs" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
             </div>
         	<div class="busqueda-admin-section pull-left">	
             	<!--- div class="form-inline" -->
@@ -127,7 +127,7 @@
               <!-- Tab paneL -->
               <div class="tab-content">
                 <div role="tabpanel" class="tab-panel fade in active" id="tab_informacion_general">
-                	<div class="row">
+                	<div class="row clear" >
                			<form class="form-horizontal" role="form" name="frm_informacion_general" id="frm_informacion_general">
                         <!--PRIMERA COLUMNA-->
                             <div class="col-lg-4 table-striped " style="margin:0px; padding:0px;">
@@ -136,7 +136,7 @@
                                             <label for="c1" class="control-label"> Cliente: </label>
                                         </div>
                                         <div class="col-lg-7"  >
-                                            <input type="text" class="form-control " id="cliente_id" name="cliente_id" ><br/>
+                                            <input type="text" class="form-control " id="cliente_id" name="cliente_id" validate="required" validateMessage="Ingrese un Codigo" ><br/>
                                         </div>
                                     </div>
                                     <div class="col-lg-7" >
@@ -152,7 +152,7 @@
                                             <label for="co1" class="control-label"> Nombre: </label>
                                         </div>
                                         <div class="col-lg-10">
-                                            <input type="text" class="form-control" id="nombre" name="nombre"><br/>
+                                            <input type="text" class="form-control" id="nombre" name="nombre" validate="required" validateMessage="Ingrese un nombre" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                          </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -160,7 +160,7 @@
                                         	<label for="co1" class="control-label"> Abrevia: </label>
                                       </div>
                                       <div class="col-lg-4">
-                                        	<input type="text" class="form-control" id="abreviatura" name="abreviatura"><br/>
+                                        	<input type="text" class="form-control" id="abreviatura" name="abreviatura"  onkeyup="this.value=this.value.toUpperCase()"><br/>
                                       </div>
 									</div>
                                     <div class="col-lg-12">
@@ -168,7 +168,7 @@
                                             <label for="co1" class="control-label"> Grupo: </label>
                                         </div>
                                         <div class="col-lg-4">
-                                     		<select  name="grupo_precio_cab_id" class="form-control" id="grupo_precio_cab_id"></select><br/>
+                                     		<select  name="grupo_precio_cab_id" class="form-control" id="grupo_precio_cab_id" validate="required" validateMessage="Grupo Requerido"></select><br/>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -176,7 +176,7 @@
                                             <label for="d1" class="control-label"> Direccíon: </label>
                                         </div>
                                         <div class="col-lg-10">
-                                            <textarea class="form-control" rows="3" style="resize:none;" id="direccion" name="direccion"></textarea><br/>
+                                            <textarea class="form-control" rows="3" style="resize:none;" id="direccion" name="direccion" validate="required" validateMessage="Ingrese una Direccion"></textarea><br/>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -184,7 +184,7 @@
                                             <label for="c1" class="control-label"> Ciudad: </label>
                                         </div>
                                         <div class="col-lg-10">
-                                            <input type="text" id="ciudad" class="form-control" name="ciudad"><br/>
+                                            <input type="text" id="ciudad" class="form-control" name="ciudad" onkeyup="this.value=this.value.toUpperCase()" ><br/>
                                         </div>
                                     </div>
                                      <div class="col-lg-12">
@@ -192,7 +192,7 @@
                                             <label for="co1" class="control-label"> Estado: </label>
                                         </div>
                                         <div class="col-lg-4">
-                                     		<select  name="estados_id" class="form-control" id="estados_id" ></select><br/>
+                                     		<select  name="estados_id" class="form-control" id="estados_id" validate="required" validateMessage="Seleccione un Estado"></select><br/>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -200,7 +200,7 @@
                                             <label for="c1" class="control-label">Est./Prov.: </label>
                                         </div>
                                         <div class="col-lg-10">
-                                            <input type="text" id="estado_nombre" name="estado_nombre" class="form-control"><br/>
+                                            <input type="text" id="estado_nombre" name="estado_nombre" class="form-control" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                         </div>
                               	 	</div>
                                     <div class="col-lg-12">
@@ -208,7 +208,7 @@
                                             <label for="co1" class="control-label"> Pais: </label>
                                         </div>
                                         <div class="col-lg-4">
-                                            <select  name="pais_id" class="form-control" id="pais_id" required></select></br>
+                                            <select  name="pais_id" class="form-control" id="pais_id" validate="required" validateMessage="Seleccione un Pais"></select></br>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -224,7 +224,7 @@
                                             <label for="c1" class="control-label"> Comprador: </label>
                                         </div>
                                         <div class="col-lg-10">
-                                            <input type="text" id="comprador" name="comprador" class="form-control"><br/>
+                                            <input type="text" id="comprador" name="comprador" class="form-control" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                         </div>
                               	  </div>
                                   <div class="col-lg-12">
@@ -280,7 +280,7 @@
                                             <label for="c1" class="control-label"> Vendedor: </label>
                                         </div>
                                         <div class="col-lg-10">
-                                            <input type="text" id="usuario_vendedor_id" name="usuario_vendedor_id" class="form-control"><br/>
+                                            <select  name="usuario_vendedor_id" class="form-control" id="usuario_vendedor_id" validate="required" validateMessage="Seleccione un Vendedor"></select><br/>
                                         </div>
                                     </div>
                                  <div class="col-lg-12">
@@ -307,7 +307,7 @@
                                             <label for="co1" class="control-label">Razon:</label>
                                         </div>
                                         <div class="col-lg-5">
-                                            <input type="text" class="form-control" id="credito_suspendido_razon" name="credito_suspendido_razon"><br/>
+                                            <input type="text" class="form-control" id="credito_suspendido_razon" name="credito_suspendido_razon" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -315,7 +315,7 @@
                                             <label for="c1" class="control-label">Contacto: </label>
                                         </div>
                                         <div class="col-lg-10">
-                                            <input type="text" id="contacto" name="contacto" class="form-control"><br/>
+                                            <input type="text" id="contacto" name="contacto" class="form-control" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -323,7 +323,7 @@
                                             <label for="co1" class="control-label"> Fact. A: </label>
                                         </div>
                                         <div class="col-lg-7">
-                                            <input type="text" class="form-control" id="cliente_factura_id" name="cliente_factura_id"><br/>
+                                            <input type="text" class="form-control" id="cliente_factura_id" name="cliente_factura_id" validate="required" validateMessage="Valor Requerido"><br/>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -407,7 +407,7 @@
                                         <label for="co1" class="control-label">% IVA: </label>
                                         </div>
                                         <div class="col-lg-5">
-                                        <input type="text" class="form-control" id="porc_iva" name="porc_iva"><br/>
+                                        <input type="text" class="form-control" id="porc_iva" name="porc_iva" value='0'><br/>
                                         </div>
                                     </div>  
                             
@@ -443,7 +443,7 @@
 												<label for="co1" class="control-label">Enviar Estado de Cuenta:</label>
 											</div>
 											<div class="col-lg-6">
-											<label for="co1" class="control-label">	<input type="checkbox" id="envia_estadocta" name="envia_estadocta"></label></br>
+											<label for="co1" class="control-label">	<input type="checkbox" id="envia_estadocta" name="envia_estadocta"></label></br><br/>
 											</div>
 									</div>
                                     <div class="col-lg-12">
@@ -474,7 +474,7 @@
                                     <div class="col-lg-6">
                                         <span class="additional-info-wrap"> 
                                             <label class="radio-inline">   
-                                            <input type="radio" name="tipo_envio_estcta" class="I" id="programacion_inmediato" onclick="tipoProgramacion('I');" value="I" checked>Inmediato</label><br><br>
+                                            <input type="radio" name="tipo_envio_estcta" class="I" id="programacion_inmediato" onclick="tipoProgramacion('I');" value="I">Inmediato</label></br></br>
                                          </span>
                                      </div> 
                        			 </div>
@@ -507,37 +507,37 @@
                                         <div class="col-lg-12">
                                             <div class="col-lg-1 ">
                                             	<label class="radio-inline" >
-                                                <input type="radio" aria-label="L" name="dia_semana" id="L" value="L">
+                                                <input type="radio" aria-label="..." name="dia_semana" id="L" value="L">
                                                 </label>
                                             </div>
                                             <div class="col-lg-1">
                                             	<label class="radio-inline" >
-                                                <input type="radio" aria-label="M" name="dia_semana" id="M" value="M">
+                                                <input type="radio" aria-label="..." name="dia_semana" id="M" value="M">
                                                 </label>
                                             </div>
                                             <div class="col-lg-1">
                                             	<label class="radio-inline">
-                                                <input type="radio" aria-label="I" name="dia_semana" id="I" value="I">
+                                                <input type="radio" aria-label="..." name="dia_semana" id="I" value="I">
                                                 </label>
                                             </div>
                                             <div class="col-lg-1">
                                             	<label class="radio-inline">
-                                                <input type="radio" aria-label="J" name="dia_semana" id="J" value="J">
+                                                <input type="radio" aria-label="..." name="dia_semana" id="J" value="J">
                                                 </label>
                                             </div>
                                             <div class="col-lg-1">
                                             	<label class="radio-inline">
-                                                <input type="radio" aria-label="V" name="dia_semana" id="V" value="V">
+                                                <input type="radio" aria-label="..." name="dia_semana" id="V" value="V">
                                                 </label>
                                             </div>
                                             <div class="col-lg-1">
                                             	<label class="radio-inline">
-                                                <input type="radio" aria-label="S" name="dia_semana" id="S" value="S">
+                                                <input type="radio" aria-label="..." name="dia_semana" id="S" value="S">
                                                 </label>
                                             </div>
                                             <div class="col-lg-1">
                                             	<label class="radio-inline">
-                                                <input type="radio" aria-label="D" name="dia_semana" id="D" value="D">
+                                                <input type="radio" aria-label="..." name="dia_semana" id="D" value="D">
                                                 </label>
                                             </div>
                                         </div>
@@ -554,11 +554,11 @@
                                             </div>
                                		 	</div>
                                 </div>
-                                <div class="col-lg-12" id="inmediato" style="display:none;">
+                                <div class="col-lg-12" id="p_inmediato" style="display:none;">
                                     <div class="col-lg-12">
                                         <br/><p><label> Programación inmediato </label><p>
                                         <div class="col-lg-12">
-                                            <label><input type="checkbox" aria-label="..." name="inmediato" id="inmediato" checked> Inmediato </label>
+                                            <label><input type="checkbox" aria-label="..." name="inmediato" id="inmediato"> Inmediato </label>
                                         </div>
                                     </div>
                                 </div>
@@ -648,7 +648,7 @@
 			        	          </tr>
 			        	          <tr>
 				        	        <td><label class="control-label">DIRECCION:</label></td>
-				        	        <td><input name="direccion" type="text" class="form-control input-sm" id="direccion" style="width:350px" value="" maxlength="40" max-lenght="40"></td>
+				        	        <td><input name="direccion" type="text" class="form-control input-sm" id="direccion" style="width:350px" value="" maxlength="40" max-lenght="40" ></td>
 			        	         </tr>
 			        	         <tr>
 				        	        <td><label class="control-label">PAIS:</label></td>

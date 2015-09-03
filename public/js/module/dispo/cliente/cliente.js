@@ -13,22 +13,22 @@ $(document).ready(function () {
 		//$("#dialog_mantenimiento").modal('show') 
 	});
 	
-	$("#frm_informacion_general #btn_consultar").on('click', function(event){ 
+	$("#btn_consultar").on('click', function(event){ 
 		$("#frm").submit();
 		return false;
 	});
 
-	$("#frm_informacion_general #btn_nuevo").on('click', function(event){
+	$(" #btn_nuevo_cliente").on('click', function(event){
 		nuevo(); 
 		return false;
 	});    
 
-	$("#frm_informacion_general #btn_grabar_informacion_general").on('click', function(event){ 
+	$("#btn_grabar_informacion_general").on('click', function(event){ 
 		grabar_informacion_general();
 		return false;
 	});   
 	
-	$("#frm_informacion_general #tbl_registros tbody tr").on('dblclick', function(event){ 
+	$(" #tbl_registros tbody tr").on('dblclick', function(event){ 
 		var tr 						= $(this).closest('tr');
 		var cliente_id 				= tr.attr('cliente_id');
 
@@ -55,9 +55,9 @@ $(document).ready(function () {
 			if($("#frm_informacion_general #calendario").css("display") != "none"){
 				$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
-			}else if($("#frm_informacion_general #inmediato").css("display") != "none"){
+			}else if($("#frm_informacion_general #p_inmediato").css("display") != "none"){
 				$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
-				$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else if($("#frm_informacion_general #semanal").css("display") != "none"){
 				//$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else{
@@ -69,9 +69,9 @@ $(document).ready(function () {
 			if($("#frm_informacion_general #semanal").css("display") != "none"){
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
 				$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
-			}else if($("#frm_informacion_general #inmediato").css("display") != "none"){
+			}else if($("#frm_informacion_general #p_inmediato").css("display") != "none"){
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
-				$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else if($("#frm_informacion_general #calendario").css("display") != "none"){
 				//$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else{
@@ -84,12 +84,12 @@ $(document).ready(function () {
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
 				$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else if($("#frm_informacion_general #calendario").css("display") != "none"){
-				$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 				$('#frm_informacion_general #calendario').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else if($("#frm_informacion_general #inmediato").css("display") != "none"){
 				//$('#frm_informacion_general #semanal').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}else{
-				$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}
 		}
 		
@@ -113,14 +113,16 @@ $(document).ready(function () {
 	
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
-		var estado 					= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
-		var incobrable 				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
-		var dia_semana 				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
-		var inmediato 				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
-		var tipo_envio_estcta 		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
+		
 		var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
+		var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
+		var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
 		var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
 		var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
+		//var tipo_envio_estcta		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
+		//var dia_semana 				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
+		//var inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
+		
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
@@ -156,7 +158,7 @@ $(document).ready(function () {
 								$("#frm_informacion_general #fax2").val('');
 								$("#frm_informacion_general #fax2_ext").val('');
 								$("#frm_informacion_general #email").val('');
-								$("#frm_informacion_general #usuario_vendedor_id").val('');
+								$("#frm_informacion_general #usuario_vendedor_id").html(response.cbo_usuario_vendedor_id);
 								$("#frm_informacion_general #tc_limite_credito").val('');
 								$("#frm_informacion_general #tc_interes").val('');
 								$("#frm_informacion_general #est_credito_suspendido").val('');
@@ -184,7 +186,7 @@ $(document).ready(function () {
 								$("#frm_informacion_general #tipo_envio_estcta").val('');
 								$("#frm_informacion_general #dia_semana").val('');
 								$("#frm_informacion_general #inmediato").val('');
-								$('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+								$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 								$("#frm_informacion_general #diacal_fecha2").val('');
 								$("#frm_informacion_general #diacal_fecha1").val('');
 								
@@ -219,118 +221,145 @@ $(document).ready(function () {
 		$('#frm_marcacion_listado #grid_marcacion_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 	}//end function listar_marcacion
 
+	
 
 	 function grabar_informacion_general()
-	 	{
-			if (!ValidateControls('frm_informacion_general')) 
-				{
-				return false;
-				}
-			
-			var cliente_especial 		= ($("#cliente_especial").is(':checked') ? 1 : 0);
-			var envia_estadocta 		= ($("#envia_estadocta").is(':checked') ? 1 : 0);
-			var est_credito_suspendido 	= ($("#est_credito_suspendido").is(':checked') ? 1 : 0);
-			var estado				 	= ($("#estado").is(':checked') ? 1 : 0);
-			var incobrable				= ($("#incobrable").is(':checked') ? 1 : 0);
-			var inmediato				= ($("#day_inmediato").is(':checked') ? 1 : 0);
-			
-			$("#tabs_mantenimiento_cliente ul li").removeClass('disabled',false).removeClass('disabledTab',false);
-			//Se llama mediante AJAX para adicionar al carrito de compras
-			var data = 	{	accion: 							$("#frm_informacion_general #accion").val(),
-						 	cliente_id: 						$("#frm_informacion_general #cliente_id").val(),
-						 	nombre: 							$("#frm_informacion_general #nombre").val(),
-						 	abreviatura: 						$("#frm_informacion_general #abreviatura").val(),
-						 	grupo_precio_cab_id:				$("#frm_informacion_general #grupo_precio_cab_id").val(),
-						 	direccion: 							$("#frm_informacion_general #direccion").val(),
-						 	ciudad: 							$("#frm_informacion_general #ciudad").val(),
-						 	estados_id:							$("#frm_informacion_general #estados_id").val(),
-						 	estado_nombre:						$("#frm_informacion_general #estado_nombre").val(),
-						 	pais_id: 							$("#frm_informacion_general #pais_id").val(),
-						 	codigo_postal: 						$("#frm_informacion_general #codigo_postal").val(),
-						 	comprador: 							$("#frm_informacion_general #comprador").val(),
-						 	telefono1: 							$("#frm_informacion_general #telefono1").val(),
-						 	telefono1_ext:						$("#frm_informacion_general #telefono1_ext").val(),
-							telefono2: 							$("#frm_informacion_general #telefono2").val(),
-							telefono2_ext:						$("#frm_informacion_general #telefono2_ext").val(),
-							fax1: 								$("#frm_informacion_general #fax1").val(),
-							fax1_ext:							$("#frm_informacion_general #fax1_ext").val(),
-							fax2:								$("#frm_informacion_general #fax2").val(),
-							fax2_ext:							$("#frm_informacion_general #fax2_ext").val(),
-							email:								$("#frm_informacion_general #email").val(),
-							usuario_vendedor_id:				$("#frm_informacion_general #usuario_vendedor_id").val(),
-							tc_limite_credito:					$("#frm_informacion_general #tc_limite_credito").val(),
-							tc_interes:							$("#frm_informacion_general #tc_interes").val(),
-							est_credito_suspendido:				est_credito_suspendido,
-							credito_suspendido_razon:			$("#frm_informacion_general #credito_suspendido_razon").val(),
-							contacto:							$("#frm_informacion_general #contacto").val(),
-							cliente_factura_id:					$("#frm_informacion_general #cliente_factura_id").val(),
-							telefono_fact1:						$("#frm_informacion_general #telefono_fact1").val(),
-							telefono_fact1_ext:					$("#frm_informacion_general #telefono_fact1_ext").val(),
-							telefono_fact2:						$("#frm_informacion_general #telefono_fact2").val(),
-							telefono_fact2_ext:					$("#frm_informacion_general #telefono_fact2_ext").val(),
-							fax_fact1:							$("#frm_informacion_general #fax_fact1").val(),
-							fax_fact1_ext:						$("#frm_informacion_general #fax_fact1_ext").val(),
-							fax_fact2:							$("#frm_informacion_general #fax_fact2").val(),
-							fax_fact2_ext:						$("#frm_informacion_general #fax_fact2_ext").val(),
-							email_factura:						$("#frm_informacion_general #email_factura").val(),
-							comercializadora:					$("#frm_informacion_general #comercializadora").val(),
-							pais_fue:							$("#frm_informacion_general #pais_fue").val(),
-							facturacion_sri:					$("#frm_informacion_general #facturacion_sri").val(),
-							porc_iva:							$("#frm_informacion_general #porc_iva").val(),
-							estado								:estado,
-							incobrable							:incobrable,
-							cliente_especial					:cliente_especial,
-							envia_estadocta						:envia_estadocta,
-							formato_estado_cta					:$("#frm_informacion_general #formato_estado_cta").val(),
-							tipo_envio_estcta					:$('input[name="tipo_envio_estcta"]:checked', '#frm_informacion_general').val(),
-							dia_semana							:$("input:radio[name='dia_semana']:checked").val(),
-							inmediato							:inmediato,
-							diacal_fecha2:						$("#frm_informacion_general #diacal_fecha2").val(),
-							diacal_fecha1:						$("#frm_informacion_general #diacal_fecha1").val(),
-						}
-			data = JSON.stringify(data);
-			var parameters = {	'type': 'POST',//'POST',
-								'contentType': 'application/json',
-								'url':'../../dispo/cliente/grabardata',
-								'control_process':true,
-								'show_cargando':true,
-								'finish':function(response){
-										if (response.validacion_code == 'OK')
-										{
-											mostrar_registro(response)
-											cargador_visibility('hide');
-											swal({  title: "Informacion grabada con exito!!",   
-												//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-												//html:true,
-												type: "success",
-												showCancelButton: false,
-												confirmButtonColor: "#DD6B55",
-												confirmButtonText: "OK",
-												cancelButtonText: "",
-												closeOnConfirm: false,
-												closeOnCancel: false,
-												/*timer: 2000*/
-											});
-										}else{
-											swal({title: response.respuesta_mensaje,   
-												//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-												//html:true,
-												type: "error",
-												showCancelButton: false,
-												confirmButtonColor: "#DD6B55",
-												confirmButtonText: "OK",
-												cancelButtonText: "",
-												closeOnConfirm: false,
-												closeOnCancel: false,
-												/*timer: 2000*/
-											});
-										
-										}//end if									
-								}							
-			                 }
-			response = ajax_call(parameters, data);		
-			return false;		
-		}//end function grabar
+ 	{
+		if (!ValidateControls('frm_informacion_general')) 
+		{
+			return false;
+		}
+
+		//Define el metodo de envio estado de cuenta
+		var tipo_envio_estcta	=$('input[name="tipo_envio_estcta"]:checked', '#frm_informacion_general').val();
+    	var inmediato			="0";
+    	var diacal_fecha1		="  ";
+		var diacal_fecha2		="  ";
+		var dia_semana			=" ";
+		
+		//console.log('tipo_envio_estcta:',tipo_envio_estcta);
+		
+		switch (tipo_envio_estcta)
+		{
+	        case 'S':
+	        	//dia_semana			= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
+	        	dia_semana			= $('input[name="dia_semana"]:checked', '#frm_informacion_general').val();
+	        	break;
+	        case 'C':
+	        	diacal_fecha2		= $("#frm_informacion_general #diacal_fecha2").val();
+				diacal_fecha1		= $("#frm_informacion_general #diacal_fecha1").val();
+	        	break;
+	        case 'I':
+	        	inmediato			= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
+	        	break;
+		}	
+		
+		//Asignacion de variables
+		var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
+		var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
+		var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
+		var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
+		var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
+
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{	accion: 					$("#accion").val(),
+					 	cliente_id: 				$("#frm_informacion_general #cliente_id").val(),
+					 	nombre: 					$("#frm_informacion_general #nombre").val(),
+					 	abreviatura: 				$("#frm_informacion_general #abreviatura").val(),
+					 	grupo_precio_cab_id:		$("#frm_informacion_general #grupo_precio_cab_id").val(),
+					 	direccion: 					$("#frm_informacion_general #direccion").val(),
+					 	ciudad: 					$("#frm_informacion_general #ciudad").val(),
+					 	estados_id:					$("#frm_informacion_general #estados_id").val(),
+					 	estado_nombre:				$("#frm_informacion_general #estado_nombre").val(),
+					 	pais_id: 					$("#frm_informacion_general #pais_id").val(),
+					 	codigo_postal: 				$("#frm_informacion_general #codigo_postal").val(),
+					 	comprador: 					$("#frm_informacion_general #comprador").val(),
+					 	telefono1: 					$("#frm_informacion_general #telefono1").val(),
+					 	telefono1_ext:				$("#frm_informacion_general #telefono1_ext").val(),
+						telefono2: 					$("#frm_informacion_general #telefono2").val(),
+						telefono2_ext:				$("#frm_informacion_general #telefono2_ext").val(),
+						fax1: 						$("#frm_informacion_general #fax1").val(),
+						fax1_ext:					$("#frm_informacion_general #fax1_ext").val(),
+						fax2:						$("#frm_informacion_general #fax2").val(),
+						fax2_ext:					$("#frm_informacion_general #fax2_ext").val(),
+						email:						$("#frm_informacion_general #email").val(),
+						usuario_vendedor_id:		$("#frm_informacion_general #usuario_vendedor_id").val(),
+						tc_limite_credito:			$("#frm_informacion_general #tc_limite_credito").val(),
+						tc_interes:					$("#frm_informacion_general #tc_interes").val(),
+						est_credito_suspendido:		est_credito_suspendido,
+						credito_suspendido_razon:	$("#frm_informacion_general #credito_suspendido_razon").val(),
+						contacto:					$("#frm_informacion_general #contacto").val(),
+						cliente_factura_id:			$("#frm_informacion_general #cliente_factura_id").val(),
+						telefono_fact1:				$("#frm_informacion_general #telefono_fact1").val(),
+						telefono_fact1_ext:			$("#frm_informacion_general #telefono_fact1_ext").val(),
+						telefono_fact2:				$("#frm_informacion_general #telefono_fact2").val(),
+						telefono_fact2_ext:			$("#frm_informacion_general #telefono_fact2_ext").val(),
+						fax_fact1:					$("#frm_informacion_general #fax_fact1").val(),
+						fax_fact1_ext:				$("#frm_informacion_general #fax_fact1_ext").val(),
+						fax_fact2:					$("#frm_informacion_general #fax_fact2").val(),
+						fax_fact2_ext:				$("#frm_informacion_general #fax_fact2_ext").val(),
+						email_factura:				$("#frm_informacion_general #email_factura").val(),
+						pais_fue:					$("#frm_informacion_general #pais_fue").val(),
+						facturacion_sri:			$("#frm_informacion_general #facturacion_sri").val(),
+						porc_iva:					$("#frm_informacion_general #porc_iva").val(),
+						estado:								estado,
+						incobrable:							incobrable,
+						cliente_especial:					cliente_especial,
+						envia_estadocta:					envia_estadocta,
+						formato_estado_cta:					$("#frm_informacion_general #formato_estado_cta").val(),
+						tipo_envio_estcta:					tipo_envio_estcta,
+						dia_semana:							dia_semana,
+						diacal_fecha2:						diacal_fecha2,
+						diacal_fecha1:						diacal_fecha1,
+						inmediato:							inmediato
+						
+					}
+		//console.log('tipo_envio_estcta:',tipo_envio_estcta);
+		//console.log('inmediato:',inmediato);
+		data = JSON.stringify(data);
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/cliente/grabardata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									if (response.validacion_code == 'OK')
+									{
+										$("#tabs_mantenimiento_cliente ul li").removeClass('disabled',false).removeClass('disabledTab',false);
+										mostrar_registro(response)
+										cargador_visibility('hide');
+										swal({  title: "Informacion grabada con exito!!",   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "success",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									}else{
+										swal({title: response.respuesta_mensaje,   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "error",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									
+									}//end if									
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;		
+	}//end function grabar
 
 
 
@@ -338,14 +367,14 @@ $(document).ready(function () {
 		{
 			var row = response.row;
 			
-			var est_credito_suspendido	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
-			var estado 					= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
-			var incobrable 				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
-			var dia_semana 				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
-			var inmediato 				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
+			var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
+			var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
+			var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
 			var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
 			var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
-			var tipo_envio_estcta 		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
+			//var tipo_envio_estcta		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
+			//var dia_semana				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
+			//var inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
 			if (row!==null)
 			{
 			//	ValidateControlsInit();
@@ -373,7 +402,7 @@ $(document).ready(function () {
 				$("#frm_informacion_general #fax2").val(row.fax2);
 				$("#frm_informacion_general #fax2_ext").val(row.fax2_ext);
 				$("#frm_informacion_general #email").val(row.email);
-				$("#frm_informacion_general #usuario_vendedor_id").val(row.usuario_vendedor_id);
+				$("#frm_informacion_general #usuario_vendedor_id").html(response.cbo_usuario_vendedor_id);
 				$("#frm_informacion_general #tc_limite_credito").val(row.tc_limite_credito);
 				$("#frm_informacion_general #tc_interes").val(row.tc_interes);
 				if (row.est_credito_suspendido=='1')
@@ -384,7 +413,6 @@ $(document).ready(function () {
 				{
 				    $("#frm_informacion_general #est_credito_suspendido").prop('checked', false);
 				}
-				
 				
 				$("#frm_informacion_general #credito_suspendido_razon").val(row.credito_suspendido_razon);
 				$("#frm_informacion_general #contacto").val(row.contacto);
@@ -453,47 +481,42 @@ $(document).ready(function () {
 
 				        case 'I':
 				          $("#frm_informacion_general #programacion_inmediato").prop('checked', true);
-				          $('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
-				        break;
-
-				        default:
-				        $("#frm_informacion_general #programacion_inmediato").prop('checked', true);
-				        $('#frm_informacion_general #inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
+				          $('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 				        break;
 				 }
 				
 				
 				switch (row.dia_semana) {
-				        case '1':
+				        case 'L':
 				        	$("#L").prop('checked', true);
 				        break;
-				        case '2':
+				        case 'M':
 				        	$("#M").prop('checked', true);
 				        break;
-				        case '3':
+				        case 'I':
 					         $("#I").prop('checked', true);
 					        break;
-				        case '4':
+				        case 'J':
 				        	$("#J").prop('checked', true);
 					        break;
-				        case '5':
+				        case 'V':
 					         $("#V").prop('checked', true);
 					        break;
-				        case '6':
+				        case 'S':
 					         $("#S").prop('checked', true);
 					        break;
-				        case '7':
+				        case 'D':
 					         $("#D").prop('checked', true);
 					        break;
 				}	
 
 				if (row.inmediato=='1')
 				{
-				    $("#frm_informacion_general #day_inmediato").prop('checked', true);
+				    $("#frm_informacion_general #inmediato").prop('checked', true);
 				}
 				else
 				{
-				    $("#frm_informacion_general #day_inmediato").prop('checked', false);
+				    $("#frm_informacion_general #inmediato").prop('checked', false);
 				}
 				
 				$("#frm_informacion_general #diacal_fecha2").val(row.diacal_fecha2);

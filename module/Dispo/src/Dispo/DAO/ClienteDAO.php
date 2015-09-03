@@ -25,13 +25,14 @@ class ClienteDAO extends Conexion
 				'id'								=> $ClienteData->getId(),
 				'nombre'		                    => $ClienteData->getNombre(),
 				'abreviatura'		  	            => $ClienteData->getAbreviatura(),
-				'grupo'		  	         		    => $ClienteData->getGrupo(),
+				'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId(),
 				'direccion'		            		=> $ClienteData->getDireccion(),
 				'ciudad'		            		=> $ClienteData->getCiudad(),
 				'estados_id'	            		=> $ClienteData->getEstadosId(),
+				'estado_nombre'		            	=> $ClienteData->getEstadoNombre(),
 				'pais_id'		            		=> $ClienteData->getPaisId(),
 				'codigo_postal'		           		=> $ClienteData->getCodigoPostal(),
-				'estado_nombre'		            	=> $ClienteData->getEstadoNombre(),
+				'comprador'		           			=> $ClienteData->getComprador(),
 				'telefono1'		            		=> $ClienteData->getTelefono1(),
 				'telefono1_ext'		            	=> $ClienteData->getTelefono1Ext(),
 				'telefono2'		            		=> $ClienteData->getTelefono2(),
@@ -40,9 +41,13 @@ class ClienteDAO extends Conexion
 				'fax1_ext'		            		=> $ClienteData->getFax1Ext(),
 				'fax2'		            			=> $ClienteData->getFax2(),
 				'fax2_ext'		            		=> $ClienteData->getFax2Ext(),
-				'email'		            			=> $ClienteData->getEmail(),
+				//'email'		            			=> $ClienteData->getEmail(),
+				'usuario_vendedor_id'				=> $ClienteData->getUsuarioVendedorId(),
+				'tc_limite_credito'					=> $ClienteData->getTcLimiteCredito(),
+				'tc_interes'						=> $ClienteData->getTcInteres(),
+				'est_credito_suspendido'			=> $ClienteData->getEstCreditoSuspendido(),
+				'credito_suspendido_razon'			=> $ClienteData->getCreditoSuspendidoRazon(),
 				'contacto'		            		=> $ClienteData->getContacto(),
-				'comprador'		           			=> $ClienteData->getComprador(),
 				'cliente_factura_id'		        => $ClienteData->getClienteFacturaId(),
 				'telefono_fact1'		            => $ClienteData->getTelefonoFact1(),
 				'telefono_fact1_ext'		        => $ClienteData->getTelefonoFact1Ext(),
@@ -53,19 +58,26 @@ class ClienteDAO extends Conexion
 				'fax_fact2'		            		=> $ClienteData->getTelefonoFact2(),
 				'fax_fact2_ext'		        		=> $ClienteData->getTelefonoFact2Ext(),
 				'email_factura'		        		=> $ClienteData->getEmailFactura(),
+				'pais_fue'		        			=> $ClienteData->getPaisFUE(),
+				'facturacion_sri'		        	=> $ClienteData->getFacturacionSRI(),
+				'porc_iva'							=> $ClienteData->getPorcIva(),
+				'estado'                			=> $ClienteData->getEstado(),
+				'incobrable'						=> $ClienteData->getIncobrable(),
+				'cliente_especial'					=> $ClienteData->getClienteEspecial(),
+				'envia_estadocta'		        	=> $ClienteData->getEnviaEstadoCta(),
+				'formato_estado_cta'				=> $ClienteData->getFormatoEstadoCta(),
+				'tipo_envio_estcta'					=>$ClienteData->getTipoEnvioEstCta(),
+				'dia_semana'		        		=> $ClienteData->getDiaSemana(),
+				'diacal_fecha1'		        		=> $ClienteData->getDiaCalFecha1(),
+				'diacal_fecha2'		        		=> $ClienteData->getDiaCalFecha2(),
+				'inmediato'		        			=> $ClienteData->getInmediato(),
+				
 				'tipo_cartera'		        		=> $ClienteData->getTipoCartera(),
-				'usuario_vendedor_id'				=> $ClienteData->getUsuarioVendedorId(),
-				'est_credito_suspendido'			=> $ClienteData->getEstCreditoSuspendido(),
-				'credito_suspendido_razon'			=> $ClienteData->getCreditoSuspendidoRazon(),
 				//'est_incobrable'					=> $ClienteData->getIncobrable(),
 				'tipo_persona'		        		=> $ClienteData->getTipoPersona(),
 				'ruc'		        				=> $ClienteData->getRuc(),
 				'ciaf'		        				=> $ClienteData->getCiaf(),
 				'moneda'		 			    	=> $ClienteData->getMoneda(),
-				'facturacion_sri'		        	=> $ClienteData->getFacturacionSRI(),
-				'pais_fue'		        			=> $ClienteData->getPaisFUE(),
-				'tc_interes'						=> $ClienteData->getTcInteres(),
-				'tc_limite_credito'				=> $ClienteData->getTcLimiteCredito(),
 				'tc_forma_pago'						=> $ClienteData->getTcFormaPago(),
 				'tc_nro_cuotas'						=> $ClienteData->getTcNroCuotas(),
 				'tc_plazo'							=> $ClienteData->getTcPlazo(),
@@ -73,17 +85,6 @@ class ClienteDAO extends Conexion
 				'tc_1er_cierre_pago'				=> $ClienteData->getTc1erCierrePago(),
 				'tc_2do_cierre'						=> $ClienteData->getTc2doCierre(),
 				'tc_2do_cierre_pago'				=> $ClienteData->getTc2doCierrePago(),
-				'formato_estado_cta'				=> $ClienteData->getFormatoEstadoCta(),
-				'porc_iva'							=> $ClienteData->getPorcIva(),
-				'cliente_especial'					=> $ClienteData->getClienteEspecial(),
-				'incobrable'						=> $ClienteData->getIncobrable(),
-				'envia_estadocta'		        	=> $ClienteData->getEnviaEstadoCta(),
-				'dia_semana'		        		=> $ClienteData->getDiaSemana(),
-				'diacal_fecha2'		        		=> $ClienteData->getDiaCalFecha2(),
-				'diacal_fecha1'		        		=> $ClienteData->getDiaCalFecha1(),
-				'inmediato'		        			=> $ClienteData->getInmediato(),
-				'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId(),
-				'estado'                			=> $ClienteData->getEstado(),
 				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_ing_id'                	=> $ClienteData->getUsuarioIngId(),
 				'sincronizado'                		=> 0
@@ -163,6 +164,7 @@ class ClienteDAO extends Conexion
 				'cliente_especial'					=> $ClienteData->getClienteEspecial(),
 				'incobrable'						=> $ClienteData->getIncobrable(),
 				'envia_estadocta'		        	=> $ClienteData->getEnviaEstadoCta(),
+				'tipo_envio_estcta'					=>$ClienteData->getTipoEnvioEstCta(),
 				'dia_semana'		        		=> $ClienteData->getDiaSemana(),
 				'diacal_fecha2'		        		=> $ClienteData->getDiaCalFecha2(),
 				'diacal_fecha1'		        		=> $ClienteData->getDiaCalFecha1(),
@@ -204,13 +206,14 @@ class ClienteDAO extends Conexion
 				 	$ClienteData->setId                     ($row['id']);               
                	  	$ClienteData->setNombre                 ($row['nombre']);
                	  	$ClienteData->setAbreviatura            ($row['abreviatura']);
-               	  	$ClienteData->setGrupo			        ($row['grupo']);
+               	  	$ClienteData->setGrupoPrecioCabId		($row['grupo_precio_cab_id']);
                   	$ClienteData->setDireccion              ($row['direccion']);
                   	$ClienteData->setCiudad                 ($row['ciudad']);
                   	$ClienteData->setEstadosId              ($row['estados_id']);
+                  	$ClienteData->setEstadoNombre           ($row['estado_nombre']);
                   	$ClienteData->setPaisId                 ($row['pais_id']);
                   	$ClienteData->setCodigoPostal           ($row['codigo_postal']);
-                  	$ClienteData->setEstadoNombre           ($row['estado_nombre']);
+                  	$ClienteData->setComprador              ($row['comprador']);
                   	$ClienteData->setTelefono1              ($row['telefono1']);
                   	$ClienteData->setTelefono1Ext           ($row['telefono1_ext']);
                   	$ClienteData->setTelefono2              ($row['telefono2']);
@@ -219,9 +222,13 @@ class ClienteDAO extends Conexion
                   	$ClienteData->setFax1Ext                ($row['fax1_ext']);
                  	$ClienteData->setFax2                   ($row['fax2']);
                  	$ClienteData->setFax2Ext                ($row['fax2_ext']);
-                  	$ClienteData->setEmail                  ($row['email']);
+                  	//$ClienteData->setEmail                  ($row['email']);
+                 	$ClienteData->setUsuarioVendedorId      ($row['usuario_vendedor_id']);
+                 	$ClienteData->setTcLimiteCredito    	($row['tc_limite_credito']);
+                 	$ClienteData->setTcInteres      		($row['tc_interes']);
+                 	$ClienteData->setEstCreditoSuspendido   ($row['est_credito_suspendido']);
+                 	$ClienteData->setCreditoSuspendidoRazon ($row['credito_suspendido_razon']);
                   	$ClienteData->setContacto               ($row['contacto']);
-                  	$ClienteData->setComprador              ($row['comprador']);
                   	$ClienteData->setClienteFacturaId       ($row['cliente_factura_id']);
                   	$ClienteData->setTelefonoFact1      	($row['telefono_fact1']);
                   	$ClienteData->setTelefonoFact1Ext      	($row['telefono_fact1_ext']);
@@ -232,18 +239,25 @@ class ClienteDAO extends Conexion
                   	$ClienteData->setFaxFact2      			($row['fax_fact2']);
                   	$ClienteData->setFaxFact2Ext      		($row['fax_fact2_ext']);
                   	$ClienteData->setEmailFactura      		($row['email_factura']);
+                  	$ClienteData->setPaisFUE				($row['pais_fue']);
+                  	$ClienteData->setFacturacionSRI         ($row['facturacion_sri']);
+                  	$ClienteData->setPorcIva     			($row['porc_iva']);
+                  	$ClienteData->setEstado    				($row['estado']);
+                  	$ClienteData->setIncobrable      		($row['incobrable']);
+                  	$ClienteData->setClienteEspecial      	($row['cliente_especial']);
+                  	$ClienteData->setEnviaEstadoCta         ($row['envia_estadocta']);
+                  	$ClienteData->setFormatoEstadoCta      	($row['formato_estado_cta']);
+                  	$ClienteData->setTipoEnvioEstCta	    ($row['tipo_envio_estcta']);
+                  	$ClienteData->setDiaSemana			    ($row['dia_semana']);
+                  	$ClienteData->setDiaCalFecha1		    ($row['diacal_fecha1']);
+                  	$ClienteData->setDiaCalFecha2		    ($row['diacal_fecha2']);
+                  	$ClienteData->setInmediato		       	($row['inmediato']);
                   	$ClienteData->setTipoCartera            ($row['tipo_cartera']);
-                  	$ClienteData->setUsuarioVendedorId      ($row['usuario_vendedor_id']);
-                  	$ClienteData->setEstCreditoSuspendido   ($row['est_credito_suspendido']);
-                  	$ClienteData->setCreditoSuspendidoRazon ($row['credito_suspendido_razon']);
                   //$ClienteData->setEstIncobrable      	($row['est_incobrable']);
                   	$ClienteData->setTipoPersona            ($row['tipo_persona']);
                   	$ClienteData->setRuc           			($row['ruc']);
                   	$ClienteData->setCiaf            		($row['ciaf']);
                   	$ClienteData->setMoneda		            ($row['moneda']);
-                  	$ClienteData->setFacturacionSRI         ($row['facturacion_sri']);
-                  	$ClienteData->setTcInteres      		($row['tc_interes']);
-                  	$ClienteData->setTcLimiteCredito    	($row['tc_limite_credito']);
                   	$ClienteData->setTcFormaPago      		($row['tc_forma_pago']);
                   	$ClienteData->setTcNroCuotas      		($row['tc_nro_cuotas']);
                   	$ClienteData->setTcPlazo	      		($row['tc_plazo']);
@@ -251,19 +265,6 @@ class ClienteDAO extends Conexion
                   	$ClienteData->setTc1erCierrePago      	($row['tc_1er_cierre_pago']);
                   	$ClienteData->setTc2doCierre      		($row['tc_2do_cierre']);
                   	$ClienteData->setTc2doCierrePago      	($row['tc_2do_cierre_pago']);
-                  	$ClienteData->setFormatoEstadoCta      	($row['formato_estado_cta']);
-                  	$ClienteData->setPorcIva     			($row['porc_iva']);
-                  	$ClienteData->setClienteEspecial      	($row['cliente_especial']);
-                  	$ClienteData->setIncobrable      		($row['incobrable']);
-                  	$ClienteData->setEnviaEstadoCta         ($row['envia_estadocta']);
-                  	$ClienteData->setTipoEnvioEstCta	    ($row['tipo_envio_estcta']);
-                  	$ClienteData->setDiaSemana			    ($row['dia_semana']);
-                  	$ClienteData->setDiaCalFecha2		    ($row['diacal_fecha2']);
-                  	$ClienteData->setDiaCalFecha1		    ($row['diacal_fecha1']);
-                  	$ClienteData->setTipoEnvioEstCta	    ($row['tipo_envio_estcta']);
-                  	$ClienteData->setInmediato		       	($row['inmediato']);
-                  	$ClienteData->setGrupoPrecioCabId	    ($row['grupo_precio_cab_id']);
-					$ClienteData->setEstado    				($row['estado']);
 					$ClienteData->setFecIngreso   			($row['fec_ingreso']);
 					$ClienteData->setFecModifica  			($row['fec_modifica']);
 					$ClienteData->setUsuarioIngId			($row['usuario_ing_id']);

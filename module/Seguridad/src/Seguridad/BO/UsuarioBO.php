@@ -6,6 +6,7 @@ use Seguridad\DAO\UsuarioDAO;
 use Seguridad\DAO\UsuarioEmpresaSucursalDAO;
 use Application\Classes\Conexion;
 use Seguridad\Data\UsuarioData;
+use Seguridad\DAO\Seguridad\DAO;
 
 class UsuarioBO extends Conexion{
 	private $page		= null;
@@ -63,8 +64,28 @@ class UsuarioBO extends Conexion{
 	}//end function usuarioencriptar
 	
 	
+	/**
+	 *
+	 * @param string $usuario_vendedor_id
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getComboTodosVendedores($usuario_vendedor_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$UsuarioDAO = new UsuarioDAO();
 	
-
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $UsuarioDAO->consultarTodosVendedores();
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $usuario_vendedor_id, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboTodosVendedores
+	
+	
+	
 	/**
 	 * 
 	 * @param string $cliente_id
