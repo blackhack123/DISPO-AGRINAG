@@ -19,9 +19,10 @@ return array(
 			'date.timezone'                 => 'America/Guayaquil',
 			//'mbstring.internal_encoding'    => 'UTF-8',
 	),
-				
-    'mascara_pedido'  => '00000000',
-		
+
+    'mascara_pedido'  			=> '00000000',
+	'tallos_x_bunch_default' 	=> 25,
+
 	'formatoFecha'	=> array(
 			'corta'=> array(
 					'frontend' 	=> 'd-m-Y',//'d-m-Y', //'Y-m-d',

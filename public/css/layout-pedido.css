@@ -63,7 +63,8 @@ body{
 	color: #afafaf;
 	cursor: pointer;
 	border-bottom: dotted 2px #808080;
-	width: 40px;	
+	width: 40px;
+	position:relative;	
 }
 
 
@@ -73,7 +74,7 @@ body{
   position: absolute;
   z-index: 50;
   margin-top:35px;
-  right: 10px;
+  right:0px;
   background: green;
   color: #fff;
   font-size: 10px;
@@ -96,6 +97,7 @@ body{
   position: absolute;
   font-family: "Muli",sans-serif;
   font-size: 12px;
+  line-height:16px;
   text-align: center;
   z-index: 20000;
   color: #fff;
@@ -375,13 +377,14 @@ body{
 /*--------------------------------------------------------------------------------*/
 /*---------------------------NOTIFICACIONES DE COMPRAS----------------------------*/
 /*--------------------------------------------------------------------------------*/
+/* line 3, ../sass/_arrow.scss */
 .arrow_right:after, .arrow_right:before {
   left: 100%;
   border: solid transparent;
   content: " ";
   height: 0;
   width: 0;
-  position: relative;
+  position: absolute;
   pointer-events: none;
 }
 /* line 12, ../sass/_arrow.scss */
