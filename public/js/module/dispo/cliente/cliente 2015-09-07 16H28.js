@@ -2,121 +2,42 @@
  * 
  */
 
-	$(document).ready(function () {
-
-		$("#frm_busqueda_cliente #btn_consultar").on('click', function(event){ 
-			$('#grid_cliente').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-			return false;
-		});
+$(document).ready(function () {
 	
-		$("#frm_busqueda_cliente #btn_nuevo_cliente").on('click', function(event){
-			nuevo(); 
-			return false;
-		});    
 	
-		$("#frm_busqueda_cliente #btn_grabar_informacion_general").on('click', function(event){ 
-			grabar_informacion_general();
-			return false;
-		});   
-		
+	$(".btn_edit").on('click', function(event){ 
+		var tr 						= $(this).closest('tr');
+		var cliente_id 				= tr.attr('cliente_id');
 
-		/*---------------------------------------------------------------*/
-		/*----------- Se configura los JQGRID de Cliente ----------------*/
-		/*---------------------------------------------------------------*/		
-		jQuery("#grid_cliente").jqGrid({
-			url:'../../dispo/cliente/listadodata',
-			postData: {
-				criterio_busqueda: 	function() {return $("#frm_busqueda_cliente #criterio_busqueda").val();},
-				estado: 			function() {return $("#frm_busqueda_cliente #busqueda_estado").val();},
-			},
-			datatype: "json",
-			loadonce: true,			
-			/*height:'400',*/
-			colNames:['Id','Nombre','Direccion','Pais','Telefono','','Fec. Ult. Vez','Estado', ''],
-			colModel:[
-	/*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
-				{name:'id',index:'id', width:50, align:"center", sorttype:"int"},
-				{name:'nombre',index:'nombre', width:200, sorttype:"string"},
-				{name:'direccion',index:'direccion', width:300, sorttype:"string", cellattr: function (rowId, tv, rawObject, cm, rdata){return 'style="white-space: normal; padding-top:1px"'}},
-				{name:'pais_nombre',index:'pais_nombre', width:150, sorttype:"string"},
-				{name:'telefono1',index:'telefono1', width:150, sorttype:"string"},
-				{name:'sincronizado',index:'sincronizado', width:30, align:"center", sorttype:"int", formatter: ListadoCliente_FormatterSincronizado},
-				{name:'fec_sincronizado',index:'fec_sincronizado', width:140, align:"center", sorttype:"int"},
-				{name:'estado',index:'estado', width:50, align:"center", sorttype:"string"},
-				{name:'btn_editar_marcacion',index:'', width:30, align:"center", formatter:ListadoCliente_FormatterEdit,
-				   cellattr: function () { return ' title=" Modificar"'; }
-				},
-			],
-			rowNum:999999,
-			pager: '#pager_cliente',
-			toppager:false,
-			pgbuttons:false,
-			pginput:false,
-			rowList:false,
-			gridview:false,	
-			shrinkToFit: false,
-			loadComplete: grid_setAutoHeight,
-			resizeStop: grid_setAutoHeight, 
-			rownumbers: true,
-			jsonReader: {
-				repeatitems : false,
-			},		
-			loadBeforeSend: function (xhr, settings) {
-				this.p.loadBeforeSend = null; //remove event handler
-				return false; // dont send load data request
-			},
-			loadError: function (jqXHR, textStatus, errorThrown) {
-				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
-			},
-			afterInsertRow : function(rowid, rowdata){
-				//console.log('rowdata:',rowdata);
-				if (rowdata.estado == "I"){
-					$(this).jqGrid('setRowData', rowid, false, {color:'red'});
-				}//end if
-			},
-			ondblClickRow: function (rowid,iRow,iCol,e) {
-					var data = $('#grid_cliente').getRowData(rowid);				
-					consultar_cliente(data.id)
-				//	return false;
-			},					
-		});
-		/*$("#grid_cliente").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});*/
-		jQuery("#grid_cliente").jqGrid('navGrid','#pager_cliente',{edit:false,add:false,del:false});		
-				
-		
-		$('#grid_cliente').setGroupHeaders(
-		{
-			useColSpanStyle: true,
-			groupHeaders: [{ "numberOfColumns": 2, "titleText": "Sincronizacion", "startColumnName": "sincronizado" }]
-		});
-				
-		
-		function ListadoCliente_FormatterSincronizado(cellvalue, options, rowObject)
-		{	
-			switch (rowObject.sincronizado)
-			{
-			case '0':
-				new_format_value = '<span class="glyphicon glyphicon-time icon-white" style="color:red">'; 
-				break;
-			case '1':
-				new_format_value = '<i class="glyphicon glyphicon-ok icon-white" style="color:green">';
-				break;
-			default :
-				new_format_value = '<span class="glyphicon glyphicon-time icon-white" style="color:red">'; 
-				break;
-			}//end switch
-			return new_format_value;
-		}//end function ListadoCliente_FormatterSincronizado		
-		
-		
-		function ListadoCliente_FormatterEdit(cellvalue, options, rowObject){
-			var id = rowObject.id;	
-			//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
-			new_format_value = '<a href="javascript:void(0)" onclick="consultar_cliente(\''+id+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange"></i></a>'; 
-			return new_format_value
-		}//end function ListadoCliente_FormatterEdit
-				
+		consultar_cliente(cliente_id);
+		//$("#dialog_mantenimiento").modal('show') 
 	});
+	
+	$("#btn_consultar").on('click', function(event){ 
+		$("#frm").submit();
+		return false;
+	});
+
+	$(" #btn_nuevo_cliente").on('click', function(event){
+		nuevo(); 
+		return false;
+	});    
+
+	$("#btn_grabar_informacion_general").on('click', function(event){ 
+		grabar_informacion_general();
+		return false;
+	});   
+	
+	$(" #tbl_registros tbody tr").on('dblclick', function(event){ 
+		var tr 						= $(this).closest('tr');
+		var cliente_id 				= tr.attr('cliente_id');
+
+		consultar_cliente(cliente_id);
+		//$("#dialog_mantenimiento").modal('show') 
+	});	
+
+	
+});
 
 
 /*
@@ -125,7 +46,7 @@
  ***************************************************************************
  */
 
- 	function tipoProgramacion(getTp){
+ function tipoProgramacion(getTp){
 	 
 		var tP = getTp;
 		
@@ -170,8 +91,10 @@
 				$('#frm_informacion_general #p_inmediato').animate({height: "toggle", opacity: "toggle"}, "slow");
 			}
 		}
+		
+		
 
-	}//end function tipoProgramacion
+	}
 
  
 	

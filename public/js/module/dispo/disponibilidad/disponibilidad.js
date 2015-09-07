@@ -39,7 +39,7 @@ $(document).ready(function () {
 	
 	
 	/*---------------------------------------------------------------*/
-	/*-----Se configura los JQGRID de Dispobilidad General-----------*/
+	/*-----Se configura los JQGRID de Disponibilidad General---------*/
 	/*---------------------------------------------------------------*/		
 	jQuery("#grid_dispo_general").jqGrid({
 		url:'../../dispo/disponibilidad/disponibilidaddata',

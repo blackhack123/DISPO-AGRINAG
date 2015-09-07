@@ -32,7 +32,7 @@ $(document).ready(function () {
 		/*-----------------Se configura los JQGRID's---------------------*/
 		/*---------------------------------------------------------------*/		
 		jQuery("#grid_marcacion_listado").jqGrid({
-			url:'<?php echo(./../dispo/marcacion/listadodata',
+			url:'../../dispo/marcacion/listadodata',
 			postData: {
 				cliente_id: function()   { return $("#frm_informacion_general #cliente_id").val(); }, 
 				nombre: function()		 { return $("#frm_marcacion_listado #busqueda_nombre").val(); },
@@ -303,7 +303,7 @@ $(document).ready(function () {
 			
 			var parameters = {	'type': 'POST',//'POST',
 								'contentType': 'application/json',
-								'url':'<?php echo(./../dispo/marcacion/consultardata',
+								'url':'../../dispo/marcacion/consultardata',
 								'control_process':true,
 								'show_cargando':true,
 								'finish':function(response){

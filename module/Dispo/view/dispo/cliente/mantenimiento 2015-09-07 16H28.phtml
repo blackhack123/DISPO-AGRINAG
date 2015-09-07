@@ -28,11 +28,11 @@
         	<div class="busqueda-admin-section pull-left">	
             	<!--- div class="form-inline" -->
                 	
-                <form id="frm_busqueda_cliente" action="<?php echo($this->basePath()); ?>/dispo/cliente/mantenimiento" method="post" >
+                <form id="frm" action="<?php echo($this->basePath()); ?>/dispo/cliente/mantenimiento" method="post" >
                 <div class="input-group" style="display:inline-flex">    
-                	<input name="criterio_busqueda" id="criterio_busqueda" type="text" class="form-control input-sm" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+                	<input name="criterio_busqueda" type="text" class="form-control input-sm" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
                      <div class="input-group">
-						<select  name="busqueda_estado" id="busqueda_estado" class="form-control input-sm" style="width:130px">
+						<select  name="busqueda_estado" class="form-control input-sm" style="width:130px">
 	    	                <?php echo($this->busqueda_estado); ?>
     	                </select>                                       
                     </div>
@@ -48,9 +48,59 @@
 
         <div class="clearfix"></div>
         <div>
-			<table id="grid_cliente" class="grid grid-autoheight"></table>
-            <div id="pager_cliente"></div>        	
-        </div>
+				<table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
+		<thead>
+				<tr>
+				  <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
+					<th  width="100" rowspan="2" class="th-inner">ID</th>				
+					<th  width="0" rowspan="2" class="th-inner">NOMBRE</th>
+					<th  width="0" rowspan="2" class="th-inner">DIRECCION</th>
+					<th  width="150" rowspan="2" class="th-inner">PAIS</th>
+					<th  width="150" rowspan="2" class="th-inner">TELEFONO</th>
+					<th  width="70" colspan="2" class="th-inner">SINCRONIZACION</th>					
+					<th  width="70" rowspan="2" class="th-inner">ESTADO</th>
+					<th  width="70" rowspan="2" class="th-inner">&nbsp;</th>
+				</tr>
+				<tr>
+				  <th  width="70" class="th-inner">&nbsp;</th>
+				  <th class="th-inner">FEC. ULTIMA VEZ</th>
+		      </tr>
+			</thead>
+			<tbody class="searchable" style="border: 1px solid #cdcdcd;">
+<?php  
+		$i=0;
+		foreach($this->result as $reg)
+		{
+			$i++;
+			$class_row = '';
+			if ($reg['estado']>'0'){
+				$class_row = 'row_estado_inactivo';
+				
+				
+			}
+?>            
+				<tr cliente_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
+				  <td><?php echo($i); ?></td>
+					<td><?php echo($reg['id']); ?></td>
+					<td align="left"><?php echo($reg['nombre']); ?></td>
+					<td><?php echo($reg['direccion']); ?></td>
+					<td><?php echo($reg['pais_nombre']); ?></td>
+					<td><?php echo($reg['telefono1']); ?></td>
+					<td>
+					<?php if ($reg['sincronizado']==0){ ?>
+						<span class="glyphicon glyphicon-time icon-white" style="color:red"></span>
+					<?php }else{ ?>
+						<i class="glyphicon glyphicon-ok icon-white" style="color:green"></i>
+					<?php }//end if ?>	
+					</td>
+					<td><?php echo($reg['fec_sincronizado']); ?></td>
+					<td><?php  IF ($reg['estado']=='1'){ echo "I";} else { echo "A"; }; ?></td>
+					<td><a href="#" class="btn_edit"><i class="glyphicon glyphicon-pencil icon-white" style="color:orange"></i></a></td>
+				</tr>
+<?php	}//end foreach ?>		
+			</tbody>
+		</table>   
+		</div>
 	</section>
 </div>
 

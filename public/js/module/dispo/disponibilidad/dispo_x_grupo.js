@@ -276,7 +276,7 @@ $(document).ready(function () {
 							 }							
 						 }
 		response = ajax_call(parameters, data);					
-	}//end if
+	}//end function open_dialog_dispoGrupo
 	
 
 
@@ -319,6 +319,6 @@ $(document).ready(function () {
 		response = ajax_call(parameters, data);		
 		return false;			
 	
-	}
+	}//end function DispoGrupo_GrabarStock
 
 

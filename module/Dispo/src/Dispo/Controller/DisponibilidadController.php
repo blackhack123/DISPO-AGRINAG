@@ -699,14 +699,6 @@ class DisponibilidadController extends AbstractActionController
 		{
 			$EntityManagerPlugin = $this->EntityManagerPlugin();
 
-			$InventarioBO 	= new InventarioBO();
-			$CalidadBO		= new CalidadBO();
-			$ProveedorBO	= new ProveedorBO();
-
-			$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$ProveedorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-		
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
 		
@@ -714,22 +706,35 @@ class DisponibilidadController extends AbstractActionController
 			$json = json_decode($body, true);
 
 			$opcion						= $json['opcion'];
-			$inventario_1er_elemento	= $json['inventario_1er_elemento'];
-			$calidad_1er_elemento		= $json['calidad_1er_elemento'];
-			$proveedor_1er_elemento		= $json['proveedor_1er_elemento'];
-			$inventario_id	= null;
-			$clasifica_fox	= null;
-			$proveedor_id	= null;
-
-			$inventario_opciones 	= $InventarioBO->getCombo($inventario_id, $inventario_1er_elemento);
-			$calidad_opciones 		= $CalidadBO->getComboCalidadFox($clasifica_fox, $calidad_1er_elemento);
-			$proveedor_opciones 	= $ProveedorBO->getCombo($proveedor_id, $proveedor_1er_elemento);
-
-			$response = new \stdClass();
-			$response->inventario_opciones		= $inventario_opciones;
-			$response->calidad_opciones			= $calidad_opciones;
-			$response->proveedor_opciones		= $proveedor_opciones;
-			$response->respuesta_code 			= 'OK';
+			switch ($opcion)
+			{
+				case 'panel-control-disponibilidad':
+					$InventarioBO 	= new InventarioBO();
+					$CalidadBO		= new CalidadBO();
+					$ProveedorBO	= new ProveedorBO();
+					
+					$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+					$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+					$ProveedorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+										
+					$inventario_1er_elemento	= $json['inventario_1er_elemento'];
+					$calidad_1er_elemento		= $json['calidad_1er_elemento'];
+					$proveedor_1er_elemento		= $json['proveedor_1er_elemento'];
+					$inventario_id	= null;
+					$clasifica_fox	= null;
+					$proveedor_id	= null;
+					
+					$inventario_opciones 	= $InventarioBO->getCombo($inventario_id, $inventario_1er_elemento);
+					$calidad_opciones 		= $CalidadBO->getComboCalidadFox($clasifica_fox, $calidad_1er_elemento);
+					$proveedor_opciones 	= $ProveedorBO->getCombo($proveedor_id, $proveedor_1er_elemento);
+					
+					$response = new \stdClass();
+					$response->inventario_opciones		= $inventario_opciones;
+					$response->calidad_opciones			= $calidad_opciones;
+					$response->proveedor_opciones		= $proveedor_opciones;
+					$response->respuesta_code 			= 'OK';
+					break;
+			}//end switch
 
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
