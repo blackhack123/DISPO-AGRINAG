@@ -227,3 +227,8 @@ background-color:#DFEFFF;
 [role="gridcell"] a:active{
 	text-decoration:underline;	
 }
+
+/*Esconde la X para incializar las cajas de busqueda*/
+.ui-search-clear {
+			 display: none;
+		}

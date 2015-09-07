@@ -1,6 +1,8 @@
 /**
  * 
  */
+var selRowId_DispoGeneralGrid 		= 0;	
+var selColName_DispoGeneralGrid 	= 0;	
 
 
 $(document).ready(function () {
@@ -20,16 +22,22 @@ $(document).ready(function () {
 		return false;
 	});	
 	
+	$("#frm_dispo #btn_nuevo").on('click', function(event){ 
+		$("#dialog_dispo_variedad_titulo").html('Variedad - Grado: 30');
+		$('#dialog_dispo_variedad').modal('show')
+		return false;
+	});		
 	
 	$("#frm_dispo_proveedor #btn_grabar").on('click', function(event){ 
 		grabar_dispo_proveedor();
 		return false;
 	});	
 
+
 	
 	/*---------------------------------------------------------------*/	
 	
-
+	
 	/*---------------------------------------------------------------*/
 	/*-----Se configura los JQGRID de Dispobilidad General-----------*/
 	/*---------------------------------------------------------------*/		
@@ -43,9 +51,9 @@ $(document).ready(function () {
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['','variedad_id','Variedad','40','50','60','70','80','90', '100', '110'],
+		colNames:['Id','Variedad','40','50','60','70','80','90', '100', '110'],
 		colModel:[
-			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
+/*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
 			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
 			{name:'variedad',index:'variedad', width:170, sorttype:"string"},
 			{name:'40',index:'40', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
@@ -67,13 +75,14 @@ $(document).ready(function () {
 		shrinkToFit: false,
 		loadComplete: grid_setAutoHeight,
 		resizeStop: grid_setAutoHeight, 
+		rownumbers: true,
 		jsonReader: {
 			repeatitems : false,
 		},		
-		/*loadBeforeSend: function (xhr, settings) {
+		loadBeforeSend: function (xhr, settings) {
 			this.p.loadBeforeSend = null; //remove event handler
 			return false; // dont send load data request
-		},*/				
+		},				
 		loadError: function (jqXHR, textStatus, errorThrown) {
 			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 		}
@@ -88,11 +97,83 @@ $(document).ready(function () {
 			color = "LightGray";
 		}
 		
-		new_format_value = '<a href="javascript:void(0)" data-toggle="modal" data-target="#dialog_dispo_proveedores" onclick="open_dialog_dispo(\''+rowObject.variedad_id+'\',\''+rowObject.variedad+'\',\''+options.colModel.name+'\')" style="color:'+color+'">'+cellvalue+ '</a>';
+		new_format_value = '<a href="javascript:void(0)" data-toggle="modal" data-target="#dialog_dispo_proveedores" onclick="open_dialog_dispo(\''+options.rowId+'\',\''+options.colModel.name+'\',\''+rowObject.variedad_id+'\',\''+rowObject.variedad+'\',\''+options.colModel.name+'\')" style="color:'+color+'">'+cellvalue+ '</a>';
 		return new_format_value;
 	}
 		
 	jQuery("#grid_dispo_general").jqGrid('navGrid','#pager_dispo_general',{edit:false,add:false,del:false});
+
+	/*---------------------------------------------------------------*/	
+	/*---------------------------------------------------------------*/
+
+
+
+	/*---------------------------------------------------------------*/
+	/*-----Se configura los JQGRID de Dispobilidad General-----------*/
+	/*---------------------------------------------------------------*/		
+	var dataGridDispoVariedad = [{
+					'40': 0,
+					'50': 0,
+					'60': 0,
+					'70': 0,
+					'80': 0,
+					'90': 0,
+					'100': 0,
+					'110': 0
+				}];
+	
+	jQuery("#grid_dispo_variedad").jqGrid({
+        data: dataGridDispoVariedad,       
+        datatype: "local",
+		//datatype: "json",
+		loadonce: true,			
+		/*height:'400',*/
+		colNames:['40','50','60','70','80','90', '100', '110'],
+		colModel:[
+/*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
+			{name:'40',index:'40', width:50, align:"center", sorttype:"int", formatter: gridDispoVariedad_GradosFormatter},	
+			{name:'50',index:'50', width:50, align:"center", sorttype:"int", formatter: gridDispoVariedad_GradosFormatter},	
+			{name:'60',index:'60', width:50, align:"center", sorttype:"int", formatter: gridDispoVariedad_GradosFormatter},	
+			{name:'70',index:'70', width:50, align:"center", sorttype:"int", formatter: gridDispoVariedad_GradosFormatter},	
+			{name:'80',index:'80', width:50, align:"center", sorttype:"int", formatter: gridDispoVariedad_GradosFormatter},	
+			{name:'90',index:'90', width:50, align:"center", sorttype:"int", formatter: gridDispoVariedad_GradosFormatter},	
+			{name:'100',index:'100', width:50, align:"center", sorttype:"int", formatter: gridDispoVariedad_GradosFormatter},	
+			{name:'110',index:'110', width:50, align:"center", sorttype:"int", formatter: gridDispoVariedad_GradosFormatter}	
+		],
+		rowNum:999999,
+		pager: '#pager_dispo_variedad',
+		toppager:false,
+		pgbuttons:false,
+		pginput:false,
+		rowList:false,
+		gridview:false,	
+		shrinkToFit: false,
+		jsonReader: {
+			repeatitems : false,
+		},		
+		/*loadBeforeSend: function (xhr, settings) {
+			this.p.loadBeforeSend = null; //remove event handler
+			return false; // dont send load data request
+		},*/				
+		loadError: function (jqXHR, textStatus, errorThrown) {
+			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+		}
+	});
+		
+		
+	function gridDispoVariedad_GradosFormatter(cellvalue, options, rowObject){
+		var color = "Black"
+		if (cellvalue==0)
+		{
+			color = "LightGray";
+		}
+		
+//		new_format_value = '<a href="javascript:void(0)" data-toggle="modal" data-target="#dialog_dispo_proveedores" onclick="open_dialog_dispo(\''+options.rowId+'\',\''+options.colModel.name+'\',\''+rowObject.variedad_id+'\',\''+rowObject.variedad+'\',\''+options.colModel.name+'\')" style="color:'+color+'">'+cellvalue+ '</a>';
+		new_format_value = cellvalue;
+		return new_format_value;
+	}
+		
+	jQuery("#grid_dispo_variedad").jqGrid('navGrid','#pager_dispo_variedad',{edit:false,add:false,del:false});
 
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/
@@ -126,13 +207,45 @@ $(document).ready(function () {
 	}//end function disponibilidad_init
 
 	
-	function open_dialog_dispo(variedad_id, variedad_nombre, grado_id)
+	function open_dialog_dispo(rowId, colName, variedad_id, variedad_nombre, grado_id)
 	{
+		selRowId_DispoGeneralGrid 	= rowId;
+		selColName_DispoGeneralGrid = colName;
+			
+			
 		$("#dialog_dispo_proveedores_titulo").html(variedad_nombre+' - Grado:'+grado_id);
 
 		$("body #frm_dispo_proveedor #stock_agr").val("");
 		$("body #frm_dispo_proveedor #stock_htc").val("");
-		$("body #frm_dispo_proveedor #stock_lma").val("");		
+		$("body #frm_dispo_proveedor #stock_lma").val("");
+		
+		var proveedor_id = $("#frm_dispo #proveedor_id").val();
+		
+		if (proveedor_id==""){
+			$("body #frm_dispo_proveedor #stock_agr").prop("readonly",false);
+			$("body #frm_dispo_proveedor #stock_htc").prop("readonly",false);
+			$("body #frm_dispo_proveedor #stock_lma").prop("readonly",false);						
+		}else{
+			$("body #frm_dispo_proveedor #stock_agr").prop("readonly",true);
+			$("body #frm_dispo_proveedor #stock_htc").prop("readonly",true);
+			$("body #frm_dispo_proveedor #stock_lma").prop("readonly",true);
+			
+			switch (proveedor_id)
+			{
+				case 'AGR':
+					$("body #frm_dispo_proveedor #stock_agr").prop("readonly",false);
+					break;
+					
+				case 'LMA':
+					$("body #frm_dispo_proveedor #stock_lma").prop("readonly",false);
+					break;
+					
+				case 'HTC':
+					$("body #frm_dispo_proveedor #stock_htc").prop("readonly",false);				
+					break;
+			}//end switch
+		}//end if
+				
 		var data = 	{
 						inventario_id:	$("#frm_dispo #inventario_id").val(),
 						clasifica_fox:	$("#frm_dispo #calidad_id").val(),
@@ -185,8 +298,6 @@ $(document).ready(function () {
 			return false;
 		}//end if
 		
-		console.log('stock_agr:',stock_agr,'*stock_htc:',stock_htc,'*stock_lma:',stock_lma);
-		
 		var data = 	{
 						inventario_id:	$("#frm_dispo_proveedor #inventario_id").val(),
 						clasifica_fox:	$("#frm_dispo_proveedor #calidad_id").val(),
@@ -206,7 +317,14 @@ $(document).ready(function () {
 							'finish':function(response){
 								if (response.validacion_code == 'OK')
 								{
-									mostrar_registro(response)
+									//Actualiza la celda del GRID con el nuevo Stock
+									//esto evita recargar el grid por completo.
+									stock_total = number_val(stock_agr) + number_val(stock_htc) + number_val(stock_lma);
+									icol_grado = jqgrid_get_columnIndexByName($("#grid_dispo_general"), selColName_DispoGeneralGrid);									
+									$("#grid_dispo_general").jqGrid('setCell', selRowId_DispoGeneralGrid , icol_grado, stock_total);
+
+									
+									//mostrar_registro(response)
 									cargador_visibility('hide');
 									swal({  title: "Informacion grabada con exito!!",   
 										//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  

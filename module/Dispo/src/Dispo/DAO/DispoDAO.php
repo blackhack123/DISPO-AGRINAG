@@ -30,13 +30,13 @@ class DispoDAO extends Conexion
 				'producto'		            		=> $DispoData->getProducto(),
 				'variedad_id'		            	=> $DispoData->getVariedadId(),
 				'grado_id'		            		=> $DispoData->getGradoId(),
-				'tallos_x_bunch'	         		=> $DispoData->getgetTallosxBunch(),
+				'tallos_x_bunch'	         		=> $DispoData->getTallosxBunch(),
 				'clasifica'		            		=> $DispoData->getClasifica(),
-				'cantidad_bunch'		            => $DispoData->getgetCantidadBunch(),
+				'cantidad_bunch'		            => $DispoData->getCantidad_bunch(),
 				'cantidad_bunch_disponible'		    => $DispoData->getCantidadBunchDisponible()
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
-		//$id = $this->getEntityManager()->getConnection()->lastInsertId();
+		$id = $this->getEntityManager()->getConnection()->lastInsertId();
 		return $id;
 	}//end function ingresar
 
@@ -72,6 +72,26 @@ class DispoDAO extends Conexion
 	}//end function modificar
 
 
+	/**
+	 * 
+	 * @param int $id
+	 * @param int $bunch_disponible
+	 * @return int
+	 */
+	public function modificarBunchDisponibles($id, $bunch_disponible)
+	{
+		$key    = array(
+				'id'						        => $id,
+		);
+		$record = array(
+				'cantidad_bunch_disponible'		    => $bunch_disponible
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $id;
+	}///end function modificarBunchDisponibles 
+	
+	
+	
 	/**
 	 * Consultar
 	 *
@@ -330,6 +350,29 @@ class DispoDAO extends Conexion
 	
 	
 	
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $producto
+	 * @param string $proveedor_id
+	 * @return unknown
+	 */
+	public function consultarFechaMaximaDispo($inventario_id, $producto, $proveedor_id)
+	{
+		$sql = 	' SELECT max(fecha) as fecha, max(fecha_bunch) as fecha_bunch  '.
+				' FROM dispo '.
+				" WHERE inventario_id 	= '".$inventario_id."'".
+				"   and producto		= '".$producto."'".
+				"   and proveedor_id	= '".$proveedor_id."'";
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+
+		return $row;
+	}//end function consultarFechaMaximaDispo
+	
+	
 
 	/**
 	 * 
@@ -339,9 +382,9 @@ class DispoDAO extends Conexion
 	 * @param string $proveedor_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
-	 * @return \Dispo\Data\DispoData|NULL
+	 * @return array
 	 */
-	public function consultarMaximoRegistroPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id)
+	public function consultarRegistrosPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id)
 	{
 		$DispoData 		    = new DispoData();
 		
@@ -350,18 +393,19 @@ class DispoDAO extends Conexion
 				" WHERE inventario_id 	= '".$inventario_id."'".
 				"   and producto		= '".$producto."'".
 				"   and clasifica		= '".$clasifica_fox."'".
-				"   and proveedor_id	= '".proveedor_id."'".				
+				"   and proveedor_id	= '".$proveedor_id."'".				
 				"   and variedad_id		= '".$variedad_id."'".
 				"   and grado_id		= '".$grado_id."'".
-				" ORDER BY id DESC".
-				" LIMIT BY 1";
+				" ORDER BY id DESC";
+				//" LIMIT 1";
 		
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
-		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		$result = $stmt->fetchAll();
+		return $result;
+/*		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 
 		if($row){
-		
 			$DispoData->getId						($row['id']);
 			$DispoData->getFecha 					($row['Fecha']);
 			$DispoData->getInventarioId				($row['inventario_id']);
@@ -379,62 +423,95 @@ class DispoDAO extends Conexion
 		}else{
 			return null;
 		}//end if				
-	}//end function consultarMaximoRegistroPorStock
+*/	}//end function consultarRegistrosPorStock
 	
 	
 	
-	
-	public function actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $stock)
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $producto
+	 * @param string $clasifica_fox
+	 * @param string $proveedor_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @param string $stock
+	 * @return number
+	 */
+	public function actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock_new)
 	{
-		//Consulta el ultimo registro para obtener el ID
-		$DispoData = $this->consultarMaximoRegistroPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+		$DispoData = new DispoData();
 		
-		if ($DispoData)
+		//Consulta el ultimo registro para obtener el ID
+		//$DispoData = $this->consultarMaximoRegistroPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+		$result = $this->consultarRegistrosPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+		
+		if ($result)
 		{
-			//Actualiza
-			if ($DispoData->getCantidad_bunch() < $stock){
-				$DispoData->setCantidadBunch($stock);
-			}//end if
-			$DispoData->setCantidadBunchDisponible($stock);
-			$id = $this->modificar($DispoData);
+			$reg_stock = $this->consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+			$stock_actual = $reg_stock[0]['tot_bunch_disponible'];
+			$stock_process= $stock_new;
+			$stock_diferencia = $stock_actual - $stock_new;
+			
+			foreach ($result as $reg)
+			{
+				if ($stock_new > $stock_actual)
+				{
+					//Incrementa el stock solo al primer registro
+					
+					$incremento = $stock_new - $stock_actual;					
+					$bunch_disponible = $reg['cantidad_bunch_disponible'] + $incremento;					
+					$id = $this->modificarBunchDisponibles($reg['id'], $bunch_disponible);
+					
+					break;
+				}//end if
+
+				if ($stock_new < $stock_actual)
+				{	
+					//Decrementa el stock
+					if ($stock_diferencia > $reg['cantidad_bunch_disponible'])
+					{
+						$bunch_disponible	= 0;
+						$decremento			= $reg['cantidad_bunch_disponible'];
+						$stock_diferencia	= $stock_diferencia - $decremento;
+					}else{
+						$decremento			= $stock_diferencia;
+						$bunch_disponible 	= $reg['cantidad_bunch_disponible'] - $decremento;
+						$stock_diferencia 	= 0;
+					}//end if
+
+					//Actualiza
+					$id = $this->modificarBunchDisponibles($reg['id'], $bunch_disponible);
+					
+					//Si el stock_process es CERO se sale del proceso
+					if ($stock_diferencia==0)
+					{
+						break;
+					}
+					
+				}//end if
+			}//end foreach
 		}else{
 			//Ingresa
 			//$DispoData->setId($valor);
-			$DispoData->setFecha($valor);
-			$DispoData->setInventarioId($inventario_id);
-			$DispoData->setFechaBunch($valor);
-			$DispoData->setProveedorId($proveedor_id);
-			$DispoData->setProducto($producto);
-			$DispoData->setVariedadId($variedad_id);
-			$DispoData->setGradoId($grado_id);
-			$DispoData->setTallosxBunch($valor);
-			$DispoData->setClasifica($clasifica_fox);
-			if ($DispoData->getCantidad_bunch() < $stock){
-				$DispoData->setCantidadBunch($stock);
-			}//end if
-			$DispoData->setCantidadBunchDisponible($stock);
-			
+			$reg_fecha = $this->consultarFechaMaximaDispo($inventario_id, $producto, $proveedor_id);
+						
+			$DispoData->setFecha 			($reg_fecha['fecha']);
+			$DispoData->setInventarioId		($inventario_id);
+			$DispoData->setFechaBunch		($reg_fecha['fecha_bunch']);
+			$DispoData->setProveedorId		($proveedor_id);
+			$DispoData->setProducto			($producto);
+			$DispoData->setVariedadId		($variedad_id);
+			$DispoData->setGradoId			($grado_id);
+			$DispoData->setTallosxBunch		($tallos_x_bunch);
+			$DispoData->setClasifica		($clasifica_fox);
+			$DispoData->setCantidadBunch	($stock_new);
+			$DispoData->setCantidadBunchDisponible($stock_new);
+
 			$id = $this->ingresar($DispoData);
 		}//end if
-		
-		//Con el registro identificadado se procede a realizar la actualizacion
-		
-		$key    = array(
-				'id'						        => $AgenciaCargaData->getId(),
-		);
-		$record = array(
-				'nombre'		                    => $AgenciaCargaData->getNombre(),
-				'direccion'		            		=> $AgenciaCargaData->getDireccion(),
-				'telefono'                			=> $AgenciaCargaData->getTelefono(),
-				'tipo'                				=> $AgenciaCargaData->getTipo(),
-				'estado'                			=> $AgenciaCargaData->getEstado(),
-				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
-				'usuario_mod_id'                	=> $AgenciaCargaData->getUsuarioModId(),
-				'sincronizado'       	         	=> 0
-				//'fecha_mod'							=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
-		);
-		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $DispoData->getId();		
+
+		return true;		
 	}//end function actualizarStock
 	
 	

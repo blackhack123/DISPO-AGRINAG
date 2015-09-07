@@ -16,8 +16,9 @@ return array(
         	'Dispo\Controller\Pedido'		 		=> 'Dispo\Controller\PedidoController',
         	'Dispo\Controller\Cliente'		 		=> 'Dispo\Controller\ClienteController',
         	'Dispo\Controller\Variedad'		 		=> 'Dispo\Controller\VariedadController',
-        	'Dispo\Controller\transportadora'		=> 'Dispo\Controller\TransportadoraController',
-        	'Dispo\Controller\usuario'				=> 'Dispo\Controller\UsuarioController',
+        	'Dispo\Controller\Transportadora'		=> 'Dispo\Controller\TransportadoraController',
+        	'Dispo\Controller\Grupodispo'			=> 'Dispo\Controller\GrupodispoController',
+
         ),
     ),
     // The following section is new and should be added to your file
@@ -138,21 +139,38 @@ return array(
         	),
         		
         		
-        		'dispo-transportadora' => array(
-        				'type'    => 'segment',
-        				'options' => array(
-        						'route'    => '/dispo/transportadora[/:action][/:id]',
-        						'constraints' => array(
-        								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        								'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-        						),
-        						'defaults' => array(
-        								'controller' => 'Dispo\Controller\Transportadora',
-        								'action'     => 'index',
-        						),
-        				),
-        		),        		
-		),
+        	'dispo-transportadora' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/transportadora[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Transportadora',
+        							'action'     => 'index',
+        					),
+        			),
+        	),  
+
+        		
+        	'dispo-grupodispo' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/grupodispo[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Grupodispo',
+        							'action'     => 'index',
+        					),
+        			),
+        	), 
+
+        ),
     ),
     'view_manager' => array(
     		'template_map' => array(

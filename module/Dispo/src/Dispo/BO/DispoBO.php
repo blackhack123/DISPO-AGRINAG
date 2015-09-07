@@ -493,7 +493,19 @@ class DispoBO extends Conexion
 	
 	
 	
-	public function actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id,  $stock)
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $producto
+	 * @param string $clasifica_fox
+	 * @param string $proveedor_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @param array $stock
+	 * @throws Exception
+	 * @return array
+	 */
+	public function actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock)
 	{
 		$this->getEntityManager()->getConnection()->beginTransaction();
 		try
@@ -506,13 +518,14 @@ class DispoBO extends Conexion
 				//TODAS LAS FINCAS
 				foreach($stock as $clave => $valor)
 				{
-					$DispoDAO->actualizarStock($inventario_id, $producto, $clasifica_fox, $clave, $variedad_id, $grado_id, $valor);
+					$valor = (empty($valor)?0:$valor);
+					$DispoDAO->actualizarStock($inventario_id, $producto, $clasifica_fox, $clave, $variedad_id, $grado_id, $tallos_x_bunch, $valor);
 				}//end foreach
 			}else{
 
 				//UNA SOLA FINCA
 				$stock = $stock[$proveedor_id];
-				$DispoDAO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $stock);
+				$DispoDAO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock);
 			}//end if
 
 			$result['validacion_code'] 	= 'OK';

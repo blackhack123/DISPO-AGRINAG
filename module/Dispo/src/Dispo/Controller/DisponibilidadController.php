@@ -795,6 +795,8 @@ class DisponibilidadController extends AbstractActionController
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 				
+			$config = $this->getServiceLocator()->get('Config');
+						
 			$DispoBO 			= new DispoBO();
 				
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
@@ -814,23 +816,13 @@ class DisponibilidadController extends AbstractActionController
 			$stock['AGR'] 		= $json['stock_agr'];
 			$stock['HTC'] 		= $json['stock_htc'];
 			$stock['LMA'] 		= $json['stock_lma'];
-			$result = $DispoBO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id,  $stock);
+			$result = $DispoBO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $config['tallos_x_bunch_default'], $stock);
 
 			//Retorna la informacion resultante por JSON
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';
 			$response->validacion_code 		= $result['validacion_code'];
 			$response->respuesta_mensaje	= $result['respuesta_mensaje'];
-			if ($row)
-			{
-				$response->row					= $row;
-				$response->cbo_tipo				= $AgenciaCargaBO->getComboTipo($row['tipo'], " ");
-				$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
-			}else{
-				$response->row					= null;
-				$response->cbo_tipo				= '';
-				$response->cbo_estado			= '';
-			}//end if
 	
 			$json = new JsonModel(get_object_vars($response));
 			return $json;

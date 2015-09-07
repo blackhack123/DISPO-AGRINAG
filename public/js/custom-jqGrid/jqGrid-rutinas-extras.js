@@ -104,6 +104,20 @@ var jqgrid_get_columnIndexByName = function(grid,columnName) {
 };
 
 
+var jqgrid_get_columnNameByIndex = function(grid,columnIndex) {
+	//var cm = $("#"+id_grid).jqGrid('getGridParam','colModel');
+	var cm = grid.jqGrid('getGridParam','colModel');
+	//console.log(cm);
+	for (var i=0,l=cm.length; i<l; i++) {
+		//console.log('cm[i]:',cm[columnIndex]);
+		/*if (cm[i].index===columnIndex) {
+			return i;
+		}*/
+		return cm[columnIndex].name
+	}
+	return null;
+};
+
 
 
 /*
