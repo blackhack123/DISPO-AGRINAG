@@ -64,6 +64,7 @@ $(document).ready(function () {
 			jsonReader: {
 				repeatitems : false,
 			},		
+			
 			/*caption:"Grilla de Prueba",*/
 			afterInsertRow : function(rowid, rowdata){
 				//console.log('rowdata:',rowdata);
@@ -84,7 +85,7 @@ $(document).ready(function () {
 				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 			}
 		}).navGrid();
-
+			
 		$('#grid_marcacion_listado').setGroupHeaders(
 		{
 			useColSpanStyle: true,
@@ -128,7 +129,7 @@ $(document).ready(function () {
 
 		/*---------------------------------------------------------------*/	
 		/*---------------------------------------------------------------*/
-		
+
 });
 
 
@@ -310,7 +311,7 @@ $(document).ready(function () {
 									//	listar_marcacion(true);
 										cargador_visibility('hide');
 										
-										$("#dialog_nueva_marcacion").modal('show')
+										$("#dialog_nueva_marcacion").modal('show');
 								}							
 			                 }
 			response = ajax_call(parameters, data);		

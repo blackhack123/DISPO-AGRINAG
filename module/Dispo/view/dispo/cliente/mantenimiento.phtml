@@ -8,8 +8,8 @@
 
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/init-cliente.js')); ?>"></script>
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/cliente.js')); ?>"></script>
-<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/agencia-carga.js')); ?>"></script>
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/marcacion.js')); ?>"></script>
+<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/agencia-carga.js')); ?>"></script>
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/usuario.js')); ?>"></script>
 
 
@@ -18,7 +18,8 @@
 </div>
 
 
-<div class="row">   
+<div class="row">
+
 	<section class="body-admin-section">    	
     	<div class="accion-admin-section"> 	
         	<div class="botonera-admin-section pull-left separator">
@@ -41,9 +42,10 @@
                 </div>                
                
                 </form>    
-				</div>
+			
             </div>
         </div>
+
         <div class="clearfix"></div>
         <div>
 				<table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
@@ -126,7 +128,7 @@
             
               <!-- Tab paneL -->
               <div class="tab-content">
-                <div role="tabpanel" class="tab-panel fade in active" id="tab_informacion_general">
+                <div role="tabpanel" class="tab-pane fade in active" id="tab_informacion_general">
                 	<div class="row clear" >
                			<form class="form-horizontal" role="form" name="frm_informacion_general" id="frm_informacion_general">
                         <!--PRIMERA COLUMNA-->
@@ -577,37 +579,35 @@
                     	</form>
                     </div>
                 </div><!--END TAB INF. GENERAL-->
-                <div role="tabpanel" class="content tab-pane" id="tab_marcacion">
-	                <div class="col-lg-4 table-striped ">
-	                  	<form id="frm_marcacion_listado">
-                              <div class="clearfix">
-                                     	<div class="pull-left"><a id="btn_nueva_marcacion"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a>
-                                     	</div>
-                                  <div class="pull-right">
-										<input name="busqueda_nombre" id="busqueda_nombre" type="text" class="select-class2" placeholder="Nombre" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
-                                        <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
-                                         <?php echo($this->busqueda_estado); ?>
-                                        </select>
-                                        <a id="btn_consultar"  class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search"></i></a>
-                                  </div>
-                              </div>
-                            <div class="clearfix">
-                                   <table id="grid_marcacion_listado" class="grid"></table>
-                                   <div id="pager_marcacion_listado"></div>
-							</div>
-	                   </form>	
-	                </div>
-                </div><!--END TAB marcacio-->
-                <div role="tabpanel" class="tab-pane" id="tab_agencia_carga">
-                <div class="row">
-                PRUEBA 
-                DE AGENCIA CARGA
-                </div>
-                agencia carga
-                </div>
-                <div role="tabpanel" class="tab-pane" id="tab_usuarios">
+	                <div role="tabpanel" class="tab-pane fade" id="tab_marcacion"> <!--INICIO TAB MARCACION-->
+	                	<div class="row clear" >
+		                  	<form  class="form-horizontal" role="form" id="frm_marcacion_listado" name="frm_marcacion_listado">
+			                  	 <div class="col-lg-4 table-striped">
+		                              <div class="clearfix">
+		                                     	<div class="pull-left"><a id="btn_nueva_marcacion"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a>
+		                                     	</div>
+		                                  <div class="pull-right">
+												<input name="busqueda_nombre" id="busqueda_nombre" type="text" class="select-class2" placeholder="Nombre" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+		                                        <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
+		                                         <?php echo($this->busqueda_estado); ?>
+		                                        </select>
+		                                        <a id="btn_consultar"  class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search"></i></a>
+		                                  </div></br>
+		                              </div>
+		                              <div class="clearfix">
+		                                  <table id="grid_marcacion_listado" class="grid"></table>
+		                                   <div id="pager_marcacion_listado"></div>
+		                              </div>
+								</div></br>
+		                   </form>	
+		               </div>
+	                </div> <!--END TAB MARCACION-->
+	                <div role="tabpanel" class="tab-pane fade" id="tab_agencia_carga"> <!--INICIO TAB AG CARGA-->
+	                TAB AGENCIA CARGA </br>
+                   </div><!--END TAB AGENCIA CARGA-->
+                <div role="tabpanel" class="tab-pane fade" id="tab_usuarios"><!--INICIO TAB USUARIOS-->
                 usuarios
-                </div>
+                </div><!--END TAB USUARIOS-->
               </div>
         </div>
       </div>

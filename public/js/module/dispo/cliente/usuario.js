@@ -174,7 +174,7 @@ $(document).ready(function () {
 									$("#frm_nuevo_usuario #lbl_fec_ingreso").html('');
 									$("#frm_nuevo_usuario #lbl_usuario_mod").html('');
 									$("#frm_nuevo_usuario #lbl_fec_modifica").html('');									
-									$("#dialog_nuevo_usuario").modal('show')
+									$("#dialog_nuevo_usuario").modal('show');
 							}							
 		                 }
 		response = ajax_call(parameters, data);		
@@ -344,7 +344,7 @@ $(document).ready(function () {
 								//	listar_marcacion(true);
 									cargador_visibility('hide');
 									
-									$("#dialog_nuevo_usuario").modal('show')
+									$("#dialog_nuevo_usuario").modal('show');
 							}							
 		                 }
 		response = ajax_call(parameters, data);		

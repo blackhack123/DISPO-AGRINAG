@@ -29,7 +29,7 @@ $(document).ready(function () {
 	
 	/*---------------------------------------------------------------*/
 	/*-----------------Se configura los JQGRID's AG. CARGA-----------*/
-	/*---------------------------------------------------------------*/		
+	/*---------------------------------------------------------------*/	
 	jQuery("#grid_agenciacarga_listado").jqGrid({
 		url:'<?php echo(./../dispo/agenciacarga/agencialistadodata',
 		postData: {
@@ -194,7 +194,7 @@ $(document).ready(function () {
 									$("#sincronizado_pendiente").show();
 									$("#sincronizado_ok").hide();
 									
-									$("#dialog_nueva_agenciacarga").modal('show')
+									$("#dialog_nueva_agenciacarga").modal('show');
 							}							
 		                 }
 		response = ajax_call(parameters, data);		
@@ -281,7 +281,7 @@ $(document).ready(function () {
 								//	listar_marcacion(true);
 									cargador_visibility('hide');
 									
-									$("#dialog_nueva_agenciacarga").modal('show')
+									$("#dialog_nueva_agenciacarga").modal('show');
 							}							
 		                 }
 		response = ajax_call(parameters, data);		
