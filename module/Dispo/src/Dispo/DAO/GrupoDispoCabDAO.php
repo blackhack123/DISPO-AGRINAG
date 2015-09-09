@@ -14,21 +14,25 @@ class GrupoDispoCabDAO extends Conexion
 	/**
 	 * Ingresar
 	 *
-	 * @param GrupoDispoCabDataData $GrupoDispoCabDataData
+	 * @param GrupoDispoCabData $GrupoDispoCabData
 	 * @return array Retorna un Array $key el cual contiene el id
 	 */
-	public function ingresar(GrupoDispoCabDataData $GrupoDispoCabDataData)
+	public function ingresar(GrupoDispoCabData $GrupoDispoCabData)
 	{
-		$key    = array(
-				'id'						        => $GrupoDispoCabDataData->getId(),
-		);
+		/*$key    = array(
+				'id'						        => $GrupoDispoCabData->getId(),
+		);*/
 		$record = array(
-				'id'								=> $GrupoDispoCabDataData->getId(),
-				'nombre'		                    => $GrupoDispoCabDataData->getNombre(),
-				'inventario_id'		            	=> $GrupoDispoCabDataData->getInventarioId()
+				'nombre'		                    => $GrupoDispoCabData->getNombre(),
+				'inventario_id'		            	=> $GrupoDispoCabData->getInventarioId(),
+				'calidad_id'						=> $GrupoDispoCabData->getCalidadId(),
+				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_ing_id'                	=> $GrupoDispoCabData->getUsuarioIngId(),
+				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                	=> $GrupoDispoCabData->getUsuarioIngId(),
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
-		//$id = $this->getEntityManager()->getConnection()->lastInsertId();
+		$id = $this->getEntityManager()->getConnection()->lastInsertId();
 		return $id;
 	}//end function ingresar
 
@@ -37,22 +41,23 @@ class GrupoDispoCabDAO extends Conexion
 	/**
 	 * Modificar
 	 *
-	 * @param GrupoDispoCabDataData $GrupoDispoCabDataData
+	 * @param GrupoDispoCabData $GrupoDispoCabData
 	 * @return array Retorna un Array $key el cual contiene el id
 	 */
-	public function modificar(GrupoDispoCabDataData $GrupoDispoCabDataData)
+	public function modificar(GrupoDispoCabData $GrupoDispoCabData)
 	{
 		$key    = array(
-				'id'						        => $GrupoDispoCabDataData->getId(),
+				'id'						        => $GrupoDispoCabData->getId(),
 		);
 		$record = array(
-				'id'								=> $GrupoDispoCabDataData->getId(),
-				'nombre'		                    => $GrupoDispoCabDataData->getNombre(),
-				'inventario_id'		            	=> $GrupoDispoCabDataData->getInventarioId()
-
+				'nombre'		                    => $GrupoDispoCabData->getNombre(),
+				'inventario_id'		            	=> $GrupoDispoCabData->getInventarioId(),
+				'calidad_id'						=> $GrupoDispoCabData->getCalidadId(),				
+				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                	=> $GrupoDispoCabData->getUsuarioModId(),
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $GrupoDispoCabDataData->getId();
+		return $GrupoDispoCabData->getId();
 	}//end function modificar
 
 
@@ -62,7 +67,7 @@ class GrupoDispoCabDAO extends Conexion
 	 * @param string $id
 	 * @return GrupoDispoCabDataData|null
 	 */	
-	public function consultar($id)
+/*	public function consultar($id)
 	{
 		$GrupoDispoCabDataData 		    = new GrupoDispoCabDataData();
 
@@ -86,7 +91,70 @@ class GrupoDispoCabDAO extends Conexion
 		}//end if
 
 	}//end function consultar
+*/
+	
+	/**
+	 * 
+	 * @param int $id
+	 * @param int $resultType
+	 * @return \Dispo\Data\GrupoDispoCabDataData|NULL|array
+	 */
+	public function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		
+		if (empty($id))
+		{
+			return null;
+		}//end if
+		
+		switch ($resultType)
+		{
+			case \Application\Constants\ResultType::OBJETO:
+				$GrupoDispoCabDataData 		    = new GrupoDispoCabDataData();
+	
+				$sql = 	' SELECT grupo_dispo_cab.* '.
+						' FROM grupo_dispo_cab '.
+						' WHERE grupo_dispo_cab.id = :id ';
+	
+				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+				$stmt->bindValue(':id',$id);
+				$stmt->execute();
+				$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+				if($row){
+					$GrupoDispoCabDataData->setId			    ($row['id']);
+					$GrupoDispoCabDataData->setNombre		    ($row['nombre']);
+					$GrupoDispoCabDataData->setCalidadId 		($row['calidad_id']);
+					$GrupoDispoCabDataData->setInventarioId  	($row['inventario_id']);
+	
+					return $GrupoDispoCabDataData;
+				}else{
+					return null;
+				}//end if
+				break;
+	
+			case \Application\Constants\ResultType::MATRIZ:
+				$sql = 	' SELECT grupo_dispo_cab.*, calidad.nombre as calidad_nombre, calidad.clasifica_fox as calidad_clasifica_fox  '.
+						/*usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name  '.*/
+						' FROM grupo_dispo_cab LEFT JOIN calidad '.
+						'                              ON calidad.id = grupo_dispo_cab.calidad_id '.
+						/*								LEFT JOIN usuario as usuario_ing '.
+						 '                           ON usuario_ing.id = agencia_carga.usuario_ing_id '.
+						 '					 LEFT JOIN usuario as usuario_mod '.
+						 '                           ON usuario_mod.id = agencia_carga.usuario_mod_id '.
+						 */
+						' WHERE grupo_dispo_cab.id = :id ';
+	
+				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+				$stmt->bindValue(':id',$id);
+				$stmt->execute();
+				$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+				return $row;
+				break;
+		}//end switch
 
+	}//end function consultar	
+	
+	
 	
 	
 	/**

@@ -9,7 +9,7 @@ class GrupoPrecioDetData
 	/**
 	 * @var int
 	 */	
-	protected $grupo_precio_cab;
+	protected $grupo_precio_cab_id;
 
 	/**
 	 * @var string
@@ -22,37 +22,31 @@ class GrupoPrecioDetData
 	protected $grado_id;
 
 	/**
-	 * @var string
+	 * @var float
 	 */	
-	protected $variedad_combo_id;
-
-	/**
-	 * @var string
-	 */	
-	protected $grado_combo_id;
+	protected $precio;
 
 	/**
 	 * @var float
 	 */	
-	protected $factor_combo;
+	protected $precio_oferta;
+
 
 
 	//metodos GET
-	public function getGrupoPrecioCab()					 	 {return $this->grupo_precio_cab;}
+	public function getGrupoPrecioCabId()				 	 {return $this->grupo_precio_cab_id;}
 	public function getVariedadId() 						 {return $this->variedad_id;}
 	public function getGradoId() 							 {return $this->grado_id;}
-	public function getVariedadComboId() 					 {return $this->variedad_combo_id;}
-	public function getGradoComboId() 						 {return $this->grado_combo_id;}
-	public function getFactorCombo() 						 {return $this->factor_combo;}
+	public function getPrecio() 							 {return $this->precio;}
+	public function getPrecioOferta() 						 {return $this->precio_oferta;}
 
 
 	//metodos SET
-	public function setGrupo_precioCab($valor) 				{$this->grupo_precio_cab		= $valor;}
+	public function setGrupoPrecioCabId($valor) 			{$this->grupo_precio_cab_id		= $valor;}
 	public function setVariedadId($valor) 					{$this->variedad_id				= $valor;}
 	public function setGradoId($valor) 						{$this->grado_id				= $valor;}
-	public function setVariedadComboId($valor) 				{$this->variedad_combo_id		= $valor;}
-	public function setGradoComboId($valor) 				{$this->grado_combo_id			= $valor;}
-	public function setFactorCombo($valor) 					{$this->factor_combo			= $valor;}
+	public function setPrecio($valor) 						{$this->precio					= $valor;}
+	public function setPrecioOferta($valor) 				{$this->precio_oferta			= $valor;}
 
 
 }//end class

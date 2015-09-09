@@ -18,7 +18,8 @@ return array(
         	'Dispo\Controller\Variedad'		 		=> 'Dispo\Controller\VariedadController',
         	'Dispo\Controller\Transportadora'		=> 'Dispo\Controller\TransportadoraController',
         	'Dispo\Controller\Grupodispo'			=> 'Dispo\Controller\GrupodispoController',
-
+        	'Dispo\Controller\Grupoprecio'			=> 'Dispo\Controller\GrupoprecioController',
+        		
         ),
     ),
     // The following section is new and should be added to your file
@@ -165,6 +166,21 @@ return array(
         					),
         					'defaults' => array(
         							'controller' => 'Dispo\Controller\Grupodispo',
+        							'action'     => 'index',
+        					),
+        			),
+        	), 
+
+        	'dispo-grupoprecio' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/grupoprecio[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Grupoprecio',
         							'action'     => 'index',
         					),
         			),

@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Dispo\DAO\GrupoDispoCabDAO;
 use Dispo\DAO\DispoDAO;
 use Dispo\DAO\GrupoDispoDetDAO;
+use Dispo\Data\GrupoDispoCabData;
 
 
 class GrupoDispoCabBO extends Conexion
@@ -156,5 +157,56 @@ class GrupoDispoCabBO extends Conexion
 		}
 		
 	}//end function registrarStock
+
 	
+	
+	
+	public function consultarCabecera($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$GrupoDispoCabDAO = new GrupoDispoCabDAO();
+		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+		$reg = $GrupoDispoCabDAO->consultar($id, $resultType);
+		return $reg;
+	}//end function consultarCabecera
+		
+	
+	
+	/**
+	 * Ingresar
+	 *
+	 * @param GrupoDispoCabData $GrupoDispoCabData
+	 * @return array
+	 */
+	function registrarPorAccion($accion, GrupoDispoCabData $GrupoDispoCabData)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try
+		{
+			$GrupoDispoCabDAO = new GrupoDispoCabDAO();
+			$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+			
+			switch($accion)
+			{
+				case 'I':
+					$id = $GrupoDispoCabDAO->ingresar($GrupoDispoCabData);
+					$result['id']	 	= $id;					
+					break;
+					
+				case 'M':
+					$id = $GrupoDispoCabDAO->modificar($GrupoDispoCabData);
+					$result['id']		= $id;					
+					break;
+			}//end switch
+			
+			$this->getEntityManager()->getConnection()->commit();
+			return $result;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function registrar	
+	
+	
+
 }//end class

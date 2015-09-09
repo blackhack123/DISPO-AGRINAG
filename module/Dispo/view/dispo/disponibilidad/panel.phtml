@@ -1,6 +1,7 @@
 <meta charset="UTF-8">
 	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/disponibilidad.js')); ?>"></script>
    	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/dispo_x_grupo.js')); ?>"></script>
+   	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/precio_x_grupo.js')); ?>"></script>
 	<script>
 		$(document).ready(function () {
 			InputData_TrimAll();
@@ -342,8 +343,10 @@
                                 	 
                                      
                                 </div>
-                                <table id="grid_dispo_general" class="grid grid-autoheight"></table>
-                                <div id="pager_dispo_general"></div>
+                                <div class="row-fluid">                                	
+                                    <table id="grid_dispo_general" class="grid grid-autoheight"></table>
+                                    <div id="pager_dispo_general"></div>
+                                </div>
                             </form>
                             
                             <!-- Modal Dispo General por Proveedor -->
@@ -504,7 +507,7 @@
                                         	</div>
                                             <div class="busqueda-admin-section pull-left">
                                             	 <select  id="grupo_dispo_cab_id" class="form-control input-sm"></select>
-                                                 <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
+                                                 <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>&nbsp;&nbsp;<a id="editar_dispo_grupo"><span id="info_grupo_dispo_cab" class="bg-info"></span></a>
                                             </div>
                                         </div>
                                      </section>
@@ -514,60 +517,60 @@
                                 <table id="grid_dispo_grupo" class="grid grid-autoheight"></table>
                                 <div id="pager_dispo_grupo"></div>
                             </form> 
-                            
-                            <!-- Modal Dispo Por Grupo - STOCK -->
-                            <form id="frm_dispogrupo_stock" name="frm_dispogrupo_stock" action="#" method="post" class="form-group" />
-                            	<input type="text" id="grupo_dispo_cab_id" value="" />
-                            	<input type="hidden" id="variedad_id" value="" />
-                                <input type="hidden" id="grado_id" value="" />                                
-                                <div class="modal fade" id="dialog_dispogrupo_stock" tabindex="-1" role="dialog" aria-labelledby="Dialogo para Configurar el Stock de la Dispo Por GRUPO">
-                                    <div class="modal-dialog modal-sm" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                <h4 class="modal-title" id="myModalLabel">TItulo</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <div class="col-md-12 text-center">
-                                                                BUNCHES MAX.
-                                                            </div>
-                                                            <div class="col-md-12 text-center">
-                                                                <input id="stock_maximo" max-lenght="3" class="form-control" type="text" style="text-align:center" value="">
-                                                            </div>
-                                                         </div>
-                                                    </div>
-                                                    
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <div class="col-md-12 text-center">
-                                                                BUNCHES ACT.
-                                                            </div>
-                                                            <div class="col-md-12 text-center">
-                                                                <input id="stock_actual" max-lenght="3" class="form-control" type="text" style="text-align:center" value="">
-                                                            </div>
-                                                         </div>
-                                                    </div>
-                                                    
-                                                </div>
-                                                
-                                                <p>
-                                                <div class="row">
-                                                    <div class="col-md-12 text-right">
-                                                        <button id="btn_grabar" type="button" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok"></i> GRABAR</button>
+
+
+							<!-- Modal para crear GRUPOS X DISPO ------------------------------->
+                            <div class="modal fade" id="dialog_dispo_grupo_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="Dialogo para el mantenimiento del Grupo Mantenimiento">
+                                <div class="modal-dialog modal-md" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel"><span id="dialog_dispo_grupo_mantenimiento_titulo"></span></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                        
+                                            <form id="frm_dispo_grupo_mantenimiento" name="frm_dispo_grupo_mantenimiento" action="#" method="post" class="form-horizontal" />
+                                            	<input type="text" id="accion" name="accion" value="">
+                                                <div class="form-group">                                                
+                                                    <label for="id" class="col-md-3 control-label">Id:</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" class="form-control" id="id" readonly>
                                                     </div>
                                                 </div>
-                                                </p>
-                                                
-                                            </div>
+
+                                                <div class="form-group">
+                                                    <label for="nombre" class="col-md-3 control-label">Nombre:</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" class="form-control" id="nombre" placeholder="Nombre" validate="required" validateMessage="Ingrese un nombre">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="inventario_id" class="col-md-3 control-label">Inventario:</label>
+                                                    <div class="col-md-9">
+                                                        <select  id="inventario_id" class="form-control" validate="required" validateMessage="Seleccione un inventario"></select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">                                                
+                                                    <label for="calidad_id" class="col-md-3 control-label">Calidad:</label>
+                                                    <div class="col-md-9">
+                                                    	<select  id="calidad_id" class="form-control" validate="required" validateMessage="Seleccione la calidad"></select>                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">                                                                                                   
+                                                    <div class="col-md-offset-2 col-md-10 text-right">
+                                                    	<button id="btn_grabar" type="button" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok"></i> GRABAR</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+
                                         </div>
                                     </div>
                                 </div>
-                       		</form>
-                            
-                                                       
+                            </div>                              
+                       		
+                             <!-- END Modal Dispo General para crear Variedades que no existen en la dispo -->  
                         </div>
                     </div>
                     
@@ -575,7 +578,28 @@
                     
                     <div role="tabpanel" class="tab-pane" id="tab_precio_x_grupo">
                         <div class="panel panel-default">
-                            ...TAB PRECIO X GRUPO
+                        	<!--- Grilla principal de la PRECIO X GRUPO --->
+                        	<form id="frm_precio_grupo" name="frm_precio_grupo" action="#" method="post" class="form-inline">
+                                <div class="form-group">
+                                	 <section class="body-admin-section">
+                                     	<div class="accion-admin-section">
+                                        	<div class="botonera-admin-section pull-left separator">
+                                        		<button id="btn_nuevo" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</button>
+                                        	</div>
+                                            <div class="busqueda-admin-section pull-left">
+                                            	 <select  id="grupo_precio_cab_id" class="form-control input-sm"></select>
+                                                 <select  id="tipo_precio" class="form-control input-sm"></select>
+                                                 <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>&nbsp;&nbsp;<span id="info_grupo_precio_cab" class="bg-info"> </span>
+                                            </div>
+                                        </div>
+                                     </section>
+                                	 
+                                     
+                                </div>
+                                <table id="grid_precio_grupo" class="grid grid-autoheight"></table>
+                                <div id="pager_precio_grupo"></div>
+                            </form> 
+
                         </div>
                     </div>
                   </div>     

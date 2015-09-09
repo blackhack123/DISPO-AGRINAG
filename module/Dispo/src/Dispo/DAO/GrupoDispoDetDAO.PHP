@@ -21,8 +21,7 @@ class GrupoDispoDetDAO extends Conexion
 		$key    = array(
 				'grupo_dispo_cab_id'				=> $GrupoDispoDetData->getGrupoDispoCabId(),
 				'variedad_id'						=> $GrupoDispoDetData->getVariedadId(),
-				'grado_id'							=> $GrupoDispoDetData->getGradoId()
-				
+				'grado_id'							=> $GrupoDispoDetData->getGradoId(),
 		);
 		$record = array(
 				'grupo_dispo_cab_id'				=> $GrupoDispoDetData->getGrupoDispoCabId(),
@@ -30,8 +29,10 @@ class GrupoDispoDetDAO extends Conexion
 				'grado_id'		            		=> $GrupoDispoDetData->getGradoId(),
 				'cantidad_bunch'                	=> $GrupoDispoDetData->getCantidadBunch(),
 				'cantidad_bunch_disponible'         => $GrupoDispoDetData->getCantidadBunchDisponible(),
+				'usuario_ing_id'                	=> $GrupoDispoDetData->getUsuarioIngId(),
+				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                	=> $GrupoDispoDetData->getUsuarioModId(),
-				'fecha_mod'                			=> $GrupoDispoDetData->getFechaMod()
+				'fec_modifica'             			=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
 		//$id = $this->getEntityManager()->getConnection()->lastInsertId();
@@ -60,7 +61,7 @@ class GrupoDispoDetDAO extends Conexion
 				'cantidad_bunch'                	=> $GrupoDispoDetData->getCantidadBunch(),
 				'cantidad_bunch_disponible'         => $GrupoDispoDetData->getCantidadBunchDisponible(),
 				'usuario_mod_id'                	=> $GrupoDispoDetData->getUsuarioModId(),
-				'fecha_mod'                			=> $GrupoDispoDetData->getFechaMod(),haHoraActualServidor()
+				'fecha_mod'                			=> $GrupoDispoDetData->getFecModifica(),
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
 		return $key;
@@ -97,8 +98,10 @@ class GrupoDispoDetDAO extends Conexion
 			$GrupoDispoDetData->setGradoId		    			($row['grado_id']);
 			$GrupoDispoDetData->setCantidadBunch 				($row['cantidad_bunch']);
 			$GrupoDispoDetData->setCantidadBunchDisponible 		($row['cantidad_bunch_disponible']);
+			$GrupoDispoDetData->setUsuarioIngId    				($row['usuario_ing_id']);
+			$GrupoDispoDetData->setFecIngreso					($row['fec_ingreso']);
 			$GrupoDispoDetData->setUsuarioModId    				($row['usuario_mod_id']);
-			$GrupoDispoDetData->setFechaMod						($row['fecha_mod']);
+			$GrupoDispoDetData->setFecModifica					($row['fec_modifica']);
 
 			return $GrupoDispoDetData;
 		}else{
@@ -167,7 +170,9 @@ class GrupoDispoDetDAO extends Conexion
 	public function actualizarStock(GrupoDispoDetData $GrupoDispoDetData)
 	{
 		$sql = 	" UPDATE grupo_dispo_det ".
-				" SET cantidad_bunch_disponible =  ".$GrupoDispoDetData->getCantidadBunchDisponible().
+				" SET cantidad_bunch_disponible =  ".$GrupoDispoDetData->getCantidadBunchDisponible().",".
+				"	  usuario_mod_id            = ".$GrupoDispoDetData->getUsuarioModId().",".
+				"     fec_modifica              = '".\Application\Classes\Fecha::getFechaHoraActualServidor()."'".
 				" WHERE grupo_dispo_cab_id	= ".$GrupoDispoDetData->getGrupoDispoCabId().
 				"   and variedad_id			= '".$GrupoDispoDetData->getVariedadId()."'".
 				"   and grado_id			= '".$GrupoDispoDetData->getGradoId()."'";

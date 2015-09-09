@@ -203,10 +203,12 @@ function autoHeight_JqGrid_Refresh(id)
 
 	var viewportHeight = window.innerHeight + window.scrollMaxY;	
 	var pageheight = getPageHeight();
-	var offset =  grid.offset();
+//	var offset =  grid.offset();
 	//var position =  grid.offsetParent().offset();	 //IFRAME
-	var position =  grid.offset();	//NORMAL
-	
+//	var position =  grid.offset();	//NORMAL
+
+	var offset = grid.parents('div.ui-jqgrid-bdiv').offset()
+
 	calculo = grid.offset().top - $("body").offset().top;
 /*	console.log('viewportHeight',viewportHeight);
 	console.log('grid offset top',offset.top);
@@ -214,7 +216,7 @@ function autoHeight_JqGrid_Refresh(id)
 	console.log('pageheight',pageheight);
 	console.log('calculo',calculo);
 */	
-	var alto = pageheight - offset.top - 65;
+	var alto = pageheight - offset.top - 50;
 	grid.jqGrid('setGridHeight', alto); 
 	
 	/* 
@@ -232,6 +234,13 @@ function autoHeight_JqGrid_Refresh(id)
     anchoTotal += 50;
     grid.jqGrid('setGridWidth', anchoTotal);
 	/*----------------------------------------------------------*/
+/*
+	SE OBTIENE EL RESPONSIVE DEL ANCHO DEL JQGRID
+	
+	newWidth = grid.closest(".ui-jqgrid").parent().parent().width();
+    grid.jqGrid("setGridWidth", newWidth, true);	
+*/
+	//grid.parents('div.ui-jqgrid-bdiv').css("max-height","300px");
 }
 
 
