@@ -62,6 +62,10 @@ $(document).ready(function () {
 		pgbuttons:false,
 		pginput:false,
 		rowList:false,
+		loadComplete: function (data) {
+			autoHeight_JqGrid_Refresh("grid_agenciacarga_listado");
+		},
+		resizeStop: grid_setAutoHeight, 
 		gridview:false,	
 		jsonReader: {
 			repeatitems : false,

@@ -108,7 +108,7 @@ $(window).bind('resize', function() {
  * Permite hacer el ancho del grid cambie dinamicamente de acuerdo a la suma del ancho
  * de las columnas
  * 
- * Implementación, en el JqGrid debe de estar parametrizado de la siguiente forma:
+ * Implementaciï¿½n, en el JqGrid debe de estar parametrizado de la siguiente forma:
  * 		shrinkToFit: false,
  *		loadComplete: grid_setAutoWidth,
  *		resizeStop: grid_setAutoWidth,
@@ -137,7 +137,7 @@ function executeAutoWidth_JqGrid()
 
 
 /**
- * Método invocado de forma automatica por medio del redimensionamiento de la ventana 
+ * Mï¿½todo invocado de forma automatica por medio del redimensionamiento de la ventana 
  */
 function autoWidth_JqGrid(id)
 {
@@ -181,15 +181,20 @@ var grid_setAutoHeight = function() {
 		autoHeight_JqGrid_Refresh(this.id)
 	});	
 };
+
+
+
+
+
 /**
  * 
  * Implementado solo para el Layout Iframe, en el otro Layout no ha sido probado y se 
  * se desconoce su comportamiento
  * 
- * Permite que el alto del Grid cambie de manera dinámica de acuerdo al alto de la ventana
+ * Permite que el alto del Grid cambie de manera dinï¿½mica de acuerdo al alto de la ventana
  * incluso cuando se redimensiona
  * 
- * Implementación en el HTML, se debe de especificar la clase "grid-autoheight":
+ * Implementaciï¿½n en el HTML, se debe de especificar la clase "grid-autoheight":
  * 
  * 			<table id="presupuesto_grid" class="grid grid-autoheight"></table>   
  * 
@@ -224,28 +229,28 @@ function autoHeight_JqGrid_Refresh(id)
 	 * Acople para que no se vea el scroll bar horizontal
 	 * -------------------------------------------------------- 
 	 */
-	var columnas = grid.jqGrid('getGridParam', 'colModel');
-
-    var anchoTotal = 0;
-    for (var i = 0; columnas[i]; i++) {
-        anchoTotal += columnas[i].width;
-    }
-
-    anchoTotal += 50;
-    grid.jqGrid('setGridWidth', anchoTotal);
-	/*----------------------------------------------------------*/
-/*
-	SE OBTIENE EL RESPONSIVE DEL ANCHO DEL JQGRID
+	var dataFirstAutoHeight =  grid.data('firstAutoHeight');
 	
-	newWidth = grid.closest(".ui-jqgrid").parent().parent().width();
-    grid.jqGrid("setGridWidth", newWidth, true);	
-*/
-	//grid.parents('div.ui-jqgrid-bdiv').css("max-height","300px");
+	if (typeof dataFirstAutoHeight == 'undefined')
+	{
+		grid.data('firstAutoHeight', 1);
+		
+		var columnas = grid.jqGrid('getGridParam', 'colModel');
+
+	    var anchoTotal = 0;
+	    for (var i = 0; columnas[i]; i++) {
+	        anchoTotal += columnas[i].width;
+	    }
+
+	    anchoTotal += 50;
+	    grid.jqGrid('setGridWidth', anchoTotal);		
+	}//end if
+
 }
 
 
 /**
- * Permite obtener el verdadero alto de la Página que se visualiza en la pantalla,
+ * Permite obtener el verdadero alto de la Pï¿½gina que se visualiza en la pantalla,
  * conocido como ViewPort (Area de Visualizacion)
  */
 function getPageHeight() {

@@ -19,6 +19,9 @@
 			return false;
 		});   
 		
+		$('#dialog_nueva_marcacion').on('hide.bs.modal', function () {
+		    $("#dialog_mantenimiento").css("overflow-y", "auto"); // 'auto' or 'scroll'
+		});			
 
 		/*---------------------------------------------------------------*/
 		/*----------- Se configura los JQGRID de Cliente ----------------*/
@@ -91,6 +94,7 @@
 			groupHeaders: [{ "numberOfColumns": 2, "titleText": "Sincronizacion", "startColumnName": "sincronizado" }]
 		});
 
+		
 		function ListadoCliente_FormatterSincronizado(cellvalue, options, rowObject)
 		{	
 			switch (rowObject.sincronizado)

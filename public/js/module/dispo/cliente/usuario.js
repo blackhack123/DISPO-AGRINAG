@@ -69,6 +69,10 @@ $(document).ready(function () {
 		pgbuttons:false,
 		pginput:false,
 		rowList:false,
+		loadComplete: function (data) {
+			autoHeight_JqGrid_Refresh("grid_usuario_listado");
+		},
+		resizeStop: grid_setAutoHeight, 
 		jsonReader: {
 			repeatitems : false,
 		},		
