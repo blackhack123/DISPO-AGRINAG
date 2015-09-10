@@ -16,7 +16,7 @@ class AgenciacargaController extends AbstractActionController
 	
 
 	/*-----------------------------------------------------------------------------*/
-	public function agencialistadodataAction()
+	public function listadodataAction()
 	/*-----------------------------------------------------------------------------*/
 	{
 		try
@@ -205,9 +205,9 @@ class AgenciacargaController extends AbstractActionController
 
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
-			$agencia_carga_id		= $json['agencia_carga_id'];
+			$id		= $json['id'];
 
-			$row					= $AgenciaCargaBO->consultar($agencia_carga_id, \Application\Constants\ResultType::MATRIZ);
+			$row					= $AgenciaCargaBO->consultar($id, \Application\Constants\ResultType::MATRIZ);
 
 			$response = new \stdClass();
 			$response->row					= $row;

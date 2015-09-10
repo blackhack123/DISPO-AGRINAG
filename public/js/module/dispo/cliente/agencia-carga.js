@@ -5,33 +5,36 @@
 
 $(document).ready(function () {
 	
-	$("#btn_nueva_agencia_carga").on('click', function(event){
-		nueva_agencia_carga(); 
+	$("#frm_agenciacarga_listado #btn_consultar_agencia_carga").on('click', function(event){ 
+		$('#grid_agenciacarga_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		return false;
+	});
+	
+	$("#frm_agenciacarga_listado #btn_nueva_agencia_carga").on('click', function(event){
+		agenciacarga_nueva(); 
 		return false;
 	});
 
-	$(".btn_editar_agenciacarga").on('click', function(event){ 
+	/*$("#frm_agenciacarga_listado #btn_editar_agenciacarga").on('click', function(event){ 
 		var tr 						= $(this).closest('tr');
 		var id						= tr.attr('id');
-
-		consultar_agenciacarga(id);
+		agenciacarga_consultar(id);
 		//$("#dialog_mantenimiento").modal('show') 
-	});
+	});	*/
 	
-	$("#btn_grabar_agencia_carga").on('click', function(event){ 
-		grabar_agencia_carga();
+	$("#frm_agencia_carga #btn_grabar_agencia_carga").on('click', function(event){ 
+		agenciacarga_grabar();
 		return false;
 	});     
-
+	/*
 	$("#frm_agenciacarga_listado #btn_consultar_agencia").on('click', function(event){    
-		listar_agenciacarga(false);
-	});
-	
+		agenciacarga_listar(false);
+	}); */
 	/*---------------------------------------------------------------*/
 	/*-----------------Se configura los JQGRID's AG. CARGA-----------*/
 	/*---------------------------------------------------------------*/	
 	jQuery("#grid_agenciacarga_listado").jqGrid({
-		url:'<?php echo(./../dispo/agenciacarga/agencialistadodata',
+		url:'../../dispo/agenciacarga/listadodata',
 		postData: {
 			nombre: function() { return $("#frm_agenciacarga_listado #busqueda_nombre").val(); },
 			estado: function() { return $("#frm_agenciacarga_listado #busqueda_estado").val(); }				
@@ -72,7 +75,7 @@ $(document).ready(function () {
 		},
 		ondblClickRow: function (rowid,iRow,iCol,e) {
 				var data = $('#grid_agenciacarga_listado').getRowData(rowid);				
-				consultar_agenciacarga(data.id)
+				agenciacarga_consultar(data.id)
 				//return false;
 		},
 		loadBeforeSend: function (xhr, settings) {
@@ -104,7 +107,7 @@ $(document).ready(function () {
 	function gridAgenciacargaListado_FormatterEdit(cellvalue, options, rowObject){
 		var id = rowObject.id;	
 		//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+agenciacarga_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
-		new_format_value = '<a href="javascript:void(0)" onclick="consultar_agenciacarga(\''+id+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange" id="btn_editar_agenciacarga" ></i></a>'; 
+		new_format_value = '<a href="javascript:void(0)" onclick="agenciacarga_consultar(\''+id+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange" id="btn_editar_agenciacarga" ></i></a>'; 
 		return new_format_value
 	}//end function ListadoMarcacion_FormatterSincronizado
 
@@ -163,7 +166,7 @@ $(document).ready(function () {
  *---------------------------------------------------------------------------------------------
  */
 
- function nueva_agencia_carga()
+ function agenciacarga_nueva()
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
@@ -171,7 +174,7 @@ $(document).ready(function () {
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo(./../dispo/agenciacarga/nuevodata',
+							'url':'../../dispo/agenciacarga/nuevodata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
@@ -203,7 +206,7 @@ $(document).ready(function () {
 
 
 
- function grabar_agencia_carga(){
+ function agenciacarga_grabar(){
 		if (!ValidateControls('frm_agencia_carga')) {
 			return false;
 		}//end FuncionGrabar
@@ -221,13 +224,13 @@ $(document).ready(function () {
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo(./../dispo/agenciacarga/grabardata',
+							'url':'../../dispo/agenciacarga/grabardata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
 									if (response.validacion_code == 'OK')
 									{
-										mostrar_registro_agenciacarga(response)
+										agenciacarga_mostrar_registro(response)
 										cargador_visibility('hide');
 										swal({  title: "Informacion grabada con exito!!",   
 											
@@ -264,7 +267,7 @@ $(document).ready(function () {
 	}//end function grabar
 
 
-	function consultar_agenciacarga(id)
+	function agenciacarga_consultar(id)
 	{
 	
 		//Se llama mediante AJAX para adicionar al carrito de compras
@@ -273,11 +276,11 @@ $(document).ready(function () {
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo(./../dispo/agencia/consultardata',
+							'url':'../../dispo/agenciacarga/consultardata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
-								mostrar_registro_agenciacarga(response);
+								agenciacarga_mostrar_registro(response);
 								//	listar_marcacion(true);
 									cargador_visibility('hide');
 									
@@ -286,11 +289,11 @@ $(document).ready(function () {
 		                 }
 		response = ajax_call(parameters, data);		
 		return false;
-	}//end function consultar_agenciacarga
+	}//end function agenciacarga_consultar
 
 	
 
-	function mostrar_registro_agenciacarga(response)
+	function agenciacarga_mostrar_registro(response)
 	{
 		var row = response.row;
 		if (row!==null)
@@ -323,9 +326,9 @@ $(document).ready(function () {
 				$("#frm_agencia_carga #sincronizado_ok").hide();
 			}//end if
 		}//end if
-	}//end function mostrar_registro
+	}//end function agenciacarga_mostrar_registro
 	
-	function listar_agenciacarga(limpiar_filtros)
+	function agenciacarga_listar(limpiar_filtros)
 	{
 		$('#frm_agenciacarga_listado #grid_agenciacarga_listado').jqGrid("clearGridData");
 		

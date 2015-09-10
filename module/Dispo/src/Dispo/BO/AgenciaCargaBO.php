@@ -94,11 +94,11 @@ class AgenciaCargaBO extends Conexion
 	 * @param int $resultType
 	 * @return Ambigous <\Dispo\Data\AgenciaCargaData, NULL, array>
 	 */
-	function consultaragenciacarga($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
 	{
 		$AgenciaCargaDAO = new AgenciaCargaDAO();
 		$AgenciaCargaDAO->setEntityManager($this->getEntityManager());
-		$reg = $AgenciaCargaDAO->consultaragenciacarga($id, $resultType);
+		$reg = $AgenciaCargaDAO->consultar($id, $resultType);
 		return $reg;		
 	}//end function consultar
 	
@@ -116,7 +116,7 @@ class AgenciaCargaBO extends Conexion
 		{
 			$AgenciaCargaDAO = new AgenciaCargaDAO();
 			$AgenciaCargaDAO->setEntityManager($this->getEntityManager());
-			$AgenciaCargaData2 = $AgenciaCargaDAO->consultaragenciacarga($AgenciaCargaData->getId());
+			$AgenciaCargaData2 = $AgenciaCargaDAO->consultar($AgenciaCargaData->getId());
 			if (!empty($AgenciaCargaData2))
 			{
 				$result['validacion_code'] 	= 'EXISTS';

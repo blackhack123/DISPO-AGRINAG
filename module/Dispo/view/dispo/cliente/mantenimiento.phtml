@@ -9,22 +9,22 @@
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/init-cliente.js')); ?>"></script>
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/cliente.js')); ?>"></script>
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/marcacion.js')); ?>"></script>
-<!-- script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/agencia-carga.js')); ?>"></script>
+<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/agencia-carga.js')); ?>"></script>
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/usuario.js')); ?>"></script>
--->
+
 
 <div class="title-admin-section">
-	<h1>Cliente</h1>
+	<h1><strong>Cliente</strong></h1>
 </div>
 
-
 <div class="row">
-
 	<section class="body-admin-section">    	
-    	<div class="accion-admin-section"> 	
+    	<div class="accion-admin-section"> 
+    		<form id="frm_nuevo_cliente" class="form-horizontal" role="form" name="frm_nuevo_cliente">
         	<div class="botonera-admin-section pull-left separator">
-            	<a id="btn_nuevo_cliente" class="btn btn-primary btn-xs" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
+            	<a id="btn_nuevo_cliente" name="btn_nuevo_cliente" class="btn btn-primary btn-xs" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
             </div>
+          	</form>	
         	<div class="busqueda-admin-section pull-left">	
             	<!--- div class="form-inline" -->
                 	
@@ -45,7 +45,6 @@
 			
             </div>
         </div>
-
         <div class="clearfix"></div>
         <div>
 			<table id="grid_cliente" class="grid grid-autoheight"></table>
@@ -55,19 +54,17 @@
 </div>
 
 
-
-
 <!-- DIALOGO MANTENIMIENTO CLIENTE -->
 <!-- Modal -->
 <div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-dialog-fullscreen" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">CLIENTE (<span id="dialog_mantenimiento_cliente_nombre"></span>)</h4>
-      </div>
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="myModalLabel">CLIENTE (<span id="dialog_mantenimiento_cliente_nombre"></span>)</h4>
+	      </div>
       <div class="modal-body">
-         <div id="tabs_mantenimiento_cliente" >
+         <div id="tabs_mantenimiento_cliente">
               <!-- Nav tabs -->
               <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#tab_informacion_general" aria-controls="tab_informacion_general" role="tab" data-toggle="tab">INFORMACION GENERAL</a></li>
@@ -82,17 +79,17 @@
                 	<div class="row clear" >
                			<form class="form-horizontal" role="form" name="frm_informacion_general" id="frm_informacion_general">
                         <!--PRIMERA COLUMNA-->
-                            <div class="col-lg-4 table-striped " style="margin:0px; padding:0px;">
+                            <div class="col-lg-4 table-striped">
                                     <div class="col-lg-5 " >
-                                        <div class="col-lg-5"  >
+                                        <div class="col-lg-5" >
                                             <label for="c1" class="control-label"> Cliente: </label>
                                         </div>
-                                        <div class="col-lg-7"  >
+                                        <div class="col-lg-7">
                                             <input type="text" class="form-control " id="cliente_id" name="cliente_id" validate="required" validateMessage="Ingrese un Codigo" ><br/>
                                         </div>
                                     </div>
                                     <div class="col-lg-7" >
-                                        <div class="col-lg-5"  >
+                                        <div class="col-lg-5">
                                             <label for="co1" class="control-label">Created On:</label>
                                         </div>
                                         <div class="col-lg-7">
@@ -173,12 +170,12 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="col-lg-2">
-                                            <label for="c1" class="control-label"> Comprador: </label>
+                                            <label for="comprador" class="control-label"> Comprador: </label>
                                         </div>
                                         <div class="col-lg-10">
                                             <input type="text" id="comprador" name="comprador" class="form-control" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                         </div>
-                              	  </div>
+                              	    </div>
                                   <div class="col-lg-12">
                                     <div class="col-lg-2">
                                         <label for="co1" class="control-label"> Fono1: </label>
@@ -534,14 +531,14 @@
 		                  	<form  class="form-horizontal" role="form" id="frm_marcacion_listado" name="frm_marcacion_listado">
 			                  	 <div class="col-lg-4 table-striped">
 		                              <div class="clearfix">
-		                                     	<div class="pull-left"><a id="btn_nueva_marcacion"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a>
+		                                     	<div class="pull-left"><a name="btn_nueva_marcacion" id="btn_nueva_marcacion" class="btn btn-primary btn-xs" ><i class="glyphicon glyphicon-plus"></i> NUEVO</a>
 		                                     	</div>
 		                                  <div class="pull-right">
 												<input name="busqueda_nombre" id="busqueda_nombre" type="text" class="select-class2" placeholder="Nombre" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
 		                                        <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
 		                                         <?php echo($this->busqueda_estado); ?>
 		                                        </select>
-		                                        <a id="btn_consultar"  class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search"></i></a>
+		                                        <a id="btn_consultar_marcacion"  class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search"></i></a>
 		                                  </div></br>
 		                              </div>
 		                              <div class="clearfix">
@@ -553,10 +550,50 @@
 		               </div>
 	                </div> <!--END TAB MARCACION-->
 	                <div role="tabpanel" class="tab-pane fade" id="tab_agencia_carga"> <!--INICIO TAB AG CARGA-->
-	                TAB AGENCIA CARGA </br>
-                   </div><!--END TAB AGENCIA CARGA-->
+	                    <div class="row clear" >
+		                  	<form  class="form-horizontal" role="form" id="frm_agenciacarga_listado" name="frm_agenciacarga_listado">
+			                  	 <div class="col-lg-4 table-striped">
+		                              <div class="clearfix">
+		                                     	<div class="pull-left"><a id="btn_nueva_agencia_carga"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a>
+		                                     	</div>
+		                                  <div class="pull-right">
+												<input name="busqueda_nombre" id="busqueda_nombre" type="text" class="select-class2" placeholder="Nombre" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+		                                        <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
+		                                         <?php echo($this->busqueda_estado); ?>
+		                                        </select>
+		                                        <a id="btn_consultar_agencia_carga"  class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search"></i></a>
+		                                  </div></br>
+		                              </div>
+		                              <div class="clearfix">
+		                                  <table id="grid_agenciacarga_listado" class="grid"></table>
+		                                   <div id="pager_agenciacarga_listado"></div>
+		                              </div>
+								</div></br>
+		                   </form>	
+		               </div>
+                    </div><!--END TAB AGENCIA CARGA-->
                 <div role="tabpanel" class="tab-pane fade" id="tab_usuarios"><!--INICIO TAB USUARIOS-->
-                usuarios
+                      <div class="row clear" >
+		                  	<form  class="form-horizontal" role="form" id="frm_usuario_listado" name="frm_usuario_listado">
+			                  	 <div class="col-lg-4 table-striped">
+		                              <div class="clearfix">
+		                                     	<div class="pull-left"><a id="btn_nuevo_usuario"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a>
+		                                     	</div>
+		                                  <div class="pull-right">
+												<input name="busqueda_nombre" id="busqueda_nombre" type="text" class="select-class2" placeholder="Nombre" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+		                                        <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
+		                                         <?php echo($this->busqueda_estado); ?>
+		                                        </select>
+		                                        <a id="btn_consultar_usuario"  class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search"></i></a>
+		                                  </div></br>
+		                              </div>
+		                              <div class="clearfix">
+		                                  <table id="grid_usuario_listado" class="grid"></table>
+		                                   <div id="pager_usuario_listado"></div>
+		                              </div>
+								</div></br>
+		                   </form>	
+		              </div>
                 </div><!--END TAB USUARIOS-->
               </div>
         </div>
@@ -565,12 +602,10 @@
   </div>
 </div>
 						
-    
-		
 		
 		 <!--  DIALOG DE NUEVA MARCACION-->
 
-			<div class="modal fade" id="dialog_nueva_marcacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal" id="dialog_nueva_marcacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
@@ -620,29 +655,33 @@
 				        	        <td><label class="control-label">ZIP:</label></td>
 				        	        <td><input name="zip" type="text" id="zip" class="form-control input-sm" style="width:350px" value="" maxlength="9" max-lenght="9" ></td>
 			        	         </tr>
-			        	       <tr>
-			        	        <td><label class="control-label">ESTADO:</label></td>
-			        	        <td><select  name="estado" class="select-class2" id="estado" ></select></td>
-		        	          </tr>	
+			        	         <tr>
+				        	        <td><label class="control-label">PTO. DE CORTE:</label></td>
+				        	        <td><input name="punto_corte" type="text" class="form-control input-sm" id="punto_corte" style="width:95px" value="" maxlength="5" max-lenght="5" ></td>
+			        	         </tr>
+				        	     <tr>
+				        	     	<td><label class="control-label">ESTADO:</label></td>
+				        	        <td><select  name="estado" class="select-class2" id="estado" ></select></td>
+			        	         </tr>	
 		        	            <tr>
-			        	        <td><label class="control-label">SINCRONIZADO:</label></td>
+			        	       		<td><label class="control-label">SINCRONIZADO:</label></td>
 			        	        <td>
-								<span id="sincronizado_pendiente" class="glyphicon glyphicon-time icon-white" style="color:red; display:none" ></span>
-								<span id="sincronizado_ok" class="glyphicon glyphicon-ok icon-white" style="color:green; display:none"></span>
-                                <span id="lbl_fec_sincronizado"></span>
+									<span id="sincronizado_pendiente" class="glyphicon glyphicon-time icon-white" style="color:red; display:none" ></span>
+									<span id="sincronizado_ok" class="glyphicon glyphicon-ok icon-white" style="color:green; display:none"></span>
+	                                <span id="lbl_fec_sincronizado"></span>
                                 </td>
 		        	          </tr>        	   
 			        	      <tr>
-			        	        <td>&nbsp;</td>
-			        	        <td>&nbsp;</td>
-		        	        </tr>
-			        	      <tr>
-			        	        <td><label class="control-label">Ingreso:</label></td>
-			        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
+			        	       		<td>&nbsp;</td>
+			        	        	<td>&nbsp;</td>
 		        	          </tr>
 			        	      <tr>
-			        	        <td><label class="control-label">Modificación:</label></td>
-			        	        <td><b><span id="lbl_usuario_mod"></span></b> - <span id="lbl_fec_modifica"></span></td>
+			        	        	<td><label class="control-label">Ingreso:</label></td>
+			        	       		<td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
+		        	          </tr>
+			        	      <tr>
+			        	        	<td><label class="control-label">Modificación:</label></td>
+			        	        	<td><b><span id="lbl_usuario_mod"></span></b> - <span id="lbl_fec_modifica"></span></td>
 		        	          </tr>
 			        	  	</table>
 			        	  	<br>
@@ -657,8 +696,6 @@
 			    </div>
 			  </div>
 			</div>
-
-
 
 
 			
@@ -735,17 +772,18 @@
 			  </div>
 			</div>
 	
-	
-	
 
+			
    <!--  DIALOG DE USUARIO NUEVO -->
             
 			<div class="modal fade" id="dialog_nuevo_usuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
+			      <form action="">
 			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 			        <h4 class="modal-title" id="myModalLabel">USUARIO(<span id="dialog_nuevo_usuario_nombre"></span>)</h4>
+			      </form>
 			      </div>
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
@@ -759,11 +797,11 @@
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">NOMBRE:</label></td>
-			        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="50" max-lenght="3" validate="required" validateMessage="Ingrese un nombre" onkeyup="this.value=this.value.toUpperCase()" ></td>
+			        	        <td><input name="nombre" type="text" class="form-control input-sm" id="nombre" style="width:350px" value="" maxlength="50" max-lenght="3" validate="required" validateMessage="Ingrese un Nombre" onkeyup="this.value=this.value.toUpperCase()" ></td>
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">USUARIO:</label></td>
-			        	        <td><input name="username" type="text" class="form-control input-sm" id="username" style="width:350px" value="" maxlength="20" validate="required" max-lenght="3"></td>
+			        	        <td><input name="username" type="text" class="form-control input-sm" id="username" style="width:350px" value="" maxlength="20" validate="required" validateMessage="Ingrese un Usuario" max-lenght="3"></td>
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">CLAVE:</label></td>
@@ -775,15 +813,19 @@
 		        	          </tr>
 		        	           <tr>
 			        	        <td><label class="control-label">CORREO:</label></td>
-			        	        <td><input type="email" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="50" validate="required" max-lenght="3" ></td>
+			        	        <td><input type="email" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="50" ></td>
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">TIPO:</label></td>
-			        	        <td><select  name="perfil_id" class="select-class2" id="perfil_id" validate="required"></select></td>
+			        	        <td><select  name="perfil_id" class="select-class2" id="perfil_id" validate="required" style="width:150px"></select></td>
+		        	          </tr>
+		        	          <tr>
+			        	        <td><label class="control-label">GRUPO:</label></td>
+			        	        <td><select  name="grupo_dispo_cab_id" class="form-control" id="grupo_dispo_cab_id" validate="required" validateMessage="Grupo Requerido" style="width:150px"></select></td>
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>
-			        	        <td><select  name="estado" class="select-class2" id="estado"></select></td>
+			        	        <td><select  name="estado" class="select-class2" id="estado" style="width:150px"></select></td>
 		        	          </tr>
 			        	      <tr>
 			        	        <td>&nbsp;</td>

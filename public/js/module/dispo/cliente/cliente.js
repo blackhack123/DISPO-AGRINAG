@@ -9,13 +9,13 @@
 			return false;
 		});
 	
-		$("#frm_busqueda_cliente #btn_nuevo_cliente").on('click', function(event){
-			nuevo(); 
+		$("#frm_nuevo_cliente #btn_nuevo_cliente").on('click', function(event){
+			cliente_nuevo(); 
 			return false;
 		});    
 	
-		$("#frm_busqueda_cliente #btn_grabar_informacion_general").on('click', function(event){ 
-			grabar_informacion_general();
+		$("#frm_informacion_general #btn_grabar_informacion_general").on('click', function(event){ 
+			cliente_grabar();
 			return false;
 		});   
 		
@@ -43,7 +43,7 @@
 				{name:'sincronizado',index:'sincronizado', width:30, align:"center", sorttype:"int", formatter: ListadoCliente_FormatterSincronizado},
 				{name:'fec_sincronizado',index:'fec_sincronizado', width:140, align:"center", sorttype:"int"},
 				{name:'estado',index:'estado', width:50, align:"center", sorttype:"string"},
-				{name:'btn_editar_marcacion',index:'', width:30, align:"center", formatter:ListadoCliente_FormatterEdit,
+				{name:'btn_editar_cliente',index:'', width:30, align:"center", formatter:ListadoCliente_FormatterEdit,
 				   cellattr: function () { return ' title=" Modificar"'; }
 				},
 			],
@@ -64,6 +64,7 @@
 			loadBeforeSend: function (xhr, settings) {
 				this.p.loadBeforeSend = null; //remove event handler
 				return false; // dont send load data request
+				
 			},
 			loadError: function (jqXHR, textStatus, errorThrown) {
 				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
@@ -76,21 +77,20 @@
 			},
 			ondblClickRow: function (rowid,iRow,iCol,e) {
 					var data = $('#grid_cliente').getRowData(rowid);				
-					consultar_cliente(data.id)
+					cliente_consultar(data.id)
 				//	return false;
-			},					
+			},
+			
 		});
 		/*$("#grid_cliente").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});*/
 		jQuery("#grid_cliente").jqGrid('navGrid','#pager_cliente',{edit:false,add:false,del:false});		
 				
-		
 		$('#grid_cliente').setGroupHeaders(
 		{
 			useColSpanStyle: true,
 			groupHeaders: [{ "numberOfColumns": 2, "titleText": "Sincronizacion", "startColumnName": "sincronizado" }]
 		});
-				
-		
+
 		function ListadoCliente_FormatterSincronizado(cellvalue, options, rowObject)
 		{	
 			switch (rowObject.sincronizado)
@@ -106,13 +106,12 @@
 				break;
 			}//end switch
 			return new_format_value;
-		}//end function ListadoCliente_FormatterSincronizado		
-		
+		}//end function ListadoCliente_FormatterSincronizado
 		
 		function ListadoCliente_FormatterEdit(cellvalue, options, rowObject){
 			var id = rowObject.id;	
 			//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
-			new_format_value = '<a href="javascript:void(0)" onclick="consultar_cliente(\''+id+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange"></i></a>'; 
+			new_format_value = '<a href="javascript:void(0)" onclick="cliente_consultar(\''+id+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange"></i></a>'; 
 			return new_format_value
 		}//end function ListadoCliente_FormatterEdit
 				
@@ -182,7 +181,7 @@
  *-----------------------------------------------------------------------
  */
     
-	function nuevo()
+	function cliente_nuevo()
 	{
 		//Deshabilita los tabs excepto el primer TAB
 		$("#tabs_mantenimiento_cliente ul li:gt(0)").addClass('disabled').addClass('disabledTab');
@@ -190,11 +189,11 @@
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
 		
-		var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
-		var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
-		var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
-		var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
-		var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
+		//var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
+		//var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
+		//var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
+		//var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
+		//var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
 		//var tipo_envio_estcta		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
 		//var dia_semana 				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
 		//var inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
@@ -284,7 +283,7 @@
 
 	
 	
-	function listar_marcacion(limpiar_filtros)
+	function marcacion_listar(limpiar_filtros)
 	{
 		$('#frm_marcacion_listado #grid_marcacion_listado').jqGrid("clearGridData");
 		
@@ -297,9 +296,8 @@
 		$('#frm_marcacion_listado #grid_marcacion_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 	}//end function listar_marcacion
 
-	
 
-	 function grabar_informacion_general()
+	 function cliente_grabar()
  	{
 		if (!ValidateControls('frm_informacion_general')) 
 		{
@@ -328,11 +326,15 @@
 	        case 'I':
 	        	inmediato			= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
 	        	break;
+	      default :
+	    	  tipo_envio_estcta 	= 'I';
+	    	  inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
+	        	break;
 		}	
 		
 		//Asignacion de variables
 		var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
-		var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
+		var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 'I' : 'A');
 		var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
 		var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
 		var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
@@ -390,8 +392,6 @@
 						inmediato:							inmediato
 						
 					}
-		//console.log('tipo_envio_estcta:',tipo_envio_estcta);
-		//console.log('inmediato:',inmediato);
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
@@ -402,7 +402,7 @@
 									if (response.validacion_code == 'OK')
 									{
 										$("#tabs_mantenimiento_cliente ul li").removeClass('disabled',false).removeClass('disabledTab',false);
-										mostrar_registro(response)
+										cliente_mostrar_registro(response)
 										cargador_visibility('hide');
 										swal({  title: "Informacion grabada con exito!!",   
 											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
@@ -439,15 +439,15 @@
 
 
 
-		function mostrar_registro(response)
+		function cliente_mostrar_registro(response)
 		{
 			var row = response.row;
 			
-			var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
-			var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
-			var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
-			var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
-			var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
+			//var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
+			//var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 'I' : 'A');
+			//var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
+			//var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
+			//var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
 			//var tipo_envio_estcta		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
 			//var dia_semana				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
 			//var inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
@@ -506,7 +506,7 @@
 				$("#frm_informacion_general #pais_fue").val(row.pais_fue);
 				$("#frm_informacion_general #facturacion_SRI").val(row.facturacion_SRI);
 				$("#frm_informacion_general #porc_iva").val(row.porc_iva);
-				if (row.estado=='1')
+				if (row.estado=='I')
 				{
 				    $("#frm_informacion_general #estado").prop('checked', true);
 				}
@@ -613,17 +613,17 @@
 					$("#frm_informacion_general #sincronizado_ok").hide();
 				}//end if
 			}//end if
-		}//end function mostrar_registro
+		}//end function cliente_mostrar_registro
 			
 
 
 
 
-		function consultar_cliente(id)
+		function cliente_consultar(id)
 		{
 			//Habilita todos los TABS
 			$("#frm_informacion_general #tabs_mantenimiento_cliente ul li").removeClass('disabled').removeClass('disabledTab');
-		
+			$("#tabs_mantenimiento_cliente ul li").removeClass('disabled',false).removeClass('disabledTab',false);
 			//Se llama mediante AJAX para adicionar al carrito de compras
 			var data = 	{cliente_id:id}
 			data = JSON.stringify(data);
@@ -634,8 +634,8 @@
 								'control_process':true,
 								'show_cargando':true,
 								'finish':function(response){
-										mostrar_registro(response);
-										listar_marcacion(true);
+										cliente_mostrar_registro(response);
+										marcacion_listar(true);
 										cargador_visibility('hide');
 
 										$("#dialog_mantenimiento").modal('show')
@@ -643,4 +643,4 @@
 			                 }
 			response = ajax_call(parameters, data);		
 			return false;		
-		}//end function consultar_cliente
+		}//end function cliente_consultar(

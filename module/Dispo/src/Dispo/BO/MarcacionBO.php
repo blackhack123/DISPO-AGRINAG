@@ -133,7 +133,6 @@ class MarcacionBO extends Conexion
 			$nombre=	$MarcacionData->getNombre();
 			if (!empty($result))
 			{
-	
 				$result['validacion_code'] 	= 'NO-EXISTS';
 				$result['respuesta_mensaje']= 'El registro  existe, no puede ser moficado!!';
 			}else{
@@ -161,7 +160,7 @@ class MarcacionBO extends Conexion
 	function consultar($marcacion_sec, $resultType = \Application\Constants\ResultType::OBJETO){
 		$MarcacionDAO = new MarcacionDAO();
 		$MarcacionDAO->setEntityManager($this->getEntityManager());
-		$reg = $MarcacionDAO->consultarmarcacion($marcacion_sec, $resultType);
+		$reg = $MarcacionDAO->consultar($marcacion_sec, $resultType);
 		return $reg;		
 	}//end function consultar
 	

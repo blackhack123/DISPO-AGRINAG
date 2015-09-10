@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\JsonModel;
+use Dispo\Data\MarcacionData;
 use Dispo\BO\MarcacionBO;
 use Dispo\BO\PaisBO;
 
@@ -52,6 +53,7 @@ class MarcacionController extends AbstractActionController
 				$row2["marcacion_sec"] 		= $row["marcacion_sec"];
 				$row2["nombre"] 			= trim($row["nombre"]);
 				$row2["pais_nombre"] 		= trim($row["pais_nombre"]);
+				$row2["ciudad"] 			= trim($row["ciudad"]);
 				$row2["sincronizado"] 		= $row["sincronizado"];
 				$row2["fec_sincronizado"] 	= $row["fec_sincronizado"];
 				$row2["estado"] 			= $row["estado"];
@@ -181,6 +183,7 @@ class MarcacionController extends AbstractActionController
 			$MarcacionData->setContacto				($json['contacto']);
 			$MarcacionData->setTelefono				($json['telefono']);
 			$MarcacionData->setZip					($json['zip']);
+			$MarcacionData->setPuntoCorte			($json['punto_corte']);
 			$MarcacionData->setEstado				($json['estado']);
 	
 			$response = new \stdClass();
@@ -188,12 +191,12 @@ class MarcacionController extends AbstractActionController
 			{
 				case 'I':
 					$MarcacionData->setUsuarioIngId($usuario_id);
-					$result = $MarcacionBO->ingresarmarcacion($MarcacionData);
+					$result = $MarcacionBO->ingresar($MarcacionData);
 					break;
 	
 				case 'M':
 					$MarcacionData->setUsuarioModId($usuario_id);
-					$result = $MarcacionBO->modificarmarcacion($MarcacionData);
+					$result = $MarcacionBO->modificar($MarcacionData);
 					break;
 	
 				default:
@@ -205,7 +208,7 @@ class MarcacionController extends AbstractActionController
 			//Se consulta el registro siempre y cuando el validacion_code sea OK
 			if ($result['validacion_code']=='OK')
 			{
-				$row	= $MarcacionBO->consultarmarcacion($json['marcacion_sec'], \Application\Constants\ResultType::MATRIZ);
+				$row	= $MarcacionBO->consultar($json['marcacion_sec'], \Application\Constants\ResultType::MATRIZ);
 			}else{
 				$row	= null;
 			}//end if
@@ -255,7 +258,7 @@ class MarcacionController extends AbstractActionController
 			$json = json_decode($body, true);
 			$marcacion_sec		= $json['marcacion_sec'];
 	
-			$row					= $MarcacionBO->consultarmarcacion($marcacion_sec, \Application\Constants\ResultType::MATRIZ);
+			$row					= $MarcacionBO->consultar($marcacion_sec, \Application\Constants\ResultType::MATRIZ);
 	
 			$response = new \stdClass();
 			$response->row					= $row;

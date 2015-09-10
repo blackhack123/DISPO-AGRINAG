@@ -3,6 +3,9 @@
 	<name>dispo</name>
 	<comment></comment>
 	<projects>
+		<project>Agrinag</project>
+		<project>Diego</project>
+		<project>ZF2</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

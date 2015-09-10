@@ -5,18 +5,23 @@
 
 $(document).ready(function () {
 	
+	$("#frm_usuario_listado #btn_consultar_usuario").on('click', function(event){ 
+		$('#grid_usuario_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		return false;
+	});
+	
 	$("#frm_usuario_listado #btn_nuevo_usuario").on('click', function(event){
-		nuevo_usuario(); 
+		usuario_nuevo(); 
 		return false;
 	});
 
 
 	$("#frm_nuevo_usuario #btn_grabar_usuario").on('click', function(event){ 
-		grabar_usuario();
+		usuario_grabar();
 		return false;
 	});     
 
-
+/*
 	$("#frm_usuario_listado #btn_consultar_usuario").on('click', function(event){    
 		listar_usuario(false);
 	});
@@ -29,13 +34,13 @@ $(document).ready(function () {
 		//$("#dialog_mantenimiento").modal('show') 
 	});
 
-	
+	*/
 
 	/*---------------------------------------------------------------*/
 	/*-----------------Se configura los JQGRID's USUARIOS------------*/
 	/*---------------------------------------------------------------*/		
 	jQuery("#grid_usuario_listado").jqGrid({
-		url:'<?php echo(./../seguridad/usuario/listadodata',
+		url:'../../seguridad/usuario/listadodata',
 		postData: {
 			nombre: function()		 { return $("#frm_usuario_listado #busqueda_nombre").val(); },
 			estado: function() 		 { return $("#frm_usuario_listado #busqueda_estado").val(); }				
@@ -76,7 +81,7 @@ $(document).ready(function () {
 		},
 		ondblClickRow: function (rowid,iRow,iCol,e) {
 				var data = $('#grid_usuario_listado').getRowData(rowid);				
-				consultar_usuario(data.id)
+				usuario_consultar(data.id)
 			//	return false;
 		},
 		loadBeforeSend: function (xhr, settings) {
@@ -99,7 +104,7 @@ $(document).ready(function () {
 		   "onEnter" : function( rowid ) { 
 				//consultar_listado(rowid);
 				var data = $('#grid_usuario_listado').getRowData(rowid);
-				consultar_listado("+data.id+");
+				usuario_consultar("+data.id+");
 		   }
 	});
 
@@ -107,7 +112,7 @@ $(document).ready(function () {
 	function ListadoUsuario_FormatterEdit(cellvalue, options, rowObject){
 		var id = rowObject.id;	
 		//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
-		new_format_value = '<a href="javascript:void(0)" onclick="consultar_usuario(\''+id+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange" id="btn_editar_usuario" ></i></a>'; 
+		new_format_value = '<a href="javascript:void(0)" onclick="usuario_consultar(\''+id+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange" id="btn_editar_usuario" ></i></a>'; 
 		return new_format_value
 	}//end function ListadoMarcacion_FormatterSincronizado
 
@@ -136,17 +141,13 @@ $(document).ready(function () {
 
 
 
-
-
-
-
 /**
  * ---------------------------------------------------------------------------------------------
  *			FUNCIONES USUARIO
  *---------------------------------------------------------------------------------------------
  */
 
-	function nuevo_usuario()
+	function usuario_nuevo()
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
@@ -154,12 +155,12 @@ $(document).ready(function () {
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo(./../seguridad/usuario/nuevodata',
+							'url':'../../seguridad/usuario/nuevodata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
 									ValidateControlsInit();
-									$("#frm_nuevo_usuario #accion").val("I");
+									$("#accion").val("I");
 									$("#dialog_nuevo_usuario_nombre").html("NUEVO REGISTRO");
 
 									$(" #usuario_id").val('');
@@ -169,6 +170,7 @@ $(document).ready(function () {
 									$("#frm_nuevo_usuario #password").val('');
 									$("#frm_nuevo_usuario #email").val('');
 									$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
+									$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
 									$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
 									$("#frm_nuevo_usuario #lbl_usuario_ing").html('');
 									$("#frm_nuevo_usuario #lbl_fec_ingreso").html('');
@@ -188,7 +190,7 @@ $(document).ready(function () {
 		//Validacion Customizada
 		var valor1 = $("#frm_nuevo_usuario #password").val();
 		var valor2 = $("#frm_nuevo_usuario #password2").val();
-		var accion = $("#frm_nuevo_usuario #accion").val(); 
+		var accion = $("#accion").val(); 
 
 		if (accion == 'I'){
 			if ($("#frm_nuevo_usuario #password").val()==''){
@@ -218,7 +220,7 @@ $(document).ready(function () {
 	}//end function ValidateControlAdicional
 
 
-	function grabar_usuario(){
+	function usuario_grabar(){
 
 		if (!ValidateControls('frm_nuevo_usuario')) {
 			return false;
@@ -244,7 +246,7 @@ $(document).ready(function () {
 		}//end if
 		
 		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{	accion: $("#frm_nuevo_usuario #accion").val(),
+		var data = 	{	accion: $("#accion").val(),
 					 	id: $("#frm_nuevo_usuario #usuario_id").val(),
 					 	nombre: $("#frm_nuevo_usuario #nombre").val(),
 					 	username: $("#frm_nuevo_usuario #username").val(),					 	
@@ -252,13 +254,14 @@ $(document).ready(function () {
 					 	password2: $("#frm_nuevo_usuario #password2").val(),
 					 	email: $("#frm_nuevo_usuario #email").val(),
 					 	perfil_id: $("#frm_nuevo_usuario #perfil_id").val(),
+					 	grupo_dispo_cab_id: $("#frm_nuevo_usuario #grupo_dispo_cab_id").val(),
 					 	estado: $("#frm_nuevo_usuario #estado").val(),
 					}
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo(./../seguridad/usuario/grabardata',
+							'url':'../../seguridad/usuario/grabardata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
@@ -307,8 +310,8 @@ $(document).ready(function () {
 		if (row!==null)
 		{
 			ValidateControlsInit();
-			$("#frm_nuevo_usuario #accion").val("M");			
-			$("#frm_nuevo_usuario #dialog_mantenimiento_usuario_nombre").html(row.nombre);
+			$("#accion").val("M");			
+			$("#dialog_nuevo_usuario_nombre").html(row.nombre);
 			$("#frm_nuevo_usuario #usuario_id").val(row.id);
 			$("#frm_nuevo_usuario #usuario_id").prop('readonly',true);
 			$("#frm_nuevo_usuario #nombre").val(row.nombre);
@@ -317,6 +320,7 @@ $(document).ready(function () {
 			$("#frm_nuevo_usuario #password2").val('');
 			$("#frm_nuevo_usuario #email").val(row.email);
 			$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
+			$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
 			$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
 			$("#frm_nuevo_usuario #lbl_usuario_ing").html(row.usuario_ing_user_name);
 			$("#frm_nuevo_usuario #lbl_fec_ingreso").html(row.fec_ingreso);
@@ -327,7 +331,7 @@ $(document).ready(function () {
 	}//end function mostrar_registro
 
 
-	function consultar_usuario(id)
+	function usuario_consultar(id)
 	{
 	
 		//Se llama mediante AJAX para adicionar al carrito de compras
@@ -336,7 +340,7 @@ $(document).ready(function () {
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'<?php echo(./../seguridad/usuario/consultardata',
+							'url':'../../seguridad/usuario/consultardata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
@@ -349,7 +353,7 @@ $(document).ready(function () {
 		                 }
 		response = ajax_call(parameters, data);		
 		return false;
-	}//end function consultar_marcacion
+	}//end function usuario_consultar
 	
 
 
@@ -366,4 +370,3 @@ $(document).ready(function () {
 		
 		$('#frm_usuario_listado #grid_usuario_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 	}//end function listar_agenciacarga
-

@@ -332,7 +332,7 @@ class ClienteController extends AbstractActionController
 	}//end function grabarAction
 	
 	
-	
+	/*
 /*
  * *************************************************************************************************
  * 				FUNCION MARCACION

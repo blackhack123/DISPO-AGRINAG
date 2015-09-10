@@ -5,28 +5,32 @@
 
 $(document).ready(function () {
 
-		
-		$("#frm_marcacion_listado #btn_nueva_marcacion").on('click', function(event){
-			nuevamarcacion(); 
+	$("#frm_marcacion_listado #btn_consultar_marcacion").on('click', function(event){ 
+			$('#grid_marcacion_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 			return false;
 		});
 	
-		$(".btn_editar_marcacion").on('click', function(event){ 
+		$("#frm_marcacion_listado  #btn_nueva_marcacion").on('click', function(event){
+			marcacion_nueva(); 
+			return false;
+		});
+	
+		/*$("#btn_editar_marcacion").on('click', function(event){ 
 			var tr 						= $(this).closest('tr');
 			var marcacion_sec 			= tr.attr('marcacion_sec');
 	
-			consultar_marcacion(marcacion_sec);
+			marcacion_consultar(marcacion_sec);
 			//$("#dialog_mantenimiento").modal('show') 
-		});
+		});*/
 	
 		$("#frm_marcacion #btn_grabar_marcacion").on('click', function(event){ 
-			grabar_marcacion();
+			marcacion_grabar();
 			return false;
 		});    
 		
-		$("#frm_marcacion_listado #btn_consultar").on('click', function(event){    
+		/*$("#frm_marcacion_listado #btn_marcacion_consultar").on('click', function(event){    
 			listar_marcacion(false);
-		});
+		});*/
 		
 		/*---------------------------------------------------------------*/
 		/*-----------------Se configura los JQGRID's---------------------*/
@@ -61,6 +65,10 @@ $(document).ready(function () {
 			pgbuttons:false,
 			pginput:false,
 			rowList:false,
+			loadComplete: function (data) {
+				autoHeight_JqGrid_Refresh("grid_marcacion_listado");
+			},
+			resizeStop: grid_setAutoHeight, 
 			jsonReader: {
 				repeatitems : false,
 			},		
@@ -74,7 +82,7 @@ $(document).ready(function () {
 			},
 			ondblClickRow: function (rowid,iRow,iCol,e) {
 					var data = $('#grid_marcacion_listado').getRowData(rowid);				
-					consultar_marcacion(data.marcacion_sec)
+					marcacion_consultar(data.marcacion_sec)
 				//	return false;
 			},
 			loadBeforeSend: function (xhr, settings) {
@@ -95,17 +103,17 @@ $(document).ready(function () {
 		//Se configura el grid para que pueda navegar procesar la fila con el ENTER
 		jQuery("#grid_marcacion_listado").jqGrid('bindKeys', {
 			   "onEnter" : function( rowid ) { 
-					//consultar_listado(rowid);
+					//marcacion_consultar_listado(rowid);
 					var data = $('#grid_marcacion_listado').getRowData(rowid);
-					consultar_listado("+data.marcacion_sec+");
+					marcacion_consultar_listado("+data.marcacion_sec+");
 			   }
 		});
 	
 	
 		function ListadoMarcacion_FormatterEdit(cellvalue, options, rowObject){
 			var marcacion_sec = rowObject.marcacion_sec;	
-			//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
-			new_format_value = '<a href="javascript:void(0)" onclick="consultar_marcacion(\''+marcacion_sec+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange" id="btn_editar_marcacion" ></i></a>'; 
+			//new_format_value = '<a href="javascript:void(0)" onclick="marcacion_consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
+			new_format_value = '<a href="javascript:void(0)" onclick="marcacion_consultar(\''+marcacion_sec+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange" id="btn_editar_marcacion" ></i></a>'; 
 			return new_format_value
 		}//end function ListadoMarcacion_FormatterSincronizado
 
@@ -142,7 +150,7 @@ $(document).ready(function () {
  *---------------------------------------------------------------------------------------------
  */
 
-	function nuevamarcacion()
+	function marcacion_nueva()
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
@@ -150,12 +158,12 @@ $(document).ready(function () {
 		
 		var parameters={	'type': 'POST',//'POST',
 				'contentType': 'application/json',
-				'url':'<?php echo(./../dispo/marcacion/nuevodata',
+				'url':'../../dispo/marcacion/nuevodata',
 				'control_process':true,
 				'show_cargando':true,
 				'finish':function(response){
 						//ValidateControlsInit();
-						$("#frm_marcacion #accion").val("I");
+						$("#accion").val("I");
 						$("#dialog_nueva_marcacion_nombre").html("NUEVO REGISTRO");
 
 						$("#marcacion_sec").val('');
@@ -168,6 +176,7 @@ $(document).ready(function () {
 						$("#frm_marcacion #contacto").val('');
 						$("#frm_marcacion #telefono").val('');
 						$("#frm_marcacion #zip").val('');
+						$("#frm_marcacion #punto_corte").val('');
 						$("#frm_marcacion #estado").html(response.cbo_estado);
 						$("#frm_marcacion #lbl_fec_sincronizado").html('');
 						$("#frm_marcacion #lbl_usuario_ing").html('');
@@ -188,14 +197,14 @@ $(document).ready(function () {
 
 
 
-	function grabar_marcacion()
+	function marcacion_grabar()
 	 	{
 			if (!ValidateControls('frm_marcacion')) {
 				return false;
 			}
 
 			//Se llama mediante AJAX para adicionar al carrito de compras
-			var data = 	{	accion: $("#frm_marcacion #accion").val(),
+			var data = 	{	accion: $("#accion").val(),
 						 	marcacion_sec: $("#frm_marcacion #marcacion_sec").val(),
 						 	cliente_id: $("#frm_marcacion #cliente_id").val(),
 						 	nombre: $(" #frm_marcacion #nombre").val(),
@@ -205,19 +214,20 @@ $(document).ready(function () {
 							contacto: $("#frm_marcacion #contacto").val(),
 							telefono: $("#frm_marcacion #telefono").val(),
 							zip:$("#frm_marcacion #zip").val(),
+							punto_corte:$("#frm_marcacion #punto_corte").val(),
 							estado: $("#frm_marcacion #estado").val(),
 						}
 			data = JSON.stringify(data);
 			
 			var parameters = {	'type': 'POST',//'POST',
 								'contentType': 'application/json',
-								'url':'<?php echo(./../dispo/marcacion/grabardata',
+								'url':'../../dispo/marcacion/grabardata',
 								'control_process':true,
 								'show_cargando':true,
 								'finish':function(response){
 										if (response.validacion_code == 'OK')
 										{
-											mostrar_registro_marcacion(response)
+											marcacion_mostrar_registro(response)
 											cargador_visibility('hide');
 											swal({  title: "Informacion grabada con exito!!",   
 												//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
@@ -255,13 +265,13 @@ $(document).ready(function () {
 
 
 
-		function mostrar_registro_marcacion(response)
+		function marcacion_mostrar_registro(response)
 		{
 			var row = response.row;
 			if (row!==null)
 			{
 			//	ValidateControlsInit();
-				$("#frm_marcacion #accion").val("M");			
+				$("#accion").val("M");			
 				$("#dialog_nueva_marcacion_nombre").html(row.nombre);
 				$("#frm_marcacion #marcacion_sec").val(row.marcacion_sec);
 				$("#frm_marcacion #cliente_id").val(row.cliente_id);
@@ -273,6 +283,7 @@ $(document).ready(function () {
 				$("#frm_marcacion #contacto").val(row.contacto);
 				$("#frm_marcacion #telefono").val(row.telefono);
 				$("#frm_marcacion #zip").val(row.zip);
+				$("#frm_marcacion #punto_corte").val(row.punto_corte);
 				$("#frm_marcacion #estado").html(response.cbo_estado);
 				$("#frm_marcacion #lbl_fec_ingreso").html(row.fec_ingreso);
 				$("#frm_marcacion #lbl_fec_modifica").html(row.fec_modifica);
@@ -294,7 +305,7 @@ $(document).ready(function () {
 
 
 
-		function consultar_marcacion(marcacion_sec)
+		function marcacion_consultar(marcacion_sec)
 		{
 		
 			//Se llama mediante AJAX para adicionar al carrito de compras
@@ -307,8 +318,8 @@ $(document).ready(function () {
 								'control_process':true,
 								'show_cargando':true,
 								'finish':function(response){
-									mostrar_registro_marcacion(response);
-									//	listar_marcacion(true);
+									marcacion_mostrar_registro(response);
+									//marcacion_listar(true);
 										cargador_visibility('hide');
 										
 										$("#dialog_nueva_marcacion").modal('show');
@@ -316,4 +327,20 @@ $(document).ready(function () {
 			                 }
 			response = ajax_call(parameters, data);		
 			return false;
-		}//end function consultar_marcacion
+		}//end function marcacion_consultar_marcacion
+		
+		
+		
+	/*	function marcacion_listar(limpiar_filtros)
+		{
+			$('#frm_usuario_listado #grid_marcacion_listado').jqGrid("clearGridData");
+			
+			if (limpiar_filtros==true)
+			{
+				$("#frm_marcacion_listado #busqueda_nombre").val("");
+				$("#frm_marcacion_listado #busqueda_estado").val("");
+			}//end if
+			
+			$('#frm_marcacion_listado #grid_marcacion_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		}//end function listar_agenciacarga
+*/

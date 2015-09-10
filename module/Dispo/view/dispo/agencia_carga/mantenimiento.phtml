@@ -278,8 +278,28 @@
 		</table>    
 				
     </div>
-    
 
+       <div class="row clear" >
+		                  	<form  class="form-horizontal" role="form" id="frm_agenciacarga_listado" name="frm_agenciacarga_listado">
+			                  	 <div class="col-lg-4 table-striped">
+		                              <div class="clearfix">
+		                                     	<div class="pull-left"><a id="btn_nueva_agencia_carga"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a>
+		                                     	</div>
+		                                  <div class="pull-right">
+												<input name="busqueda_nombre" id="busqueda_nombre" type="text" class="select-class2" placeholder="Nombre" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+		                                        <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
+		                                         <?php echo($this->busqueda_estado); ?>
+		                                        </select>
+		                                        <a id="btn_consultar"  class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search"></i></a>
+		                                  </div></br>
+		                              </div>
+		                              <div class="clearfix">
+		                                  <table id="grid_agenciacarga_listado" class="grid"></table>
+		                                   <div id="pager_agenciacarga_listado"></div>
+		                              </div>
+								</div></br>
+		                   </form>	
+		               </div>
             <!--  DIALOG DE MANTENIMIENTO -->
             <form id="frm">
 			<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

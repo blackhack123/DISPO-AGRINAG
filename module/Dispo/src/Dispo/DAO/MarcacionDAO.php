@@ -31,6 +31,7 @@ class MarcacionDAO extends Conexion
 				'contacto'		                    => $MarcacionData->getContacto(),
 				'telefono'		                    => $MarcacionData->getTelefono(),
 				'zip'		                  		=> $MarcacionData->getZip(),
+				'punto_corte'		                => $MarcacionData->getPuntoCorte(),
 				'estado'                			=> $MarcacionData->getEstado(),
 				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_ing_id'                	=> $MarcacionData->getUsuarioIngId(),
@@ -64,6 +65,7 @@ class MarcacionDAO extends Conexion
 				'contacto'		                    => $MarcacionData->getContacto(),
 				'telefono'		                    => $MarcacionData->getTelefono(),
 				'zip'		                  		=> $MarcacionData->getZip(),
+				'punto_corte'		                => $MarcacionData->getPuntoCorte(),
 				'estado'                			=> $MarcacionData->getEstado(),
 				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                	=> $MarcacionData->getUsuarioModId()
@@ -81,7 +83,7 @@ class MarcacionDAO extends Conexion
 	 * @param int $resultType
 	 * @return \Dispo\Data\MarcacionData|NULL|array
 	 */
-	public function consultarmarcacion($marcacion_sec, $resultType = \Application\Constants\ResultType::OBJETO)
+	public function consultar($marcacion_sec, $resultType = \Application\Constants\ResultType::OBJETO)
 	{
 		switch ($resultType)
 		{
@@ -106,6 +108,7 @@ class MarcacionDAO extends Conexion
 					$MarcacionData->setContacto		   		($row['contacto']);
 					$MarcacionData->setTelefono		   		($row['telefono']);
 					$MarcacionData->setZip		   			($row['zip']);
+					$MarcacionData->setPuntoCorte			($row['punto_corte']);
 					$MarcacionData->setEstado    			($row['estado']);
 					$MarcacionData->setFecIngreso   		($row['fec_ingreso']);
 					$MarcacionData->setFecModifica  		($row['fec_modifica']);
@@ -113,7 +116,6 @@ class MarcacionDAO extends Conexion
 					$MarcacionData->setUsuarioModId			($row['usuario_mod_id']);
 					$MarcacionData->setSinronizado			($row['sincronizado']);
 					$MarcacionData->setFecSincronizado		($row['fec_sincronizado']);
-					$MarcacionData->setPuntoCorte			($row['punto_corte']);
 					
 					return $MarcacionData;
 				}else{
