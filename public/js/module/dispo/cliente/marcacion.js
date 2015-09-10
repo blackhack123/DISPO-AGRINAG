@@ -46,9 +46,9 @@ $(document).ready(function () {
 			loadonce: true,		
 			gridview:false,	
 			/*height:'400',*/
-			colNames:['','Código','Nombre','Pais','','Fec. Ultima Vez','Estado', ''],
+			colNames:['Código','Nombre','Pais','','Fec. Ultima Vez','Estado', ''],
 			colModel:[
-				{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
+				//{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
 				{name:'marcacion_sec',index:'marcacion_sec', width:50, align:"center", sorttype:"int"},
 				{name:'nombre',index:'nombre', width:230, sorttype:"string"},
 				{name:'pais_nombre',index:'pais_nombre', width:150, sorttype:"string"},	
@@ -65,9 +65,7 @@ $(document).ready(function () {
 			pgbuttons:false,
 			pginput:false,
 			rowList:false,
-			loadComplete: function (data) {
-				autoHeight_JqGrid_Refresh("grid_marcacion_listado");
-			},
+			loadComplete:  grid_setAutoHeight, 
 			resizeStop: grid_setAutoHeight, 
 			jsonReader: {
 				repeatitems : false,
@@ -92,8 +90,9 @@ $(document).ready(function () {
 			loadError: function (jqXHR, textStatus, errorThrown) {
 				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 			}
-		}).navGrid();
-			
+		});
+		jQuery("#grid_marcacion_listado").jqGrid('navGrid','#pager_marcacion_listado',{edit:false,add:false,del:false});
+		
 		$('#grid_marcacion_listado').setGroupHeaders(
 		{
 			useColSpanStyle: true,
@@ -133,7 +132,7 @@ $(document).ready(function () {
 			}//end switch
 			return new_format_value;
 		}//end function ListadoMarcacion_FormatterSincronizado		
-		jQuery("#grid_marcacion_listado").jqGrid('navGrid','#pager_marcacion_listado',{edit:false,add:false,del:false});
+		
 
 		/*---------------------------------------------------------------*/	
 		/*---------------------------------------------------------------*/
