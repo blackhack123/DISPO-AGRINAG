@@ -8,13 +8,13 @@ var seliCol_DispoGrupoGrid 		= 0;
 var valAnt_DispoGrupoGrid		= null;
 
 $(document).ready(function () {
-	
+
 	/*----------------------Se cargan los controles -----------------*/
 	dispoGrupo_init();
 	//DispoGrupo_initMantenimiento();
 	
 	$("#frm_dispo_grupo #grupo_dispo_cab_id").on('change', function(event){
-		$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		//$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		DispoGrupo_ConsultarInfoDispoGrupoCab($("#frm_dispo_grupo #grupo_dispo_cab_id").val());
 		return false;		
 	});
@@ -71,7 +71,7 @@ $(document).ready(function () {
 																var key = e.charCode || e.keyCode;
 																if(key == 9 && e.shiftKey)   // tab
 																{
-																	if ((seliRow_PrecioGrupoGrid - 1) <= 0) return false;
+																	if ((seliRow_DispoGrupoGrid - 1) <= 0) return false;
 																	setTimeout("jQuery('#grid_dispo_grupo').editCell(" + seliRow_DispoGrupoGrid + " - 1, " + jqgrid_get_columnIndexByName($("#grid_dispo_grupo"), "dgru_110") + ", true);", 10);														
 																}																			
 																if ((key == 13)||(key == 40))//enter, abajo
