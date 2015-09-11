@@ -13,6 +13,15 @@ class ClienteAgenciaCargaBO extends Conexion
 {
 
 
+	function listadoNoAsignadas($condiciones)
+	{
+		$ClienteAgenciaCargaDAO = new ClienteAgenciaCargaDAO();
+		$ClienteAgenciaCargaDAO->setEntityManager($this->getEntityManager());
+		$result = $ClienteAgenciaCargaDAO->listadoNoAsignadas($condiciones);
+		return $result;		
+	}//end function listadoNoAsignadas
+	
+	
 	
 	/**
 	 * 

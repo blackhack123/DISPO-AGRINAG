@@ -20,11 +20,11 @@ $(document).ready(function () {
 	/*-----------------Se configura los JQGRID's AG. CARGA-----------*/
 	/*---------------------------------------------------------------*/	
 	jQuery("#grid_agenciacarga_listado").jqGrid({
-		url:'../../dispo/agenciacarga/listadodata',
-		//postData: {
-		//	nombre: function() { return $("#frm_agenciacarga_listado #busqueda_nombre").val(); },
+		url:'../../dispo/clienteagenciacarga/listadoagenciasnoasignadasdata',
+		postData: {
+			cliente_id: function()   { return $("#frm_informacion_general #cliente_id").val(); }, 
 		//	estado: function() { return $("#frm_agenciacarga_listado #busqueda_estado").val(); }				
-		//},
+		},
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
@@ -59,7 +59,6 @@ $(document).ready(function () {
 		},		
 		/*caption:"Grilla de Prueba",*/
 		afterInsertRow : function(rowid, rowdata){
-			//console.log('rowdata',rowdata);
 			if (rowdata.estado == "I"){
 				$(this).jqGrid('setRowData', rowid, true, {color:'red'});
 			}//end if
@@ -163,7 +162,6 @@ $(document).ready(function () {
 		},		
 		/*caption:"Grilla de Prueba",*/
 		afterInsertRow : function(rowid, rowdata){
-			//console.log('rowdata',rowdata);
 			if (rowdata.estado == "I"){
 				$(this).jqGrid('setRowData', rowid, true, {color:'red'});
 			}//end if
@@ -271,11 +269,11 @@ $(document).ready(function () {
 		
 		var element	= {};
 		var selectedIDs = grid.getGridParam("selarrrow");
-		//console.log(selectedIDs);
 		
 		var arr_data 	= new Array();
-		for (var i = 0; i < selectedIDs.length; i++) {
-			
+		for (var i = 0; i < selectedIDs.length; i++)
+		{	
+			var element	= {};
 			element.agencia_carga_id 		= selectedIDs[i];
 			arr_data.push(element);
 		}//end for
@@ -320,7 +318,6 @@ $(document).ready(function () {
         	}
         
         var selectedIDs = grid.getGridParam("selarrrow");
-		console.log(selectedIDs);
 		
 		var arr_data 	= new Array();
 		for (var i = 0; i < selectedIDs.length; i++) {
