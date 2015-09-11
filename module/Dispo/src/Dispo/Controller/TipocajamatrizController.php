@@ -169,7 +169,7 @@ class TipocajamatrizController extends AbstractActionController
 
 	
 	
-	function grabarAction()
+	public function grabarAction()
 	{
 		try
 		{
@@ -216,4 +216,51 @@ class TipocajamatrizController extends AbstractActionController
 		}
 	}//end function grabarstockAction	
 
+
+	public function actualizarmasivoAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+				
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$TipoCajaMatrizBO 		= new TipoCajaMatrizBO();
+		
+			$TipoCajaMatrizBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+
+			$parametros['tipo_caja_id'] = $json['tipo_caja_id'];
+			$parametros['inventario_id']= $json['inventario_id'];
+			$parametros['variedad_id'] 	= $json['variedad_id'];
+			$parametros['grado_id'] 	= $json['grado_id'];
+			$parametros['unds_bunch'] 	= $json['unds_bunch'];
+			$parametros['usuario_id'] 	= $usuario_id;
+
+			$result = $TipoCajaMatrizBO->actualizacionMasiva($parametros);
+
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			/*$response->validacion_code 		= $result['validacion_code'];
+			 $response->respuesta_mensaje	= $result['respuesta_mensaje'];
+			 */
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end funcion actualizarmasivoAction
+	
+	
 }
