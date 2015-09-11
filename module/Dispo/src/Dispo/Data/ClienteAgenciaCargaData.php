@@ -6,7 +6,7 @@ class ClienteAgenciaCargaData
 {
 	/**
 	 * @var string
-	 */	
+	 */	 
 	protected $cliente_id;
 	
 	/**
