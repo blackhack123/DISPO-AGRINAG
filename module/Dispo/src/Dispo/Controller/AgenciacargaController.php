@@ -75,7 +75,6 @@ class AgenciacargaController extends AbstractActionController
 		}
 	}//end function listadodataAction
 	
-	
 
 	public function getcomboAction()
 	{

@@ -22,17 +22,17 @@
         });       
 
         $(".btn_edit").on('click', function(event){ 
-			var tr 						= $(this).closest('tr');
-			var agencia_carga_id 		= tr.attr('agencia_carga_id');
+			var tr 			= $(this).closest('tr');
+			var id 			= tr.attr('id');
 
-			consultar_agencia_carga(agencia_carga_id);
+			consultar_agencia_carga(id);
 			//$("#dialog_mantenimiento").modal('show') 
         });
 		
 		
         $("#tbl_registros tbody tr").on('dblclick', function(event){ 
-			var tr 						= $(this).closest('tr');
-			var agencia_carga_id 		= tr.attr('agencia_carga_id');
+			var tr 			= $(this).closest('tr');
+			var id 			= tr.attr('id');
 
 			consultar_agencia_carga(agencia_carga_id);
 			//$("#dialog_mantenimiento").modal('show') 
@@ -62,8 +62,8 @@
 									$("#accion").val("I");
 									$("#dialog_mantenimiento_agenciacarga_nombre").html("NUEVO REGISTRO");
 
-									$("#agencia_carga_id").val('');
-									$("#agencia_carga_id").prop('readonly',false);
+									$("#id").val('');
+									$("#id").prop('readonly',false);
 									$("#nombre").val('');
 									$("#direccion").val('');
 									$("#telefono").val('');
@@ -87,7 +87,7 @@
 	function consultar_agencia_carga(id)
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{agencia_carga_id: id}
+		var data = 	{id: id}
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
@@ -115,7 +115,7 @@
 		
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{	accion: $("#accion").val(),
-					 	id: $("#agencia_carga_id").val(),
+					 	id: $("#id").val(),
 					 	nombre: $("#nombre").val(),
 					 	direccion: $("#direccion").val(),
 					 	telefono: $("#telefono").val(),
@@ -176,8 +176,8 @@
 			ValidateControlsInit();
 			$("#accion").val("M");			
 			$("#dialog_mantenimiento_agenciacarga_nombre").html(row.nombre);
-			$("#agencia_carga_id").val(row.id);
-			$("#agencia_carga_id").prop('readonly',true);
+			$("#id").val(row.id);
+			$("#id").prop('readonly',true);
 			$("#nombre").val(row.nombre);
 			$("#direccion").val(row.direccion);
 			$("#telefono").val(row.telefono);
@@ -208,10 +208,10 @@
 
 <div class="table-container col-md-16 col-sm-16">
   <div class="clearfix">
-        	<div class="pull-left">
+        	<div class="botonera-admin-section pull-left separator">
             	<a id="btn_nuevo" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-white"></i> Nuevo</a>
             </div>
-        	<div class="pull-right">
+        	<div class="busqueda-admin-section pull-left">
             	<div class="form-inline">
                 	<form id="frm" action="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento" method="post" >
                     <input name="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
@@ -243,7 +243,7 @@
 				  <th  width="70" class="th-inner">&nbsp;</th>
 				  <th class="th-inner">FEC. ULTIMA VEZ</th>
 		      </tr>
-			</thead>
+		 </thead>
 			<tbody class="searchable" style="border: 1px solid #cdcdcd;">
 <?php  
 		$i=0;
@@ -255,7 +255,7 @@
 				$class_row = 'row_estado_inactivo';
 			}
 ?>            
-				<tr agencia_carga_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
+				<tr id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
 				  <td><?php echo($i); ?></td>
 					<td><?php echo($reg['id']); ?></td>
 					<td align="left"><?php echo($reg['nombre']); ?></td>
@@ -276,30 +276,10 @@
 <?php	}//end foreach ?>		
 			</tbody>
 		</table>    
-				
+				</br>
     </div>
 
-       <div class="row clear" >
-		                  	<form  class="form-horizontal" role="form" id="frm_agenciacarga_listado" name="frm_agenciacarga_listado">
-			                  	 <div class="col-lg-4 table-striped">
-		                              <div class="clearfix">
-		                                     	<div class="pull-left"><a id="btn_nueva_agencia_carga"  class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</a>
-		                                     	</div>
-		                                  <div class="pull-right">
-												<input name="busqueda_nombre" id="busqueda_nombre" type="text" class="select-class2" placeholder="Nombre" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
-		                                        <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
-		                                         <?php echo($this->busqueda_estado); ?>
-		                                        </select>
-		                                        <a id="btn_consultar"  class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search"></i></a>
-		                                  </div></br>
-		                              </div>
-		                              <div class="clearfix">
-		                                  <table id="grid_agenciacarga_listado" class="grid"></table>
-		                                   <div id="pager_agenciacarga_listado"></div>
-		                              </div>
-								</div></br>
-		                   </form>	
-		               </div>
+
             <!--  DIALOG DE MANTENIMIENTO -->
             <form id="frm">
 			<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -316,7 +296,7 @@
 			        	      <tr>
 			        	        <td><label class="control-label">ID:</label></td>
 			        	        <td>
-                                <input id="agencia_carga_id" name="agencia_carga_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" validate="required" validateMessage="Ingrese un codigo">
+                                <input id="id" name="id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" validate="required" validateMessage="Ingrese un codigo">
                                 <input type="hidden" name="accion" id="accion" value="" /></td>
 		        	          </tr>
 			        	      <tr>

@@ -856,4 +856,66 @@ class ClienteController extends AbstractActionController
 	}//end function listadodataAction
 	
 	
+	
+	public function listadocliente_agencia_cargadataAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$ClienteBO = new ClienteBO();
+			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 			= $this->getRequest();
+			$criterio_busqueda  = $request->getQuery('criterio_busqueda', "");
+			$estado  			= $request->getQuery('estado', "");
+			$page 				= $request->getQuery('page');
+			$limit 				= $request->getQuery('rows');
+			$sidx				= $request->getQuery('sidx',1);
+			$sord 				= $request->getQuery('sord', "");
+			$ClienteBO->setPage($page);
+			$ClienteBO->setLimit($limit);
+			$ClienteBO->setSidx($sidx);
+			$ClienteBO->setSord($sord);
+			$condiciones = array(
+					"criterio_busqueda"	=> $criterio_busqueda,
+					"estado"	=> $estado
+			);
+			$result = $ClienteBO->listado($condiciones);
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				//$row['variedad'] = trim($row['variedad']);
+				$row2['id'] 				= $row['id'];
+				$row2['nombre'] 			= trim($row['nombre']);
+				$row2['direccion'] 			= trim($row['direccion']);
+				$row2['pais_nombre']		= trim($row['pais_nombre']);
+				$row2['telefono1'] 			= trim($row['telefono1']);
+				$row2['sincronizado'] 		= trim($row['sincronizado']);
+				$row2['fec_sincronizado'] 	= trim($row['fec_sincronizado']);
+				$row2['estado'] 			= trim($row['estado']);
+				$response->rows[$i] = $row2;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadodataAction
+	
+	
+	
+	
 }//end controller

@@ -118,11 +118,6 @@
 			new_format_value = '<a href="javascript:void(0)" onclick="cliente_consultar(\''+id+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange"></i></a>'; 
 			return new_format_value
 		}//end function ListadoCliente_FormatterEdit
-		
-		/*---------------------------------------------------------------*/
-		/*----------- FIN DE JQGRID de Cliente --------------------------*/
-		/*---------------------------------------------------------------*/	
-	
 				
 	});
 

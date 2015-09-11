@@ -128,7 +128,7 @@ class UsuarioDAO extends Conexion {
 					$UsuarioData->setUsername			 ($row['username']);
 					$UsuarioData->setPassword			 ($row['password']);
 					$UsuarioData->setEmail   			 ($row['email']);
-					$UsuarioData->setPerfilId			 ($row['perfil_id']);
+					//$UsuarioData->setPerfilId			 ($row['perfil_id']);
 					$UsuarioData->setClienteId			 ($row['cliente_id']);
 					$UsuarioData->setEstado				 ($row['estado']);
 					$UsuarioData->setGrupoDispoCabId	 ($row['grupo_dispo_cab_id']);
@@ -261,7 +261,7 @@ class UsuarioDAO extends Conexion {
 				$sql = $sql." and perfil_id = ".$condiciones['perfil_id'];
 			}//end if
 		}//end if
-		$sql=$sql."order by usuario.nombre";
+		$sql=$sql." order by usuario.nombre";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro

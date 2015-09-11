@@ -21,19 +21,19 @@
         });       
 
         $(".btn_edit").on('click', function(event){ 
-			var tr 						= $(this).closest('tr');
-			var usuario_id 		= tr.attr('usuario_id');
+			var tr 			= $(this).closest('tr');
+			var id 			= tr.attr('id');
 
-			consultar_usuario(usuario_id);
+			consultar_usuario(id);
 			//$("#dialog_mantenimiento").modal('show') 
         });
 		
 		
         $("#tbl_registros tbody tr").on('dblclick', function(event){ 
-			var tr 						= $(this).closest('tr');
-			var usuario_id 		= tr.attr('usuario_id');
+			var tr 			= $(this).closest('tr');
+			var id 			= tr.attr('id');
 
-			consultar_usuario(usuario_id);
+			consultar_usuario(id);
 			//$("#dialog_mantenimiento").modal('show') 
         });		
 
@@ -61,8 +61,8 @@
 									$("#accion").val("I");
 									$("#dialog_mantenimiento_usuario_nombre").html("NUEVO REGISTRO");
 
-									$("#usuario_id").val('');
-									$("#usuario_id").prop('readonly',false);
+									$("#id").val('');
+									$("#id").prop('readonly',false);
 									$("#nombre").val('');
 									$("#username").val('');
 									$("#password").val('');
@@ -83,7 +83,7 @@
 	function consultar_usuario(id)
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{usuario_id: id}
+		var data = 	{id: id}
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
@@ -167,7 +167,7 @@
 		
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{	accion: $("#accion").val(),
-					 	id: $("#usuario_id").val(),
+					 	id: $("#id").val(),
 					 	nombre: $("#nombre").val(),
 					 	username: $("#username").val(),					 	
 					 	password: $("#password").val(),
@@ -231,8 +231,8 @@
 			ValidateControlsInit();
 			$("#accion").val("M");			
 			$("#dialog_mantenimiento_usuario_nombre").html(row.nombre);
-			$("#usuario_id").val(row.id);
-			$("#usuario_id").prop('readonly',true);
+			$("#id").val(row.id);
+			$("#id").prop('readonly',true);
 			$("#nombre").val(row.nombre);
 			$("#username").val(row.username);
 			$("#password").val('');
@@ -256,10 +256,10 @@
 
 <div class="table-container col-md-16 col-sm-16">
   <div class="clearfix">
-        	<div class="pull-left">
+        	<div class="botonera-admin-section pull-left separator">
             	<a id="btn_nuevo" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-white"></i> Nuevo</a>
             </div>
-        	<div class="pull-right">
+        	<div class="busqueda-admin-section pull-left">
             	<div class="form-inline">
                 	<form id="frm" action="<?php echo($this->basePath()); ?>/seguridad/usuario/mantenimiento" method="post" >
                     <input name="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
@@ -298,7 +298,7 @@
 				$class_row = 'row_estado_inactivo';
 			}
 ?>            
-				<tr usuario_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
+				<tr id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
 				  <td><?php echo($i); ?></td>
 					<td><?php echo($reg['id']); ?></td>
 					<td align="left"><?php echo($reg['nombre']); ?></td>
@@ -331,7 +331,7 @@
 			        	      <tr>
 			        	        <td><label class="control-label">ID:</label></td>
 			        	        <td>
-                                <input id="usuario_id" name="usuario_id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" disabled="disabled">
+                                <input id="id" name="id" type="text" class="form-control input-sm" style="width:50px" value="" maxlength="3" max-lenght="3" disabled="disabled">
                                 <input type="hidden" name="accion" id="accion" value="" /></td>
 		        	          </tr>
 			        	      <tr>

@@ -3,12 +3,12 @@
 namespace Dispo\DAO;
 use Doctrine\ORM\EntityManager,
 	Application\Classes\Conexion;
-use Dispo\Data\AgenciaCargaData;
+use Dispo\Data\ClienteAgenciaCargaData;
 use Zend\View\Model\JsonModel;
-use Dispo\BO\AgenciaCargaBO;
+use Dispo\BO\ClienteAgenciaCargaBO;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-class AgenciaCargaDAO extends Conexion 
+class ClienteAgenciaCargaDAO extends Conexion 
 {
 	private $table_name	= 'agencia_carga';
 
