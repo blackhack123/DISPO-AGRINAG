@@ -86,6 +86,7 @@ class ClienteagenciacargaController extends AbstractActionController
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 		
+			//Recibe las variables del Json
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 			
@@ -93,17 +94,20 @@ class ClienteagenciacargaController extends AbstractActionController
 			$cliente_id			= $formData['cliente_id'];
 			$grid_data 			= $json['grid_data'];
 		
-			
+			//Prepara el Buffer de datos antes de llamar al BO
+			$ArrClienteAgenciaCargaData   	= array();
 			foreach ($grid_data as $reg)
 			{
-					
+				$ClienteAgenciaCargaData->setClienteId 		($cliente_id);
+				$ClienteAgenciaCargaData->setAgenciaCargaId ($reg['agencia_carga_id']);
+				
+				$ArrClienteAgenciaCargaData[] = $ClienteAgenciaCargaData;
 			}//end foreach
-		
+
+			//Graba
+			$result = $ClienteAgenciaCargaBO->grabar($ArrClienteAgenciaCargaData);
 			
 			
-			
-			$result = $ClienteAgenciaCargaBO->asignar($);
-		
 			//Retorna la informacion resultante por JSON
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';
