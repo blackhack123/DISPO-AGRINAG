@@ -19,6 +19,7 @@ return array(
         	'Dispo\Controller\Transportadora'		=> 'Dispo\Controller\TransportadoraController',
         	'Dispo\Controller\Grupodispo'			=> 'Dispo\Controller\GrupodispoController',
         	'Dispo\Controller\Grupoprecio'			=> 'Dispo\Controller\GrupoprecioController',
+        	'Dispo\Controller\Tipocajamatriz'		=> 'Dispo\Controller\TipocajamatrizController',
         		
         ),
     ),
@@ -186,6 +187,20 @@ return array(
         			),
         	), 
 
+        	'dispo-tipocajamatriz' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/tipocajamatriz[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Tipocajamatriz',
+        							'action'     => 'index',
+        					),
+        			),
+        	), 
         ),
     ),
     'view_manager' => array(
