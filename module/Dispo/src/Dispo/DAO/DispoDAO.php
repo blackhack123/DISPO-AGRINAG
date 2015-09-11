@@ -511,10 +511,33 @@ class DispoDAO extends Conexion
 			$id = $this->ingresar($DispoData);
 		}//end if
 
-		return true;		
+		return true;
 	}//end function actualizarStock
 	
 	
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $variedad_id
+	 * @return array
+	 */
+	public function agrupadoPorInventarioPorVariedad($inventario_id, $variedad_id)
+	{
+		$sql = " SELECT inventario_id, variedad_id ".
+				" FROM dispo ".
+				" WHERE 1= 1";
+		if (!empty($inventario_id)){
+			$sql = $sql." and inventario_id 	= '".$inventario_id."'";
+		}//end if
+		if (!empty($variedad_id)){
+			$sql = $sql." and variedad_id		= '".$variedad_id."'";
+		}//end if
+		$sql = $sql." GROUP BY inventario_id, variedad_id ";
+		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$result = $stmt->fetchAll();
+		return $result;
+	}//end function agrupadoPorInventarioPorVariedadPorGrado
+
 	
 }//end class
 

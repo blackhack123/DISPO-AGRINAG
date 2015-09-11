@@ -28,13 +28,12 @@ $(document).ready(function () {
 	});	
 	
 	$("#frm_tipo_caja_busqueda #btn_actualizacion_masiva").on('click', function(event){ 
-		$("#frm_tipo_caja_matenimiento #tipo_caja_id").val($("#frm_tipo_caja_busqueda #tipo_caja_id").val());
-		$("#frm_tipo_caja_matenimiento #inventario_id").val($("#frm_tipo_caja_busqueda #inventario_id").val());
+		TipoCaja_OpenModalActualizacionMasiva();
+		return false;
+	});		
 
-		$("#frm_tipo_caja_matenimiento #tipo_caja_nombre").html($("#frm_tipo_caja_busqueda #tipo_caja_id").val());
-		$("#frm_tipo_caja_matenimiento #inventario_nombre").html($("#frm_tipo_caja_busqueda #inventario_id :selected").text());
-		
-		$('#dialog_tipo_caja_actualizacion').modal('show')
+	$("#frm_tipo_caja_matenimiento #btn_grabar").on('click', function(event){ 
+		TipoCaja_TipoCaja_GrabarMasivo();
 		return false;
 	});		
 	/*---------------------------------------------------------------*/	
@@ -227,9 +226,7 @@ $(document).ready(function () {
 													}
 													else if ((key == 38))//arriba
 													{
-														setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);
-													}else{
-														return false;
+														setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);													
 													}//end if													
 												}
 											}
@@ -341,8 +338,8 @@ function actualizacion_masiva_init()
 {
 	var data = 	{
 					opcion: 'actualizacion-masiva',
-					variedad_1er_elemento:	'&lt;SELECCIONE&gt;',
-					grado_1er_elemento:		'&lt;SELECCIONE&gt;',
+					variedad_1er_elemento:	'&lt;TODAS&gt;',
+					grado_1er_elemento:		'&lt;TODOS&gt;',
 				}
 	data = JSON.stringify(data);
 	var parameters = {	'type': 'POST',//'POST',
@@ -399,5 +396,66 @@ function TipoCaja_Grabar(tipo_caja_id, inventario_id, variedad_id, grado_id, nro
 					 }
 	response = ajax_call(parameters, data);		
 	return false;			
-
 }//end function TipoCaja_Grabar
+
+
+
+function TipoCaja_OpenModalActualizacionMasiva()
+{
+		$("#frm_tipo_caja_matenimiento #tipo_caja_id").val($("#frm_tipo_caja_busqueda #tipo_caja_id").val());
+		$("#frm_tipo_caja_matenimiento #inventario_id").val($("#frm_tipo_caja_busqueda #inventario_id").val());
+
+		$("#frm_tipo_caja_matenimiento #tipo_caja_nombre").html($("#frm_tipo_caja_busqueda #tipo_caja_id").val());
+		$("#frm_tipo_caja_matenimiento #inventario_nombre").html($("#frm_tipo_caja_busqueda #inventario_id :selected").text());
+		
+		$('#dialog_tipo_caja_actualizacion').modal('show')
+}//end function TipoCaja_OpenModalActualizacionMasiva
+
+
+
+function TipoCaja_TipoCaja_GrabarMasivo()
+{
+	var tipo_caja_id 	= $("#frm_tipo_caja_matenimiento #tipo_caja_id").val();
+	var inventario_id 	= $("#frm_tipo_caja_matenimiento #inventario_id").val();
+	var variedad_id 	= $("#frm_tipo_caja_matenimiento #variedad_id").val();
+	var grado_id 		= $("#frm_tipo_caja_matenimiento #grado_id").val();
+	var unds_bunch 	= $("#frm_tipo_caja_matenimiento #unds_bunch").val();
+	
+	var data = 	{
+					tipo_caja_id:		tipo_caja_id,
+					inventario_id:		inventario_id,
+					variedad_id:		variedad_id,
+					grado_id:			grado_id,
+					unds_bunch:			unds_bunch
+				}
+	data = JSON.stringify(data);
+	var parameters = {	'type': 'POST',//'POST',
+						'contentType': 'application/json',
+						'url':'../../dispo/tipocajamatriz/actualizarmasivo',
+						'control_process':true,
+						'show_cargando':true,
+						'async':true,
+						'finish':function(response){
+							if (response.respuesta_code == 'OK')
+							{
+								//mostrar_registro(response)
+								cargador_visibility('hide');
+								swal({  title: "Informacion procesada con exito!!",   
+									//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+									//html:true,
+									type: "success",
+									showCancelButton: false,
+									confirmButtonColor: "#DD6B55",
+									confirmButtonText: "OK",
+									cancelButtonText: "",
+									closeOnConfirm: false,
+									closeOnCancel: false,
+								});
+							}else{
+								message_error('ERROR', response);
+							}//end if									
+						}							
+					 }
+	response = ajax_call(parameters, data);		
+	return false;			
+}//end function TipoCaja_TipoCaja_GrabarMasivo

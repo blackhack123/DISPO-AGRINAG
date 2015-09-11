@@ -290,6 +290,34 @@ class TipoCajaMatrizDAO extends Conexion
 	}//end function consultar
 
 	
+	
+	/**
+	 *
+	 * @param array (tipo_caja_id, inventario_id, $variedad_id, grado_id) 
+	 * @return array
+	 */
+	public function listadoDetallado($condiciones)
+	{
+		$sql = " SELECT tipo_caja_id, inventario_id, variedad_id, grado_id, unds_bunch ".
+				" FROM tipo_caja_matriz ".
+				" WHERE 1= 1";
+		if (!empty($condiciones['tipo_caja_id'])){
+			$sql = $sql." and tipo_caja_id	= '".$condiciones['tipo_caja_id']."'";
+		}//end if
+		if (!empty($condiciones['inventario_id'])){
+			$sql = $sql." and inventario_id = '".$condiciones['inventario_id']."'";
+		}//end if
+		if (!empty($condiciones['variedad_id'])){
+			$sql = $sql." and variedad_id	= '".$condiciones['variedad_id']."'";
+		}//end if
+		if (!empty($condiciones['grado_id'])){
+			$sql = $sql." and grado_id		= '".$condiciones['grado_id']."'";
+		}//end if
+		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$result = $stmt->fetchAll();
+		return $result;
+	}//end function listadoDetallado
+	
 }//end class
 
 ?>
