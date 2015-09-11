@@ -415,6 +415,12 @@ function TipoCaja_OpenModalActualizacionMasiva()
 
 function TipoCaja_TipoCaja_GrabarMasivo()
 {
+	if (!ValidateControls('frm_tipo_caja_matenimiento')) 
+	{
+		return false;
+	}
+	
+	
 	var tipo_caja_id 	= $("#frm_tipo_caja_matenimiento #tipo_caja_id").val();
 	var inventario_id 	= $("#frm_tipo_caja_matenimiento #inventario_id").val();
 	var variedad_id 	= $("#frm_tipo_caja_matenimiento #variedad_id").val();

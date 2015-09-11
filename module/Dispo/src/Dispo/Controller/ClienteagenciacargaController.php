@@ -71,7 +71,7 @@ class ClienteagenciacargaController extends AbstractActionController
 	
 	
 	
-	
+
 	public function asignarAction()
 	{
 		try
@@ -108,8 +108,7 @@ class ClienteagenciacargaController extends AbstractActionController
 
 			//Graba
 			$result = $ClienteAgenciaCargaBO->grabar($ArrClienteAgenciaCargaData);
-			
-			
+
 			//Retorna la informacion resultante por JSON
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';
