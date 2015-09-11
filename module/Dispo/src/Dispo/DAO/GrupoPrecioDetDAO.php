@@ -209,12 +209,12 @@ class GrupoPrecioDetDAO extends Conexion
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
-	
+
 		foreach($result as &$reg)
 		{
 			$reg['variedad'] = trim($reg['variedad']);
 		}
-	
+
 		return $result;
 	}//end function listado
 

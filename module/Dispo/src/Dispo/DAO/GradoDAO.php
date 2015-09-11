@@ -80,10 +80,29 @@ class GradoDAO extends Conexion
 		}else{
 			return null;
 		}//end if
-
 	}//end function consultar
 
 
+	
+	/**
+	 * consultarTodos
+	 *
+	 * @return array
+	 */
+	public function consultarTodos()
+	{
+		$sql = 	' SELECT grado.* '.
+				' FROM grado '.
+				' ORDER BY grado.orden';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		//return new ViewModel(array(result'=>$result));
+		return $result;
+	}//end function consultarTodos	
+	
 }//end class
 
 ?>

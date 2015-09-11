@@ -7,6 +7,7 @@ use Dispo\DAO\VariedadDAO;
 use Dispo\DAO\ProductoDAO;
 use Dispo\DAO\ObtentorDAO;
 use Dispo\Data\VariedadData;
+use Dispo\DAO\Dispo\DAO;
 
 
 class VariedadBO extends Conexion
@@ -42,7 +43,7 @@ class VariedadBO extends Conexion
 	 * @param string $color_1er_elemento
 	 * @return string
 	 */
-	function getComboObtentor($obtentor, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+/*	function getComboObtentor($obtentor, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
 	{
 		$ObtentorDAO = new ObtentorDAO();
 	
@@ -54,7 +55,7 @@ class VariedadBO extends Conexion
 			
 		return $opciones;
 	}//end function getComboTodos
-	
+*/	
 	
 	
 	/**
@@ -232,6 +233,26 @@ class VariedadBO extends Conexion
 		return $result;
 	}//end function listado
 	
+
 	
+	/**
+	 *
+	 * @param string $variedad_id
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getCombo($variedad_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$VariedadDAO = new VariedadDAO();
+	
+		$VariedadDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $VariedadDAO->consultarTodos();
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre',$variedad_id, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;
+	}//end function getCombo	
 	
 }//end class

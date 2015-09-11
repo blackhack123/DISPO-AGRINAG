@@ -29,7 +29,7 @@ class InventarioBO extends Conexion
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre',$inventario_id, $texto_1er_elemento, $color_1er_elemento);
 		 
 		return $opciones;
-	}//end function getComboCalidad
+	}//end function getCombo
 
 
 }//end class

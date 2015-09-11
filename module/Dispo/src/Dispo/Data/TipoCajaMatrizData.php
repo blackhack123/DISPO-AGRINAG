@@ -34,6 +34,26 @@ class TipoCajaMatrizData
 	 * @var int
 	 */	
 	protected $unds_bunch;
+	
+	/**
+	 * @var string
+	 */
+	protected $fec_ingreso;
+	
+	/**
+	 * @var string
+	 */
+	protected $fec_modifica;
+	
+	/**
+	 * @var int
+	 */
+	protected $usuario_ing_id;
+
+	/**
+	 * @var int
+	 */
+	protected $usuario_mod_id;
 
 
 	
@@ -44,6 +64,10 @@ class TipoCajaMatrizData
 	public function getVariedadId() 				{return $this->variedad_id;}
 	public function getGradoId() 					{return $this->grado_id;}
 	public function getUndsBunch()					{return $this->unds_bunch;}
+	public function getFecIngreso()					{return $this->fec_ingreso;}
+	public function getFecModifica()				{return $this->fec_modifica;}
+	public function getUsuarioIngId()				{return $this->usuario_ing_id;}
+	public function getUsuarioModId()				{return $this->usuario_mod_id;}
 
 
 	//metodos SET
@@ -53,7 +77,11 @@ class TipoCajaMatrizData
 	public function setVariedadId($valor) 			{$this->variedad_id			= $valor;}
 	public function setGradoId($valor) 				{$this->grado_id			= $valor;}
 	public function setUndsBunch($valor) 			{$this->unds_bunch			= $valor;}
-
+	public function setFecIngreso($valor)			{$this->fec_ingreso			= $valor;}
+	public function setFecModifica($valor)			{$this->fec_modifica 		= $valor;}
+	public function setUsuarioIngId($valor)			{$this->usuario_ing_id		= $valor;}
+	public function setUsuarioModId($valor)			{$this->usuario_mod_id		= $valor;}
+	
 
 }//fin class
 

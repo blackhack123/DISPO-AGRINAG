@@ -44,7 +44,7 @@ class TipoCajaMarcacionData
 	/**
 	 * @var string
 	 */	
-	protected $tipo_caja_id1;
+	protected $tipo_caja_id;
 
 	
 	//metodos GET
@@ -55,7 +55,7 @@ class TipoCajaMarcacionData
 	public function getVariedadId() 				{return $this->variedad_id;}
 	public function getGradoId() 					{return $this->grado_id;}
 	public function getUndsBunch() 					{return $this->unds_bunch;}
-	public function getTipoCajaId1() 				{return $this->tipo_caja_id1;}
+
 
 
 	//metodos SET
@@ -66,7 +66,7 @@ class TipoCajaMarcacionData
 	public function setVariedadId($valor) 			{$this->variedad_id			= $valor;}
 	public function setGradoId($valor) 				{$this->grado_id			= $valor;}
 	public function setUndsBunch($valor) 			{$this->unds_bunch			= $valor;}
-	public function setTipoCajaId1($valor) 			{$this->tipo_caja_id1		= $valor;}
+
 
 
 }//fin classs
