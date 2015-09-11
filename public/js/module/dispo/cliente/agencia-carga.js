@@ -286,11 +286,11 @@ $(document).ready(function () {
 					  },			
 			grid_data: 	arr_data,
 		};			
-	
+		data = JSON.stringify(data);
 	
 		var parameters = {	'type': 'post',
 							'contentType': 'application/json',
-							'url':'../../dispo/clienteagenciacarga/vincular',
+							'url':'../../dispo/clienteagenciacarga/asignar',
 							'show_cargando':true,
 							'finish':function(response){
 									if (response.respuesta_code=='OK'){

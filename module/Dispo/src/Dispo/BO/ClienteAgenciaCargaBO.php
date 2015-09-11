@@ -34,23 +34,6 @@ class ClienteAgenciaCargaBO extends Conexion
 	
 	
 	
-	/**
-	 * Consultar 
-	 * 
-	 * @param string $id
-	 * @param int $resultType
-	 * @return Ambigous <\Dispo\Data\AgenciaCargaData, NULL, array>
-	 */
-	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
-	{
-		$AgenciaCargaDAO = new AgenciaCargaDAO();
-		$AgenciaCargaDAO->setEntityManager($this->getEntityManager());
-		$reg = $AgenciaCargaDAO->consultar($id, $resultType);
-		return $reg;		
-	}//end function consultar
-	
-	
-	
 	function grabar($ArrClienteAgenciaCargaData)
 	{
 		$ClienteAgenciaCargaDAO = new ClienteAgenciaCargaDAO();
@@ -64,7 +47,7 @@ class ClienteAgenciaCargaBO extends Conexion
 			}//end foreach
 			
 			$this->getEntityManager()->getConnection()->commit();
-			return $result;
+			return true;
 		} catch (Exception $e) {
 			$this->getEntityManager()->getConnection()->rollback();
 			$this->getEntityManager()->close();

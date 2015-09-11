@@ -21,10 +21,12 @@ class ClienteAgenciaCargaDAO extends Conexion
 	public function ingresar(ClienteAgenciaCargaData $ClienteAgenciaCargaData)
 	{
 		$key    = array(
-				'cliente_id'						        => $ClienteAgenciaCargaData->getClienteId(),
+				'cliente_id'			   => $ClienteAgenciaCargaData->getClienteId(),
+				'agencia_carga_id'		   => $ClienteAgenciaCargaData->getAgenciaCargaId()
 		);
 		$record = array(
-				'agencia_carga_id'		            => $ClienteAgenciaCargaData->getAgenciaCargaId()
+				'cliente_id'			   => $ClienteAgenciaCargaData->getClienteId(),
+				'agencia_carga_id'		   => $ClienteAgenciaCargaData->getAgenciaCargaId()
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
 		//$id = $this->getEntityManager()->getConnection()->lastInsertId();
@@ -43,12 +45,10 @@ class ClienteAgenciaCargaDAO extends Conexion
 	{
 		$key    = array(
 				'cliente_id'						=> $ClienteAgenciaCargaData->getId(),
+				'agencia_carga_id'            		=> $ClienteAgenciaCargaData->getAgenciaCargaId()				
 		);
-		$record = array(
-				'agencia_carga_id'            		=> $ClienteAgenciaCargaData->getAgenciaCargaId()
-		);
-		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $ClienteAgenciaCargaData->getClienteId();
+		$this->getEntityManager()->getConnection()->delete($this->table_name, $key);
+		return true;
 	}//end function modificar
 
 

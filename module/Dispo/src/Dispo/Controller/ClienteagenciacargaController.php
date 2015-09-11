@@ -70,6 +70,8 @@ class ClienteagenciacargaController extends AbstractActionController
 	}//end function listadodataAction
 	
 	
+	
+	
 	public function asignarAction()
 	{
 		try
