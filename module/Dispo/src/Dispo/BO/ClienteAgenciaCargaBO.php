@@ -55,4 +55,28 @@ class ClienteAgenciaCargaBO extends Conexion
 		}
 	}//end function grabar
 	
+	
+	function eliminar($ArrClienteAgenciaCargaData)
+	{
+		$ClienteAgenciaCargaDAO = new ClienteAgenciaCargaDAO();
+		$ClienteAgenciaCargaDAO->setEntityManager($this->getEntityManager());
+	
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			foreach($ArrClienteAgenciaCargaData as $ClienteAgenciaCargaData)
+			{
+				$ClienteAgenciaCargaDAO->eliminar($ClienteAgenciaCargaData);
+			}//end foreach
+				
+			$this->getEntityManager()->getConnection()->commit();
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function grabar
+	
+	
+	
 }//end class

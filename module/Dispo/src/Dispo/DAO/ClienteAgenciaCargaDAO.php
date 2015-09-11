@@ -38,15 +38,16 @@ class ClienteAgenciaCargaDAO extends Conexion
 	/**
 	 * Modificar
 	 *
-	 * @param AgenciaCargaData $AgenciaCargaData
+	 * @param ClienteAgenciaCargaData $ClienteAgenciaCargaData
 	 * @return array Retorna un Array $key el cual contiene el id
 	 */
 	public function eliminar(ClienteAgenciaCargaData $ClienteAgenciaCargaData)
 	{
 		$key    = array(
-				'cliente_id'						=> $ClienteAgenciaCargaData->getId(),
+				'cliente_id'						=> $ClienteAgenciaCargaData->getClienteId(),
 				'agencia_carga_id'            		=> $ClienteAgenciaCargaData->getAgenciaCargaId()				
 		);
+		
 		$this->getEntityManager()->getConnection()->delete($this->table_name, $key);
 		return true;
 	}//end function modificar
