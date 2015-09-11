@@ -195,36 +195,17 @@ class ClienteAgenciaCargaDAO extends Conexion
 	 *   2) estado
 	 *   3) sincronizado 
 	 * 
-	 * @param array $condiciones   
+	 * @param array $condiciones
 	 * @return array
 	 */
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT * '.
-				' FROM agencia_carga '.
-				' WHERE 1 = 1 ';
+		$sql = 	' SELECT agencia_carga.id, agencia_carga.nombre, agencia_carga.tipo  '.
+				' FROM cliente_agencia_carga INNER JOIN agencia_carga '.
+				'								     ON agencia_carga.id 		= cliente_agencia_carga.agencia_carga_id '.
+				" WHERE cliente_agencia_carga.cliente_id = '".$condiciones['cliente_id']."'";
 		
-		if (!empty($condiciones['criterio_busqueda']))
-		{
-			$sql = $sql." and (nombre like '%".$condiciones['criterio_busqueda']."%'".
-						"      or id like '%".$condiciones['criterio_busqueda']."%'".
-						"      or direccion like '%".$condiciones['criterio_busqueda']."%'".
-						"      or telefono like '%".$condiciones['criterio_busqueda']."%')";						
-		}//end if
 		
-		if (!empty($condiciones['estado']))
-		{
-			$sql = $sql." and estado = '".$condiciones['estado']."'";
-		}//end if 
-
-		
-		if (isset($condiciones['sincronizado']))
-		{
-			if ($condiciones['sincronizado']!='')
-			{
-				$sql = $sql." and sincronizado = ".$condiciones['sincronizado'];
-			}//end if
-		}//end if
 		
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();

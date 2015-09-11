@@ -20,7 +20,7 @@ return array(
         	'Dispo\Controller\Grupodispo'			=> 'Dispo\Controller\GrupodispoController',
         	'Dispo\Controller\Grupoprecio'			=> 'Dispo\Controller\GrupoprecioController',
         	'Dispo\Controller\Tipocajamatriz'		=> 'Dispo\Controller\TipocajamatrizController',
-        		
+        	'Dispo\Controller\Clienteagenciacarga' 	=> 'Dispo\Controller\ClienteagenciacargaController',
         ),
     ),
     // The following section is new and should be added to your file
@@ -201,8 +201,27 @@ return array(
         					),
         			),
         	), 
+        		
+        		
+        	'dispo-clienteagenciacarga' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/clienteagenciacarga[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Clienteagenciacarga',
+        							'action'     => 'index',
+        					),
+        			),
+        	),
+        		
         ),
     ),
+		
+		
     'view_manager' => array(
     		'template_map' => array(
     				'dispo/dialog/seleccioncliente'		  => __DIR__ . '/../view/partial/dialogseleccioncliente.phtml',
