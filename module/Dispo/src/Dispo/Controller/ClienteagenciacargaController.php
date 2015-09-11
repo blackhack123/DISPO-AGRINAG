@@ -28,22 +28,20 @@ class ClienteagenciacargaController extends AbstractActionController
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
 	
-			$request 		= $this->getRequest();
-			//$cliente_id    	= $request->getQuery('cliente_id', "");
-			$nombre      	= $request->getQuery('nombre', "");
-			$estado 		= $request->getQuery('estado', "");
-			$page 			= $request->getQuery('page');
-			$limit 			= $request->getQuery('rows');
-			$sidx			= $request->getQuery('sidx',1);
-			$sord 			= $request->getQuery('sord', "");
+			$request 					= $this->getRequest();
+			$cliente_id    				= $request->getQuery('cliente_id', "");
+			$page 						= $request->getQuery('page');
+			$limit 						= $request->getQuery('rows');
+			$sidx						= $request->getQuery('sidx',1);
+			$sord 						= $request->getQuery('sord', "");
 			$ClienteAgenciaCargaBO->setPage($page);
 			$ClienteAgenciaCargaBO->setLimit($limit);
 			$ClienteAgenciaCargaBO->setSidx($sidx);
 			$ClienteAgenciaCargaBO->setSord($sord);
 			$condiciones = array(
-					//"id"			=> $id,
-					"criterio_busqueda"		=> $nombre,
-					"estado" 		=> $estado,
+					"cliente_id"			=> $cliente_id,
+					//"criterio_busqueda"		=> $nombre,
+					//"estado" 		=> $estado,
 			);
 			$result = $ClienteAgenciaCargaBO->listado($condiciones);
 			$response = new \stdClass();
@@ -51,11 +49,8 @@ class ClienteagenciacargaController extends AbstractActionController
 			foreach($result as $row){
 				$row2["id"] 				= $row["id"];
 				$row2["nombre"] 			= trim($row["nombre"]);
-				$row2["telefono"] 			= trim($row["telefono"]);
 				$row2["tipo"] 				= trim($row["tipo"]);
-				$row2["sincronizado"] 		= $row["sincronizado"];
-				$row2["fec_sincronizado"] 	= $row["fec_sincronizado"];
-				$row2["estado"] 			= $row["estado"];
+//				$row2["estado"] 			= $row["estado"];
 				$response->rows[$i] = $row2;
 				$i++;
 			}//end foreach

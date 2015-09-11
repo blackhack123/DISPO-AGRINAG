@@ -627,9 +627,7 @@
 				marcacion_listar(true);
 				usuario_listar(true);
 				agenciacarga_listar(true);
-				//$('#grid_agenciacarga_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-				//$('#grid_usuario_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-				//$('#grid_agenciacarga_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+				cliente_agenciacarga_listar(true);
 			}//end if
 		}//end function cliente_mostrar_registro
 			

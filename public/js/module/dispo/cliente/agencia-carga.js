@@ -10,6 +10,7 @@ $(document).ready(function () {
 		return false;
 	});
 	
+	
 	$("#frm_agenciacarga_listado #btn_nueva_agencia_carga").on('click', function(event){
 		agenciacarga_nueva(); 
 		return false;
@@ -25,7 +26,18 @@ $(document).ready(function () {
 	$("#frm_agencia_carga #btn_grabar_agencia_carga").on('click', function(event){ 
 		agenciacarga_grabar();
 		return false;
-	});     
+	});  
+	
+	$("#frm_agenciacarga_listado #btn_asignar_cliente_agencia_carga").on('click', function(event){ 
+		grabar_cliente_agencia_carga();
+		return false;
+	}); 
+	
+	$("#frm_agenciacarga_listado #btn_eliminar_cliente_agencia_carga").on('click', function(event){ 
+		eliminar_cliente_agencia_carga();
+		return false;
+	}); 
+	
 	/*
 	$("#frm_agenciacarga_listado #btn_consultar_agencia").on('click', function(event){    
 		agenciacarga_listar(false);
@@ -95,11 +107,7 @@ $(document).ready(function () {
 	});
 		
 
-	$('#grid_agenciacarga_listado').setGroupHeaders(
-	{
-		useColSpanStyle: true,
-		//groupHeaders: [{ "numberOfColumns": 2, "titleText": "Sincronizacion", "startColumnName": "sincronizado" }]
-	});		
+
 	
 	//Se configura el grid para que pueda navegar procesar la fila con el ENTER
 	jQuery("#grid_agenciacarga_listado").jqGrid('bindKeys', {
@@ -166,11 +174,11 @@ $(document).ready(function () {
 	/*--------Se configura los JQGRID's CLIENTE_AGENCIA_CARGA--------*/
 	/*---------------------------------------------------------------*/	
 	jQuery("#grid_cliente_agenciacarga_listado").jqGrid({
-		url:'../../dispo/agenciacarga/listadodata',
-		//postData: {
-		//	nombre: function() { return $("#frm_agenciacarga_listado #busqueda_nombre").val(); },
+		url:'../../dispo/clienteagenciacarga/listadodata',
+		postData: {
+			cliente_id: function()   { return $("#frm_informacion_general #cliente_id").val(); }, 
 		//	estado: function() { return $("#frm_agenciacarga_listado #busqueda_estado").val(); }				
-		//},
+		},
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
@@ -199,7 +207,7 @@ $(document).ready(function () {
 		resizeStop: grid_setAutoHeight, 
 		gridview:false,	
 		multiselect: true,
-		caption: "AGENCIAS DISPONIBLES",
+		caption: "AGENCIAS ASIGNADAS",
 		jsonReader: {
 			repeatitems : false,
 		},		
@@ -225,13 +233,8 @@ $(document).ready(function () {
 			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 		}
 	});
-		
+	
 
-	$('#grid_cliente_agenciacarga_listado').setGroupHeaders(
-	{
-		useColSpanStyle: true,
-		//groupHeaders: [{ "numberOfColumns": 2, "titleText": "Sincronizacion", "startColumnName": "sincronizado" }]
-	});		
 	
 	//Se configura el grid para que pueda navegar procesar la fila con el ENTER
 	jQuery("#grid_cliente_agenciacarga_listado").jqGrid('bindKeys', {
@@ -482,6 +485,73 @@ $(document).ready(function () {
 		}//end if*/
 		
 		$('#frm_agenciacarga_listado #grid_agenciacarga_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-	}//end function listar_agenciacarga
+	}//end function agenciacarga_listar
+
+	
+	function cliente_agenciacarga_listar(limpiar_filtros)
+	{
+		$('#frm_agenciacarga_listado #grid_cliente_agenciacarga_listado').jqGrid("clearGridData");
+		/*if (limpiar_filtros==true)
+		{
+			$("#frm_agenciacarga_listado #busqueda_nombre").val("");
+			$("#frm_agenciacarga_listado #busqueda_estado").val("");
+		}//end if*/
+		
+		$('#frm_agenciacarga_listado #grid_cliente_agenciacarga_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+	}//end function cliente_agenciacarga_listar
 
 
+	/**
+	 * ---------------------------------------------------------------------------------------------
+	 *			FUNCIONES CLIENTE AGENCIA CARGA
+	 *---------------------------------------------------------------------------------------------
+	 */
+	
+	function grabar_cliente_agencia_carga(respuesta)
+	{
+		
+		var grid = $("#grid_agenciacarga_listado");
+        var rowKey = grid.getGridParam("selrow");
+
+        if (!rowKey)
+            alert("SELECCIONE UNA AGENCIA PARA ASIGNARLA");
+        else {
+        	 var selectedIDs = grid.getGridParam("selarrrow");
+             var result = "";
+             for (var i = 0; i < selectedIDs.length; i++) {
+                 result += selectedIDs[i] + ",";
+                
+             }
+            
+            alert(result);
+        } 
+		
+	}//end function grabar_cliente_agencia_carga
+	
+	
+	
+	function eliminar_cliente_agencia_carga()
+	{
+  
+		var grid = $("#grid_cliente_agenciacarga_listado");
+        var rowKey = grid.getGridParam("selrow");
+
+        if (!rowKey)
+            alert("SELECCIONE UNA AGENCIA PARA ELIMINARLA");
+        else {
+            var selectedIDs = grid.getGridParam("selarrrow");
+            var result = "";
+            for (var i = 0; i < selectedIDs.length; i++) {
+                result += selectedIDs[i] + ",";
+               
+            }
+
+            alert(result);
+        } 
+		
+	}//end function grabar_cliente_agencia_carga
+
+
+	
+	
+	
