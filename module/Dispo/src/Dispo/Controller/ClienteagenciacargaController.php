@@ -70,5 +70,56 @@ class ClienteagenciacargaController extends AbstractActionController
 	}//end function listadodataAction
 	
 	
+	public function asignarAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+		
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$ClienteAgenciaCargaData= new ClienteAgenciaCargaData();
+			$ClienteAgenciaCargaBO 	= new ClienteAgenciaCargaBO();
+		
+			$ClienteAgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			
+			$formData 			= $json['formData'];
+			$cliente_id			= $formData['cliente_id'];
+			$grid_data 			= $json['grid_data'];
+		
+			
+			foreach ($grid_data as $reg)
+			{
+					
+			}//end foreach
+		
+			
+			
+			
+			$result = $ClienteAgenciaCargaBO->asignar($);
+		
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			/*$response->validacion_code 		= $result['validacion_code'];
+			 $response->respuesta_mensaje	= $result['respuesta_mensaje'];
+			 */
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function asignarAction
 	
 }//end controller

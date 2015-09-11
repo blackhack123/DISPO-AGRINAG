@@ -239,14 +239,7 @@ $(document).ready(function () {
 	
 	function agenciacarga_listar(limpiar_filtros)
 	{
-		$('#frm_agenciacarga_listado #grid_agenciacarga_listado').jqGrid("clearGridData");
-		
-		/*if (limpiar_filtros==true)
-		{
-			$("#frm_agenciacarga_listado #busqueda_nombre").val("");
-			$("#frm_agenciacarga_listado #busqueda_estado").val("");
-		}//end if*/
-		
+		$('#frm_agenciacarga_listado #grid_agenciacarga_listado').jqGrid("clearGridData");		
 		$('#frm_agenciacarga_listado #grid_agenciacarga_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 	}//end function agenciacarga_listar
 
@@ -254,12 +247,6 @@ $(document).ready(function () {
 	function cliente_agenciacarga_listar(limpiar_filtros)
 	{
 		$('#frm_agenciacarga_listado #grid_cliente_agenciacarga_listado').jqGrid("clearGridData");
-		/*if (limpiar_filtros==true)
-		{
-			$("#frm_agenciacarga_listado #busqueda_nombre").val("");
-			$("#frm_agenciacarga_listado #busqueda_estado").val("");
-		}//end if*/
-		
 		$('#frm_agenciacarga_listado #grid_cliente_agenciacarga_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 	}//end function cliente_agenciacarga_listar
 
@@ -272,23 +259,51 @@ $(document).ready(function () {
 	
 	function grabar_cliente_agencia_carga(respuesta)
 	{
+	
+		var grid = $("#frm_agenciacarga_listado #grid_agenciacarga_listado");
+		var rowKey = grid.getGridParam("selrow");
 		
-		var grid = $("#grid_agenciacarga_listado");
-        var rowKey = grid.getGridParam("selrow");
-
-        if (!rowKey)
-            alert("SELECCIONE UNA AGENCIA PARA ASIGNARLA");
-        else {
-        	 var selectedIDs = grid.getGridParam("selarrrow");
-             var result = "";
-             for (var i = 0; i < selectedIDs.length; i++) {
-                 result += selectedIDs[i] + ",";
-                
-             }
-            
-            alert(result);
-        } 
+		if (!rowKey)
+		{
+			alert("SELECCIONE UNA AGENCIA PARA ASIGNARLA");
+			return false;
+		}
 		
+		
+		var selectedIDs = grid.getGridParam("selarrrow");
+		console.log(selectedIDs);
+		
+		var arr_data 	= new Array();
+		for (var i = 0; i < selectedIDs.length; i++) {
+			var element	= {};
+			element.agencia_carga_id 		= selectedIDs[i];
+			arr_data.push(element);
+		}//end for
+		
+		var data = {
+			formData: {
+						'cliente_id': $("#frm_informacion_general #cliente_id").val(),
+					  },			
+			grid_data: 	arr_data,
+		};			
+	
+	
+		var parameters = {	'type': 'post',
+							'contentType': 'application/json',
+							'url':'../../dispo/clienteagenciacarga/vincular',
+							'show_cargando':true,
+							'finish':function(response){
+									if (response.respuesta_code=='OK'){
+										//message_info('Mensaje del Sistema',"Datos Grabados con éxito");
+										$('#frm_agenciacarga_listado #grid_agenciacarga_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+										$('#frm_agenciacarga_listado #grid_cliente_agenciacarga_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+									}else{
+										message_error('ERROR', response);
+									}//end if
+							}
+						 }
+		ajax_call(parameters, data);		
+	
 	}//end function grabar_cliente_agencia_carga
 	
 	
