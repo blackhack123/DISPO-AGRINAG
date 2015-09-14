@@ -51,7 +51,7 @@ class UsuarioDAO extends Conexion {
 				
 				'nombre'		                    => $UsuarioData->getNombre(),
 				'username'		            		=> $UsuarioData->getUsername(),
-				'password'                			=> $UsuarioData->getPassword(),
+				'password'                			=> $this->encriptar($UsuarioData->getPassword()),
 				'email'                				=> $UsuarioData->getEmail(),
 				'perfil_id'                			=> $UsuarioData->getPerfilId(),
 				'cliente_id'                		=> $UsuarioData->getClienteId(),
@@ -92,7 +92,7 @@ class UsuarioDAO extends Conexion {
 		);
 		if (!empty($UsuarioData->getPassword()))
 		{
-			$record['password'] = $UsuarioData->getPassword();
+			$record['password'] = $this->encriptar($UsuarioData->getPassword());
 		}//end if
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
 		return $UsuarioData->getId();
@@ -128,7 +128,7 @@ class UsuarioDAO extends Conexion {
 					$UsuarioData->setUsername			 ($row['username']);
 					$UsuarioData->setPassword			 ($row['password']);
 					$UsuarioData->setEmail   			 ($row['email']);
-					//$UsuarioData->setPerfilId			 ($row['perfil_id']);
+					$UsuarioData->setPerfilId			 ($row['perfil_id']);
 					$UsuarioData->setClienteId			 ($row['cliente_id']);
 					$UsuarioData->setEstado				 ($row['estado']);
 					$UsuarioData->setGrupoDispoCabId	 ($row['grupo_dispo_cab_id']);
@@ -234,7 +234,7 @@ class UsuarioDAO extends Conexion {
 	{
 		$sql = 	' SELECT usuario.*, perfil.nombre as perfil_nombre '.
 				' FROM usuario  LEFT JOIN perfil '.
-				'		               ON perfil.id      = usuario.perfil_id '.	
+				'		               ON perfil.id      = usuario.perfil_id '.
 				' WHERE 1 = 1 ';
 		
 		if (!empty($condiciones['criterio_busqueda']))
@@ -249,7 +249,12 @@ class UsuarioDAO extends Conexion {
 		{
 			$sql = $sql." and usuario.estado = '".$condiciones['estado']."'";
 		}//end if 
-
+		
+		if (!empty($condiciones['cliente_id']))
+		{
+			$sql = $sql." and usuario.cliente_id = '".$condiciones['cliente_id']."'";
+		}//end if
+		
 		if (!empty($condiciones['solo_vendedor_administrador']))
 		{
 			$sql = $sql." and usuario.perfil_id in (2,3)";
@@ -269,8 +274,8 @@ class UsuarioDAO extends Conexion {
 		return $result;
 	}//end function listado
 
-
-	 		
+	
+ 		
 	function login($usuario, $clave, $ipAcceso, $nombreHost, $AgenteUsuario)
 	{		
 		$sql = 	" SELECT usuario.id, usuario.nombre as usuario_nombre, usuario.username, usuario.password, ".

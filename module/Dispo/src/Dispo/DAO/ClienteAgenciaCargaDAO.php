@@ -87,7 +87,7 @@ class ClienteAgenciaCargaDAO extends Conexion
 	 */
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT agencia_carga.id, agencia_carga.nombre, agencia_carga.tipo  '.
+		$sql = 	' SELECT agencia_carga.id, agencia_carga.nombre, agencia_carga.tipo, agencia_carga.estado '.
 				' FROM cliente_agencia_carga INNER JOIN agencia_carga '.
 				'								     ON agencia_carga.id 		= cliente_agencia_carga.agencia_carga_id '.
 				" WHERE cliente_agencia_carga.cliente_id = '".$condiciones['cliente_id']."'";

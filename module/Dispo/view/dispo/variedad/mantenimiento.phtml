@@ -274,26 +274,25 @@ $(document).ready(function () {
 	<section class="body-admin-section">    	
     	<div class="accion-admin-section"> 	
         	<div class="botonera-admin-section pull-left separator">
-            	<a id="btn_nuevo" class="btn btn-primary btn-xs" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
+            	<a id="btn_nuevo" class="btn btn-small btn-success" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
             </div>
         	<div class="busqueda-admin-section pull-left">	
-            	<!--- div class="form-inline" -->
+            	<div class="form-inline">
                 	
                 <form id="frm" action="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento" method="post" >
                 <div class="input-group" style="display:inline-flex">    
-                	<input name="criterio_busqueda" type="text" class="form-control input-sm" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+                	<input name="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
                      <div class="input-group">
-						<select  name="busqueda_estado" class="form-control input-sm" style="width:130px">
+						<select  name="busqueda_estado" class="select-class2" style="width:130px">
 	    	                <?php echo($this->busqueda_estado); ?>
     	                </select>                                       
                     </div>
  					<span class="input-group-btn">
-                    	<button id="btn_consultar" class="btn btn-sm btn-primary" type="button"><i class="glyphicon glyphicon-search icon-white"></i></button>
+                    	<button id="btn_consultar" class="btn btn-small btn-success" type="button"><i class="glyphicon glyphicon-search icon-white"></i></button>
                     </span>                        
                 </div>                
-               
                 </form>                  
-				<!--- /div -->
+				</div>
             </div>
 		</div>
 		<div class="clearfix"></div>
@@ -437,10 +436,6 @@ $(document).ready(function () {
 			        	        <td><label class="control-label">ESTADO PROD. ESPECIAL:</label></td>
 			        	        <td><input type="checkbox" name="est_producto_especial" id="est_producto_especial" value=""></td>
 		        	          </tr>	
-		        	      <!--  <tr>
-			        	        <td><label class="control-label">PRODUCTO:</label></td>
-			        		    <td><select  name="producto_id" class="select-class2" id="producto_id" validate="required" validateMessage="Seleccione Producto"></select></td>
-		        	          </tr>	 -->
 		        	           <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>
 			        	        <td><select  name="estado" class="select-class2" id="estado"></select></td>

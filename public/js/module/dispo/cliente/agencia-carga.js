@@ -131,16 +131,16 @@ $(document).ready(function () {
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['Código','Nombre','Tipo'],
+		colNames:['Código','Nombre','Tipo','Estado'],
 		colModel:[
 			//{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
 			{name:'id',index:'id', width:50, align:"center", sorttype:"int"},
 			{name:'nombre',index:'nombre', width:230, sorttype:"string"},
 			//{name:'telefono',index:'telefono', width:100, sorttype:"string"},	
-			{name:'tipo',index:'tipo', width:80, sorttype:"string", align: 'center',formatter:gridAgenciacargaListado_FormatterTipo }	
+			{name:'tipo',index:'tipo', width:80, sorttype:"string", align: 'center',formatter:gridAgenciacargaListado_FormatterTipo },	
 			//{name:'sincronizado',index:'sincronizado', width:30, align:"center", sorttype:"number", formatter: gridAgenciacargaListado_FormatterSincronizado},
 			//{name:'fec_sincronizado',index:'fec_sincronizado', width:130, sorttype:"string", align:"center"},
-			//{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
+			{name:'estado',index:'estado', width:60, sorttype:"string", align:"center", hidden:true}
 			//{name:'btn_editar_agenciacarga',index:'', width:30, align:"center", formatter: gridAgenciacargaListado_FormatterEdit,
 			// cellattr: function () { return ' title=" Modificar"'; }
 			//},
@@ -167,6 +167,12 @@ $(document).ready(function () {
 			}//end if
 		},
 		
+		afterInsertRow : function(rowid, rowdata){
+			if (rowdata.estado == "I"){
+				$(this).jqGrid('setRowData', rowid, false, {color:'red'});
+			}//end if
+		},
+		
 		//ondblClickRow: function (rowid,iRow,iCol,e) {
 		//		var data = $('#grid_agenciacarga_listado').getRowData(rowid);				
 		//		agenciacarga_consultar(data.id)
@@ -180,6 +186,7 @@ $(document).ready(function () {
 		loadError: function (jqXHR, textStatus, errorThrown) {
 			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 		}
+		
 	});
 	
 
@@ -315,6 +322,7 @@ $(document).ready(function () {
         if (!rowKey)
         	{
         		alert("SELECCIONE UNA AGENCIA PARA ELIMINARLA");
+        		return false;
         	}
         
         var selectedIDs = grid.getGridParam("selarrrow");

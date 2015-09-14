@@ -42,6 +42,7 @@ $(document).ready(function () {
 	jQuery("#grid_usuario_listado").jqGrid({
 		url:'../../seguridad/usuario/listadodata',
 		postData: {
+			cliente_id: function()   { return $("#frm_informacion_general #cliente_id").val(); }, 
 			nombre: function()		 { return $("#frm_usuario_listado #busqueda_nombre").val(); },
 			estado: function() 		 { return $("#frm_usuario_listado #busqueda_estado").val(); }				
 		},
@@ -77,7 +78,6 @@ $(document).ready(function () {
 		},		
 		/*caption:"Grilla de Prueba",*/
 		afterInsertRow : function(rowid, rowdata){
-			//console.log('rowdata:',rowdata);
 			if (rowdata.estado == "I"){
 				$(this).jqGrid('setRowData', rowid, false, {color:'red'});
 			}//end if
@@ -251,6 +251,7 @@ $(document).ready(function () {
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{	accion: $("#accion").val(),
 					 	id: $("#frm_nuevo_usuario #usuario_id").val(),
+					 	cliente_id: $("#frm_informacion_general #cliente_id").val(),
 					 	nombre: $("#frm_nuevo_usuario #nombre").val(),
 					 	username: $("#frm_nuevo_usuario #username").val(),					 	
 					 	password: $("#frm_nuevo_usuario #password").val(),

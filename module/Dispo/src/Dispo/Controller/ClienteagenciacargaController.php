@@ -40,6 +40,7 @@ class ClienteagenciacargaController extends AbstractActionController
 			$ClienteAgenciaCargaBO->setSord($sord);
 			$condiciones = array(
 					"cliente_id"			=> $cliente_id,
+					"estado"				=> "A"
 			);
 			$result = $ClienteAgenciaCargaBO->listadoNoAsignadas($condiciones);
 			$response = new \stdClass();
@@ -104,7 +105,7 @@ class ClienteagenciacargaController extends AbstractActionController
 				$row2["id"] 				= $row["id"];
 				$row2["nombre"] 			= trim($row["nombre"]);
 				$row2["tipo"] 				= trim($row["tipo"]);
-
+				$row2["estado"] 			= trim($row["estado"]);
 				$response->rows[$i] = $row2;
 				$i++;
 			}//end foreach
