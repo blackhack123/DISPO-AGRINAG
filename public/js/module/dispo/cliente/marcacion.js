@@ -76,7 +76,6 @@ $(document).ready(function () {
 			
 			/*caption:"Grilla de Prueba",*/
 			afterInsertRow : function(rowid, rowdata){
-				//console.log('rowdata:',rowdata);
 				if (rowdata.estado == "I"){
 					$(this).jqGrid('setRowData', rowid, false, {color:'red'});
 				}//end if

@@ -73,7 +73,6 @@
 				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 			},
 			afterInsertRow : function(rowid, rowdata){
-				//console.log('rowdata:',rowdata);
 				if (rowdata.estado == "I"){
 					$(this).jqGrid('setRowData', rowid, false, {color:'red'});
 				}//end if
@@ -320,7 +319,6 @@
 		var diacal_fecha2		="  ";
 		var dia_semana			=" ";
 		
-		//console.log('tipo_envio_estcta:',tipo_envio_estcta);
 		
 		switch (tipo_envio_estcta)
 		{

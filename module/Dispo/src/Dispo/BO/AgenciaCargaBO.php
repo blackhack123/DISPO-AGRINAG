@@ -81,7 +81,7 @@ class AgenciaCargaBO extends Conexion
 	{
 		$AgenciaCargaDAO = new AgenciaCargaDAO();
 		$AgenciaCargaDAO->setEntityManager($this->getEntityManager());
-		$result = $AgenciaCargaDAO->listadoactivos($condiciones);
+		$result = $AgenciaCargaDAO->listado($condiciones);
 		return $result;
 	}//end function listado
 	

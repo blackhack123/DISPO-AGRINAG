@@ -225,7 +225,137 @@ class UsuarioController extends AbstractActionController
 	
 	
 	
+	public function nuevodataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$UsuarioBO 				= new UsuarioBO();
+			$PerfilBO 				= new PerfilBO();
+			$GrupoDispoCabBO		= new GrupoDispoCabBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+				
+			$grupodispo				= null;
+				
+			$response = new \stdClass();
+			$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido("","");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->cbo_grupo_dispo		= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function nuevodataAction
+	
+	
+	
+	public function grabardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$UsuarioData			= new UsuarioData();
+			$UsuarioBO 				= new UsuarioBO();
+			$PerfilBO 				= new PerfilBO();
+			$GrupoDispoCabBO		= new GrupoDispoCabBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+				
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$accion						= $json['accion'];  //I, M
+			$UsuarioData->setId					($json['id']);
+			$UsuarioData->setNombre				($json['nombre']);
+			$UsuarioData->setUsername			($json['username']);
+			$UsuarioData->setPassword			($json['password']);
+			$UsuarioData->setEmail				($json['email']);
+			$UsuarioData->setPerfilId			($json['perfil_id']);
+			$UsuarioData->setEstado				($json['estado']);
+			//$UsuarioData->setGrupoDispoCabId	($json['grupo_dispo_cab_id']);
+			$response = new \stdClass();
+			switch ($accion)
+			{
+				case 'I':
+					$UsuarioData->setUsuarioIngId($usuario_id);
+					$result = $UsuarioBO->ingresar($UsuarioData);
+					break;
+	
+				case 'M':
+					$UsuarioData->setUsuarioModId($usuario_id);
+					$result = $UsuarioBO->modificar($UsuarioData);
+					break;
+	
+				default:
+					$result['validacion_code'] 	= 'ERROR';
+					$result['respuesta_mensaje']= 'ACCESO NO VALIDO';
+					break;
+			}//end switch
+	
+			//Se consulta el registro siempre y cuando el validacion_code sea OK
+			if ($result['validacion_code']=='OK')
+			{
+				$row	= $UsuarioBO->consultar($json['id'], \Application\Constants\ResultType::MATRIZ);
+			}else{
+				$row	= null;
+			}//end if
+	
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->validacion_code 		= $result['validacion_code'];
+			$response->respuesta_mensaje	= $result['respuesta_mensaje'];
+			if ($row)
+			{
+				$response->row					= $row;
+				$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido($row['perfil_id'], " ");
+				$response->cbo_cbo_grupo_dispo	= $GrupoDispoCabBO->getComboGrupoDispo($row['grupo_dispo_cab_id'], " ");
+				$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			}else{
+				$response->row					= null;
+				$response->cbo_tipo				= '';
+				$response->cbo_estado			= '';
+			}//end if
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function grabardataAction
+	
+	
+	/*
+	 * *****************************************************************
+	 * 		FUNCIONES USUARIO DEL MOD CLIENTE(CLIENTE->USUARIO)
+	 * 
+	 * *****************************************************************
+	 */
 	public function nuevoclientedataAction()
 	{
 		try
@@ -333,6 +463,7 @@ class UsuarioController extends AbstractActionController
 			$json = json_decode($body, true);
 			$accion						= $json['accion'];  //I, M
 			$UsuarioData->setId					($json['id']);
+			$UsuarioData->setClienteId			($json['cliente_id']);
 			$UsuarioData->setNombre				($json['nombre']);
 			$UsuarioData->setUsername			($json['username']);
 			$UsuarioData->setPassword			($json['password']);
@@ -417,6 +548,7 @@ class UsuarioController extends AbstractActionController
 			$username      	= $request->getQuery('username', "");
 			$email     		= $request->getQuery('email', "");
 			$estado 		= $request->getQuery('estado', "");
+			$cliente_id    	= $request->getQuery('cliente_id', "");
 			$page 			= $request->getQuery('page');
 			$limit 			= $request->getQuery('rows');
 			$sidx			= $request->getQuery('sidx',1);
@@ -429,6 +561,7 @@ class UsuarioController extends AbstractActionController
 					"criterio_busqueda"		=> $nombre,
 					"username"				=> $nombre,
 					"estado" 				=> $estado,
+					"cliente_id"			=> $cliente_id
 			);
 			$result = $UsuarioBO->listado($condiciones);
 			$response = new \stdClass();

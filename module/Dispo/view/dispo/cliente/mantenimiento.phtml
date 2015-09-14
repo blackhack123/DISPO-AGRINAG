@@ -549,9 +549,11 @@
 		               </div>
 	                </div> <!--END TAB MARCACION-->
 	                <div role="tabpanel" class="tab-pane fade" id="tab_agencia_carga"> <!--INICIO TAB AG CARGA-->
-	                    <div class="row clear" >
+	                    
 		                  	<form  class="form-horizontal" role="form" id="frm_agenciacarga_listado" name="frm_agenciacarga_listado">
-			                  	 <div class="col-lg-4 table-striped">
+		                  	<table id="tbl_registros" class="">
+			                  	 <tr>
+			                  	 	<td>
 		                              <div class="clearfix">
 		                                     	<div class="busqueda-admin-section pull-left separator"><a id="btn_nueva_agencia_carga"  class="btn btn-primary btn-xs" style="display:none;" >
 		                                     	<i class="glyphicon glyphicon-plus" style="display:none;"></i> NUEVO</a>
@@ -561,15 +563,14 @@
 		                                         <?php echo($this->busqueda_estado); ?>
 		                                        </select>
 		                                        <a id="btn_consultar_agencia_carga"  class="btn btn-success btn-xs" style="display:none;"><i class="glyphicon glyphicon-search" style="display:none;"></i></a>
-		                                  </div></br>
+		                                  </div>
 		                              </div>
 		                              <div class="clearfix">
 		                                  <table id="grid_agenciacarga_listado" class="grid grid-autoheight" ></table>
 		                                   <div id="pager_agenciacarga_listado"></div>
 		                              </div>
-								</div>
-								<div class="col-lg-2 table-striped">
-								<br><br><br><br><br><br>
+								</td>
+								<td >
 								 	<center>
 										<p><a id="btn_asignar_cliente_agencia_carga"   role="button"   class="btn btn-primary btn-sm">
 											ASIGNAR <i class="glyphicon glyphicon-forward"> </i></a>
@@ -578,15 +579,17 @@
 											 <i class="glyphicon glyphicon-backward"></i> ELIMINAR</a>
 										</p>
 									</center>
-								</div>
-								<div class="col-lg-4 table-striped"></br>
+								</td>
+								<td >
 								 <div class="clearfix">
 		                                  <table id="grid_cliente_agenciacarga_listado" class="grid grid-autoheight" ></table>
 		                                   <div id="pager_cliente_agenciacarga_listado"></div>
 		                         </div>
-								</div></br>
+		                         </td>
+								</tr></br>
+							</table>
 		                   </form>	
-		               </div>
+		               
                     </div><!--END TAB AGENCIA CARGA-->
                 <div role="tabpanel" class="tab-pane fade" id="tab_usuarios"><!--INICIO TAB USUARIOS-->
                       <div class="row clear" >
@@ -831,10 +834,6 @@
 			        	        <td><label class="control-label">CORREO:</label></td>
 			        	        <td><input type="email" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="50" ></td>
 		        	          </tr>
-			        	  <!-- <tr>
-			        	        <td><label class="control-label">TIPO:</label></td>
-			        	        <td><select  name="perfil_id" class="select-class2" id="perfil_id" validate="required" style="width:150px"></select></td>
-		        	          </tr> -->
 		        	          <tr>
 			        	        <td><label class="control-label">GRUPO:</label></td>
 			        	        <td><select  name="grupo_dispo_cab_id" class="form-control" id="grupo_dispo_cab_id" validate="required" validateMessage="Grupo Requerido" style="width:150px"></select></td>
