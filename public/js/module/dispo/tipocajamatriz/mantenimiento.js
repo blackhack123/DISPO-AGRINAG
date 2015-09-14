@@ -13,7 +13,6 @@ $(document).ready(function () {
 	
 	/*----------------------Se cargan los controles -----------------*/
 	mantenimiento_init();
-	actualizacion_masiva_init();
 	
 	$("#frm_tipo_caja_busqueda #inventario_id, #frm_tipo_caja_busqueda #tipo_caja_id").on('change', function(event){
 //		$("#grid_tipo_caja").jqGrid('clearGridData');
@@ -340,6 +339,8 @@ function actualizacion_masiva_init()
 					opcion: 'actualizacion-masiva',
 					variedad_1er_elemento:	'&lt;TODAS&gt;',
 					grado_1er_elemento:		'&lt;TODOS&gt;',
+					inventario_id:			$("#frm_tipo_caja_matenimiento #inventario_id").val(),
+					tipo_caja_id:			$("#frm_tipo_caja_matenimiento #tipo_caja_id").val(),
 				}
 	data = JSON.stringify(data);
 	var parameters = {	'type': 'POST',//'POST',
@@ -408,6 +409,7 @@ function TipoCaja_OpenModalActualizacionMasiva()
 		$("#frm_tipo_caja_matenimiento #tipo_caja_nombre").html($("#frm_tipo_caja_busqueda #tipo_caja_id").val());
 		$("#frm_tipo_caja_matenimiento #inventario_nombre").html($("#frm_tipo_caja_busqueda #inventario_id :selected").text());
 		
+		actualizacion_masiva_init();
 		$('#dialog_tipo_caja_actualizacion').modal('show')
 }//end function TipoCaja_OpenModalActualizacionMasiva
 

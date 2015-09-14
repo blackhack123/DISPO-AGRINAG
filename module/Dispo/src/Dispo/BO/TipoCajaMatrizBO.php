@@ -187,7 +187,7 @@ class TipoCajaMatrizBO extends Conexion
 				$reg_new['inventario_id'] 	= $reg_dispo['inventario_id'];
 				$reg_new['variedad_id'] 	= $reg_dispo['variedad_id'];
 				$reg_new['grado_id']		= $reg_grado['id'];
-				$reg_new['nro_bunches']		= 0;
+				$reg_new['unds_bunch']		= 0;
 				$reg_new['existe']			= 0;
 				$result[$reg_dispo['variedad_id'].'-'.$reg_grado['id']]= $reg_new;
 			}//end foreach
@@ -199,14 +199,16 @@ class TipoCajaMatrizBO extends Conexion
 		{
 			//Se puede dar el caso que el registro exista en la lista de precios y no exista en el dispo
 			//esto se puede deber a que de la dispo general lo han quitado por alguna razon de comercializacion
-			if (!array_key_exists($reg['variedad_id'].'-'.$reg['grado_id'], $result))
+			$key = $reg['variedad_id'].'-'.$reg['grado_id'];
+			//if ((!is_array($result)) || (!array_key_exists($key, $result)))
+			if (!array_key_exists($key, $result))
 			{
 				$reg_new['variedad_id'] 	= $reg['variedad_id'];
 				$reg_new['tipo_caja_id']	= $reg['tipo_caja_id'];
 				$reg_new['inventario_id'] 	= $reg['inventario_id'];
 				$reg_new['variedad_id'] 	= $reg['variedad_id'];
 				$reg_new['grado_id']		= $reg['grado_id'];
-				$reg_new['nro_bunches']		= $reg['nro_bunches'];
+				$reg_new['unds_bunch']		= $reg['unds_bunch'];
 				$result[$reg['variedad_id'].'-'.$reg['grado_id']]= $reg_new;
 			}//end if
 
@@ -256,5 +258,27 @@ class TipoCajaMatrizBO extends Conexion
 			throw $e;
 		}//end try
 	}//end function actualizacionMasiva
+
 	
+	
+	/**
+	 *
+	 * @param string $inventario_id
+	 * @param string $variedad_id
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getComboVariedad($tipo_caja_id, $inventario_id, $variedad_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$TipoCajaMatrizDAO = new TipoCajaMatrizDAO();
+	
+		$TipoCajaMatrizDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $TipoCajaMatrizDAO->consultarVariedadPorInventario($tipo_caja_id, $inventario_id);
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'variedad_id', 'variedad_nombre',$variedad_id, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboVariedadPorInventario	
 }//end class

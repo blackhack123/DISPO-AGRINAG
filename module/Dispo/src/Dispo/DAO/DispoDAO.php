@@ -521,10 +521,11 @@ class DispoDAO extends Conexion
 	 * @param string $variedad_id
 	 * @return array
 	 */
-	public function agrupadoPorInventarioPorVariedad($inventario_id, $variedad_id)
+	public function agrupadoPorInventarioPorVariedad($inventario_id, $variedad_id, $orden = null)
 	{
-		$sql = " SELECT inventario_id, variedad_id ".
-				" FROM dispo ".
+		$sql = " SELECT inventario_id, variedad_id, variedad.nombre as variedad_nombre ".
+				" FROM dispo INNER JOIN variedad ".
+				"                    ON variedad.id = dispo.variedad_id ".
 				" WHERE 1= 1";
 		if (!empty($inventario_id)){
 			$sql = $sql." and inventario_id 	= '".$inventario_id."'";
@@ -533,12 +534,17 @@ class DispoDAO extends Conexion
 			$sql = $sql." and variedad_id		= '".$variedad_id."'";
 		}//end if
 		$sql = $sql." GROUP BY inventario_id, variedad_id ";
+		if (!empty($orden))
+		{
+			$sql = $sql. " ORDER BY ".$orden;
+		}//end if
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$result = $stmt->fetchAll();
 		return $result;
 	}//end function agrupadoPorInventarioPorVariedadPorGrado
 
 	
+
 }//end class
 
 ?>

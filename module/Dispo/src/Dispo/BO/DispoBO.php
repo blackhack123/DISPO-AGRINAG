@@ -541,4 +541,27 @@ class DispoBO extends Conexion
 	}//end function actualizarStock
 	
 	
+	
+	/**
+	 *
+	 * @param string $inventario_id
+	 * @param string $variedad_id
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getComboVariedadPorInventario($inventario_id, $variedad_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$DispoDAO = new DispoDAO();
+	
+		$DispoDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $DispoDAO->agrupadoPorInventarioPorVariedad($inventario_id, null, "variedad.nombre");
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'variedad_id', 'variedad_nombre',$variedad_id, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboVariedadPorInventario
+	
+	
 }//end class DispoBO

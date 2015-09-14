@@ -318,6 +318,30 @@ class TipoCajaMatrizDAO extends Conexion
 		return $result;
 	}//end function listadoDetallado
 	
+	
+	
+	public function consultarVariedadPorInventario($tipo_caja_id, $inventario_id)
+	{
+		$sql = 	' SELECT DISTINCT tipo_caja_matriz.variedad_id, variedad.nombre as variedad_nombre '.
+				' FROM tipo_caja_matriz INNER JOIN variedad '.
+				'                               ON variedad.id = tipo_caja_matriz.variedad_id '.
+				" WHERE tipo_caja_matriz.tipo_caja_id = '".$tipo_caja_id."'".
+				"   and tipo_caja_matriz.inventario_id ='".$inventario_id."'".
+				' UNION '.
+				' SELECT DISTINCT dispo.variedad_id, variedad.nombre as variedad_nombre '.
+				' FROM dispo INNER JOIN variedad '.
+				'                    ON variedad.id = dispo.variedad_id '.
+				" WHERE dispo.inventario_id = '".$inventario_id."'".
+				' ORDER BY variedad_nombre';
+			
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		//$stmt->bindValue(':id',$id);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		return $result;
+	}//end function consultarVariedadPorInventario
+	
+	
 }//end class
 
 ?>

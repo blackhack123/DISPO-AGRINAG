@@ -16,6 +16,7 @@ use Dispo\BO\TipoCajaBO;
 use Dispo\Data\TipoCajaMatrizData;
 use Dispo\BO\VariedadBO;
 use Dispo\BO\GradoBO;
+use Dispo\BO\DispoBO;
 
 class TipocajamatrizController extends AbstractActionController
 {
@@ -80,18 +81,21 @@ class TipocajamatrizController extends AbstractActionController
 					break;
 					
 				case 'actualizacion-masiva':
-					$VariedadBO		= new VariedadBO();
-					$GradoBO		= new GradoBO();
+					$TipoCajaMatrizBO	= new TipoCajaMatrizBO();
+					$GradoBO			= new GradoBO();
 					
-					$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+					$TipoCajaMatrizBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 					$GradoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 					
 					$variedad_1er_elemento		= $json['variedad_1er_elemento'];
 					$variedad_id	= null;
 					$grado_1er_elemento			= $json['grado_1er_elemento'];
 					$grado_id		= null;
-					
-					$variedad_opciones		= $VariedadBO->getCombo($variedad_id, $variedad_1er_elemento);
+					$inventario_id				= $json['inventario_id'];
+					$tipo_caja_id				= $json['tipo_caja_id'];
+						
+					//Se debe de obtener las variedades de acuerdo al tipo de inventario  $inventario_id, $variedad_id, $variedad_1er_elemento
+					$variedad_opciones		= $TipoCajaMatrizBO->getComboVariedad($tipo_caja_id, $inventario_id, $variedad_id, $variedad_1er_elemento);
 					$grado_opciones			= $GradoBO->getCombo($grado_id, $grado_1er_elemento);
 
 					$response = new \stdClass();
