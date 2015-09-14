@@ -1,0 +1,283 @@
+<?php
+/**
+* @author Moroni Salazar	
+* date: 03/ENE/2014
+* 
+* Description: 
+* 		Ventana de Diálogo de Búsqueda para el JQGrid
+* 
+* Engineering:
+* 		Version Zend:	2.x
+* 		Module:			Application
+* 		Controller:		JqGridBuscadorController.php
+* 		View:			application/dialog/JqGrid.phtml
+* 		Javascript:		js/custom-jqGrid/jqGrid-rutinas-extras.js
+* 						use:  
+* 								variable: 	var ajax_process_jqrid_Buscador = null;
+*							   	function:	function jqrid_Buscador(params)  (see more in file .js)
+*		Layout:
+*						Section Javascript:
+*								//Set the configuration of the screen of Generic Dialog of the JQGRID
+*								$( "#dialog-buscador-JqGrid" ).dialog({
+*									autoOpen: false,
+*									height: 500,
+*									width: 'auto',								
+*									modal: true
+*								});
+* 						Section HTML:
+* 								<div id="dialog-buscador-JqGrid" title="Buscador Genérico del JqGrid"></div>
+* 
+* Implementation View:
+* 			In JQgrid:
+*						afterSaveCell : function(rowid,name,val,iRow,iCol) {
+*							switch(iCol)
+*							{
+*								case jqgrid_get_columnIndexByName($("#grid_horasextras_53"), "empleado_nombre"):					
+*									var empleado_nombre = jQuery("#grid_horasextras_53").jqGrid('getCell',rowid, jqgrid_get_columnIndexByName($("#grid_horasextras_53"), "empleado_nombre"));
+* 
+*									var params = { 'title':'BUSCADOR DE PERSONAS',
+*									  	 	'grid_url': 			'talentohumano/empleado/listadodata',
+*									   		'term':					empleado_nombre,
+*									   		'grid_source_id': 		'grid_horasextras_53',
+*									   		'grid_source_rowid':		rowid,
+*									   		'grid_dialog_columns': 	[
+*																	{'title':'Empresa','name':'empresa_id', 'index':'empresa_id', 'sorttype':'int'},
+*																	{'title':'Sucursal','name':'empresa_id', 'index':'sucursal_id', 'sorttype':'int'},
+*																	{'title':'Codigo','name':'persona_id', 'index':'persona_id', 'width':'50','sorttype':'int', 'hidden':'true'},
+*																	{'title':'Nombre','name':'nombre', 'index':'nombre', 'width':'150', 'sorttype':'string'},
+*																	{'title':'Apellido','name':'apellido', 'index':'apellido', 'width':'150', 'sorttype':'string'}												
+*																 ],	
+*									   		'link_columns_grid_to_dialog': 
+*																[
+*																	{'col_source':'empleado_nombre', 'col_dialog':'nombre'},
+*																	{'col_source':'persona_id', 'col_dialog':'persona_id'}
+*																	{'col_source':'accion', 'value':'M'} //Se asigna un valor fijo cuando retorna la seleccion de la ventana de dialogo
+*																],	
+*									   		'filters': {'empresa_id':'1', 'estado':'A'},
+*									   		'callback_fn': 'validar',										   
+*									 };					
+*									jqrid_Buscador(params);
+* 		
+* 									return false;						
+*									break;
+*								default:
+*									console.log('nada afterSaveCell')
+*							}//en switch
+*
+*				Function CallBack:							
+*							function validar(params)
+*							{
+*								//Note: params = {'grid_source_id','grid_source_rowid'}
+*								console.log(params);
+*							}//end function validar
+*
+*	In Controller Process:
+*				Recieve param TERM:  GET['term']
+*
+*
+*/
+
+$grid_url							= $this->grid_url;
+$term 								= $this->term;
+$grid_source_id						= $this->grid_source_id;
+$link_columns_grid_to_dialog		= $this->link_columns_grid_to_dialog;
+        /** Example:
+		* 		{name:persona_id, column_link_grid:id},
+		* 		{name:persona_nombre, column_link_grid:nombre}
+		*/
+$grid_dialog_columns				= $this->grid_dialog_columns;			//array      
+		/**
+		*  Example:
+		*  		{name:persona_id, index:persona_id, width:50; sorttype:int},
+		*  		{name:nombre_empresa, index:nombre_empresa, width:150; sorttype:string},
+		*/
+$dialog_name						= $this->dialog_name;
+//$dialog_width						= $this->dialog_width;	\\Future Implementation
+//$dialog_heigth					= $this->dialog_heigth; \\Future Implementation
+
+?>
+
+<meta charset="UTF-8">
+
+<script>
+	var flag_seleccion_DialogJqGrid = false;
+	$(document).ready(function () {
+		//ButtonsCrear_Init();
+		
+		$("#btn_consultar_DialogJqGrid").on('click', function(event){
+			$('#grid_DialogJqGrid').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");		
+//			$('#grid_DialogJqGrid').trigger('reloadGrid',[{page:1}]);
+			return false;
+		});		
+
+        jQuery("#grid_DialogJqGrid").jqGrid({
+			url:'<?php echo $this->grid_url; ?>',
+			postData: {
+				nombre: function() { return $("#txt_buscar_DialogJqGrid").val(); },	  //DEBE CAMBIARLO POR LA TERMINOLOGIA TERM
+				term: function() { return $("#txt_buscar_DialogJqGrid").val(); },	  //DEBE CAMBIARLO POR LA TERMINOLOGIA TERM
+				<?php echo($this->filters); ?>
+			},
+			datatype: "json",		
+			loadonce: true,				
+			ignoreCase:true,			
+           	colNames: <?php echo $this->colNames; ?>,
+           	colModel: <?php echo $this->colModels; ?>,
+			height: 370,
+			altRows:   true,
+			hoverrows: true,
+			autowidth: true,
+			rownumbers:true,
+			viewrecords:true,
+			emptyrecords: 'No existen registros',
+        	/*shrinkToFit: true,*/
+        	rowNum:9999999,
+ /*       	height: '320',
+			rownumbers:true,
+			viewrecords:true,
+			emptyrecords: 'No existen registros',        	
+        	rowNum:9999999,*/
+        	pager: '#pager_DialogJqGrid',
+			toppager:false,
+			pgbuttons:false,
+			pginput:false,
+			rowList:false,			
+			jsonReader: {
+				repeatitems : false,
+				/*id: "0"*/
+			},	
+			gridComplete: function(){
+				ids = $('#grid_DialogJqGrid').jqGrid("getDataIDs");
+				
+				if (ids.length==1){
+					returnDialog_DialogJqGrid(ids[0]);
+					return false;
+				}//end if
+				
+				$('#grid_DialogJqGrid').jqGrid("setSelection", ids[0]);		
+				$('#grid_DialogJqGrid').focus();		
+			},		
+        	ondblClickRow: function (rowid,iRow,iCol,e) {
+				returnDialog_DialogJqGrid(rowid);
+        	},
+			loadBeforeSend: function (xhr, settings) {
+			  this.p.loadBeforeSend = null; //remove event handler
+			  return false; // dont send load data request
+			},
+			loadError: function (jqXHR, textStatus, errorThrown) {
+				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+			}
+			
+        }).navGrid('#pager_DialogJqGrid',{edit:false,add:false,del:false,search:false});
+        
+		//Se configura el grid para que pueda navegar procesar la fila con el ENTER
+		jQuery("#grid_DialogJqGrid").jqGrid('bindKeys', {
+			   "onEnter" : function( rowid ) { 
+					returnDialog_DialogJqGrid(rowid);				
+			   }
+		});
+		jQuery(grid_DialogJqGrid).on('keydown', function (e) {
+			  if (e.keyCode == 13) e.preventDefault();
+			});		
+
+		jQuery("#grid_DialogJqGrid").jqGrid('navGrid','#pager_DialogJqGrid',{edit:false,add:false,del:false});
+		
+		//Se establece configuracion para el Dialog del JqGrid
+		$( "#dialog-buscador-JqGrid" ).dialog( "option", "title", "<?php echo($this->title); ?>");
+		
+		//Define el alto de la ventana de dialogo
+<?php 	if ($this->dialog_width==0){ ?>
+			$( "#dialog-buscador-JqGrid" ).dialog( "option", "width", parseInt($("#grid_DialogJqGrid").css("width").replace("px","")) +40);		
+<?php	}else{ ?>
+			$( "#dialog-buscador-JqGrid" ).dialog( "option", "width", <?php echo($this->dialog_width); ?>);
+<?php	}//end if ?>										
+
+		$( "#dialog-buscador-JqGrid" ).off("dialogresizestop");
+		$( "#dialog-buscador-JqGrid" ).on( "dialogresizestop", function( event, ui ) {		
+											var width = $( "#dialog-buscador-JqGrid" ).dialog( "option", "width" )-20;
+											 $("#grid_DialogJqGrid").setGridWidth(width);
+										} 
+									);
+		
+		//SE ESTABLECE EL EVENTO CLOSE PARA PODER VACIAR LA FILA QUE LO LLAMO		
+		$( "#dialog-buscador-JqGrid" ).off("dialogclose");
+		$( "#dialog-buscador-JqGrid" ).on( "dialogclose", function( event, ui ) {
+												if (flag_seleccion_DialogJqGrid===false){
+														<?php	foreach($link_columns_grid_to_dialog as $column){ 
+															
+																	//Pregunta si existe una columna de la ventana de dialogo para enlazarlo al grid de respuesta
+																	if (array_key_exists('col_dialog', $column))
+																	{ ?>																													
+																			icolSource = jqgrid_get_columnIndexByName($("#<?php echo($this->grid_source_id); ?>"), "<?php echo($column['col_source']); ?>");
+																			$("#<?php echo($this->grid_source_id); ?>").jqGrid('setCell', <?php echo($this->grid_source_rowid); ?>, icolSource, ' ');
+														<?php 		}
+																	else if (array_key_exists('value', $column))				
+																	{ ?>
+																		valorDialog = "<?php echo($column['value']); ?>"
+																		icolSource = jqgrid_get_columnIndexByName($("#<?php echo($this->grid_source_id); ?>"), "<?php echo($column['col_source']); ?>")					
+																		$("#<?php echo($this->grid_source_id); ?>").jqGrid('setCell', "<?php echo($this->grid_source_rowid); ?>", icolSource, valorDialog);
+														<?php		}//end if																			
+														 		}//end foreach	?>														
+												}//end if
+											} 
+							);
+
+		
+		//BUSQUEDA AUTOMATICA
+		<?php if(!empty($this->term)){ ?>
+				$('#txt_buscar_DialogJqGrid').val('<?php echo($this->term); ?>');
+				$('#grid_DialogJqGrid').trigger('reloadGrid',[{page:1}]);
+		<?php }//end if?>
+	});
+
+	function returnDialog_DialogJqGrid(rowid){
+		var data = $("#grid_DialogJqGrid").getRowData(rowid);
+
+<?php	foreach($link_columns_grid_to_dialog as $column){
+			
+			//Pregunta si existe una columna de la ventana de dialogo para enlazarlo al grid de respuesta
+			if (array_key_exists('col_dialog', $column))
+			{ ?>
+				icolDialog = jqgrid_get_columnIndexByName($("#grid_DialogJqGrid"), "<?php echo($column['col_dialog']); ?>")
+				valorDialog = $("#grid_DialogJqGrid").jqGrid('getCell',rowid, icolDialog);
+				
+				if (valorDialog===false){valorDialog='';}
+				
+				icolSource = jqgrid_get_columnIndexByName($("#<?php echo($this->grid_source_id); ?>"), "<?php echo($column['col_source']); ?>")
+				$("#<?php echo($this->grid_source_id); ?>").jqGrid('setCell', "<?php echo($this->grid_source_rowid); ?>", icolSource, valorDialog);
+<?php 		}
+			else if (array_key_exists('value', $column))				
+			{
+?>			
+				//VA POR EL VALOR FIJO SIN ENLAZAR COLUMNAS DE LA VENTANA DE DIALOGO
+				valorDialog = "<?php echo($column['value']); ?>"
+				if (valorDialog===false){valorDialog='';}
+				icolSource = jqgrid_get_columnIndexByName($("#<?php echo($this->grid_source_id); ?>"), "<?php echo($column['col_source']); ?>")					
+				$("#<?php echo($this->grid_source_id); ?>").jqGrid('setCell', "<?php echo($this->grid_source_rowid); ?>", icolSource, valorDialog);
+<?php			}//end if
+	 	}//end foreach	?>		
+		
+		flag_seleccion_DialogJqGrid = true;
+		
+		$('#dialog-buscador-JqGrid').dialog('close');
+		
+		//Devuelve la llamada de retorno
+		respuesta = {'grid_source_id':'<?php echo($this->grid_source_id); ?>',
+					 'grid_source_rowid':'<?php echo($this->grid_source_rowid); ?>',}
+<?php   if (!empty($this->callback_fn)){ ?>					 
+			<?php echo($this->callback_fn); ?>(respuesta);
+<?php   }//end if ?> 			
+		return true;
+	}
+</script>
+
+<form name="frm_DialogJqGrid" id="frm_DialogJqGrid" action="" method="post">
+	<table>
+		<tr>
+		  <td valign="middle" class="etiqueta">Buscar:</td>
+		  <td><input name="txt_buscar_DialogJqGrid" id="txt_buscar_DialogJqGrid" type="text" />
+			<td valign="middle"><button id="btn_consultar_DialogJqGrid" class="boton_consultar">Consultar</button><td>
+		<tr>
+	</table>
+	<table id="grid_DialogJqGrid"></table>
+	<div id="pager_DialogJqGrid"></div>  
+</form>

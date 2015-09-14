@@ -32,4 +32,22 @@ class InventarioBO extends Conexion
 	}//end function getCombo
 
 
+	
+	/**
+	 *
+	 * @return string
+	 */
+	function getComboDataGrid()
+	{
+		$InventarioDAO = new InventarioDAO();
+	
+		$InventarioDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $InventarioDAO->consultarTodos();
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'id', null, null, null, \Application\Classes\Combo::$tipo_combo_datagrid);
+		return $opciones;
+	}//end function getComboDataGrid
+
+	
 }//end class

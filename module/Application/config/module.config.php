@@ -92,6 +92,7 @@ return array(
         'invokables' => array(
             'Application\Controller\Index' => 'Application\Controller\IndexController',
         	'Application\Controller\Load'  => 'Application\Controller\LoadController',
+        	'Application\Controller\Jqgridbuscador' 		=> 'Application\Controller\JqgridbuscadorController',
         ),
     ),
     'view_manager' => array(

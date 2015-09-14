@@ -21,6 +21,9 @@ return array(
         	'Dispo\Controller\Grupoprecio'			=> 'Dispo\Controller\GrupoprecioController',
         	'Dispo\Controller\Tipocajamatriz'		=> 'Dispo\Controller\TipocajamatrizController',
         	'Dispo\Controller\Clienteagenciacarga' 	=> 'Dispo\Controller\ClienteagenciacargaController',
+        	'Dispo\Controller\Tipocajamarcacion'	=> 'Dispo\Controller\TipocajamarcacionController',
+        	'Dispo\Controller\Tipocaja'				=> 'Dispo\Controller\TipocajaController',
+        	'Dispo\Controller\Inventario'			=> 'Dispo\Controller\InventarioController',
         ),
     ),
     // The following section is new and should be added to your file
@@ -201,8 +204,7 @@ return array(
         					),
         			),
         	), 
-        		
-        		
+        		        		
         	'dispo-clienteagenciacarga' => array(
         			'type'    => 'segment',
         			'options' => array(
@@ -218,6 +220,51 @@ return array(
         			),
         	),
         		
+        	'dispo-tipocajamarcacion' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/tipocajamarcacion[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Tipocajamarcacion',
+        							'action'     => 'index',
+        					),
+        			),
+        	), 
+        
+        	'dispo-tipocaja' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/tipocaja[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Tipocaja',
+        							'action'     => 'index',
+        					),
+        			),
+        	), 
+        
+        	'dispo-inventario' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/inventario[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Inventario',
+        							'action'     => 'index',
+        					),
+        			),
+        	), 
+        
         ),
     ),
 		
