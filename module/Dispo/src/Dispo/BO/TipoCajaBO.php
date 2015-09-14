@@ -32,4 +32,21 @@ class TipoCajaBO extends Conexion
 	}//end function getCombo
 
 
+	
+	/**
+	 *
+	 * @return string
+	 */
+	function getComboDataGrid()
+	{
+		$TipoCajaDAO = new TipoCajaDAO();
+	
+		$TipoCajaDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $TipoCajaDAO->consultarTodos();
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'id', null, null, null, \Application\Classes\Combo::$tipo_combo_datagrid);
+		return $opciones;
+	}//end function getComboDataGrid	
+	
 }//end class

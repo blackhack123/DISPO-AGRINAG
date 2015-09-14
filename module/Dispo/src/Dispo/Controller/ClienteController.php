@@ -389,4 +389,56 @@ class ClienteController extends AbstractActionController
 	
 
 	
+	public function listadodialogdataAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+		
+			$ClienteBO = new ClienteBO();
+			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+		
+			$request 			= $this->getRequest();
+			$criterio_busqueda  = $request->getQuery('criterio_busqueda', "");
+			$estado  			= $request->getQuery('estado', "");
+			$page 				= $request->getQuery('page');
+			$limit 				= $request->getQuery('rows');
+			$sidx				= $request->getQuery('sidx',1);
+			$sord 				= $request->getQuery('sord', "");
+			$ClienteBO->setPage($page);
+			$ClienteBO->setLimit($limit);
+			$ClienteBO->setSidx($sidx);
+			$ClienteBO->setSord($sord);
+			$condiciones = array(
+					"criterio_busqueda"	=> $request->getQuery('term', ""),
+					//"estado"			=> $request->getQuery('estado', null), 
+			);
+			$result = $ClienteBO->listado($condiciones);
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				//$row['variedad'] = trim($row['variedad']);
+				$row2['id'] 			= $row['id'];
+				$row2['nombre'] 		= trim($row['nombre']);
+				$response->rows[$i] 	= $row2;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function listadodialogdataAction
+	
 }//end controller
