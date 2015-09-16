@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 	/*----------------------Se cargan los controles -----------------*/
 	dispoGrupo_init();
-	grupodispo_listar();
+	
 	$("#frm_dispo_grupo #grupo_dispo_cab_id").on('change', function(event){
 		//$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		DispoGrupo_ConsultarInfoDispoGrupoCab($("#frm_dispo_grupo #grupo_dispo_cab_id").val());
@@ -122,7 +122,8 @@ $(document).ready(function () {
 							'url':'../../dispo/grupodispo/initcontrols',
 							'show_cargando':false,
 							'async':true,
-							'finish':function(response){		
+							'finish':function(response){	
+								//grupodispo_listar();
 								$("#frm_dispo_grupo #grupo_dispo_cab_id").html(response.grupo_dispo_opciones);
 							 }							
 						 }
