@@ -841,5 +841,55 @@ class DisponibilidadController extends AbstractActionController
 		}
 	}//end function grabarstockproveedorAction
 	
+
+	
+	public function listadovariedaddialogdataAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$DispoBO = new DispoBO();
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 			= $this->getRequest();
+			$estado  			= $request->getQuery('estado', "");
+			$page 				= $request->getQuery('page');
+			$limit 				= $request->getQuery('rows');
+			$sidx				= $request->getQuery('sidx',1);
+			$sord 				= $request->getQuery('sord', "");
+			$DispoBO->setPage($page);
+			$DispoBO->setLimit($limit);
+			$DispoBO->setSidx($sidx);
+			$DispoBO->setSord($sord);
+
+			$variedad_nombre = $request->getQuery('term', "");
+			$result = $DispoBO->listadoVariedadPorInventario($request->getQuery('inventario_id'), $variedad_nombre);
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				//$row['variedad'] = trim($row['variedad']);
+				$row2['variedad_id'] 		= $row['variedad_id'];
+				$row2['variedad_nombre']	= trim($row['variedad_nombre']);
+				$response->rows[$i] 		= $row2;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadodialogdataAction	
 	
 }

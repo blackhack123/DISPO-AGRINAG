@@ -521,7 +521,7 @@ class DispoDAO extends Conexion
 	 * @param string $variedad_id
 	 * @return array
 	 */
-	public function agrupadoPorInventarioPorVariedad($inventario_id, $variedad_id, $orden = null)
+	public function agrupadoPorInventarioPorVariedad($inventario_id, $variedad_id, $orden = null, $variedad_nombre = null)
 	{
 		$sql = " SELECT inventario_id, variedad_id, variedad.nombre as variedad_nombre ".
 				" FROM dispo INNER JOIN variedad ".
@@ -532,6 +532,10 @@ class DispoDAO extends Conexion
 		}//end if
 		if (!empty($variedad_id)){
 			$sql = $sql." and variedad_id		= '".$variedad_id."'";
+		}//end if
+		if (!empty($variedad_nombre))
+		{
+			$sql = $sql." and variedad.nombre like '%".$variedad_nombre."%'";
 		}//end if
 		$sql = $sql." GROUP BY inventario_id, variedad_id ";
 		if (!empty($orden))
