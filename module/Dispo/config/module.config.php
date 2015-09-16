@@ -21,13 +21,10 @@ return array(
         	'Dispo\Controller\Grupoprecio'			=> 'Dispo\Controller\GrupoprecioController',
         	'Dispo\Controller\Tipocajamatriz'		=> 'Dispo\Controller\TipocajamatrizController',
         	'Dispo\Controller\Clienteagenciacarga' 	=> 'Dispo\Controller\ClienteagenciacargaController',
-<<<<<<< HEAD
-        	'Dispo\Controller\Grupocliente' 		=> 'Dispo\Controller\GrupoclienteController',
-=======
         	'Dispo\Controller\Tipocajamarcacion'	=> 'Dispo\Controller\TipocajamarcacionController',
         	'Dispo\Controller\Tipocaja'				=> 'Dispo\Controller\TipocajaController',
         	'Dispo\Controller\Inventario'			=> 'Dispo\Controller\InventarioController',
->>>>>>> fecafd6198205917dc0e12d910de0f1e3ca13720
+        	'Dispo\Controller\Grupocliente'			=> 'Dispo\Controller\GrupoclienteController',
         ),
     ),
     // The following section is new and should be added to your file
@@ -224,30 +221,30 @@ return array(
         			),
         	),
         		
-<<<<<<< HEAD
         	'dispo-grupocliente' => array(
         			'type'    => 'segment',
         			'options' => array(
         					'route'    => '/dispo/grupocliente[/:action][/:id]',
-=======
-        	'dispo-tipocajamarcacion' => array(
-        			'type'    => 'segment',
-        			'options' => array(
-        					'route'    => '/dispo/tipocajamarcacion[/:action][/:id]',
->>>>>>> fecafd6198205917dc0e12d910de0f1e3ca13720
         					'constraints' => array(
         							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
         							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
         					),
         					'defaults' => array(
-<<<<<<< HEAD
         							'controller' => 'Dispo\Controller\Grupocliente',
         							'action'     => 'index',
         					),
         			),
         	),
         		
-=======
+        	'dispo-tipocajamarcacion' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/tipocajamarcacion[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
         							'controller' => 'Dispo\Controller\Tipocajamarcacion',
         							'action'     => 'index',
         					),
@@ -284,7 +281,6 @@ return array(
         			),
         	), 
         
->>>>>>> fecafd6198205917dc0e12d910de0f1e3ca13720
         ),
     ),
 		
@@ -315,4 +311,3 @@ return array(
 	)
 		*/
 );
-

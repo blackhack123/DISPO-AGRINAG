@@ -271,6 +271,21 @@ class GrupoDispoCabDAO extends Conexion
 		return $result;
 	}//end function listado
 	
+	
+	public function listadoNoAsignadas()
+	{
+		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre  '.
+				' FROM   cliente INNER JOIN  usuario '.
+				'						 ON usuario.cliente_id = cliente.id '.
+				'     		             AND usuario.grupo_dispo_cab_id IS NULL';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function listadoNoAsignadas
+	
 }//end class
 
 ?>

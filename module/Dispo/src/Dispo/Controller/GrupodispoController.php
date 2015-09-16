@@ -34,6 +34,7 @@ class GrupodispoController extends AbstractActionController
 			
 			switch ($opcion)
 			{
+				case 'panel-grupo-clientes':
 				case 'panel-control-disponibilidad':
 					$GrupoDispoCabBO 	= new GrupoDispoCabBO();
 					$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
@@ -84,7 +85,7 @@ class GrupodispoController extends AbstractActionController
 	}//end function initcontrolsAction
 	
 	
-
+	
 	
 	public function listadodataAction()
 	{
@@ -390,5 +391,73 @@ class GrupodispoController extends AbstractActionController
 			return $response;
 		}
 	}//end function grabarstockAction
+	
+	
+	
+	/*
+	 * *****************************************************************
+	 * 				FUNCIONES GRUPO CLIENTE
+	 * *****************************************************************
+	 * 
+	 */
+	
+	
+	
+	/*-----------------------------------------------------------------------------*/
+	public function listadogrupodisponoasignadosdataAction()
+	/*-----------------------------------------------------------------------------*/
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$GrupoDispoCabBO = new GrupoDispoCabBO();
+			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 					= $this->getRequest();
+			//$cliente_id    				= $request->getQuery('cliente_id', "");
+			$page 						= $request->getQuery('page');
+			$limit 						= $request->getQuery('rows');
+			$sidx						= $request->getQuery('sidx',1);
+			$sord 						= $request->getQuery('sord', "");
+			$GrupoDispoCabBO->setPage($page);
+			$GrupoDispoCabBO->setLimit($limit);
+			$GrupoDispoCabBO->setSidx($sidx);
+			$GrupoDispoCabBO->setSord($sord);
+			//$condiciones = array(
+					//"cliente_id"			=> $cliente_id,
+					//"estado"				=> "A"
+			//);
+			$result = $GrupoDispoCabBO->listadoNoAsignadas();
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				$row2["cliente_nombre"] 	= trim($row["cliente_nombre"]);
+				$row2["usuario_nombre"] 	= trim($row["usuario_nombre"]);
+	
+				$response->rows[$i] = $row2;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadogrupodisponoasignadosdataAction
+	
+	
+	
+	
 	
 }
