@@ -33,4 +33,21 @@ class GradoBO extends Conexion
 		return $opciones;
 	}//end function getCombo	
 	
+	
+	/**
+	 *
+	 * @return string
+	 */
+	function getComboDataGrid()
+	{
+		$GradoDAO = new GradoDAO();
+	
+		$GradoDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $GradoDAO->consultarTodos();
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'id', null, null, null, \Application\Classes\Combo::$tipo_combo_datagrid);
+		return $opciones;
+	}//end function getComboDataGrid	
+	
 }//end class

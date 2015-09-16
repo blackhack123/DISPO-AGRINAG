@@ -25,6 +25,11 @@ return array(
         	'Dispo\Controller\Tipocaja'				=> 'Dispo\Controller\TipocajaController',
         	'Dispo\Controller\Inventario'			=> 'Dispo\Controller\InventarioController',
         	'Dispo\Controller\Grupocliente'			=> 'Dispo\Controller\GrupoclienteController',
+        	'Dispo\Controller\Grupocliente' 		=> 'Dispo\Controller\GrupoclienteController',
+        	'Dispo\Controller\Tipocajamarcacion'	=> 'Dispo\Controller\TipocajamarcacionController',
+        	'Dispo\Controller\Tipocaja'				=> 'Dispo\Controller\TipocajaController',
+        	'Dispo\Controller\Inventario'			=> 'Dispo\Controller\InventarioController',
+        	'Dispo\Controller\Grado'				=> 'Dispo\Controller\GradoController',        		
         ),
     ),
     // The following section is new and should be added to your file
@@ -236,6 +241,7 @@ return array(
         			),
         	),
         		
+
         	'dispo-tipocajamarcacion' => array(
         			'type'    => 'segment',
         			'options' => array(
@@ -276,6 +282,22 @@ return array(
         					),
         					'defaults' => array(
         							'controller' => 'Dispo\Controller\Inventario',
+        							'action'     => 'index',
+        					),
+        			),
+        	), 
+        
+
+        	'dispo-grado' => array(
+        			'type'    => 'segment',
+        			'options' => array(
+        					'route'    => '/dispo/grado[/:action][/:id]',
+        					'constraints' => array(
+        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        					),
+        					'defaults' => array(
+        							'controller' => 'Dispo\Controller\Grado',
         							'action'     => 'index',
         					),
         			),

@@ -29,6 +29,52 @@ class TipoCajaMarcacionBO extends Conexion
 	
 
 	
+	/**
+	 * 
+	 * @param TipoCajaMatrizData[] $arr_TipoCajaMarcacionData
+	 * @throws Exception
+	 * @return boolean
+	 */
+	function grabar($arr_TipoCajaMarcacionData)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			$TipoCajaMarcacionDAO = new TipoCajaMarcacionDAO();
+			$TipoCajaMarcacionDAO->setEntityManager($this->getEntityManager());
+
+			foreach($arr_TipoCajaMarcacionData as $TipoCajaMarcacionData)
+			{
+				//Gestiona el CRUD con la tabla del Detalle del Presupuesto
+				switch($TipoCajaMarcacionData->getAccion())
+				{
+					case 'I':
+						//$TipoCajaMarcacionDAO->ingresar($TipoCajaMarcacionData);
+						$TipoCajaMarcacionDAO->registrar($TipoCajaMarcacionData);
+						break;
+
+					case 'M':
+						//$TipoCajaMarcacionDAO->modificar($TipoCajaMarcacionData);
+						$TipoCajaMarcacionDAO->registrar($TipoCajaMarcacionData);
+						break;
+
+					case 'E':
+						$TipoCajaMarcacionDAO->eliminar($TipoCajaMarcacionData->getId());
+						break;
+				}//end switch				
+			}//end foreach
+
+			$this->getEntityManager()->getConnection()->commit();
+			
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}				
+	}//end function grabar
+	
+	
+	
 	
 	/**
 	 * 

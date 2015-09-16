@@ -564,4 +564,16 @@ class DispoBO extends Conexion
 	}//end function getComboVariedadPorInventario
 	
 	
+	
+	function listadoVariedadPorInventario($inventario_id, $variedad_nombre = null)
+	{
+		$DispoDAO = new DispoDAO();
+
+		$DispoDAO->setEntityManager($this->getEntityManager());
+
+		$result = $DispoDAO->agrupadoPorInventarioPorVariedad($inventario_id, null, "variedad.nombre", $variedad_nombre);
+
+		return $result;		
+	}//end function listadoVariedadPorInventario
+	
 }//end class DispoBO

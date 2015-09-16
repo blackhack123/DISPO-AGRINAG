@@ -276,6 +276,6 @@ class VariedadController extends AbstractActionController
 			return $response;
 		}
 	}//end function consultarAction	
+
 	
-		
 }//end controller

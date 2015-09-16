@@ -10,6 +10,46 @@ class TipoCajaMarcacionDAO extends Conexion
 {
 	private $table_name	= 'tipo_caja_marcacion';
 
+	
+	
+	/**
+	 * 
+	 * @param TipoCajaMarcacionData $TipoCajaMarcacionData
+	 * @return number
+	 */
+	public function registrar(TipoCajaMarcacionData $TipoCajaMarcacionData)
+	{
+		$TipoCajaMarcacionData2 = $this->consultarKeyAlterno($TipoCajaMarcacionData);
+		
+		if ($TipoCajaMarcacionData2)
+		{
+			//Elimina primero el repetido - registro actual
+			if ($TipoCajaMarcacionData->getAccion()=='M')
+			{
+				$this->eliminar($TipoCajaMarcacionData->getId());
+			}//end if
+
+			//Actualiza el registro que encontro alterno
+			$TipoCajaMarcacionData->setId($TipoCajaMarcacionData2->getId());
+			$id = $this->modificar($TipoCajaMarcacionData);
+			
+		}
+		else
+		{
+			if ($TipoCajaMarcacionData->getAccion()=='M')
+			{
+				$id = $this->modificar($TipoCajaMarcacionData);
+			}else{
+				$id = $this->ingresar($TipoCajaMarcacionData);
+			}
+		}//end if
+		
+		return $id;		
+	}//end function registrar
+	
+	
+	
+	
 	/**
 	 * Ingresar
 	 *
@@ -19,21 +59,22 @@ class TipoCajaMarcacionDAO extends Conexion
 	public function ingresar(TipoCajaMarcacionData $TipoCajaMarcacionData)
 	{
 		$key    = array(
-				'id'						        => $TipoCajaMarcacionData->getId(),
+				'id'				=> $TipoCajaMarcacionData->getId(),
 		);
 		$record = array(
-				'id'								=> $TipoCajaMarcacionData->getId(),
-				'marcacion_sec'		                => $TipoCajaMarcacionData->getMarcacionSec(),
-				'tipo_caja_id'	        			=> $TipoCajaMarcacionData->getTipoCajaId(),
-				'inventario_id'		                => $TipoCajaMarcacionData->getInventarioId(),
-				'variedad_id'		                => $TipoCajaMarcacionData->getVariedadId(),
-				'grado_id'		                	=> $TipoCajaMarcacionData->getGradoId(),
-				'unds_bunch'		                => $TipoCajaMarcacionData->getUndsBunch(),
-				'tipo_caja_id1'		                => $TipoCajaMarcacionData->getTipoCajaId1()
-				
+				'marcacion_sec'		=> $TipoCajaMarcacionData->getMarcacionSec(),
+				'tipo_caja_id'	    => $TipoCajaMarcacionData->getTipoCajaId(),
+				'inventario_id'		=> $TipoCajaMarcacionData->getInventarioId(),
+				'variedad_id'		=> $TipoCajaMarcacionData->getVariedadId(),
+				'grado_id'		    => $TipoCajaMarcacionData->getGradoId(),
+				'unds_bunch'		=> $TipoCajaMarcacionData->getUndsBunch(),
+				'fec_ingreso'		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'fec_modifica'		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_ing_id'	=> $TipoCajaMarcacionData->getUsuarioModId(),
+				'usuario_mod_id'	=> $TipoCajaMarcacionData->getUsuarioModId()
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
-		//$id = $this->getEntityManager()->getConnection()->lastInsertid();
+		$id = $this->getEntityManager()->getConnection()->lastInsertid();
 		return $id;
 	}//end function ingresar
 
@@ -48,24 +89,89 @@ class TipoCajaMarcacionDAO extends Conexion
 	public function modificar(TipoCajaMarcacionData $TipoCajaMarcacionData)
 	{
 		$key    = array(
-				'id'						        => $TipoCajaMarcacionData->getId(),
+				'id'				=> $TipoCajaMarcacionData->getId(),
 		);
 		$record = array(
-				'id'								=> $TipoCajaMarcacionData->getId(),
-				'marcacion_sec'		                => $TipoCajaMarcacionData->getMarcacionSec(),
-				'tipo_caja_id'	        			=> $TipoCajaMarcacionData->getTipoCajaId(),
-				'inventario_id'		                => $TipoCajaMarcacionData->getInventarioId(),
-				'variedad_id'		                => $TipoCajaMarcacionData->getVariedadId(),
-				'grado_id'		                	=> $TipoCajaMarcacionData->getGradoId(),
-				'unds_bunch'		                => $TipoCajaMarcacionData->getUndsBunch(),
-				'tipo_caja_id1'		                => $TipoCajaMarcacionData->getTipoCajaId1()
-				
-				
+				'marcacion_sec'		=> $TipoCajaMarcacionData->getMarcacionSec(),
+				'tipo_caja_id'	    => $TipoCajaMarcacionData->getTipoCajaId(),
+				'inventario_id'		=> $TipoCajaMarcacionData->getInventarioId(),
+				'variedad_id'		=> $TipoCajaMarcacionData->getVariedadId(),
+				'grado_id'		    => $TipoCajaMarcacionData->getGradoId(),
+				'unds_bunch'	    => $TipoCajaMarcacionData->getUndsBunch(),
+				'fec_modifica'		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),				
+				'usuario_mod_id'	=> $TipoCajaMarcacionData->getUsuarioModId()
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
 		return $TipoCajaMarcacionData->getid();
 	}//end function modificar
 
+	
+	
+	/**
+	 * 
+	 * @int unknown $id
+	 * @return boolean
+	 */
+	public function eliminar($id)
+	{
+		$key    = array(
+			'id'	=>$id
+		);
+		
+		$this->getEntityManager()->getConnection()->delete($this->table_name, $key);
+		return true;		
+	}//end function eliminar
+	
+	
+	
+	/**
+	 * 
+	 * @param TipoCajaMarcacionData $TipoCajaMarcacionData
+	 * @return \Dispo\Data\TipoCajaMarcacionData|NULL
+	 */
+	public function consultarKeyAlterno($TipoCajaMarcacionData)
+	{
+		$TipoCajaMarcacionData2 		    = new TipoCajaMarcacionData();
+		
+		$sql = 	' SELECT tipo_caja_marcacion.* '.
+				' FROM tipo_caja_marcacion '.
+				' WHERE tipo_caja_marcacion.marcacion_sec 	= :marcacion_sec '.
+				'   and tipo_caja_marcacion.tipo_caja_id 	= :tipo_caja_id '.
+				'   and tipo_caja_marcacion.inventario_id 	= :inventario_id '.
+				'   and tipo_caja_marcacion.variedad_id 	= :variedad_id '.
+				'   and tipo_caja_marcacion.grado_id 		= :grado_id '.
+				'   and tipo_caja_marcacion.id				<> :id';
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':marcacion_sec',	$TipoCajaMarcacionData->getMarcacionSec());
+		$stmt->bindValue(':tipo_caja_id',	$TipoCajaMarcacionData->getTipoCajaId());
+		$stmt->bindValue(':inventario_id',	$TipoCajaMarcacionData->getInventarioId());
+		$stmt->bindValue(':variedad_id',	$TipoCajaMarcacionData->getVariedadId());
+		$stmt->bindValue(':grado_id',		$TipoCajaMarcacionData->getGradoId());
+		$stmt->bindValue(':id',				$TipoCajaMarcacionData->getId());
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		if($row){
+		
+			$TipoCajaMarcacionData2->setId				($row['id']);
+			$TipoCajaMarcacionData2->setMarcacionSec 	($row['marcacion_sec']);
+			$TipoCajaMarcacionData2->setTipoCajaId		($row['tipo_caja_id']);
+			$TipoCajaMarcacionData2->setInventarioId 	($row['inventario_id']);
+			$TipoCajaMarcacionData2->setVariedadId 		($row['variedad_id']);
+			$TipoCajaMarcacionData2->setGradoId 			($row['grado_id']);
+			$TipoCajaMarcacionData2->setUndsBunch 		($row['unds_bunch']);
+			$TipoCajaMarcacionData2->setFecIngreso		($row['fec_ingreso']);
+			$TipoCajaMarcacionData2->setFecModifica		($row['fec_modifica']);
+			$TipoCajaMarcacionData2->setUsuarioIngId		($row['usuario_ing_id']);
+			$TipoCajaMarcacionData2->setUsuarioModId		($row['usuario_mod_id']);
+		
+			return $TipoCajaMarcacionData2;
+		}else{
+			return null;
+		}//end if		
+	}//end function consultarKeyAlterno
+	
+	
 
 	/**
 	 * Consultar
@@ -73,7 +179,7 @@ class TipoCajaMarcacionDAO extends Conexion
 	 * @param int $id
 	 * @return TipoCajaMarcacionData|null
 	 */	
-	public function consultar($id)
+/*	public function consultar($id)
 	{
 		$TipoCajaMarcacionData 		    = new TipoCajaMarcacionData();
 
@@ -102,7 +208,7 @@ class TipoCajaMarcacionDAO extends Conexion
 		}//end if
 
 	}//end function consultar
-
+*/
 
 	
 	/**

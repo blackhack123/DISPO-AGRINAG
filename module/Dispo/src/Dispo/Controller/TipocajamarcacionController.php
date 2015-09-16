@@ -87,6 +87,10 @@ class TipocajamarcacionController extends AbstractActionController
 					$response->rows[$i] = $row;
 					$i++;
 				}//end foreach
+				$response->userdata['sec_maximo'] = $i;
+			}else{
+				$response->rows = null;
+				$response->userdata['sec_maximo'] = 0;
 			}//end if
 			$tot_reg = $i;
 			$response->total 	= ceil($tot_reg/$limit);
@@ -104,7 +108,102 @@ class TipocajamarcacionController extends AbstractActionController
 	}//end function listadodataAction
 
 	
+	public function grabarAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+				
+			$TipoCajaMarcacionBO 	= new TipoCajaMarcacionBO();
+			$TipoCajaMarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+
+			$request 		= $this->getRequest();
+			
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$gridTipoCaja_ingresar 		= $json['gridTipoCaja_ingresar'];
+			$gridTipoCaja_modificar		= $json['gridTipoCaja_modificar'];
+			$gridTipoCaja_eliminar		= $json['gridTipoCaja_eliminar'];
+
+			//Detalle de la Caja Marcacion (ELIMINAR)
+			$ArrTipoCaja	= array();
+			foreach ($gridTipoCaja_eliminar	as $reg){
+				$TipoCajaMarcacionData = new TipoCajaMarcacionData();
+			
+				$TipoCajaMarcacionData->setAccion('E');
+				$TipoCajaMarcacionData->setId($reg['id']);
+			
+				$ArrTipoCaja[] = $TipoCajaMarcacionData;
+					
+				unset($TipoCajaMarcacionData);
+			}//end foreach			
+			
+			
+			//Detalle de la Caja Marcacion (INGRESAR)
+			foreach ($gridTipoCaja_ingresar	as $reg){
+				$TipoCajaMarcacionData = new TipoCajaMarcacionData();
+					
+				$TipoCajaMarcacionData->setAccion('I');
+				$TipoCajaMarcacionData->setId($reg['id']);
+				$TipoCajaMarcacionData->setMarcacionSec($reg['marcacion_sec']);
+				$TipoCajaMarcacionData->setTipoCajaId($reg['tipo_caja_id']);
+				$TipoCajaMarcacionData->setInventarioId($reg['inventario_id']);
+				$TipoCajaMarcacionData->setVariedadId($reg['variedad_id']);
+				$TipoCajaMarcacionData->setGradoId($reg['grado_id']);
+				$TipoCajaMarcacionData->setUndsBunch($reg['unds_bunch']);
+				$TipoCajaMarcacionData->setUsuarioIngId($usuario_id);
+				$TipoCajaMarcacionData->setUsuarioModId($usuario_id);
+			
+				$ArrTipoCaja[] = $TipoCajaMarcacionData;
+					
+				unset($TipoCajaMarcacionData);
+			}//end foreach			
+			
+			
+			//Detalle de la Caja Marcacion (MODIFICAR)
+			foreach ($gridTipoCaja_modificar	as $reg){
+				$TipoCajaMarcacionData = new TipoCajaMarcacionData();
+					
+				$TipoCajaMarcacionData->setAccion('M');
+				$TipoCajaMarcacionData->setId($reg['id']);
+				$TipoCajaMarcacionData->setMarcacionSec($reg['marcacion_sec']);
+				$TipoCajaMarcacionData->setTipoCajaId($reg['tipo_caja_id']);
+				$TipoCajaMarcacionData->setInventarioId($reg['inventario_id']);
+				$TipoCajaMarcacionData->setVariedadId($reg['variedad_id']);
+				$TipoCajaMarcacionData->setGradoId($reg['grado_id']);
+				$TipoCajaMarcacionData->setUndsBunch($reg['unds_bunch']);
+				$TipoCajaMarcacionData->setUsuarioIngId($usuario_id);
+				$TipoCajaMarcacionData->setUsuarioModId($usuario_id);
+					
+				$ArrTipoCaja[] = $TipoCajaMarcacionData;
+					
+				unset($TipoCajaMarcacionData);
+			}//end foreach			
+			
+			$respuesta = $TipoCajaMarcacionBO->grabar($ArrTipoCaja);
+			
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}			
+	}//end function grabarAction
 	
+	
+	
+/*	
 	public function grabarAction()
 	{
 		try
@@ -127,7 +226,7 @@ class TipocajamarcacionController extends AbstractActionController
 			$TipoCajaMarcacionData->setTipoCajaId 		($json['tipo_caja_id']);
 			$TipoCajaMarcacionData->setInventarioId 	($json['inventario_id']);
 			$TipoCajaMarcacionData->setVariedadId 		($json['variedad_id']);
-			$TipoCajaMarcacionData->setGradoId 		($json['grado_id']);
+			$TipoCajaMarcacionData->setGradoId 			($json['grado_id']);
 			$TipoCajaMarcacionData->setUndsBunch 		($json['nro_bunches']);  
 			$TipoCajaMarcacionData->setUsuarioIngId	($usuario_id);
 			$TipoCajaMarcacionData->setUsuarioModId	($usuario_id);
@@ -137,9 +236,7 @@ class TipocajamarcacionController extends AbstractActionController
 			//Retorna la informacion resultante por JSON
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';
-			/*$response->validacion_code 		= $result['validacion_code'];
-			$response->respuesta_mensaje	= $result['respuesta_mensaje'];
-			*/
+
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
 			//false
@@ -151,8 +248,8 @@ class TipocajamarcacionController extends AbstractActionController
 			return $response;
 		}
 	}//end function grabarstockAction	
-
-
+*/
+/*
 	public function actualizarmasivoAction()
 	{
 		try
@@ -183,9 +280,6 @@ class TipocajamarcacionController extends AbstractActionController
 			//Retorna la informacion resultante por JSON
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';
-			/*$response->validacion_code 		= $result['validacion_code'];
-			 $response->respuesta_mensaje	= $result['respuesta_mensaje'];
-			 */
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
 			//false
@@ -197,6 +291,6 @@ class TipocajamarcacionController extends AbstractActionController
 			return $response;
 		}		
 	}//end funcion actualizarmasivoAction
-	
+*/	
 	
 }
