@@ -277,7 +277,8 @@ class GrupoDispoCabDAO extends Conexion
 		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre  '.
 				' FROM   cliente INNER JOIN  usuario '.
 				'						 ON usuario.cliente_id = cliente.id '.
-				'     		             AND usuario.grupo_dispo_cab_id IS NULL';
+				'     		             AND usuario.grupo_dispo_cab_id IS NULL'.
+				"                        AND usuario.estado = 'A'";
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
@@ -285,6 +286,33 @@ class GrupoDispoCabDAO extends Conexion
 	
 		return $result;
 	}//end function listadoNoAsignadas
+	
+	
+	
+	
+	/**
+	 * 
+	 * @param array $condiciones (grupo_dispo_cab_id);
+	 * @return array
+	 */
+	public function listadoAsignadas($condiciones)
+	{
+		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre, usuario.estado '.
+				' FROM   usuario INNER JOIN  cliente '.
+				'						 ON cliente.id = usuario.cliente_id '.
+				' WHERE 1 = 1';
+		
+		if (!empty($condiciones['grupo_dispo_cab_id']))
+		{
+			$sql = $sql.' and usuario.grupo_dispo_cab_id = '.$condiciones['grupo_dispo_cab_id'];
+		}//end if
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function listadoAsignadas	
 	
 }//end class
 

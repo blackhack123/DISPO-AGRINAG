@@ -593,6 +593,121 @@ class UsuarioController extends AbstractActionController
 	}//end function listadodataAction
 	
 	
+
 	
+	public function desvinculargrupodispoAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$UsuarioBO 		= new UsuarioBO();
+	
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			//Recibe las variables del Json
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+	
+			$formData 			= $json['formData'];
+			$grupo_dispo_cab_id	= $formData['grupo_dispo_cab_id'];
+			$grid_data 			= $json['grid_data'];
+	
+			//Prepara el Buffer de datos antes de llamar al BO
+			$ArrClienteAgenciaCargaData   	= array();
+			foreach ($grid_data as $reg)
+			{
+				$UsuarioData = new UsuarioData();
+				$UsuarioData->setId 			($reg['usuario_id']);
+				$UsuarioData->setGrupoDispoCabId($grupo_dispo_cab_id);
+				$UsuarioData->setUsuarioModId	($usuario_id);
+	
+				$ArrUsuarioData[] = $UsuarioData;
+			}//end foreach
+	
+			//Graba
+			$result = $UsuarioBO->desvincularGrupoDispo($ArrUsuarioData);
+
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			/*$response->validacion_code 		= $result['validacion_code'];
+			 $response->respuesta_mensaje	= $result['respuesta_mensaje'];
+			 */
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function desvinculargrupodispo
+		
+
+	
+	
+	public function vinculargrupodispoAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$UsuarioBO 		= new UsuarioBO();
+	
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			//Recibe las variables del Json
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+	
+			$formData 			= $json['formData'];
+			$grupo_dispo_cab_id	= $formData['grupo_dispo_cab_id'];
+			$grid_data 			= $json['grid_data'];
+	
+			//Prepara el Buffer de datos antes de llamar al BO
+			$ArrClienteAgenciaCargaData   	= array();
+			foreach ($grid_data as $reg)
+			{
+				$UsuarioData = new UsuarioData();
+				$UsuarioData->setId 			($reg['usuario_id']);
+				$UsuarioData->setGrupoDispoCabId($grupo_dispo_cab_id);
+				$UsuarioData->setUsuarioModId	($usuario_id);
+	
+				$ArrUsuarioData[] = $UsuarioData;
+			}//end foreach
+	
+			//Graba
+			$result = $UsuarioBO->vincularGrupoDispo($ArrUsuarioData);
+	
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			/*$response->validacion_code 		= $result['validacion_code'];
+			 $response->respuesta_mensaje	= $result['respuesta_mensaje'];
+			 */
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function desvinculargrupodispo
 	
 }

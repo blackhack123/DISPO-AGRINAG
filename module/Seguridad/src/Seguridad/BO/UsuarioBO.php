@@ -217,4 +217,63 @@ class UsuarioBO extends Conexion{
 			throw $e;
 		}
 	}//end function modificar	
+	
+	
+	/**
+	 * 
+	 * @param UsuarioData[] $ArrUsuarioData
+	 * @throws Exception
+	 * @return boolean
+	 */
+	function desvincularGrupoDispo($ArrUsuarioData)
+	{
+		$UsuarioDAO = new UsuarioDAO();
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+	
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			foreach($ArrUsuarioData as $UsuarioData)
+			{
+				$UsuarioDAO->desvincularGrupoDispo($UsuarioData);
+			}//end foreach
+	
+			$this->getEntityManager()->getConnection()->commit();
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function desvincularGrupoDispo	
+	
+	
+	
+	/**
+	 *
+	 * @param UsuarioData[] $ArrUsuarioData
+	 * @throws Exception
+	 * @return boolean
+	 */
+	function vincularGrupoDispo($ArrUsuarioData)
+	{
+		$UsuarioDAO = new UsuarioDAO();
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+	
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			foreach($ArrUsuarioData as $UsuarioData)
+			{
+				$UsuarioDAO->vincularGrupoDispo($UsuarioData);
+			}//end foreach
+	
+			$this->getEntityManager()->getConnection()->commit();
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function desvincularGrupoDispo	
+	
+	
 }//end class UsuarioBO

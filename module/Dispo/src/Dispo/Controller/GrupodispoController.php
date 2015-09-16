@@ -457,7 +457,58 @@ class GrupodispoController extends AbstractActionController
 	}//end function listadogrupodisponoasignadosdataAction
 	
 	
+
+	public function listadogrupodispoasignadosdataAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
 	
+			$GrupoDispoCabBO = new GrupoDispoCabBO();
+			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 					= $this->getRequest();
+			$grupo_dispo_cab_id 		= $request->getQuery('grupo_dispo_cab_id', "");
+			$page 						= $request->getQuery('page');
+			$limit 						= $request->getQuery('rows');
+			$sidx						= $request->getQuery('sidx',1);
+			$sord 						= $request->getQuery('sord', "");
+			$GrupoDispoCabBO->setPage($page);
+			$GrupoDispoCabBO->setLimit($limit);
+			$GrupoDispoCabBO->setSidx($sidx);
+			$GrupoDispoCabBO->setSord($sord);
+			
+			$condiciones = array(
+				"grupo_dispo_cab_id"	=> $grupo_dispo_cab_id,
+			);
+			$result = $GrupoDispoCabBO->listadoAsignadas($condiciones);
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				$row2["cliente_nombre"] 	= trim($row["cliente_nombre"]);
+				$row2["usuario_nombre"] 	= trim($row["usuario_nombre"]);
+				$row2["estado"] 			= trim($row["estado"]);
+	
+				$response->rows[$i] = $row2;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadogrupodispoasignadosdataAction
 	
 	
 }

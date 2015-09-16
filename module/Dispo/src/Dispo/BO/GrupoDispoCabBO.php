@@ -216,6 +216,21 @@ class GrupoDispoCabBO extends Conexion
 		$result = $GrupoDispoCabDAO->listadoNoAsignadas();
 		return $result;
 	}//end function listadoNoAsignadas
+	
+	
+	
+	/**
+	 *
+	 * @param array $condiciones (grupo_dispo_cab_id);
+	 * @return array
+	 */	
+	function listadoAsignadas($condiciones)
+	{
+		$GrupoDispoCabDAO = new GrupoDispoCabDAO();
+		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+		$result = $GrupoDispoCabDAO->listadoAsignadas($condiciones);
+		return $result;
+	}//end function listadoAsignadas	
 
 	
 	

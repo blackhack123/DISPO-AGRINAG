@@ -430,4 +430,49 @@ class UsuarioDAO extends Conexion {
 		$clave_encriptada = sha1(md5($clave));
 		return $clave_encriptada;	
 	}//end function encriptar
+	
+	
+	
+	/**
+	 * 
+	 * @param UsuarioData $UsuarioData
+	 * @return number
+	 */
+	function desvincularGrupoDispo(UsuarioData $UsuarioData)
+	{
+		$key    = array(
+				'id'						        => $UsuarioData->getId(),
+		);
+		$record = array(
+				'grupo_dispo_cab_id'                => null,
+				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                	=> $UsuarioData->getUsuarioModId()
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $UsuarioData->getId();
+	}//end function desvincularGrupoDispo
+	
+	
+	
+	
+	/**
+	 *
+	 * @param UsuarioData $UsuarioData
+	 * @return number
+	 */
+	function vincularGrupoDispo(UsuarioData $UsuarioData)
+	{
+		$key    = array(
+				'id'						        => $UsuarioData->getId(),
+		);
+		$record = array(
+				'grupo_dispo_cab_id'                => $UsuarioData->getGrupoDispoCabId(),
+				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                	=> $UsuarioData->getUsuarioModId()
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $UsuarioData->getId();
+	}//end function vincularGrupoDispo	
+	
+	
 }//end class

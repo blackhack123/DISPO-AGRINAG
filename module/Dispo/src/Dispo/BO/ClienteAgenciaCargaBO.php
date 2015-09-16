@@ -84,7 +84,7 @@ class ClienteAgenciaCargaBO extends Conexion
 			$this->getEntityManager()->close();
 			throw $e;
 		}
-	}//end function grabar
+	}//end function eliminar
 	
 	
 	
