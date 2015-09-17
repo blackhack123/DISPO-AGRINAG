@@ -362,9 +362,13 @@ class DispoDAO extends Conexion
 		$sql = 	' SELECT max(fecha) as fecha, max(fecha_bunch) as fecha_bunch  '.
 				' FROM dispo '.
 				" WHERE inventario_id 	= '".$inventario_id."'".
-				"   and producto		= '".$producto."'".
-				"   and proveedor_id	= '".$proveedor_id."'";
+				"   and producto		= '".$producto."'";
 		
+		if (!empty($proveedor_id))
+		{
+			$sql = $sql."   and proveedor_id	= '".$proveedor_id."'";
+		}
+			
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
@@ -495,7 +499,12 @@ class DispoDAO extends Conexion
 			//Ingresa
 			//$DispoData->setId($valor);
 			$reg_fecha = $this->consultarFechaMaximaDispo($inventario_id, $producto, $proveedor_id);
-						
+
+			if (empty($reg_fecha['fecha']))
+			{
+				$reg_fecha = $this->consultarFechaMaximaDispo($inventario_id, $producto, null);
+			}//end if			
+			
 			$DispoData->setFecha 			($reg_fecha['fecha']);
 			$DispoData->setInventarioId		($inventario_id);
 			$DispoData->setFechaBunch		($reg_fecha['fecha_bunch']);

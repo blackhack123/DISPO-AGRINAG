@@ -53,6 +53,20 @@ $(document).ready(function () {
 	/*---------------------------------------------------------------*/
 	/*-----Se configura los JQGRID ----------------------------------*/
 	/*---------------------------------------------------------------*/
+	var cbo_tipo_caja 	= '';
+	var cbo_inventario 	= '';
+	var cbo_grado 		= ''
+	$.ajax({
+		url: '../../dispo/tipocajamarcacion/getCombosDataGrid',
+		async: false, 
+		success: function(data, result) {
+			if (!result) message_error('ERROR', 'Error al cargar combos del GRID');
+			cbo_tipo_caja 	= data.opciones_tipo_caja;
+			cbo_inventario 	= data.opciones_inventario;
+			cbo_grado 		= data.opciones_grado;
+		}
+	}).responseText;
+/*		
 	var cbo_tipo_caja = $.ajax({
 								url: '../../dispo/tipocaja/getComboDataGrid',
 								async: false, 
@@ -76,7 +90,7 @@ $(document).ready(function () {
 									if (!result) message_error('ERROR', 'Error al cargar combo de Nivel');
 								}
 							}).responseText;
-			
+		*/	
 			
 
 	jQuery("#grid_tipo_caja").jqGrid({
@@ -107,11 +121,11 @@ $(document).ready(function () {
 		colNames:['Accion','Id','cliente_id','marcacion_sec','variedad_id','Cliente','Marcacion','Tipo Caja','Inventario','Variedad','Grado','Bunches'],
 		colModel:[
 /*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
-			{name:'accion',index:'accion', width:60, align:"center", hidden: false},
-			{name:'id',index:'id', width:50, align:"center", sorttype:"int"},
-			{name:'cliente_id',index:'cliente_id', width:50, align:"center", sorttype:"string"},
-			{name:'marcacion_sec',index:'marcacion_sec', width:50, align:"center", sorttype:"int"},
-			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
+			{name:'accion',index:'accion', width:60, align:"center", hidden: true},
+			{name:'id',index:'id', width:50, align:"center", sorttype:"int", hidden: true},
+			{name:'cliente_id',index:'cliente_id', width:50, align:"center", sorttype:"string", hidden: true},
+			{name:'marcacion_sec',index:'marcacion_sec', width:50, align:"center", sorttype:"int", hidden: true},
+			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int", hidden: true},
 			{name:'cliente_nombre',index:'cliente_nombre', width:150, sorttype:"string", editable:true, 
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },									
@@ -258,7 +272,7 @@ $(document).ready(function () {
 					var cliente_nombre = jQuery("#grid_tipo_caja").jqGrid('getCell',rowid, col_cliente_nombre);
 					/*var empresa_id =  $("#empresa_id_53").val();*/
 					var params = { 'title':'BUSCADOR DE CLIENTES',
-								   'grid_url': 				'../cliente/listadodialogdata',
+								   'grid_url': 				basePath+'/dispo/cliente/listadodialogdata',
 								   'term':				    cliente_nombre,
 								   'grid_source_id': 		'grid_tipo_caja',
 								   'grid_source_rowid':		rowid,
@@ -272,9 +286,11 @@ $(document).ready(function () {
 																{'col_source':'cliente_id', 'col_dialog':'id'},
 															],	
 								  'filters': {'estado':'A'},
-								  'callback_fn': 'GridTipoCaja_Cliente_Dialog',
 								 };					
 					jqrid_Buscador(params); //MORONITOR
+					
+					$("#grid_tipo_caja").jqGrid('setCell', iRow, col_marcacion_sec, null);
+					$("#grid_tipo_caja").jqGrid('setCell', iRow, col_marcacion_nombre, null);
 					break;
 
 				case col_marcacion_nombre:
@@ -289,7 +305,7 @@ $(document).ready(function () {
 					}//end if
 
 					var params = { 'title':'BUSCADOR DE MARCACION',
-								   'grid_url': 				'../marcacion/listadodialogdata',
+								   'grid_url': 				basePath+'/dispo/marcacion/listadodialogdata',
 								   'term':				    marcacion_nombre,
 								   'grid_source_id': 		'grid_tipo_caja',
 								   'grid_source_rowid':		rowid,
@@ -328,7 +344,7 @@ $(document).ready(function () {
 					}//end if
 					
 					var params = { 'title':'BUSCADOR DE VARIEDADES',
-								   'grid_url': 				'../disponibilidad/listadovariedaddialogdata',
+								   'grid_url': 				basePath+'/dispo/disponibilidad/listadovariedaddialogdata',
 								   'term':				    variedad_nombre,
 								   'grid_source_id': 		'grid_tipo_caja',
 								   'grid_source_rowid':		rowid,
@@ -380,18 +396,6 @@ $(document).ready(function () {
 	/*---------------------------------------------------------------*/
 	
 });
-
-
-function GridTipoCaja_Cliente_Dialog(params)
-{
-	var col_marcacion_sec		= jqgrid_get_columnIndexByName($("#grid_tipo_caja"), "marcacion_sec");
-	var col_marcacion_nombre	= jqgrid_get_columnIndexByName($("#grid_tipo_caja"), "marcacion_nombre");
-	var rowid 					=  params.grid_source_rowid;
-
-	$("#grid_tipo_caja").jqGrid('setCell', rowid, col_marcacion_sec, '');
-	$("#grid_tipo_caja").jqGrid('setCell', rowid, col_marcacion_nombre, '');
-}//end function GridTipoCaja_Cliente_Dialog
-
 
 
 function TipoCaja_AddRow()

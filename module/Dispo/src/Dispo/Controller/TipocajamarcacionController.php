@@ -17,6 +17,7 @@ use Dispo\Data\TipoCajaMarcacionData;
 use Dispo\BO\VariedadBO;
 use Dispo\BO\GradoBO;
 use Dispo\BO\DispoBO;
+use Dispo\BO\Dispo\BO;
 
 class TipocajamarcacionController extends AbstractActionController
 {
@@ -30,7 +31,7 @@ class TipocajamarcacionController extends AbstractActionController
 	
 			$viewModel 				= new ViewModel();
 			$this->layout($SesionUsuarioPlugin->getUserLayout());
-			$viewModel->setTemplate('dispo/TipoCajaMarcacion/mantenimiento.phtml');
+			$viewModel->setTemplate('dispo/tipocajamarcacion/mantenimiento.phtml');
 			return $viewModel;
 	
 		}catch (\Exception $e) {
@@ -203,43 +204,30 @@ class TipocajamarcacionController extends AbstractActionController
 	
 	
 	
-/*	
-	public function grabarAction()
+	public function getCombosDataGridAction()
 	{
-		try
-		{
-			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
-			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+		try{
+			$EntityManagerPlugin= $this->EntityManagerPlugin();
+			$TipoCajaBO 		= new TipoCajaBO();
+			$InventarioBO		= new InventarioBO();
+			$GradoBO			= new GradoBO();
 			
-			$EntityManagerPlugin 	= $this->EntityManagerPlugin();		
-			$TipoCajaMarcacionBO 		= new TipoCajaMarcacionBO();
-		
-			$TipoCajaMarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-		
-			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
-			if ($respuesta==false) return false;
-		
-			$body = $this->getRequest()->getContent();
-			$json = json_decode($body, true);
-		
-			$TipoCajaMarcacionData = new TipoCajaMarcacionData();
-			$TipoCajaMarcacionData->setTipoCajaId 		($json['tipo_caja_id']);
-			$TipoCajaMarcacionData->setInventarioId 	($json['inventario_id']);
-			$TipoCajaMarcacionData->setVariedadId 		($json['variedad_id']);
-			$TipoCajaMarcacionData->setGradoId 			($json['grado_id']);
-			$TipoCajaMarcacionData->setUndsBunch 		($json['nro_bunches']);  
-			$TipoCajaMarcacionData->setUsuarioIngId	($usuario_id);
-			$TipoCajaMarcacionData->setUsuarioModId	($usuario_id);
+			$TipoCajaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$GradoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$request 				= $this->getRequest();
+			$opciones_tipo_caja		= utf8_encode($TipoCajaBO->getComboDataGrid());
+			$opciones_inventario	= utf8_encode($TipoCajaBO->getComboDataGrid());
+			$opciones_grado			= utf8_encode($GradoBO->getComboDataGrid());
 			
-			$result = $TipoCajaMarcacionBO->registrarBunchs($TipoCajaMarcacionData);
-		
-			//Retorna la informacion resultante por JSON
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';
-
+			$response->opciones_tipo_caja 		= $opciones_tipo_caja;
+			$response->opciones_inventario 		= $opciones_inventario;
+			$response->opciones_grado 			= $opciones_grado;
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
-			//false
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
@@ -247,50 +235,5 @@ class TipocajamarcacionController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function grabarstockAction	
-*/
-/*
-	public function actualizarmasivoAction()
-	{
-		try
-		{
-			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
-			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
-				
-			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
-			$TipoCajaMarcacionBO 		= new TipoCajaMarcacionBO();
-		
-			$TipoCajaMarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-		
-			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
-			if ($respuesta==false) return false;
-		
-			$body = $this->getRequest()->getContent();
-			$json = json_decode($body, true);
-
-			$parametros['tipo_caja_id'] = $json['tipo_caja_id'];
-			$parametros['inventario_id']= $json['inventario_id'];
-			$parametros['variedad_id'] 	= $json['variedad_id'];
-			$parametros['grado_id'] 	= $json['grado_id'];
-			$parametros['unds_bunch'] 	= $json['unds_bunch'];
-			$parametros['usuario_id'] 	= $usuario_id;
-
-			$result = $TipoCajaMarcacionBO->actualizacionMasiva($parametros);
-
-			//Retorna la informacion resultante por JSON
-			$response = new \stdClass();
-			$response->respuesta_code 		= 'OK';
-			$json = new JsonModel(get_object_vars($response));
-			return $json;
-			//false
-		}catch (\Exception $e) {
-			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
-			$response = $this->getResponse();
-			$response->setStatusCode(500);
-			$response->setContent($excepcion_msg);
-			return $response;
-		}		
-	}//end funcion actualizarmasivoAction
-*/	
-	
+	}//end  function getComboDataGridAction
 }
