@@ -8,6 +8,7 @@ use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\JsonModel;
 use Dispo\BO\GrupoDispoCabBO;
+use Dispo\BO\GrupoPrecioCabBO;
 use Zend\Http\Client;
 use Zend\Http\Request;
 use Dispo\Data\GrupoDispoDetData;
@@ -396,7 +397,7 @@ class GrupodispoController extends AbstractActionController
 	
 	/*
 	 * *****************************************************************
-	 * 				FUNCIONES GRUPO CLIENTE
+	 * 				FUNCIONES GRUPO DISPO
 	 * *****************************************************************
 	 * 
 	 */
@@ -436,6 +437,7 @@ class GrupodispoController extends AbstractActionController
 			$i=0;
 			foreach($result as $row){
 				$row2["cliente_nombre"] 	= trim($row["cliente_nombre"]);
+				$row2["usuario_id"] 		= trim($row["usuario_id"]);
 				$row2["usuario_nombre"] 	= trim($row["usuario_nombre"]);
 	
 				$response->rows[$i] = $row2;
@@ -489,6 +491,7 @@ class GrupodispoController extends AbstractActionController
 			$i=0;
 			foreach($result as $row){
 				$row2["cliente_nombre"] 	= trim($row["cliente_nombre"]);
+				$row2["usuario_id"] 		= trim($row["usuario_id"]);
 				$row2["usuario_nombre"] 	= trim($row["usuario_nombre"]);
 				$row2["estado"] 			= trim($row["estado"]);
 	
@@ -509,6 +512,10 @@ class GrupodispoController extends AbstractActionController
 			return $response;
 		}
 	}//end function listadogrupodispoasignadosdataAction
+	
+	
+	
+	
 	
 	
 }

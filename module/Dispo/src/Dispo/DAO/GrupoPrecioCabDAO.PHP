@@ -18,16 +18,20 @@ class GrupoPrecioCabDAO extends Conexion
 	 */
 	public function ingresar(GrupoPrecioCabData $GrupoPrecioCabData)
 	{
-		$key    = array(
+		/*$key    = array(
 				'id'						        => $GrupoPrecioCabData->getId(),
-		);
+		);*/
 		$record = array(
-				'id'								=> $GrupoPrecioCabData->getId(),
-				'nombre'		                    => $GrupoPrecioCabData->getNombre()
-				
+				'nombre'		                    => $GrupoPrecioCabData->getNombre(),
+				'inventario_id'						=> $GrupoPrecioCabData->getInventarioId(),
+				'calidad_id'						=> $GrupoPrecioCabData->getCalidadId(),
+				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_ing_id'                	=> $GrupoPrecioCabData->getUsuarioIngId(),
+				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                	=> $GrupoPrecioCabData->getUsuarioIngId(),
 		);
 		$this->getEntityManager()->getConnection()->insert($this->table_name, $record);
-		//$id = $this->getEntityManager()->getConnection()->lastInsertId();
+		$id = $this->getEntityManager()->getConnection()->lastInsertId();
 		return $id;
 	}//end function ingresar
 
@@ -46,8 +50,11 @@ class GrupoPrecioCabDAO extends Conexion
 		);
 		$record = array(
 				'id'		                   		=> $GrupoPrecioCabData->getId(),
-				'nombre'		                    => $GrupoPrecioCabData->getNombre()
-				
+				'nombre'		                    => $GrupoPrecioCabData->getNombre(),
+				'inventario_id'						=> $GrupoPrecioCabData->getInventarioId(),
+				'calidad_id'						=> $GrupoPrecioCabData->getCalidadId(),
+				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                	=> $GrupoPrecioCabData->getUsuarioModId(),
 				
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
@@ -189,5 +196,49 @@ class GrupoPrecioCabDAO extends Conexion
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		return $row;
 	}//end function consultarArray	
+	
+	
+	
+	
+	public function listadoGrupoPrecioNoAsignadas()
+	{
+		$sql = 	' SELECT cliente.id, cliente.nombre, cliente.estado  '.
+				' FROM   cliente '.
+				' WHERE cliente.grupo_precio_cab_id IS NULL '.
+				"                        AND cliente.estado = 'A'";
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function listadoNoAsignadas
+	
+	
+	
+	/**
+	 *
+	 * @param array $condiciones (grupo_dispo_cab_id);
+	 * @return array
+	 */
+	public function listadoAsignadas($condiciones)
+	{
+		$sql = 	' SELECT cliente.id, cliente.nombre, cliente.estado '.
+				' FROM   cliente '.
+				' WHERE 1 = 1';
+	
+		if (!empty($condiciones['grupo_precio_cab_id']))
+		{
+			$sql = $sql.' and cliente.grupo_precio_cab_id = '.$condiciones['grupo_precio_cab_id'];
+		}//end if
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function listadoAsignadas
+	
+	
 }//end class
 
