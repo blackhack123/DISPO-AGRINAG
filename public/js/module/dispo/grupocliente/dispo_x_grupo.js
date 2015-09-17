@@ -255,7 +255,7 @@ $(document).ready(function ()
 							'async':true, 
 							'finish':function(response){
 									if ($("#frm_dispo_grupo_mantenimiento #accion").val()=='I'){
-										dispoGrupo_init();
+										dispoGrupo_ComboGrupoRefresh();
 									}//end if
 									DispoMostrarRegistro(response);
 									cargador_visibility('hide');
@@ -425,3 +425,27 @@ $(document).ready(function ()
 		
 		ajax_call(parameters, data);
 	}//end function DispoGrupo_eliminarGrupo
+	
+	
+	
+	function dispoGrupo_ComboGrupoRefresh()
+	{
+		$("#frm_dispo_grupo #info_grupo_dispo_cab").html('');
+		
+		var data = 	{
+						$texto_primer_elemento:	'&lt;SELECCIONE&gt;',						
+					}
+		data = JSON.stringify(data);
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/grupodispo/getcombo',
+							'show_cargando':false,
+							'async':true,
+							'finish':function(response){	
+								//grupodispo_listar();
+								$("#frm_dispo_grupo #grupo_dispo_cab_id").html(response.opciones);
+							 }							
+						 }
+		response = ajax_call(parameters, data);		
+		return false;			
+	}//end function dispoGrupo_ComboGrupoRefresh
