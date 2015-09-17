@@ -218,7 +218,7 @@ class TipocajamarcacionController extends AbstractActionController
 				
 			$request 				= $this->getRequest();
 			$opciones_tipo_caja		= utf8_encode($TipoCajaBO->getComboDataGrid());
-			$opciones_inventario	= utf8_encode($TipoCajaBO->getComboDataGrid());
+			$opciones_inventario	= utf8_encode($InventarioBO->getComboDataGrid());
 			$opciones_grado			= utf8_encode($GradoBO->getComboDataGrid());
 			
 			$response = new \stdClass();

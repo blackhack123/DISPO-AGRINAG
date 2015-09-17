@@ -239,7 +239,10 @@ function autoHeight_JqGrid_Refresh(id)
 
 	    var anchoTotal = 0;
 	    for (var i = 0; columnas[i]; i++) {
-	        anchoTotal += columnas[i].width;
+			if (columnas[i].hidden==false)
+			{
+		        anchoTotal += columnas[i].width;
+			}//end if
 	    }
 
 	    anchoTotal += 50;

@@ -417,12 +417,10 @@ function TipoCaja_DelRow()
 		return false;	
 	}//end if
 	
-	console.log('seliRow_TipoCajaGrid:',seliRow_TipoCajaGrid,'*seliCol_TipoCajaGrid:',seliCol_TipoCajaGrid,'*selRowId_TipoCajaGrid:',selRowId_TipoCajaGrid);
 	$('#grid_tipo_caja').jqGrid('editCell', seliRow_TipoCajaGrid, seliCol_TipoCajaGrid, false);	
 	
 	var rowData = $('#grid_tipo_caja').getRowData(selRowId_TipoCajaGrid);
 	
-	console.log(rowData);
 	if (rowData.accion!='I'){
 		//Se elimina el elemento que se invoka
 		var reg_eliminado = {id:rowData.id};
