@@ -83,7 +83,7 @@ class JqgridbuscadorController extends AbstractActionController
 		$viewModel->filters 	= $filter_string;		
 
 		$viewModel->setTerminal(true);
-		$viewModel->setTemplate('Application/dialog/JqGrid.phtml');
+		$viewModel->setTemplate('application/dialog/JqGrid.phtml');
 		return $viewModel;
 		
     }//end function dialogAction

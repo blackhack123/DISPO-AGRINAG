@@ -614,7 +614,7 @@ class DisponibilidadController extends AbstractActionController
 			//setting header optional - some API need this;
 			$headerString = 'Accept: application/json';
 			$requestHeaders->addHeaderLine($headerString);
-	
+
 			// The following request will be sent over a TLS secure connection.
 			$response = $client->send();
 			//if ($response->isSuccess()) {
@@ -808,7 +808,7 @@ class DisponibilidadController extends AbstractActionController
 				
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
-		
+
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 
