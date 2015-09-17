@@ -17,7 +17,7 @@ class ClienteAgenciaCargaBO extends Conexion
 	{
 		$ClienteAgenciaCargaDAO = new ClienteAgenciaCargaDAO();
 		$ClienteAgenciaCargaDAO->setEntityManager($this->getEntityManager());
-		$result = $ClienteAgenciaCargaDAO->listadoNoAsignadas();
+		$result = $ClienteAgenciaCargaDAO->listadoNoAsignadas($condiciones);
 		return $result;		
 	}//end function listadoNoAsignadas
 	

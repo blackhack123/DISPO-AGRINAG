@@ -231,19 +231,19 @@
 			ValidateControlsInit();
 			$("#accion").val("M");			
 			$("#dialog_mantenimiento_usuario_nombre").html(row.nombre);
-			$("#id").val(row.id);
-			$("#id").prop('readonly',true);
-			$("#nombre").val(row.nombre);
-			$("#username").val(row.username);
-			$("#password").val('');
-			$("#password2").val('');
-			$("#email").val(row.email);
-			$("#perfil_id").html(response.cbo_perfil_id);
-			$("#estado").html(response.cbo_estado);
-			$("#lbl_usuario_ing").html(row.usuario_ing_user_name);
-			$("#lbl_fec_ingreso").html(row.fec_ingreso);
-			$("#lbl_usuario_mod").html(row.usuario_mod_user_name);
-			$("#lbl_fec_modifica").html(row.fec_modifica);
+			$("#frm #id").val(row.id);
+			$("#frm #id").prop('readonly',true);
+			$("#frm #nombre").val(row.nombre);
+			$("#frm #username").val(row.username);
+			$("#frm #password").val('');
+			$("#frm #password2").val('');
+			$("#frm #email").val(row.email);
+			$("#frm #perfil_id").html(response.cbo_perfil_id);
+			$("#frm #estado").html(response.cbo_estado);
+			$("#frm #lbl_usuario_ing").html(row.usuario_ing_user_name);
+			$("#frm #lbl_fec_ingreso").html(row.fec_ingreso);
+			$("#frm #lbl_usuario_mod").html(row.usuario_mod_user_name);
+			$("#frm #lbl_fec_modifica").html(row.fec_modifica);
 
 		}//end if
 	}//end function mostrar_registro
@@ -316,7 +316,7 @@
     
 
             <!--  DIALOG DE MANTENIMIENTO -->
-            <form id="frm">
+            <form id="frm" name="frm">
 			<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">

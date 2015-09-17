@@ -61,8 +61,8 @@ class ClienteAgenciaCargaDAO extends Conexion
 				' FROM agencia_carga LEFT JOIN cliente_agencia_carga '.
 				"						    ON cliente_agencia_carga.cliente_id = '".$condiciones['cliente_id']."'".
 				'     		               AND cliente_agencia_carga.agencia_carga_id = agencia_carga.id '.
-				" WHERE cliente_agencia_carga.cliente_id IS NULL";
-		
+				" WHERE cliente_agencia_carga.cliente_id IS NULL".
+				"					 	   and agencia_carga.estado = '".$condiciones['estado']."'";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro

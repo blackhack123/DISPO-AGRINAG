@@ -17,7 +17,7 @@ $(document).ready(function () {
 	}); 
 	
 	/*---------------------------------------------------------------*/
-	/*-----------------Se configura los JQGRID's AG. CARGA-----------*/
+	/*-----------Se configura los JQGRID's AG. CARGA NO ASIGNADOS----*/
 	/*---------------------------------------------------------------*/	
 	jQuery("#grid_agenciacarga_listado").jqGrid({
 		url:'../../dispo/clienteagenciacarga/listadoagenciasnoasignadasdata',
@@ -30,17 +30,10 @@ $(document).ready(function () {
 		/*height:'400',*/
 		colNames:['Código','Nombre','Tipo'],
 		colModel:[
-			//{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
 			{name:'id',index:'id', width:50, align:"center", sorttype:"int"},
 			{name:'nombre',index:'nombre', width:230, sorttype:"string"},
 			//{name:'telefono',index:'telefono', width:100, sorttype:"string"},	
 			{name:'tipo',index:'tipo', width:80, sorttype:"string", align: 'center',formatter:gridAgenciacargaListado_FormatterTipo }	
-			//{name:'sincronizado',index:'sincronizado', width:30, align:"center", sorttype:"number", formatter: gridAgenciacargaListado_FormatterSincronizado},
-			//{name:'fec_sincronizado',index:'fec_sincronizado', width:130, sorttype:"string", align:"center"},
-			//{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
-			//{name:'btn_editar_agenciacarga',index:'', width:30, align:"center", formatter: gridAgenciacargaListado_FormatterEdit,
-			// cellattr: function () { return ' title=" Modificar"'; }
-			//},
 		],
 		rowNum:999999,
 		pager: '#pager_agenciacarga_listado',

@@ -449,15 +449,7 @@
 		function cliente_mostrar_registro(response)
 		{
 			var row = response.row;
-			
-			//var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
-			//var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 'I' : 'A');
-			//var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
-			//var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
-			//var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
-			//var tipo_envio_estcta		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
-			//var dia_semana				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
-			//var inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
+		
 			if (row!==null)
 			{
 			//	ValidateControlsInit();
