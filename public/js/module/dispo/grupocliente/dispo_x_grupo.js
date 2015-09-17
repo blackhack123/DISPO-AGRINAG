@@ -255,8 +255,9 @@ $(document).ready(function ()
 							'async':true, 
 							'finish':function(response){
 									if ($("#frm_dispo_grupo_mantenimiento #accion").val()=='I'){
-										dispoGrupo_ComboGrupoRefresh();
+										//dispoGrupo_ComboGrupoRefresh();
 									}//end if
+									dispoGrupo_ComboGrupoRefresh();
 									DispoMostrarRegistro(response);
 									cargador_visibility('hide');
 									swal({  title: "Informacion grabada con exito!!",   
@@ -433,7 +434,8 @@ $(document).ready(function ()
 		$("#frm_dispo_grupo #info_grupo_dispo_cab").html('');
 		
 		var data = 	{
-						$texto_primer_elemento:	'&lt;SELECCIONE&gt;',						
+						texto_primer_elemento:	'&lt;SELECCIONE&gt;',
+						grupo_dispo_cab_id:		$("#frm_dispo_grupo #grupo_dispo_cab_id").val(),
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',
