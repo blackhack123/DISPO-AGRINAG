@@ -218,7 +218,6 @@ class GrupoDispoCabBO extends Conexion
 	}//end function listadoNoAsignadas
 	
 	
-	
 	/**
 	 *
 	 * @param array $condiciones (grupo_dispo_cab_id);
@@ -232,6 +231,8 @@ class GrupoDispoCabBO extends Conexion
 		return $result;
 	}//end function listadoAsignadas	
 
+	
+	
 	
 	
 }//end class

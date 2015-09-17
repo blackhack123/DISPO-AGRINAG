@@ -144,4 +144,62 @@ class ClienteBO extends Conexion
 	
 	
 	
+	/**
+	 *
+	 * @param ClienteData[] $ArrClienteData
+	 * @throws Exception
+	 * @return boolean
+	 */
+	function vincularGrupoPrecio($ArrClienteData)
+	{
+		$ClienteDAO = new ClienteDAO();
+		$ClienteDAO->setEntityManager($this->getEntityManager());
+	
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			foreach($ArrClienteData as $ClienteData)
+			{
+				$ClienteDAO->vincularGrupoPrecio($ClienteData);
+			}//end foreach
+	
+			$this->getEntityManager()->getConnection()->commit();
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function desvincularGrupoDispo
+	
+	
+	
+	/**
+	 *
+	 * @param ClienteData[] $ArrClienteData
+	 * @throws Exception
+	 * @return boolean
+	 */
+	function desvincularGrupoPrecio($ArrClienteData)
+	{
+		$ClienteDAO = new ClienteDAO();
+		$ClienteDAO->setEntityManager($this->getEntityManager());
+	
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			foreach($ArrClienteData as $ClienteData)
+			{
+				$ClienteDAO->desvincularGrupoPrecio($ClienteData);
+			}//end foreach
+	
+			$this->getEntityManager()->getConnection()->commit();
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function desvincularGrupoDispo
+	
+	
+	
 }//end class MarcacionBO

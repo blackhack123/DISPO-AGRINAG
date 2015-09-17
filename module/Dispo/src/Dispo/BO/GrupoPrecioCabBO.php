@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Dispo\DAO\GrupoPrecioCabDAO;
 use Dispo\DAO\GrupoPrecioDetDAO;
 use Dispo\DAO\DispoDAO;
-
+use Dispo\Data\GrupoPrecioCabData;
 
 class GrupoPrecioCabBO extends Conexion
 {
@@ -185,7 +185,45 @@ class GrupoPrecioCabBO extends Conexion
 		}
 	
 	}//end function registrarStock
-
+	
+	
+	/**
+	 * 
+	 * @param string $accion
+	 * @param GrupoPrecioCabData $GrupoPrecioCabData
+	 * @throws Exception
+	 * @return array
+	 */
+	function registrarPorAccion($accion, GrupoPrecioCabData $GrupoPrecioCabData)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try
+		{
+			$GrupoPrecioCabDAO = new GrupoPrecioCabDAO();
+			$GrupoPrecioCabDAO->setEntityManager($this->getEntityManager());
+				
+			switch($accion)
+			{
+				case 'I':
+					$id = $GrupoPrecioCabDAO->ingresar($GrupoPrecioCabData);
+					$result['id']	 	= $id;
+					break;
+						
+				case 'M':
+					$id = $GrupoPrecioCabDAO->modificar($GrupoPrecioCabData);
+					$result['id']		= $id;
+					break;
+			}//end switch
+				
+			$this->getEntityManager()->getConnection()->commit();
+			return $result;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function registrarPorAccion
+	
 	
 	/**
 	 * 
@@ -200,6 +238,30 @@ class GrupoPrecioCabBO extends Conexion
 		$reg = $GrupoPrecioCabDAO->consultar($id, $resultType);
 		return $reg;		
 	}//end function consultarCabecera
+	
+	
+	
+	function listadoGrupoPrecioNoAsignadas()
+	{
+		$GrupoPrecioCabDAO = new GrupoPrecioCabDAO();
+		$GrupoPrecioCabDAO->setEntityManager($this->getEntityManager());
+		$result = $GrupoPrecioCabDAO->listadoGrupoPrecioNoAsignadas();
+		return $result;
+	}//end function listadoNoAsignadas
+	
+	
+	/**
+	 *
+	 * @param array $condiciones (grupo_precio_cab_id);
+	 * @return array
+	 */
+	function listadoAsignadas($condiciones)
+	{
+		$GrupoPrecioCabDAO = new GrupoPrecioCabDAO();
+		$GrupoPrecioCabDAO->setEntityManager($this->getEntityManager());
+		$result = $GrupoPrecioCabDAO->listadoAsignadas($condiciones);
+		return $result;
+	}//end function listadoAsignadas
 	
 	
 }//end class

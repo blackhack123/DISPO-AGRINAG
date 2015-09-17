@@ -1,7 +1,8 @@
 
 <meta charset="UTF-8">
+	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/grupocliente/init.js')); ?>"></script>
    	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/grupocliente/dispo_x_grupo.js')); ?>"></script>
-
+	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/grupocliente/precio_x_grupo.js')); ?>"></script>
 
    	
    	<div class="title-admin-section">
@@ -16,7 +17,7 @@
 		  <!-- Nav tabs -->
 		  <ul class="nav nav-tabs" role="tablist">
 			    <li role="presentation" class="active"><a href="#grupo_dispo" aria-controls="grupo_dispo" role="tab" data-toggle="tab">GRUPO DISPO</a></li>
-			    <li role="presentation"><a href="#grupo_cliente" aria-controls="grupo_cliente" role="tab" data-toggle="tab">GRUPO CLIENTE</a></li>
+			    <li role="presentation"><a href="#grupo_precio" aria-controls="grupo_precio" role="tab" data-toggle="tab">GRUPO PRECIO</a></li>
 		  </ul>
 		
 		  <!-- Tab panes -->
@@ -33,7 +34,7 @@
                                         	</div>
                                             <div class="busqueda-admin-section pull-left">
                                             	 <select  id="grupo_dispo_cab_id" class="form-control input-sm"></select>
-                                                 <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>&nbsp;&nbsp;<span id="info_grupo_dispo_cab" class="bg-info">PRUEBA</span>
+                                                 <button id="btn_consultar" type="button" class="btn btn-primary btn-xs" style="display: none;"></button>&nbsp;&nbsp;<span id="info_grupo_dispo_cab" class="bg-info"></span>
                                             </div>
                                         </div>
                                      </section>
@@ -62,12 +63,48 @@
 		                     </div>
                              
                            	</form> 
-                           	
-                           	
 			    </div>
 			    
-			    <div role="tabpanel" class="tab-pane" id="grupo_cliente">
-			    		GRUPO CLIENTE
+			    <div role="tabpanel" class="tab-pane" id="grupo_precio">
+			    	  	<form id="frm_grupo_precio" name="frm_grupo_precio" action="#" method="post" class="form-inline">
+                                <div class="form-group">
+                                	 <section class="body-admin-section">
+                                     	<div class="accion-admin-section">
+                                        	<div class="botonera-admin-section pull-left separator">
+                                        		<button id="btn_nuevo_grupo_precio" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_grupo_precio"><i class="glyphicon glyphicon-plus"></i> NUEVO</button>
+                                                <button id="btn_modificar_grupo_precio" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil"></i>  MODIFICAR</button>
+                                        	</div>
+                                            <div class="busqueda-admin-section pull-left">
+                                            	 <select  id="grupo_precio_cab_id" class="form-control input-sm"></select>
+                                                 <button id="btn_consultar" type="button" class="btn btn-primary btn-xs" style="display: none;"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>&nbsp;&nbsp;<span id="info_grupo_precio_cab" class="bg-info"></span>
+                                            </div>
+                                        </div>
+                                     </section>
+                                </div>
+                                
+                             <div class="clearfix">
+                             	<table cellpadding="0" cellspacing="0" border="0">
+                                    	<tr>
+                                        	<td>
+				                             	<table id="grid_grupoprecio_noasignados" class="grid grid-autoheight" ></table>
+				                             	<div id="pager_grupoprecio_noasignados"></div>  
+				                            </td>
+				                            <td>
+                                                <p><a id="btn_asignar_grupo"   role="button"   class="btn btn-primary btn-sm">ASIGNAR <i class="glyphicon glyphicon-forward"> </i></a>
+                                                </p><br>
+                                                <p><a id="btn_eliminar_grupo"   role="button"   class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-backward"></i> ELIMINAR</a>
+                                                </p>
+
+                                            </td>
+                                            <td>
+                                                <table id="grid_grupoprecio_asignados" class="grid grid-autoheight" ></table>
+				                             	<div id="pager_grupoprecio_asignados"></div>                                  
+                                            </td>
+                                        <tr>
+                                </table>
+		                     </div>
+                             
+                           	</form> 
 			    
 			    </div>
 		  </div>
@@ -77,7 +114,7 @@
 	
 	
 	<!-- Modal -->
-	<div class="modal fade" id="dialog_dispo_grupo_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="modal_grupo_dispo_clientes">
+	<div class="modal fade" id="dialog_dispo_grupo_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="dialog_dispo_grupo_mantenimiento">
 		  <div class="modal-dialog" role="document">
 			    <div class="modal-content">
 				      <div class="modal-header">
@@ -85,38 +122,40 @@
 					        <h4 class="modal-title" id="myModalLabel"><span id="dialog_dispo_grupo_mantenimiento_titulo"></span></h4>
 				      </div>
 				      <div class="modal-body">
-				      		<form class="form-horizontal" name="frm_dispo_grupo_mantenimiento">
-				      		<input type="hidden" id="accion" name="accion" value="">
-								 <div class="form-group">
-								    <label for="id" class="col-sm-2 control-label">ID:</label>
-								    <div class="col-sm-9">
-      									<input type="text" class="form-control" id="id">
-    								</div>
-								 </div>
-								 <div class="form-group">
-								    <label for="nombre" class="col-sm-2 control-label">NOMBRE:</label>
-								    <div class="col-sm-9">
-      									<input type="text" class="form-control" id="nombre">
-    								</div>
-								 </div>
-								 <div class="form-group">
-								    <label for="inventario_id" class="col-sm-2 control-label">INVENTARIO:</label>
-								    <div class="col-sm-9">
-      									<select  id="inventario_id"  name="inventario_id" class="form-control" validate="required" validateMessage="Seleccione un inventario"></select>
-    								</div>
-								 </div>
-								 <div class="form-group">
-								    <label for="calidad_id" class="col-sm-2 control-label">CALIDAD:</label>
-								    <div class="col-sm-9">
-      									<select  id="calidad_id" name="calidad_id" class="form-control" validate="required" validateMessage="Seleccione la calidad"></select>
-    								</div>
-								 </div>
-							</form>
-						
-				      </div>
-				      <div class="modal-footer">
-					        <button type="button" class="btn btn-primary btn-sm glyphicon glyphicon-plus">GRABAR</button>
-				      </div>
+				      		<form class="form-horizontal" name="frm_dispo_grupo_mantenimiento" id="frm_dispo_grupo_mantenimiento">
+					      		<input type="hidden" id="accion" name="accion" value="">
+									 <div class="form-group">
+									    <label for="id" class="col-sm-2 control-label">ID:</label>
+									    <div class="col-sm-4">
+	      									<input type="text" class="form-control" id="id" maxlength="5" disabled>
+	    								</div>
+									 </div>
+									 <div class="form-group">
+									    <label for="nombre" class="col-sm-2 control-label">NOMBRE:</label>
+									    <div class="col-sm-9">
+	      									<input type="text" class="form-control" id="nombre" maxlength="50" validate="required" validateMessage="Ingrese un Nombre">
+	    								</div>
+									 </div>
+									 <div class="form-group">
+									    <label for="inventario_id" class="col-sm-2 control-label">INVENTARIO:</label>
+									    <div class="col-sm-9">
+	      									<select  id="inventario_id"  name="inventario_id" class="form-control" validate="required" validateMessage="Seleccione un inventario"></select>
+	    								</div>
+									 </div>
+									 <div class="form-group">
+									    <label for="calidad_id" class="col-sm-2 control-label">CALIDAD:</label>
+									    <div class="col-sm-9">
+	      									<select  id="calidad_id" name="calidad_id" class="form-control" validate="required" validateMessage="Seleccione la calidad"></select>
+	    								</div>
+									 </div>
+							 </form> 
+					      </div>
+					      <div class="modal-footer">
+					      	<form class="form-horizontal" name="frm_grabar_dispo_grupo" id="frm_grabar_dispo_grupo">
+						        <button type="button" class="btn btn-primary btn-sm " id="btn_grabar_grupo_dispo"><i class="glyphicon glyphicon-plus"></i> GRABAR</button>
+						    </form>
+					      </div>
+				        
 			    </div>
 		  </div>
 	</div>
@@ -124,3 +163,50 @@
     
 
     
+
+    	<!-- Modal -->
+	<div class="modal fade" id="dialog_precio_grupo_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="dialog_precio_grupo_mantenimiento">
+		  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+				      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					        <h4 class="modal-title" id="myModalLabel"><span id="dialog_precio_grupo_mantenimiento_titulo"></span></h4>
+				      </div>
+				      <div class="modal-body">
+				      		<form class="form-horizontal" name="frm_precio_grupo_mantenimiento" id="frm_precio_grupo_mantenimiento">
+					      		<input type="hidden" id="accion" name="accion" value="">
+									 <div class="form-group">
+									    <label for="id" class="col-sm-2 control-label">ID:</label>
+									    <div class="col-sm-4">
+	      									<input type="text" class="form-control" id="id" maxlength="5" disabled>
+	    								</div>
+									 </div>
+									 <div class="form-group">
+									    <label for="nombre" class="col-sm-2 control-label">NOMBRE:</label>
+									    <div class="col-sm-9">
+	      									<input type="text" class="form-control" id="nombre" maxlength="50"  validate="required" validateMessage="Ingrese un Nombre">
+	    								</div>
+									 </div>
+									 <div class="form-group">
+									    <label for="inventario_id" class="col-sm-2 control-label">INVENTARIO:</label>
+									    <div class="col-sm-9">
+	      									<select  id="inventario_id"  name="inventario_id" class="form-control" validate="required" validateMessage="Seleccione un inventario"></select>
+	    								</div>
+									 </div>
+									 <div class="form-group">
+									    <label for="calidad_id" class="col-sm-2 control-label">CALIDAD:</label>
+									    <div class="col-sm-9">
+	      									<select  id="calidad_id" name="calidad_id" class="form-control" validate="required" validateMessage="Seleccione la calidad"></select>
+	    								</div>
+									 </div>
+							 </form> 
+					      </div>
+					      <div class="modal-footer">
+					      	<form class="form-horizontal" name="frm_grabar_precio_grupo" id="frm_grabar_precio_grupo">
+						        <button type="button" class="btn btn-primary btn-sm " id="btn_grabar_grupo_precio" name="btn_grabar_grupo_precio"><i class="glyphicon glyphicon-plus"></i> GRABAR</button>
+						    </form>
+					      </div>
+				        
+			    </div>
+		  </div>
+	</div>

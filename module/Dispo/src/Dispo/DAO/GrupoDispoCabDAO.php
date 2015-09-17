@@ -274,7 +274,7 @@ class GrupoDispoCabDAO extends Conexion
 	
 	public function listadoNoAsignadas()
 	{
-		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre  '.
+		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre, usuario.id AS usuario_id  '.
 				' FROM   cliente INNER JOIN  usuario '.
 				'						 ON usuario.cliente_id = cliente.id '.
 				'     		             AND usuario.grupo_dispo_cab_id IS NULL'.
@@ -297,7 +297,7 @@ class GrupoDispoCabDAO extends Conexion
 	 */
 	public function listadoAsignadas($condiciones)
 	{
-		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre, usuario.estado '.
+		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre, usuario.estado, usuario.id AS usuario_id '.
 				' FROM   usuario INNER JOIN  cliente '.
 				'						 ON cliente.id = usuario.cliente_id '.
 				' WHERE 1 = 1';
@@ -313,6 +313,9 @@ class GrupoDispoCabDAO extends Conexion
 	
 		return $result;
 	}//end function listadoAsignadas	
+	
+	
+	
 	
 }//end class
 

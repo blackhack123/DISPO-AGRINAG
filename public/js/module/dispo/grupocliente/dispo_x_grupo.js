@@ -1,10 +1,9 @@
 
 
-$(document).ready(function () {
+$(document).ready(function () 
+{
 
 	/*----------------------Se cargan los controles -----------------*/
-	dispoGrupo_init();
-	
 	$("#frm_dispo_grupo #grupo_dispo_cab_id").on('change', function(event){
 		$('#grid_grupodispo_noasignados').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		$('#grid_grupodispo_asignados').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
@@ -12,21 +11,22 @@ $(document).ready(function () {
 		return false;		
 	});
 	
-	
-	$("#frm_dispo_grupo #btn_consultar").on('click', function(event){ 
-		$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-		return false;
-	});	
+
 
 	$("#frm_dispo_grupo #btn_nuevo").on('click', function(event){ 
-		nuevo(); 
+		nuevo_grupo_dispo(); 
 		return false;
 	});		
 	
-	$("#frm_dispo_grupo #editar_dispo_grupo").on('click', function(event){ 	
+	$("#frm_dispo_grupo #btn_modificar").on('click', function(event){ 	
 		$("#frm_dispo_grupo_mantenimiento #accion").val('M');
 		DispoGrupo_Consultar($("#frm_dispo_grupo #grupo_dispo_cab_id").val())	
 	});
+	
+	$("#frm_grabar_dispo_grupo #btn_grabar_grupo_dispo").on('click', function(event){ 
+		grabar_grupo_dispo();
+		return false;
+	});	
 	
 	
 	$("#frm_dispo_grupo #btn_asignar_grupo").on('click', function(event){ 
@@ -41,27 +41,22 @@ $(document).ready(function () {
 	});	
 	
 	
-	$("#frm_dispo_grupo_mantenimiento #btn_grabar").on('click', function(event){ 
-		DispoGrupo_GrabarRegistro();
-		return false;
-	});	
-	
-	
 	/*---------------------------------------------------------------*/	
 	
 	/*---------------------------------------------------------------*/
-	/*------Se configura los JQGRID's GRUPO DISPO ASIGNADOS ---------*/
+	/*------Se configura los JQGRID's GRUPO DISPO no ASIGNADOS -------*/
 	/*---------------------------------------------------------------*/	
 	jQuery("#grid_grupodispo_noasignados").jqGrid({
 		url:'../../dispo/grupodispo/listadogrupodisponoasignadosdata',
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['CLIENTE','USUARIO'],
+		colNames:['ID','CLIENTE','USUARIO'],
 		colModel:[
 			//{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
+			{name:'usuario_id',index:'usuario_id', width:100, sorttype:"integer", hidden:true},
 			{name:'cliente_nombre',index:'cliente_nombre', width:150, sorttype:"string"},
-			{name:'usuario_nombre',index:'usuario_nombre', width:230, sorttype:"string"}
+			{name:'usuario_nombre',index:'usuario_nombre', width:150, sorttype:"string"}
 			//{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
 			//{name:'btn_editar_agenciacarga',index:'', width:30, align:"center", formatter: gridAgenciacargaListado_FormatterEdit,
 			// cellattr: function () { return ' title=" Modificar"'; }
@@ -117,7 +112,7 @@ $(document).ready(function () {
 	/*---------------------------------------------------------------*/
 	
 	
-	
+	 
 	
 	/*---------------------------------------------------------------*/
 	/*----- Se configura los JQGRID's GRUPO DISPO ASIGNADOS ---------*/
@@ -129,16 +124,12 @@ $(document).ready(function () {
 		},
 		datatype: "json",
 		loadonce: true,			
-		/*height:'400',*/
-		colNames:['CLIENTE','USUARIO','ESTADO'],
+		colNames:['ID','CLIENTE','USUARIO','ESTADO'],
 		colModel:[
-			//{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
+			{name:'usuario_id',index:'usuario_id', width:100, sorttype:"integer", hidden:true},
 			{name:'cliente_nombre',index:'cliente_nombre', width:150, sorttype:"string"},
-			{name:'usuario_nombre',index:'usuario_nombre', width:230, sorttype:"string"},
+			{name:'usuario_nombre',index:'usuario_nombre', width:150, sorttype:"string"},
 			{name:'estado',index:'estado', width:60, sorttype:"string", hidden:true},
-			//{name:'btn_editar_agenciacarga',index:'', width:30, align:"center", formatter: gridAgenciacargaListado_FormatterEdit,
-			// cellattr: function () { return ' title=" Modificar"'; }
-			//},
 		],
 		rowNum:999999,
 		pager: '#pager_grupodispo_asignados',
@@ -171,35 +162,9 @@ $(document).ready(function () {
 	jQuery("#grid_grupodispo_asignados").jqGrid('navGrid','#pager_grupodispo_asignados',{edit:false,add:false,del:false});
 
 	/*---------------------------------------------------------------*/	
-	/*---------------------------------------------------------------*/	
-	
-	});
-	
+	/*---------------------------------------------------------------*/		
+});
 
-	function dispoGrupo_init()
-	{
-		$("#frm_dispo_grupo #info_grupo_dispo_cab").html('');
-		
-		var data = 	{
-						opcion: 'panel-grupo-clientes',
-						grupo_dispo_1er_elemento:	'&lt;SELECCIONE&gt;',
-						//grupo_dispo_cab_id:			grupo_dispo_cab_id;
-					}
-		data = JSON.stringify(data);
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'../../dispo/grupodispo/initcontrols',
-							'show_cargando':false,
-							'async':true,
-							'finish':function(response){	
-								//grupodispo_listar();
-								$("#frm_dispo_grupo #grupo_dispo_cab_id").html(response.grupo_dispo_opciones);
-							 }							
-						 }
-		response = ajax_call(parameters, data);		
-		return false;	
-	}//end function dispoGrupo_init
-	
 	
 
 	function DispoGrupo_ConsultarInfoDispoGrupoCab(grupo_dispo_cab_id)
@@ -228,7 +193,7 @@ $(document).ready(function () {
 	}//end function DispoGrupo_ConsultarInfoDispoGrupoCab
 	
 	
-	function nuevo()
+	function nuevo_grupo_dispo()
 	{
 		var data = 	{
 					
@@ -261,7 +226,7 @@ $(document).ready(function () {
 	}//end function nuevo
 	
 	
-	function DispoGrupo_GrabarRegistro()
+	function grabar_grupo_dispo()
 	{
 		if (!ValidateControls('frm_dispo_grupo_mantenimiento')) 
 		{
@@ -292,8 +257,7 @@ $(document).ready(function () {
 									if ($("#frm_dispo_grupo_mantenimiento #accion").val()=='I'){
 										dispoGrupo_init();
 									}//end if
-									MostrarRegistro(response);
-									
+									DispoMostrarRegistro(response);
 									cargador_visibility('hide');
 									swal({  title: "Informacion grabada con exito!!",   
 										//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
@@ -314,7 +278,7 @@ $(document).ready(function () {
 	
 
 
-	function MostrarRegistro(response)
+	function DispoMostrarRegistro(response)
 	{
 		var row = response.row;
 		
@@ -325,12 +289,12 @@ $(document).ready(function () {
 		$("#frm_dispo_grupo_mantenimiento #nombre").val(row.nombre);
 		$("#frm_dispo_grupo_mantenimiento #inventario_id").html(response.inventario_opciones);
 		$("#frm_dispo_grupo_mantenimiento #calidad_id").html(response.calidad_opciones);
-	}//end function DispoGrupo_MostrarRegistro
+	}//end function MostrarRegistro
 	
 	
 	function DispoGrupo_Consultar(id)
 	{
-		//Se llama mediante AJAX para adicionar al carrito de compras
+		//Se llama mediante AJAX para adicionar 
 		var data = 	{grupo_dispo_cab_id:id}
 		data = JSON.stringify(data);
 
@@ -340,9 +304,8 @@ $(document).ready(function () {
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
-									DispoGrupo_MostrarRegistro(response);
+									DispoMostrarRegistro(response);
 									cargador_visibility('hide');
-
 									$('#dialog_dispo_grupo_mantenimiento').modal('show')
 							}							
 						 }
@@ -361,8 +324,9 @@ $(document).ready(function () {
 	
 	function DispoGrupo_asignarGrupo()
 	{
-		var grid = $("#frm_dispo_grupo #grid_grupodispo_noasignados");
-        var rowKey = grid.getGridParam("selrow");
+		var col_usuario_id	 	= jqgrid_get_columnIndexByName($("#frm_dispo_grupo #grid_grupodispo_noasignados"), "usuario_id");
+		var grid 				= $("#frm_dispo_grupo #grid_grupodispo_noasignados");
+        var rowKey 				= grid.getGridParam("selrow");
 
         if (!rowKey)
         	{
@@ -371,11 +335,14 @@ $(document).ready(function () {
         	}
         
         var selectedIDs = grid.getGridParam("selarrrow");
+        var usuario_id  = null;
 		
 		var arr_data 	= new Array();
 		for (var i = 0; i < selectedIDs.length; i++) {
+			usuario_id 	= jQuery("#frm_dispo_grupo #grid_grupodispo_noasignados").jqGrid('getCell',selectedIDs[i], col_usuario_id);
+			
 			var element				= {};
-			element.usuario_id 		= selectedIDs[i];
+			element.usuario_id 		= usuario_id;
 			arr_data.push(element);
 		}//end for
 		
@@ -411,8 +378,9 @@ $(document).ready(function () {
 	
 	function DispoGrupo_eliminarGrupo()
 	{
-		var grid = $("#frm_dispo_grupo #grid_grupodispo_asignados");
-        var rowKey = grid.getGridParam("selrow");
+		var col_usuario_id	 	= jqgrid_get_columnIndexByName($("#frm_dispo_grupo #grid_grupodispo_asignados"), "usuario_id");
+		var grid 				= $("#frm_dispo_grupo #grid_grupodispo_asignados");
+        var rowKey				= grid.getGridParam("selrow");
 
         if (!rowKey)
         	{
@@ -421,11 +389,13 @@ $(document).ready(function () {
         	}
         
         var selectedIDs = grid.getGridParam("selarrrow");
-		
+        var usuario_id  = null;
 		var arr_data 	= new Array();
 		for (var i = 0; i < selectedIDs.length; i++) {
+			usuario_id 	= jQuery("#frm_dispo_grupo #grid_grupodispo_asignados").jqGrid('getCell',selectedIDs[i], col_usuario_id);
+			
 			var element				= {};
-			element.usuario_id 		= selectedIDs[i];
+			element.usuario_id 		= usuario_id;
 			arr_data.push(element);
 		}//end for
 		
