@@ -53,14 +53,9 @@ $(document).ready(function ()
 		/*height:'400',*/
 		colNames:['ID','CLIENTE','USUARIO'],
 		colModel:[
-			//{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
 			{name:'usuario_id',index:'usuario_id', width:100, sorttype:"integer", hidden:true},
 			{name:'cliente_nombre',index:'cliente_nombre', width:150, sorttype:"string"},
 			{name:'usuario_nombre',index:'usuario_nombre', width:150, sorttype:"string"}
-			//{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
-			//{name:'btn_editar_agenciacarga',index:'', width:30, align:"center", formatter: gridAgenciacargaListado_FormatterEdit,
-			// cellattr: function () { return ' title=" Modificar"'; }
-			//},
 		],
 		rowNum:999999,
 		pager: '#pager_grupodispo_noasignados',
@@ -77,15 +72,7 @@ $(document).ready(function ()
 		jsonReader: {
 			repeatitems : false,
 		},		
-		/*caption:"Grilla de Prueba",*/
-	/*	afterInsertRow : function(rowid, rowdata){
-			if (rowdata.estado == "I"){
-				$(this).jqGrid('setRowData', rowid, true, {color:'red'});
-			}//end if
-		},
-	*/
-		
-		
+
 		loadBeforeSend: function (xhr, settings) {
 			this.p.loadBeforeSend = null; //remove event handler
 			return false; // dont send load data request
@@ -112,7 +99,6 @@ $(document).ready(function ()
 	/*---------------------------------------------------------------*/
 	
 	
-	 
 	
 	/*---------------------------------------------------------------*/
 	/*----- Se configura los JQGRID's GRUPO DISPO ASIGNADOS ---------*/
@@ -255,8 +241,9 @@ $(document).ready(function ()
 							'async':true, 
 							'finish':function(response){
 									if ($("#frm_dispo_grupo_mantenimiento #accion").val()=='I'){
-										dispoGrupo_ComboGrupoRefresh();
+										//dispoGrupo_ComboGrupoRefresh();
 									}//end if
+									dispoGrupo_ComboGrupoRefresh();
 									DispoMostrarRegistro(response);
 									cargador_visibility('hide');
 									swal({  title: "Informacion grabada con exito!!",   
@@ -433,7 +420,8 @@ $(document).ready(function ()
 		$("#frm_dispo_grupo #info_grupo_dispo_cab").html('');
 		
 		var data = 	{
-						$texto_primer_elemento:	'&lt;SELECCIONE&gt;',						
+						texto_primer_elemento:	'&lt;SELECCIONE&gt;',
+						grupo_dispo_cab_id:		$("#frm_dispo_grupo #grupo_dispo_cab_id").val(),
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',

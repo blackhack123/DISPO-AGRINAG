@@ -12,6 +12,7 @@ use Dispo\Data\GrupoPrecioCabData;
 class GrupoPrecioCabBO extends Conexion
 {
 
+	
 	/**
 	 * 
 	 * @param string $grupoprecio

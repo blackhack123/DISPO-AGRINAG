@@ -57,14 +57,8 @@ $(document).ready(function () {
 		/*height:'400',*/
 		colNames:['ID','CLIENTE'],
 		colModel:[
-			//{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
 			{name:'id',index:'id', width:230, sorttype:"integer", hidden:true},
 			{name:'nombre',index:'nombre', width:150, sorttype:"string"}
-			//{name:'usuario_nombre',index:'usuario_nombre', width:230, sorttype:"string"}
-			//{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
-			//{name:'btn_editar_agenciacarga',index:'', width:30, align:"center", formatter: gridAgenciacargaListado_FormatterEdit,
-			// cellattr: function () { return ' title=" Modificar"'; }
-			//},
 		],
 		rowNum:999999,
 		pager: '#pager_grupoprecio_noasignados',
@@ -82,8 +76,6 @@ $(document).ready(function () {
 			repeatitems : false,
 		},		
 
-		
-		
 		loadBeforeSend: function (xhr, settings) {
 			this.p.loadBeforeSend = null; //remove event handler
 			return false; // dont send load data request
@@ -108,6 +100,7 @@ $(document).ready(function () {
 
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/	
+	
 	
 	/*---------------------------------------------------------------*/
 	/*----- Se configura los JQGRID's GRUPO PRECIO ASIGNADOS ---------*/
@@ -252,8 +245,9 @@ $(document).ready(function () {
 							'async':true, 
 							'finish':function(response){
 									if ($("#frm_precio_grupo_mantenimiento #accion").val()=='I'){
-										dispoGrupo_init();
+										//dispoGrupo_init();
 									}//end if
+									precioGrupo_ComboGrupoRefresh();
 									PrecioMostrarRegistro(response);
 									$("#frm_grupo_precio #grupo_precio_cab_id").html(response.grupo_precio_opciones);
 									cargador_visibility('hide');
@@ -412,4 +406,28 @@ $(document).ready(function () {
 		
 		ajax_call(parameters, data);
 	}//end function DispoGrupo_eliminarGrupo
+	
+	
+	function precioGrupo_ComboGrupoRefresh()
+	{
+		$("#frm_grupo_precio #info_grupo_precio_cab").html('');
+		
+		var data = 	{
+						texto_primer_elemento:	'&lt;SELECCIONE&gt;',
+						grupo_precio_cab_id:		$("#frm_grupo_precio #grupo_precio_cab_id").val(),
+					}
+		data = JSON.stringify(data);
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/grupoprecio/getcombo',
+							'show_cargando':false,
+							'async':true,
+							'finish':function(response){	
+								//grupodispo_listar();
+								$("#frm_grupo_precio #grupo_precio_cab_id").html(response.opciones);
+							 }							
+						 }
+		response = ajax_call(parameters, data);		
+		return false;			
+	}//end function dispoGrupo_ComboGrupoRefresh
 	

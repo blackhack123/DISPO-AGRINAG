@@ -530,11 +530,11 @@ class GrupodispoController extends AbstractActionController
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 			//var_dump($json); exit;
-			$texto_primer_elemento		= $json['texto_primer_elemento'];
-			//$cliente_id = $SesionUsuarioPlugin->getUserClienteId();
+			$texto_primer_elemento	= $json['texto_primer_elemento'];
+			$grupo_dispo_cab_id		= $json['grupo_dispo_cab_id'];
+			$cliente_id = $SesionUsuarioPlugin->getUserClienteId();
 		
-			//$opciones 	= $MarcacionBO->getComboPorClienteId($cliente_id, 0, $texto_primer_elemento);
-			$opciones 	= $GrupoDispoCabBO->getComboGrupoDispo($grupo_dispo_cab_id, 0, $texto_primer_elemento);
+			$opciones 	= $GrupoDispoCabBO->getComboGrupoDispo($grupo_dispo_cab_id, $texto_primer_elemento);
 			
 			$response = new \stdClass();
 			$response->opciones				= $opciones;

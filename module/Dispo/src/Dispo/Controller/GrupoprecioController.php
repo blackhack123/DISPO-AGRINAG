@@ -474,5 +474,43 @@ class GrupoprecioController extends AbstractActionController
 	
 	
 	
+	function getcomboAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$GrupoPrecioCabBO = new GrupoPrecioCabBO();
+			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			//var_dump($json); exit;
+			$texto_primer_elemento		= $json['texto_primer_elemento'];
+			$grupo_precio_cab_id		= $json['grupo_precio_cab_id'];
+			$cliente_id = $SesionUsuarioPlugin->getUserClienteId();
+	
+			$opciones 	= $GrupoPrecioCabBO->getComboGrupoPrecio($grupo_precio_cab_id, $texto_primer_elemento);
+				
+			$response = new \stdClass();
+			$response->opciones				= $opciones;
+			$response->respuesta_code 		= 'OK';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+	
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	
+	}//end function getcomboAction
+	
 	
 }
