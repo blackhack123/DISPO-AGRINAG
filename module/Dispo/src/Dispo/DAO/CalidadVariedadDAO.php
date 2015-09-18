@@ -3,12 +3,12 @@
 namespace Dispo\DAO;
 use Doctrine\ORM\EntityManager,
 	Application\Classes\Conexion;
-use Dispo\Data\CalidadData;
+use Dispo\Data\CalidadVariedadData;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class CalidadVariedadDAO extends Conexion 
 {
-	private $table_name	= 'calidad';
+	private $table_name	= 'calidad_variedad';
 
 
 
@@ -18,15 +18,15 @@ class CalidadVariedadDAO extends Conexion
 	 * Consultar
 	 *
 	 * @param string $id
-	 * @return CalidadData|null
+	 * @return CalidadVariedadData|null
 	 */	
 	public function consultar($id)
 	{
-		$CalidadData 		    = new CalidadData();
+		$CalidadVariedadData 		    = new CalidadVariedadData();
 
-		$sql = 	' SELECT calidad.* '.
-				' FROM calidad '.
-				' WHERE calidad.id = :id ';
+		$sql = 	' SELECT calidad_variedad.* '.
+				' FROM calidad_variedad '.
+				' WHERE calidad_variedad.id = :id ';
 
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
@@ -34,10 +34,10 @@ class CalidadVariedadDAO extends Conexion
 		$stmt->execute();
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		if($row){
-			$CalidadData->setId				    ($row['id']);
-			$CalidadData->setNombre		   		($row['nombre']);
+			$CalidadVariedadData->setId				    ($row['id']);
+			$CalidadVariedadData->setNombre		   		($row['nombre']);
 		
-			return $CalidadData;
+			return $CalidadVariedadData;
 		}else{
 			return null;
 		}//end if
@@ -46,9 +46,8 @@ class CalidadVariedadDAO extends Conexion
 
 
 	
-	/**
-	 * consultarTodos
-	 *
+	/***
+	 * 
 	 * @return array
 	 */
 	public function consultarTodos()

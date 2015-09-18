@@ -111,9 +111,9 @@ class ProductoDAO extends Conexion
 	{
 		$ProductoData 		    = new ProductoData();
 
-		$sql = 	' SELECT Producto.* '.
-				' FROM Producto '.
-				' WHERE Producto.id = :id ';
+		$sql = 	' SELECT producto.* '.
+				' FROM producto '.
+				' WHERE producto.id = :id ';
 
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
@@ -163,8 +163,8 @@ class ProductoDAO extends Conexion
 	 */
 	public function consultarTodos()
 	{
-		$sql = 	' SELECT Producto.* '.
-				' FROM Producto '.
+		$sql = 	' SELECT producto.* '.
+				' FROM producto '.
 				' ORDER BY nombre ';
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);

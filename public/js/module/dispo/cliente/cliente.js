@@ -42,7 +42,7 @@
 				{name:'nombre',index:'nombre', width:200, sorttype:"string"},
 				{name:'direccion',index:'direccion', width:300, sorttype:"string", cellattr: function (rowId, tv, rawObject, cm, rdata){return 'style="white-space: normal; padding-top:1px"'}},
 				{name:'pais_nombre',index:'pais_nombre', width:150, sorttype:"string"},
-				{name:'telefono1',index:'telefono1', width:150, sorttype:"string"},
+				{name:'telefono1',index:'telefono1', width:150, sorttype:"string",hidden: true},
 				{name:'sincronizado',index:'sincronizado', width:30, align:"center", sorttype:"int", formatter: ListadoCliente_FormatterSincronizado},
 				{name:'fec_sincronizado',index:'fec_sincronizado', width:140, align:"center", sorttype:"int"},
 				{name:'estado',index:'estado', width:50, align:"center", sorttype:"string"},

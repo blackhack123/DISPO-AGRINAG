@@ -32,8 +32,7 @@ class TransportadoraBO extends Conexion
 		return $opciones;
 	}//end function getComboTodos
 
-	
-	
+
 	
 	function getComboTipo($tipo, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
 	{	
