@@ -78,7 +78,7 @@ $(document).ready(function () {
 									$("#variedad_id").prop('readonly',false);
 									$("#nombre").val('');
 									$("#nombre_tecnico").val('');
-									$("#calidad_id").html(response.cbo_calidad_id);
+									$("#calidad_variedad_id").html(response.cbo_calidad_variedad_id);
 									$("#color").html(response.cbo_color);
 									$("#color2").html(response.cbo_color2);
 									$("#grupo_color_id").html(response.cbo_grupo_color_id);
@@ -121,7 +121,7 @@ $(document).ready(function () {
 					 	id: $("#variedad_id").val(),
 					 	nombre: $("#nombre").val(),
 					 	nombre_tecnico: $("#nombre_tecnico").val(),
-					 	calidad_id: $("#calidad_id").val(),
+					 	calidad_variedad_id: $("#calidad_variedad_id").val(),
 					 	color: $("#color").val(),
 					 	color2: $("#color2").val(),
 					 	grupo_color_id: $("#grupo_color_id").val(),
@@ -218,7 +218,7 @@ $(document).ready(function () {
 			$("#variedad_id").prop('readonly',true);
 			$("#nombre").val(row.nombre);
 			$("#nombre_tecnico").val(row.nombre_tecnico);
-			$("#calidad_id").html(response.cbo_calidad_id);
+			$("#calidad_variedad_id").html(response.cbo_calidad_variedad_id);
 			$("#color").html(response.cbo_color);
 			$("#color2").html(response.cbo_color2);
 			$("#grupo_color_id").html(response.cbo_grupo_color_id);
@@ -390,7 +390,7 @@ $(document).ready(function () {
 		        	          </tr>
 		        	             <tr>
 			        	        <td><label class="control-label">CALIDAD:</label></td>
-			        		    <td><select  name="calidad_id" class="select-class2" id="calidad_id" validate="required" validateMessage="Seleccione Calidad"></select></td>
+			        		    <td><select  name="calidad_variedad_id" class="select-class2" id="calidad_variedad_id" validate="required" validateMessage="Seleccione Calidad"></select></td>
 		        	          </tr>	
 		        	           <tr>
 			        	        <td><label class="control-label">COLOR :</label></td>

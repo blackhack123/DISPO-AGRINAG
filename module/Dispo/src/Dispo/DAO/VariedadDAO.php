@@ -25,7 +25,7 @@ class VariedadDAO extends Conexion
 				'id'								=> $VariedadData->getId(),
 				'nombre'		                    => $VariedadData->getNombre(),
 				'nombre_tecnico'		            => $VariedadData->getNombreTecnico(),
-				'calidad_id'	                    => $VariedadData->getCalidadId(),
+				'calidad_variedad_id'	            => $VariedadData->getCalidadVariedadId(),
 				'color'		   		                => $VariedadData->getColor(),
 				'color2'		   		            => $VariedadData->getColor2(),
 				'grupo_color_id'	                => $VariedadData->getGrupoColorId(),
@@ -62,7 +62,7 @@ class VariedadDAO extends Conexion
 		$record = array(
 				'nombre'		                    => $VariedadData->getNombre(),
 				'nombre_tecnico'		            => $VariedadData->getNombreTecnico(),
-				'calidad_id'	                    => $VariedadData->getCalidadId(),
+				'calidad_variedad_id'	            => $VariedadData->getCalidadVariedadId(),
 				'color'		   		                => $VariedadData->getColor(),
 				'color2'		   		            => $VariedadData->getColor2(),
 				'grupo_color_id'	                => $VariedadData->getGrupoColorId(),
@@ -112,7 +112,7 @@ class VariedadDAO extends Conexion
 					$VariedadData->setId							($row['id']);				
 					$VariedadData->setNombre 						($row['nombre']);
 					$VariedadData->setNombreTecnico					($row['nombre_tecnico']);
-					$VariedadData->setCalidadId						($row['calidad_id']);
+					$VariedadData->setCalidadVariedadId				($row['calidad_variedad_id']);
 					$VariedadData->setColor							($row['color']);
 					$VariedadData->setColor2 						($row['color2']);
 					$VariedadData->setGrupoColorId					($row['grupo_color_id']);

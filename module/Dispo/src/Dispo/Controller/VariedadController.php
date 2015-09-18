@@ -11,7 +11,7 @@ use Dispo\BO\VariedadBO;
 use Dispo\BO\ColoresBO;
 use Dispo\BO\ProductoBO;
 use Dispo\BO\GrupoColorBO;
-use Dispo\BO\CalidadBO;
+use Dispo\BO\CalidadVariedadBO;
 use Dispo\BO\ObtentorBO;
 use Dispo\Data\VariedadData;
 
@@ -71,39 +71,39 @@ class VariedadController extends AbstractActionController
 			$ColoresBO				= new ColoresBO();
 			$ProductoBO				= new ProductoBO();
 			$GrupoColorBO			= new GrupoColorBO();
-			$CalidadBO				= new CalidadBO();
+			$CalidadVariedadBO		= new CalidadVariedadBO();
 			$ObtentorBO				= new ObtentorBO();
 			
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ProductoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$GrupoColorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$CalidadVariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ObtentorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 
-			$colorbase 		= null;
-			$calidad_id		= null;
-			$cultivada 		= null;
-			$id				=null;
-			$solido			= 'S';
-			$es_real 		= 'S';
-			$obtentor		= null;
+			$colorbase 					= null;
+			$calidad_variedad_id		= null;
+			$cultivada 					= null;
+			$id							=null;
+			$solido						= 'S';
+			$es_real 					= 'S';
+			$obtentor					= null;
 			$response = new \stdClass();
-			$response->cbo_color_base		= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
-			$response->cbo_color			= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
-			$response->cbo_color2			= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
-			$response->cbo_grupo_color_id	= $GrupoColorBO->getComboId($id, "&lt;Seleccione&gt;");
-			$response->cbo_calidad_id		= $CalidadBO->getComboCalidad($calidad_id, "&lt;Seleccione&gt;");
-			$response->cbo_solido			= $VariedadBO->getComboSolido($solido, "&lt;Seleccione&gt;");
-			$response->cbo_es_real			= $VariedadBO->getComboEsReal($es_real, "&lt;Seleccione&gt;");
-			$response->cbo_cultivada		= $VariedadBO->getComboCultivada($cultivada, "&lt;Seleccione&gt;");
-			$response->cbo_obtentor_id		= $ObtentorBO->getComboObtentor($obtentor, "&lt;Seleccione&gt;");
-			$response->cbo_producto_id		= $ProductoBO->getComboProductoId($id, "&lt;Seleccione&gt;");
-			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
-			$response->respuesta_code 		= 'OK';
-			$response->respuesta_mensaje	= '';
+			$response->cbo_color_base				= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
+			$response->cbo_color					= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
+			$response->cbo_color2					= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
+			$response->cbo_grupo_color_id			= $GrupoColorBO->getComboId($id, "&lt;Seleccione&gt;");
+			$response->cbo_calidad_variedad_id		= $CalidadVariedadBO->getComboCalidadVariedad($calidad_variedad_id, "&lt;Seleccione&gt;");
+			$response->cbo_solido					= $VariedadBO->getComboSolido($solido, "&lt;Seleccione&gt;");
+			$response->cbo_es_real					= $VariedadBO->getComboEsReal($es_real, "&lt;Seleccione&gt;");
+			$response->cbo_cultivada				= $VariedadBO->getComboCultivada($cultivada, "&lt;Seleccione&gt;");
+			$response->cbo_obtentor_id				= $ObtentorBO->getComboObtentor($obtentor, "&lt;Seleccione&gt;");
+			$response->cbo_producto_id				= $ProductoBO->getComboProductoId($id, "&lt;Seleccione&gt;");
+			$response->cbo_estado					= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->respuesta_code 				= 'OK';
+			$response->respuesta_mensaje			= '';
 		
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
@@ -129,12 +129,12 @@ class VariedadController extends AbstractActionController
 			$VariedadBO 			= new VariedadBO();
 			$ObtentorBO 			= new ObtentorBO();
 			$ColoresBO				= new ColoresBO();
-			$CalidadBO				= new CalidadBO();
+			$CalidadVariedadBO		= new CalidadVariedadBO();
 			$GrupoColorBO			= new GrupoColorBO();
 				
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$CalidadVariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ObtentorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$GrupoColorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			
@@ -149,19 +149,19 @@ class VariedadController extends AbstractActionController
 			
 			
 			$response = new \stdClass();
-			$response->row					= $row;
-			$response->cbo_color_base		= $ColoresBO->getCombo($row['colorbase'], "&lt;Seleccione&gt;");
-			$response->cbo_color			= $ColoresBO->getCombo($row['color'], "&lt;Seleccione&gt;");
-			$response->cbo_color2			= $ColoresBO->getCombo($row['color2'], "&lt;Seleccione&gt;");
-			$response->cbo_grupo_color_id	= $GrupoColorBO->getComboId($row['grupo_color_id'], "&lt;Seleccione&gt;");
-			$response->cbo_calidad_id		= $CalidadBO->getComboCalidad($row['calidad_id'], "&lt;Seleccione&gt;");
-			$response->cbo_solido			= $VariedadBO->getComboSolido($row['solido'], "&lt;Seleccione&gt;");
-			$response->cbo_es_real			= $VariedadBO->getComboEsReal($row['es_real'], "&lt;Seleccione&gt;");
-			$response->cbo_cultivada		= $VariedadBO->getComboCultivada($row['cultivada'], "&lt;Seleccione&gt;");
-			$response->cbo_obtentor_id		= $ObtentorBO->getComboObtentor($row['obtentor_id'], "&lt;Seleccione&gt;");
-			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
-			$response->respuesta_code 		= 'OK';
-			$response->respuesta_mensaje	= '';
+			$response->row							= $row;
+			$response->cbo_color_base				= $ColoresBO->getCombo($row['colorbase'], "&lt;Seleccione&gt;");
+			$response->cbo_color					= $ColoresBO->getCombo($row['color'], "&lt;Seleccione&gt;");
+			$response->cbo_color2					= $ColoresBO->getCombo($row['color2'], "&lt;Seleccione&gt;");
+			$response->cbo_grupo_color_id			= $GrupoColorBO->getComboId($row['grupo_color_id'], "&lt;Seleccione&gt;");
+			$response->cbo_calidad_variedad_id		= $CalidadVariedadBO->getComboCalidadVariedad($row['calidad_variedad_id'], "&lt;Seleccione&gt;");
+			$response->cbo_solido					= $VariedadBO->getComboSolido($row['solido'], "&lt;Seleccione&gt;");
+			$response->cbo_es_real					= $VariedadBO->getComboEsReal($row['es_real'], "&lt;Seleccione&gt;");
+			$response->cbo_cultivada				= $VariedadBO->getComboCultivada($row['cultivada'], "&lt;Seleccione&gt;");
+			$response->cbo_obtentor_id				= $ObtentorBO->getComboObtentor($row['obtentor_id'], "&lt;Seleccione&gt;");
+			$response->cbo_estado					= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->respuesta_code 				= 'OK';
+			$response->respuesta_mensaje			= '';
 	
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
@@ -190,11 +190,11 @@ class VariedadController extends AbstractActionController
 			$VariedadBO 		= new VariedadBO();
 			$ObtentorBO 		= new ObtentorBO();
 			$ColoresBO 			= new ColoresBO();
-			$CalidadBO 			= new CalidadBO();
+			$CalidadVariedadBO 	= new CalidadVariedadBO();
 			
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$CalidadVariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ObtentorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
@@ -207,7 +207,7 @@ class VariedadController extends AbstractActionController
 			$VariedadData->setId					($json['id']); 
 			$VariedadData->setNombre				($json['nombre']);
 			$VariedadData->setNombreTecnico			($json['nombre_tecnico']);
-			$VariedadData->setCalidadId				($json['calidad_id']);
+			$VariedadData->setCalidadVariedadId		($json['calidad_variedad_id']);
 			$VariedadData->setColor					($json['color']);
 			$VariedadData->setColor2				($json['color2']);
 			$VariedadData->setGrupoColorId			($json['grupo_color_id']);

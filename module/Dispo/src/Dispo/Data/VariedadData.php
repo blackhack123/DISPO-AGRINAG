@@ -22,7 +22,7 @@ class VariedadData
 	/**
 	 * @var int
 	 */
-	protected $calidad_id;
+	protected $calidad_variedad_id;
 	
 	/**
 	 * @var string
@@ -126,7 +126,7 @@ class VariedadData
 	public function getId() 					{return $this->id;}
 	public function getNombre()			 		{return $this->nombre;}
 	public function getNombreTecnico()	 		{return $this->nombre_tecnico;}
-	public function getCalidadId()		 		{return $this->calidad_id;}
+	public function getCalidadVariedadId()		{return $this->calidad_variedad_id;}
 	public function getColor()			 		{return $this->color;}
 	public function getColor2()			 		{return $this->color2;}
 	public function getGrupoColorId()	 		{return $this->grupo_color_id;}
@@ -152,7 +152,7 @@ class VariedadData
 	public function setId($valor) 					{$this->id						= $valor;}
 	public function setNombre($valor) 				{$this->nombre					= $valor;}
 	public function setNombreTecnico($valor) 		{$this->nombre_tecnico			= $valor;}
-	public function setCalidadId($valor) 			{$this->calidad_id				= $valor;}
+	public function setCalidadVariedadId($valor) 	{$this->calidad_variedad_id		= $valor;}
 	public function setColor($valor) 				{$this->color					= $valor;}
 	public function setColor2($valor) 				{$this->color2					= $valor;}
 	public function setGrupoColorId($valor) 		{$this->grupo_color_id			= $valor;}
