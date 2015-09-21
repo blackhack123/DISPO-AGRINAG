@@ -25,7 +25,7 @@ class ClienteDAO extends Conexion
 				'id'								=> $ClienteData->getId(),
 				'nombre'		                    => $ClienteData->getNombre(),
 				'abreviatura'		  	            => $ClienteData->getAbreviatura(),
-				'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId(),
+				//'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId(),
 				'direccion'		            		=> $ClienteData->getDireccion(),
 				'ciudad'		            		=> $ClienteData->getCiudad(),
 				'estados_id'	            		=> $ClienteData->getEstadosId(),
@@ -151,7 +151,7 @@ class ClienteDAO extends Conexion
 				'facturacion_sri'		        	=> $ClienteData->getFacturacionSRI(),
 				'pais_fue'		        			=> $ClienteData->getPaisFUE(),
 				'tc_interes'						=> $ClienteData->getTcInteres(),
-				'tc_limite_credito'				=> $ClienteData->getTcLimiteCredito(),
+				'tc_limite_credito'					=> $ClienteData->getTcLimiteCredito(),
 				'tc_forma_pago'						=> $ClienteData->getTcFormaPago(),
 				'tc_nro_cuotas'						=> $ClienteData->getTcNroCuotas(),
 				'tc_plazo'							=> $ClienteData->getTcPlazo(),
@@ -169,7 +169,7 @@ class ClienteDAO extends Conexion
 				'diacal_fecha2'		        		=> $ClienteData->getDiaCalFecha2(),
 				'diacal_fecha1'		        		=> $ClienteData->getDiaCalFecha1(),
 				'inmediato'		        			=> $ClienteData->getInmediato(),
-				'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId(),
+				//'grupo_precio_cab_id'		        => $ClienteData->getGrupoPrecioCabId(),
 				'estado'                			=> $ClienteData->getEstado(),
 				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                	=> $ClienteData->getUsuarioModId()
@@ -206,7 +206,7 @@ class ClienteDAO extends Conexion
 				 	$ClienteData->setId                     ($row['id']);               
                	  	$ClienteData->setNombre                 ($row['nombre']);
                	  	$ClienteData->setAbreviatura            ($row['abreviatura']);
-               	  	$ClienteData->setGrupoPrecioCabId		($row['grupo_precio_cab_id']);
+               	  	//$ClienteData->setGrupoPrecioCabId		($row['grupo_precio_cab_id']);
                   	$ClienteData->setDireccion              ($row['direccion']);
                   	$ClienteData->setCiudad                 ($row['ciudad']);
                   	$ClienteData->setEstadosId              ($row['estados_id']);
@@ -355,8 +355,7 @@ class ClienteDAO extends Conexion
 					"      or cliente.nombre like '%".$condiciones['criterio_busqueda']."%'".
 					"      or cliente.id like '%".$condiciones['criterio_busqueda']."%'".
 					"      or cliente.direccion like '%".$condiciones['criterio_busqueda']."%'".
-					"      or cliente.ciudad like '%".$condiciones['criterio_busqueda']."%'".
-					"      or cliente.telefono1 like '%".$condiciones['criterio_busqueda']."%')";
+					"      or cliente.ciudad like '%".$condiciones['criterio_busqueda']."%'";
 		}//end if
 		
 		

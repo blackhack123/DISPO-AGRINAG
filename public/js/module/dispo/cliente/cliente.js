@@ -35,14 +35,13 @@
 			datatype: "json",
 			loadonce: true,			
 			/*height:'400',*/
-			colNames:['Id','Nombre','Direccion','Pais','Telefono','','Fec. Ult. Vez','Estado', ''],
+			colNames:['Id','Nombre','Direccion','Pais','','Fec. Ult. Vez','Estado', ''],
 			colModel:[
 	/*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
 				{name:'id',index:'id', width:50, align:"center", sorttype:"int"},
 				{name:'nombre',index:'nombre', width:200, sorttype:"string"},
 				{name:'direccion',index:'direccion', width:300, sorttype:"string", cellattr: function (rowId, tv, rawObject, cm, rdata){return 'style="white-space: normal; padding-top:1px"'}},
 				{name:'pais_nombre',index:'pais_nombre', width:150, sorttype:"string"},
-				{name:'telefono1',index:'telefono1', width:150, sorttype:"string",hidden: true},
 				{name:'sincronizado',index:'sincronizado', width:30, align:"center", sorttype:"int", formatter: ListadoCliente_FormatterSincronizado},
 				{name:'fec_sincronizado',index:'fec_sincronizado', width:140, align:"center", sorttype:"int"},
 				{name:'estado',index:'estado', width:50, align:"center", sorttype:"string"},
@@ -197,15 +196,6 @@
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
 		
-		//var est_credito_suspendido 	= ($("#frm_informacion_general #est_credito_suspendido").is(':checked') ? 1 : 0);
-		//var estado				 	= ($("#frm_informacion_general #estado").is(':checked') ? 1 : 0);
-		//var incobrable				= ($("#frm_informacion_general #incobrable").is(':checked') ? 1 : 0);
-		//var cliente_especial 		= ($("#frm_informacion_general #cliente_especial").is(':checked') ? 1 : 0);
-		//var envia_estadocta 		= ($("#frm_informacion_general #envia_estadocta").is(':checked') ? 1 : 0);
-		//var tipo_envio_estcta		= ($("#frm_informacion_general #tipo_envio_estcta").is(':checked') ? 1 : 0);
-		//var dia_semana 				= ($("#frm_informacion_general #dia_semana").is(':checked') ? 1 : 0);
-		//var inmediato				= ($("#frm_informacion_general #inmediato").is(':checked') ? 1 : 0);
-		
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
@@ -224,7 +214,7 @@
 								$("#frm_informacion_general #cliente_id").prop('readonly',false);
 								$("#frm_informacion_general #nombre").val('');
 								$("#frm_informacion_general #abreviatura").val('');
-								$("#frm_informacion_general #grupo_precio_cab_id").html(response.cbo_grupo_dispo);
+								//$("#frm_informacion_general #grupo_precio_cab_id").html(response.cbo_grupo_dispo);
 								$("#frm_informacion_general #direccion").val('');
 								$("#frm_informacion_general #ciudad").val('');
 								$("#frm_informacion_general #estados_id").html(response.cbo_estado_id);
@@ -351,7 +341,7 @@
 					 	cliente_id: 				$("#frm_informacion_general #cliente_id").val(),
 					 	nombre: 					$("#frm_informacion_general #nombre").val(),
 					 	abreviatura: 				$("#frm_informacion_general #abreviatura").val(),
-					 	grupo_precio_cab_id:		$("#frm_informacion_general #grupo_precio_cab_id").val(),
+					 	//grupo_precio_cab_id:		$("#frm_informacion_general #grupo_precio_cab_id").val(),
 					 	direccion: 					$("#frm_informacion_general #direccion").val(),
 					 	ciudad: 					$("#frm_informacion_general #ciudad").val(),
 					 	estados_id:					$("#frm_informacion_general #estados_id").val(),
@@ -460,7 +450,7 @@
 
 				$("#frm_informacion_general #nombre").val(row.nombre);
 				$("#frm_informacion_general #abreviatura").val(row.abreviatura);
-				$("#frm_informacion_general #grupo_precio_cab_id").html(response.cbo_grupo_dispo);
+				//$("#frm_informacion_general #grupo_precio_cab_id").html(response.cbo_grupo_dispo);
 				$("#frm_informacion_general #direccion").val(row.direccion);
 				$("#frm_informacion_general #ciudad").val(row.ciudad);
 				$("#frm_informacion_general #estados_id").html(response.cbo_estado_id);
@@ -621,9 +611,6 @@
 			}//end if
 		}//end function cliente_mostrar_registro
 			
-
-
-
 
 		function cliente_consultar(id)
 		{

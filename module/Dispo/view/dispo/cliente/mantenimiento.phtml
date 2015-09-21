@@ -111,14 +111,14 @@
                                         	<input type="text" class="form-control" id="abreviatura" name="abreviatura"  onkeyup="this.value=this.value.toUpperCase()"><br/>
                                       </div>
 									</div>
-                                    <div class="col-lg-12">
+                                  <!-- div class="col-lg-12">
                                         <div class="col-lg-2">
                                             <label for="co1" class="control-label"> Grupo: </label>
                                         </div>
                                         <div class="col-lg-4">
                                      		<select  name="grupo_precio_cab_id" class="form-control" id="grupo_precio_cab_id" validate="required" validateMessage="Grupo Requerido"></select><br/>
                                         </div>
-                                    </div>
+                                    </div  -->
                                     <div class="col-lg-12">
                                         <div class="col-lg-2">
                                             <label for="d1" class="control-label"> Direccíon: </label>
@@ -838,8 +838,16 @@
 			        	        <td><input type="email" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="50" ></td>
 		        	          </tr>
 		        	          <tr>
-			        	        <td><label class="control-label">GRUPO:</label></td>
+			        	        <td><label class="control-label">GRUPO DISPO:</label></td>
 			        	        <td><select  name="grupo_dispo_cab_id" class="form-control" id="grupo_dispo_cab_id" validate="required" validateMessage="Grupo Requerido" style="width:150px"></select></td>
+		        	          </tr>
+		        	          <tr>
+			        	        <td><label class="control-label">GRUPO PRECIO:</label></td>
+			        	        <td><select  name="grupo_precio_cab_id" class="form-control" id="grupo_precio_cab_id" validate="required" validateMessage="Grupo Requerido" style="width:150px"></select></td>
+		        	          </tr>
+		        	          <tr>
+			        	        <td><label class="control-label">INVENTARIO:</label></td>
+			        	        <td><select  name="inventario_id" class="form-control" id="inventario_id" validate="required" validateMessage="Inventario Requerido" style="width:150px"></select></td>
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>

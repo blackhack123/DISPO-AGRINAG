@@ -15,6 +15,8 @@ use Application\Classes\CorreoElectronico;
 use Dispo\BO\PedidoBO;
 use Seguridad\BO\PerfilBO;
 use Dispo\BO\GrupoDispoCabBO;
+use Dispo\BO\GrupoPrecioCabBO;
+use Dispo\BO\InventarioBO;
 
 class UsuarioController extends AbstractActionController
 {
@@ -366,20 +368,28 @@ class UsuarioController extends AbstractActionController
 			$UsuarioBO 				= new UsuarioBO();
 			//$PerfilBO 				= new PerfilBO();
 			$GrupoDispoCabBO		= new GrupoDispoCabBO();
+			$GrupoPrecioCabBO		= new GrupoPrecioCabBO();
+			$InventarioBO			= new InventarioBO();
 			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 			
 			$grupodispo				= null;
+			$grupoprecio			= null;
+			$inventario_id			= null;
 			
 			$response = new \stdClass();
-			//$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido("","");
-			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
-			$response->cbo_grupo_dispo		= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
-			$response->respuesta_code 		= 'OK';
-			$response->respuesta_mensaje	= '';
+			//$response->cbo_perfil_id			= $PerfilBO->getComboPerfilRestringido("","");
+			$response->cbo_estado				= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->cbo_grupo_dispo			= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
+			$response->cbo_grupo_precio			= $GrupoPrecioCabBO->getComboGrupoPrecio($grupoprecio, "&lt;Seleccione&gt;");
+			$response->cbo_cbo_inventario_id	= $InventarioBO->getCombo($inventario_id, "&lt;Seleccione&gt;");
+			$response->respuesta_code 			= 'OK';
+			$response->respuesta_mensaje		= '';
 	
 			$json = new JsonModel(get_object_vars($response));
 			return $json;

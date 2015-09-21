@@ -174,6 +174,8 @@ $(document).ready(function () {
 									$("#frm_nuevo_usuario #email").val('');
 									//$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
 									$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
+									$("#frm_nuevo_usuario #grupo_precio_cab_id").html(response.cbo_grupo_precio);
+									$("#frm_nuevo_usuario #inventario_id").html(response.cbo_inventario_id);
 									$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
 									$("#frm_nuevo_usuario #lbl_usuario_ing").html('');
 									$("#frm_nuevo_usuario #lbl_fec_ingreso").html('');
@@ -327,6 +329,8 @@ $(document).ready(function () {
 			$("#frm_nuevo_usuario #email").val(row.email);
 			//$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
 			$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
+			$("#frm_nuevo_usuario #grupo_precio_cab_id").html(response.cbo_grupo_precio);
+			$("#frm_nuevo_usuario #inventario_id").html(response.cbo_inventario_id);
 			$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
 			$("#frm_nuevo_usuario #lbl_usuario_ing").html(row.usuario_ing_user_name);
 			$("#frm_nuevo_usuario #lbl_fec_ingreso").html(row.fec_ingreso);
