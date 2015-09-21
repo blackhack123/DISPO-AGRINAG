@@ -16,6 +16,7 @@ $(document).ready(function () {
 	$("#frm_dispo_grupo #grupo_dispo_cab_id").on('change', function(event){
 		//$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		DispoGrupo_ConsultarInfoDispoGrupoCab($("#frm_dispo_grupo #grupo_dispo_cab_id").val());
+		$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;		
 	});
 	
