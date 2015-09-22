@@ -202,9 +202,10 @@ class GrupoPrecioCabDAO extends Conexion
 	
 	public function listadoGrupoPrecioNoAsignadas()
 	{
-		$sql = 	' SELECT cliente.id, cliente.nombre, cliente.estado  '.
-				' FROM   cliente '.
-				' WHERE cliente.grupo_precio_cab_id IS NULL '.
+		$sql = 	' SELECT usuario.id, cliente.nombre, cliente.estado, usuario.nombre as usuario_nombre  '.
+				' FROM   cliente INNER JOIN usuario '.
+				'                       ON usuario.cliente_id	= cliente.id'.
+				' WHERE usuario.grupo_precio_cab_id IS NULL '.
 				"                        AND cliente.estado = 'A'";
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
@@ -223,13 +224,14 @@ class GrupoPrecioCabDAO extends Conexion
 	 */
 	public function listadoAsignadas($condiciones)
 	{
-		$sql = 	' SELECT cliente.id, cliente.nombre, cliente.estado '.
-				' FROM   cliente '.
+		$sql = 	' SELECT usuario.id, cliente.nombre, cliente.estado, usuario.nombre as usuario_nombre '.
+				' FROM   cliente INNER JOIN usuario '.
+				'                        ON usuario.cliente_id	= cliente.id '.
 				' WHERE 1 = 1';
 	
 		if (!empty($condiciones['grupo_precio_cab_id']))
 		{
-			$sql = $sql.' and cliente.grupo_precio_cab_id = '.$condiciones['grupo_precio_cab_id'];
+			$sql = $sql.' and usuario.grupo_precio_cab_id = '.$condiciones['grupo_precio_cab_id'];
 		}//end if
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);

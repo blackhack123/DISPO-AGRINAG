@@ -397,7 +397,7 @@ class GrupoprecioController extends AbstractActionController
 			foreach($result as $row){
 				$row2["id"] 	= trim($row["id"]);
 				$row2["nombre"] 	= trim($row["nombre"]);
-				//$row2["usuario_nombre"] 	= trim($row["usuario_nombre"]);
+				$row2["usuario_nombre"] 	= trim($row["usuario_nombre"]);
 	
 				$response->rows[$i] = $row2;
 				$i++;

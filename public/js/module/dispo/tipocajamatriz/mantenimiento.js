@@ -1,28 +1,28 @@
 /**
  * 
  */
-var selRowId_TipoCajaGrid 	= 0;	
-var selColName_TipoCajaGrid = 0;	
-var seliRow_TipoCajaGrid 	= 0;		
-var seliCol_TipoCajaGrid 	= 0;	
-var valAnt_TipoCajaGrid		= null;
+var selRowId_TipoCajaMatrizGrid 	= 0;	
+var selColName_TipoCajaMatrizGrid = 0;	
+var seliRow_TipoCajaMatrizGrid 	= 0;		
+var seliCol_TipoCajaMatrizGrid 	= 0;	
+var valAnt_TipoCajaMatrizGrid		= null;
 
 
 
 $(document).ready(function () {
 	
 	/*----------------------Se cargan los controles -----------------*/
-	mantenimiento_init();
+	TipoCajaMatriz_Init();
 	
 	$("#frm_tipo_caja_busqueda #inventario_id, #frm_tipo_caja_busqueda #tipo_caja_id").on('change', function(event){
-//		$("#grid_tipo_caja").jqGrid('clearGridData');
-		$('#grid_tipo_caja').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+//		$("#grid_tipo_caja_matriz").jqGrid('clearGridData');
+		$('#grid_tipo_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;		
 	});
 
 
 	$("#frm_tipo_caja_busqueda #btn_consultar").on('click', function(event){ 
-		$('#grid_tipo_caja').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		$('#grid_tipo_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;
 	});	
 	
@@ -41,7 +41,7 @@ $(document).ready(function () {
 	/*---------------------------------------------------------------*/
 	/*-----Se configura los JQGRID de Disponibilidad General---------*/
 	/*---------------------------------------------------------------*/		
-	jQuery("#grid_tipo_caja").jqGrid({
+	jQuery("#grid_tipo_caja_matriz").jqGrid({
 		url:'../../dispo/tipocajamatriz/listadodata',
 		postData: {
 			tipo_caja_id: 	function() {return $("#frm_tipo_caja_busqueda #tipo_caja_id").val();},
@@ -65,16 +65,16 @@ $(document).ready(function () {
 																var key = e.charCode || e.keyCode;
 																if(key == 9 && e.shiftKey)   // tab
 																{
-																	if ((seliRow_TipoCajaGrid - 1) <= 0) return false;
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + jqgrid_get_columnIndexByName($("#grid_tipo_caja"), "110") + ", true);", 10);														
+																	if ((seliRow_TipoCajaMatrizGrid - 1) <= 0) return false;
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " - 1, " + jqgrid_get_columnIndexByName($("#grid_tipo_caja_matriz"), "110") + ", true);", 10);														
 																}																
 																if ((key == 13)||(key == 40))//enter, abajo
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " + 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " + 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}
 																else if ((key == 38))//arriba
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " - 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}													
 															}
 														} 
@@ -91,11 +91,11 @@ $(document).ready(function () {
 																var key = e.charCode || e.keyCode;
 																if ((key == 13)||(key == 40))//enter, abajo
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " + 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " + 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}
 																else if ((key == 38))//arriba
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " - 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}													
 															}
 														} 
@@ -112,11 +112,11 @@ $(document).ready(function () {
 																var key = e.charCode || e.keyCode;
 																if ((key == 13)||(key == 40))//enter, abajo
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " + 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " + 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}
 																else if ((key == 38))//arriba
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " - 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}													
 															}
 														} 
@@ -133,11 +133,11 @@ $(document).ready(function () {
 																var key = e.charCode || e.keyCode;
 																if ((key == 13)||(key == 40))//enter, abajo
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " + 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " + 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}
 																else if ((key == 38))//arriba
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " - 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}													
 															}
 														} 
@@ -154,11 +154,11 @@ $(document).ready(function () {
 																var key = e.charCode || e.keyCode;
 																if ((key == 13)||(key == 40))//enter, abajo
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " + 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " + 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}
 																else if ((key == 38))//arriba
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " - 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}													
 															}
 														} 
@@ -175,11 +175,11 @@ $(document).ready(function () {
 																var key = e.charCode || e.keyCode;
 																if ((key == 13)||(key == 40))//enter, abajo
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " + 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " + 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}
 																else if ((key == 38))//arriba
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " - 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}													
 															}
 														} 
@@ -196,11 +196,11 @@ $(document).ready(function () {
 																var key = e.charCode || e.keyCode;
 																if ((key == 13)||(key == 40))//enter, abajo
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " + 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " + 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}
 																else if ((key == 38))//arriba
 																{
-																	setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+																	setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " - 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 																}													
 															}
 														} 
@@ -217,15 +217,15 @@ $(document).ready(function () {
 													var key = e.charCode || e.keyCode;
 													if(key == 9 && !e.shiftKey)   // tab
 													{
-														setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " + 1, " + jqgrid_get_columnIndexByName($("#grid_tipo_caja"), "40") + ", true);", 10);														
+														setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " + 1, " + jqgrid_get_columnIndexByName($("#grid_tipo_caja_matriz"), "40") + ", true);", 10);														
 													}
 													if ((key == 13)||(key == 40))//enter, abajo
 													{
-														setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " + 1, " + seliCol_TipoCajaGrid + ", true);", 10);
+														setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " + 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);
 													}
 													else if ((key == 38))//arriba
 													{
-														setTimeout("jQuery('#grid_tipo_caja').editCell(" + seliRow_TipoCajaGrid + " - 1, " + seliCol_TipoCajaGrid + ", true);", 10);													
+														setTimeout("jQuery('#grid_tipo_caja_matriz').editCell(" + seliRow_TipoCajaMatrizGrid + " - 1, " + seliCol_TipoCajaMatrizGrid + ", true);", 10);													
 													}//end if													
 												}
 											}
@@ -234,7 +234,7 @@ $(document).ready(function () {
 			}
 		],
 		rowNum:999999,
-		pager: '#pager_tipo_caja',
+		pager: '#pager_tipo_caja_matriz',
 		toppager:false,
 		pgbuttons:false,
 		pginput:false,
@@ -259,14 +259,14 @@ $(document).ready(function () {
 		},
 		beforeEditCell : function(rowid, cellname, value, iRow, iCol)
 		{
-			seliCol_TipoCajaGrid  = iCol;
-			seliRow_TipoCajaGrid  = iRow;
-			valAnt_TipoCajaGrid   = value;
+			seliCol_TipoCajaMatrizGrid  = iCol;
+			seliRow_TipoCajaMatrizGrid  = iRow;
+			valAnt_TipoCajaMatrizGrid   = value;
 		},	
 		afterSaveCell : function(rowid,name,val,iRow,iCol) {
 			//Evita se llame la funcion grabar sin que se haya modificado el valor
-			var nro_bunches  = number_val(jQuery("#grid_tipo_caja").jqGrid('getCell',rowid, iCol), 2);
-			if (number_val(nro_bunches)==number_val(valAnt_TipoCajaGrid))
+			var nro_bunches  = number_val(jQuery("#grid_tipo_caja_matriz").jqGrid('getCell',rowid, iCol), 2);
+			if (number_val(nro_bunches)==number_val(valAnt_TipoCajaMatrizGrid))
 			{
 				return false;
 			}//end if
@@ -274,16 +274,16 @@ $(document).ready(function () {
 			//Asigna las variables para poderlo pasar en la funcion grabar
 			var tipo_caja_id  	= $("#frm_tipo_caja_busqueda #tipo_caja_id").val();						
 			var inventario_id  	= $("#frm_tipo_caja_busqueda #inventario_id").val();
-			var col_variedad_id 	= jqgrid_get_columnIndexByName($("#grid_tipo_caja"), "variedad_id");
-			var variedad_id			= jQuery("#grid_tipo_caja").jqGrid('getCell',rowid, col_variedad_id);
+			var col_variedad_id 	= jqgrid_get_columnIndexByName($("#grid_tipo_caja_matriz"), "variedad_id");
+			var variedad_id			= jQuery("#grid_tipo_caja_matriz").jqGrid('getCell',rowid, col_variedad_id);
 
-			var grado_id			= jqgrid_get_columnNameByIndex($("#grid_tipo_caja"), iCol);
+			var grado_id			= jqgrid_get_columnNameByIndex($("#grid_tipo_caja_matriz"), iCol);
 			
 			TipoCaja_Grabar(tipo_caja_id, inventario_id, variedad_id, grado_id, nro_bunches);
 		},
 	});
-	//$("#grid_tipo_caja").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});
-	jQuery("#grid_tipo_caja").jqGrid('navGrid','#pager_tipo_caja',{edit:false,add:false,del:false});
+	//$("#grid_tipo_caja_matriz").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});
+	jQuery("#grid_tipo_caja_matriz").jqGrid('navGrid','#pager_tipo_caja_matriz',{edit:false,add:false,del:false});
 		
 		
 	function gridTipoCaja_GradosFormatter(cellvalue, options, rowObject){
@@ -310,7 +310,7 @@ $(document).ready(function () {
 
 
 
-function mantenimiento_init()
+function TipoCajaMatriz_Init()
 {
 	var data = 	{
 					opcion: 'mantenimiento',
@@ -330,7 +330,7 @@ function mantenimiento_init()
 					 }
 	response = ajax_call(parameters, data);		
 	return false;	
-}//end function mantenimiento_init
+}//end function TipoCajaMatriz_Init
 
 
 function actualizacion_masiva_init()
@@ -427,7 +427,7 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 	var inventario_id 	= $("#frm_tipo_caja_matenimiento #inventario_id").val();
 	var variedad_id 	= $("#frm_tipo_caja_matenimiento #variedad_id").val();
 	var grado_id 		= $("#frm_tipo_caja_matenimiento #grado_id").val();
-	var unds_bunch 	= $("#frm_tipo_caja_matenimiento #unds_bunch").val();
+	var unds_bunch 		= $("#frm_tipo_caja_matenimiento #unds_bunch").val();
 	
 	var data = 	{
 					tipo_caja_id:		tipo_caja_id,
@@ -446,6 +446,8 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 						'finish':function(response){
 							if (response.respuesta_code == 'OK')
 							{
+								$('#dialog_tipo_caja_actualizacion').modal('hide')
+								$('#grid_tipo_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 								//mostrar_registro(response)
 								cargador_visibility('hide');
 								swal({  title: "Informacion procesada con exito!!",   

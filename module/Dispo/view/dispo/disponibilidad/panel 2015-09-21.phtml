@@ -1,7 +1,7 @@
 <meta charset="UTF-8">
 	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/disponibilidad.js')); ?>"></script>
    	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/dispo_x_grupo.js')); ?>"></script>
-
+   	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/precio_x_grupo.js')); ?>"></script>
 	<script>
 		$(document).ready(function () {
 			InputData_TrimAll();
@@ -257,6 +257,7 @@
                     <li role="presentation" class="active"><a href="#tab_dispo_sincronizacion" aria-controls="tab_dispo_sincronizacion" role="tab" data-toggle="tab">SINCRONIZADOR</a></li>
                     <li role="presentation"><a href="#tab_dispo" aria-controls="tab_dis" role="tab" data-toggle="tab">DISPONIBILIDAD</a></li>
                     <li role="presentation"><a href="#tab_dispo_x_grupo" aria-controls="tab_dispo_x_grupo" role="tab" data-toggle="tab">DISPO X GRUPO</a></li>
+                    <li role="presentation"><a href="#tab_precio_x_grupo" aria-controls="tab_precio_x_grupo" role="tab" data-toggle="tab">PRECIO x GRUPO</a></li>
                   </ul>
         
             
@@ -572,7 +573,35 @@
                              <!-- END Modal GRUPOS X DISPO ----------------------------------------------------------------------------------------->  
                         </div>
                     </div>
- 
+                    
+                    
+                    
+                    <div role="tabpanel" class="tab-pane" id="tab_precio_x_grupo">
+                        <div class="panel panel-default">
+                        	<!--- Grilla principal de la PRECIO X GRUPO --->
+                        	<form id="frm_precio_grupo" name="frm_precio_grupo" action="#" method="post" class="form-inline">
+                                <div class="form-group">
+                                	 <section class="body-admin-section">
+                                     	<div class="accion-admin-section">
+                                        	<div class="botonera-admin-section pull-left separator">
+                                        		<button id="btn_nuevo" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</button>
+                                        	</div>
+                                            <div class="busqueda-admin-section pull-left">
+                                            	 <select  id="grupo_precio_cab_id" class="form-control input-sm"></select>
+                                                 <select  id="tipo_precio" class="form-control input-sm"></select>
+                                                 &nbsp;&nbsp;<span id="info_grupo_precio_cab" class="bg-info"> </span>
+                                            </div>
+                                        </div>
+                                     </section>
+                                	 
+                                     
+                                </div>
+                                <table id="grid_precio_grupo" class="grid grid-autoheight"></table>
+                                <div id="pager_precio_grupo"></div>
+                            </form> 
+
+                        </div>
+                    </div>
                   </div>     
             </div>            
         </section>

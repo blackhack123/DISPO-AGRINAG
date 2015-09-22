@@ -37,4 +37,33 @@ class TipocajaController extends AbstractActionController
 	}//end  function getComboDataGridAction	
 	
 	
+	
+	
+	public function panelAction()
+	{
+		try
+		{
+			$viewModel 				= new ViewModel();
+		
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+		
+			//Controla el acceso a la informacion, solo accedera si es administrador
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$respuesta =  $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+				
+				
+			$this->layout($SesionUsuarioPlugin->getUserLayout());
+			$viewModel->setTemplate('dispo/tipocaja/panel.phtml');
+			return $viewModel;
+		
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function panelAction
+	
 }//end controller

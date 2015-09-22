@@ -29,7 +29,8 @@ return array(
         	'Dispo\Controller\Tipocajamarcacion'	=> 'Dispo\Controller\TipocajamarcacionController',
         	'Dispo\Controller\Tipocaja'				=> 'Dispo\Controller\TipocajaController',
         	'Dispo\Controller\Inventario'			=> 'Dispo\Controller\InventarioController',
-        	'Dispo\Controller\Grado'				=> 'Dispo\Controller\GradoController',        		
+        	'Dispo\Controller\Grado'				=> 'Dispo\Controller\GradoController',
+        	'Dispo\Controller\Precio'				=> 'Dispo\Controller\PrecioController',
         ),
     ),
     // The following section is new and should be added to your file
@@ -302,7 +303,22 @@ return array(
         					),
         			),
         	), 
-        
+
+       		'dispo-precio' => array(
+       				'type'    => 'segment',
+       				'options' => array(
+       						'route'    => '/dispo/precio[/:action][/:id]',
+       						'constraints' => array(
+       								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+       								'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+       						),
+       						'defaults' => array(
+       								'controller' => 'Dispo\Controller\Precio',
+       								'action'     => 'index',
+       						),
+       				),
+       		),
+
         ),
     ),
 		

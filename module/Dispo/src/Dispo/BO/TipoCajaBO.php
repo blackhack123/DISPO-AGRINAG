@@ -26,7 +26,7 @@ class TipoCajaBO extends Conexion
 
 		$result = $TipoCajaDAO->consultarTodos();
 		
-		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'id',$tipo_caja_id, $texto_1er_elemento, $color_1er_elemento);
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre',$tipo_caja_id, $texto_1er_elemento, $color_1er_elemento);
 		 
 		return $opciones;
 	}//end function getCombo
@@ -45,7 +45,7 @@ class TipoCajaBO extends Conexion
 	
 		$result = $TipoCajaDAO->consultarTodos();
 	
-		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'id', null, null, null, \Application\Classes\Combo::$tipo_combo_datagrid);
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', null, null, null, \Application\Classes\Combo::$tipo_combo_datagrid);
 		return $opciones;
 	}//end function getComboDataGrid	
 	

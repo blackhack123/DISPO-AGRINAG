@@ -275,5 +275,5 @@ class UsuarioBO extends Conexion{
 		}
 	}//end function desvincularGrupoDispo	
 	
-	
+
 }//end class UsuarioBO

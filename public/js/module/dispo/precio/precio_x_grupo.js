@@ -10,7 +10,6 @@ var valAnt_PrecioGrupoGrid		= null;
 $(document).ready(function () {
 	
 	/*----------------------Se cargan los controles -----------------*/
-	precioGrupo_init();
 	
 	$("#frm_precio_grupo #grupo_precio_cab_id").on('change', function(event){
 		$('#grid_precio_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
@@ -326,29 +325,6 @@ $(document).ready(function () {
 });
 	
 	
-function precioGrupo_init()
-{
-	var data = 	{
-					opcion: 'panel-control-disponibilidad',
-					grupo_dispo_1er_elemento:	'&lt;SELECCIONE&gt;',
-				}
-	data = JSON.stringify(data);
-	var parameters = {	'type': 'POST',//'POST',
-						'contentType': 'application/json',
-						'url':'../../dispo/grupoprecio/initcontrols',
-						'show_cargando':false,
-						'async':true,
-						'finish':function(response){		
-							$("body #frm_precio_grupo #grupo_precio_cab_id").html(response.grupo_precio_opciones);
-							$("body #frm_precio_grupo #tipo_precio").html(response.tipo_precio_opciones);
-							
-						 }							
-					 }
-	response = ajax_call(parameters, data);		
-	return false;	
-}//end function precioGrupo_init
-
-
 function GrupoPrecio_Grabar(grupo_precio_cab_id, variedad_id, grado_id, tipo_precio, precio)
 {
 	var data = 	{
