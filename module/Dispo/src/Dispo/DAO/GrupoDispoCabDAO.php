@@ -296,14 +296,30 @@ class GrupoDispoCabDAO extends Conexion
 	}//end function listado
 	
 	
-	public function listadoNoAsignadas()
+	
+	/**
+	 * 
+	 * @param int $grupo_dispo_cab_id
+	 * @return array
+	 */
+	public function listadoNoAsignadas($grupo_dispo_cab_id)
 	{
-		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre, usuario.id AS usuario_id  '.
+/*		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre, usuario.id AS usuario_id  '.
 				' FROM   cliente INNER JOIN  usuario '.
 				'						 ON usuario.cliente_id = cliente.id '.
 				'     		             AND usuario.grupo_dispo_cab_id IS NULL'.
 				"                        AND usuario.estado = 'A'";
-	
+*/
+		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre, usuario.id AS usuario_id  '.
+				' FROM   grupo_dispo_cab INNER JOIN usuario '.
+				'						         ON usuario.grupo_dispo_cab_id IS NULL'.
+				"                               AND usuario.estado 			= 'A'".
+				'                               AND usuario.inventario_id	= grupo_dispo_cab.inventario_id '.
+				'                               AND usuario.calidad_id		= grupo_dispo_cab.calidad_id'.
+				'						 INNER JOIN cliente '.
+				'                                ON cliente.id		= usuario.cliente_id'.
+				' WHERE grupo_dispo_cab.id = '.$grupo_dispo_cab_id;
+		
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro

@@ -24,8 +24,6 @@ return array(
         	'Dispo\Controller\Tipocajamarcacion'	=> 'Dispo\Controller\TipocajamarcacionController',
         	'Dispo\Controller\Tipocaja'				=> 'Dispo\Controller\TipocajaController',
         	'Dispo\Controller\Inventario'			=> 'Dispo\Controller\InventarioController',
-        	'Dispo\Controller\Grupocliente'			=> 'Dispo\Controller\GrupoclienteController',
-        	'Dispo\Controller\Grupocliente' 		=> 'Dispo\Controller\GrupoclienteController',
         	'Dispo\Controller\Tipocajamarcacion'	=> 'Dispo\Controller\TipocajamarcacionController',
         	'Dispo\Controller\Tipocaja'				=> 'Dispo\Controller\TipocajaController',
         	'Dispo\Controller\Inventario'			=> 'Dispo\Controller\InventarioController',
@@ -227,22 +225,7 @@ return array(
         			),
         	),
         		
-        	'dispo-grupocliente' => array(
-        			'type'    => 'segment',
-        			'options' => array(
-        					'route'    => '/dispo/grupocliente[/:action][/:id]',
-        					'constraints' => array(
-        							'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        							'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-        					),
-        					'defaults' => array(
-        							'controller' => 'Dispo\Controller\Grupocliente',
-        							'action'     => 'index',
-        					),
-        			),
-        	),
-        		
-
+ 
         	'dispo-tipocajamarcacion' => array(
         			'type'    => 'segment',
         			'options' => array(

@@ -31,11 +31,18 @@ $(document).ready(function () {
 		return false;
 	});		
 	
-	$("#frm_dispo_grupo #editar_dispo_grupo").on('click', function(event){ 	
+	$("#frm_dispo_grupo #btn_modificar").on('click', function(event){ 
+		$("#frm_grupo_usuario_mantenimiento #accion").val('M');
+		console.log('paso 01');
+		DispoGrupo_Consultar($("#frm_dispo_grupo #grupo_dispo_cab_id").val())	
+		return false;
+	});		
+	
+/*	$("#frm_dispo_grupo #editar_dispo_grupo").on('click', function(event){ 	
 		$("#frm_dispo_grupo_mantenimiento #accion").val('M');
 		DispoGrupo_Consultar($("#frm_dispo_grupo #grupo_dispo_cab_id").val())	
 	});
-	
+*/	
 	
 	$("#frm_dispo_grupo_mantenimiento #btn_grabar").on('click', function(event){ 
 		DispoGrupo_GrabarRegistro();
@@ -416,19 +423,7 @@ $(document).ready(function () {
 							'finish':function(response){
 								if (response.validacion_code == 'OK')
 								{
-									//mostrar_registro(response)
-									/*cargador_visibility('hide');
-									swal({  title: "Informacion grabada con exito!!",   
-										//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-										//html:true,
-										type: "success",
-										showCancelButton: false,
-										confirmButtonColor: "#DD6B55",
-										confirmButtonText: "OK",
-										cancelButtonText: "",
-										closeOnConfirm: false,
-										closeOnCancel: false,
-									});*/
+									//Lineas de codigo
 								}else{
 									message_error('ERROR', response);
 								}//end if									
@@ -529,7 +524,12 @@ $(document).ready(function () {
 										dispoGrupo_init();
 									}//end if
 									DispoGrupo_MostrarRegistro(response);
-									
+									$('#dialog_dispo_grupo_mantenimiento').modal('hide')
+
+									//----Se refresca los combos de las pestañas de los tabs
+									$("#frm_dispo_grupo #grupo_dispo_cab_id").html(response.grupo_opciones);   					//DISPO X GRUPO
+									DispoGrupo_ConsultarInfoDispoGrupoCab($("#frm_dispo_grupo #grupo_dispo_cab_id").val());  	//ACTUALIZA LA INFO ADICINOAL
+
 									cargador_visibility('hide');
 									swal({  title: "Informacion grabada con exito!!",   
 										//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
@@ -552,10 +552,11 @@ $(document).ready(function () {
 
 	function DispoGrupo_MostrarRegistro(response)
 	{
+		console.log('DispoGrupo_MostrarRegistro');
 		var row = response.row;
 		
 		if (row==null) return false;
-		
+		console.log('row:',row);
 		$("#frm_dispo_grupo_mantenimiento #accion").val("M");
 		$("#frm_dispo_grupo_mantenimiento #id").val(row.id);
 		$("#frm_dispo_grupo_mantenimiento #nombre").val(row.nombre);
@@ -567,6 +568,7 @@ $(document).ready(function () {
 	function DispoGrupo_Consultar(id)
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
+		console.log('paso02');
 		var data = 	{grupo_dispo_cab_id:id}
 		data = JSON.stringify(data);
 
@@ -576,6 +578,7 @@ $(document).ready(function () {
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
+									console.log('paso 03');
 									DispoGrupo_MostrarRegistro(response);
 									cargador_visibility('hide');
 
