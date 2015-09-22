@@ -214,7 +214,7 @@ $(document).ready(function () {
 						 	pais_id: $("#frm_marcacion #pais_id").val(),
 							contacto: $("#frm_marcacion #contacto").val(),
 							telefono: $("#frm_marcacion #telefono").val(),
-							tipo_caja_homologada_id: $("#frm_marcacion #tipo_caja_default_id").val(),
+							tipo_caja_default_id: $("#frm_marcacion #tipo_caja_default_id").val(),
 							zip:$("#frm_marcacion #zip").val(),
 							estado: $("#frm_marcacion #estado").val(),
 						}
@@ -284,7 +284,7 @@ $(document).ready(function () {
 				$("#frm_marcacion #ciudad").val(row.ciudad);
 				$("#frm_marcacion #contacto").val(row.contacto);
 				$("#frm_marcacion #telefono").val(row.telefono);
-				$("frm_marcacion  #tipo_caja_default_id").val(row.tipo_caja_default_id);
+				$("#frm_marcacion #tipo_caja_default_id").html(response.cbo_tipo_caja);
 				$("#frm_marcacion #zip").val(row.zip);
 				$("#frm_marcacion #estado").html(response.cbo_estado);
 				$("#frm_marcacion #lbl_fec_ingreso").html(row.fec_ingreso);

@@ -1,7 +1,7 @@
 
 <script>
 $(document).ready(function () {
-	InputData_UpperCaseAll();		
+	//InputData_UpperCaseAll();		
 	InputData_TrimAll();
 /*		InputData_KeyEnterDisabled();*/
 	InputData_initNumberNoDecimal();
@@ -61,7 +61,7 @@ $(document).ready(function () {
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
-		var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
+		//var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
@@ -90,7 +90,9 @@ $(document).ready(function () {
 									$("#cultivada").html(response.cbo_cultivada);
 									$("#ciclo_prod").val('');
 									$("#obtentor_id").html(response.cbo_obtentor_id);
-									//$("#producto_id").html(response.cbo_producto_id);
+									$("#tamano_bunch_id").html(response.cbo_tamano_bunch);
+									$("#color_ventas_id").html(response.cbo_color_ventas);
+									$("#url_ficha").val('');
 									$("#estado").html(response.cbo_estado);
 									$("#lbl_fec_sincronizado").html('');
 									$("#lbl_usuario_ing").html('');
@@ -129,6 +131,9 @@ $(document).ready(function () {
 					 	solido:$("#solido").val(),
 					 	es_real:$("#es_real").val(),
 					 	est_producto_especial: est_producto_especial,
+					 	tamano_bunch_id:$("#tamano_bunch_id").val(),
+					 	url_ficha:$("#url_ficha").val(),
+					 	color_ventas_id:$("#color_ventas_id").val(),
 					 	mensaje:$("#mensaje").val(),
 					 	cultivada:$("#cultivada").val(),
 					 	ciclo_prod: $("#ciclo_prod").val(),
@@ -222,6 +227,7 @@ $(document).ready(function () {
 			$("#color").html(response.cbo_color);
 			$("#color2").html(response.cbo_color2);
 			$("#grupo_color_id").html(response.cbo_grupo_color_id);
+			$("#tamano_bunch_id").html(response.cbo_tamano_bunch);
 			$("#colorbase").html(response.cbo_color_base);
 			$("#solido").html(response.cbo_solido);
 			$("#es_real").html(response.cbo_es_real);
@@ -229,6 +235,8 @@ $(document).ready(function () {
 			$("#cultivada").html(response.cbo_cultivada);
 			$("#ciclo_prod").val(row.ciclo_prod);
 			$("#obtentor_id").html(response.cbo_obtentor_id);
+			$("#color_ventas_id").html(response.cbo_color_ventas);
+			$("#url_ficha").val(row.url_ficha);
 			if (row.est_producto_especial=='1')
 			{
 			    $("#est_producto_especial").prop('checked', true);
@@ -417,14 +425,6 @@ $(document).ready(function () {
 			        		    <td><select  name="es_real" class="select-class2" id="es_real" validate="required"></select></td>
 		        	          </tr>
 		        	           <tr>
-			        	        <td><label class="control-label">CICLO:</label></td>
-			        	        <td><input name="ciclo_prod" type="text" class="inputdata-number-no-decimal" id="ciclo_prod" style="width:350px" value="" maxlength="6"  validate="required" validateMessage="Ingrese ciclo"></td>
-		        	          </tr>
-		        	           <tr>
-			        	        <td><label class="control-label">MENSAJE:</label></td>
-			        	        <td><input name="mensaje" type="text" class="form-control input-sm" id="mensaje" style="width:350px" value="" maxlength="70" ></td>
-		        	          </tr>
-		        	            <tr>
 			        	        <td><label class="control-label">CULTIVADA:</label></td>
 			        	        <td><select  name="cultivada" class="select-class2" id="cultivada" ></select></td>
 		        	          </tr>
@@ -432,6 +432,26 @@ $(document).ready(function () {
 			        	        <td><label class="control-label">OBTENTOR:</label></td>
 			        		    <td><select  name="obtentor_id" class="select-class2" id="obtentor_id" ></select></td>
 		        	          </tr>	
+		        	          <tr>
+			        	        <td><label class="control-label">TAMAÑO BUNCH:</label></td>
+			        		    <td><select  name="tamano_bunch_id" class="select-class2" id="tamano_bunch_id" validate="required" validateMessage="Seleccione un Tamaño"></select></td>
+		        	          </tr>	
+		        	          <tr>
+			        	         <td><label class="control-label">COLOR VENTAS:</label></td>
+			        	         <td><select id="color_ventas_id" name="color_ventas_id"  class="select-class2" validate="required" validateMessage="Seleccione Color Ventas"></select></td>
+			        	       </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">URL FICHA:</label></td>
+			        	        <td><input name="url_ficha" type="text" class="form-control input-sm" id="url_ficha" style="width:350px" value="" ></td>
+		        	          </tr>
+		        	           <tr>
+			        	        <td><label class="control-label">CICLO:</label></td>
+			        	        <td><input name="ciclo_prod" type="text" class="inputdata-number-no-decimal" id="ciclo_prod" style="width:350px" value="" maxlength="6"  validate="required" validateMessage="Ingrese ciclo"></td>
+		        	          </tr>
+		        	           <tr>
+			        	        <td><label class="control-label">MENSAJE:</label></td>
+			        	        <td><input name="mensaje" type="text" class="form-control input-sm" id="mensaje" style="width:350px" value="" maxlength="70" ></td>
+		        	          </tr>
 		        	           <tr>
 			        	        <td><label class="control-label">ESTADO PROD. ESPECIAL:</label></td>
 			        	        <td><input type="checkbox" name="est_producto_especial" id="est_producto_especial" value=""></td>

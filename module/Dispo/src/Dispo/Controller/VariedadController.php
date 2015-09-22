@@ -14,7 +14,9 @@ use Dispo\BO\GrupoColorBO;
 use Dispo\BO\CalidadVariedadBO;
 use Dispo\BO\ObtentorBO;
 use Dispo\Data\VariedadData;
-
+use Dispo\BO\TamanoBunchBO;
+use Dispo\BO\ColorVentasBO;
+use Dispo\BO\Dispo\BO;
 
 class VariedadController extends AbstractActionController
 {
@@ -73,6 +75,8 @@ class VariedadController extends AbstractActionController
 			$GrupoColorBO			= new GrupoColorBO();
 			$CalidadVariedadBO		= new CalidadVariedadBO();
 			$ObtentorBO				= new ObtentorBO();
+			$TamanoBunchBO			= new TamanoBunchBO();
+			$ColorVentasBO			= new ColorVentasBO();
 			
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
@@ -80,6 +84,10 @@ class VariedadController extends AbstractActionController
 			$GrupoColorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$CalidadVariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ObtentorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$TamanoBunchBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 
@@ -90,6 +98,9 @@ class VariedadController extends AbstractActionController
 			$solido						= 'S';
 			$es_real 					= 'S';
 			$obtentor					= null;
+			$tamano_bunch_id			= null;
+			$color_ventas_id			= null;
+			
 			$response = new \stdClass();
 			$response->cbo_color_base				= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
 			$response->cbo_color					= $ColoresBO->getCombo($colorbase, "&lt;Seleccione&gt;");
@@ -100,7 +111,9 @@ class VariedadController extends AbstractActionController
 			$response->cbo_es_real					= $VariedadBO->getComboEsReal($es_real, "&lt;Seleccione&gt;");
 			$response->cbo_cultivada				= $VariedadBO->getComboCultivada($cultivada, "&lt;Seleccione&gt;");
 			$response->cbo_obtentor_id				= $ObtentorBO->getComboObtentor($obtentor, "&lt;Seleccione&gt;");
+			$response->cbo_color_ventas				= $ColorVentasBO->getCombo($color_ventas_id, "&lt;Seleccione&gt;");
 			$response->cbo_producto_id				= $ProductoBO->getComboProductoId($id, "&lt;Seleccione&gt;");
+			$response->cbo_tamano_bunch				= $TamanoBunchBO->getCombo($tamano_bunch_id, "&lt;Seleccione&gt;");
 			$response->cbo_estado					= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 				= 'OK';
 			$response->respuesta_mensaje			= '';
@@ -131,12 +144,16 @@ class VariedadController extends AbstractActionController
 			$ColoresBO				= new ColoresBO();
 			$CalidadVariedadBO		= new CalidadVariedadBO();
 			$GrupoColorBO			= new GrupoColorBO();
-				
+			$TamanoBunchBO			= new TamanoBunchBO();
+			$ColorVentasBO			= new ColorVentasBO();
+			
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$CalidadVariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ObtentorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$GrupoColorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$TamanoBunchBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
@@ -159,6 +176,8 @@ class VariedadController extends AbstractActionController
 			$response->cbo_es_real					= $VariedadBO->getComboEsReal($row['es_real'], "&lt;Seleccione&gt;");
 			$response->cbo_cultivada				= $VariedadBO->getComboCultivada($row['cultivada'], "&lt;Seleccione&gt;");
 			$response->cbo_obtentor_id				= $ObtentorBO->getComboObtentor($row['obtentor_id'], "&lt;Seleccione&gt;");
+			$response->cbo_color_ventas				= $ColorVentasBO->getCombo($row['color_ventas_id'], "&lt;Seleccione&gt;");
+			$response->cbo_tamano_bunch				= $TamanoBunchBO->getCombo($row['tamano_bunch_id'], "&lt;Seleccione&gt;");
 			$response->cbo_estado					= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->respuesta_code 				= 'OK';
 			$response->respuesta_mensaje			= '';
@@ -186,16 +205,21 @@ class VariedadController extends AbstractActionController
 			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
 	
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
-			$VariedadData		= new VariedadData();
-			$VariedadBO 		= new VariedadBO();
-			$ObtentorBO 		= new ObtentorBO();
-			$ColoresBO 			= new ColoresBO();
-			$CalidadVariedadBO 	= new CalidadVariedadBO();
+			$VariedadData			= new VariedadData();
+			$VariedadBO 			= new VariedadBO();
+			$ObtentorBO 			= new ObtentorBO();
+			$ColoresBO 				= new ColoresBO();
+			$CalidadVariedadBO 		= new CalidadVariedadBO();
+			$TamanoBunchBO			= new TamanoBunchBO();
+			$ColorVentasBO			= new ColorVentasBO();
 			
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ColoresBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$CalidadVariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$ObtentorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$TamanoBunchBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
 			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			
@@ -219,6 +243,9 @@ class VariedadController extends AbstractActionController
 			$VariedadData->setCultivada				($json['cultivada']);
 			$VariedadData->setCicloProd				($json['ciclo_prod']);
 			$VariedadData->setObtentorId			($json['obtentor_id']);
+			$VariedadData->setColorVentasId			($json['color_ventas_id']);
+			$VariedadData->setUrlFicha				($json['url_ficha']);
+			$VariedadData->setTamanoBunchId			($json['tamano_bunch_id']);
 			$VariedadData->setEstado				($json['estado']);
 
 			switch ($accion)

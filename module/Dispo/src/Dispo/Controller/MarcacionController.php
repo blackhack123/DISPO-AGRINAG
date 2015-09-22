@@ -141,7 +141,6 @@ class MarcacionController extends AbstractActionController
 			$tipo_caja_defauld_id		= null;
 			
 			$response->cbo_pais_id			= $PaisBO->getComboPais($pais, "&lt;Seleccione&gt;");
-			//	$response->cliente_id			=ClienteBO->
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->cbo_tipo_caja		= $TipoCajaBO->getCombo($tipo_caja_defauld_id, "&lt;Seleccione&gt;");
 			$response->respuesta_code 		= 'OK';

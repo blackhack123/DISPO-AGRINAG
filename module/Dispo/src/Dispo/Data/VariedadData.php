@@ -87,6 +87,21 @@ class VariedadData
 	/**
 	 * @var string
 	 */
+	protected $tamano_bunch_id;
+	
+	/**
+	 * @var int
+	 */
+	protected $color_ventas_id;
+
+	/**
+	 * @var string
+	 */
+	protected $url_ficha;
+	
+	/**
+	 * @var string
+	 */
 	protected $estado;
 	
 	/**
@@ -138,7 +153,10 @@ class VariedadData
 	public function getCultivada()			 	{return $this->cultivada;}
 	public function getCicloProd()		 		{return $this->ciclo_prod;}
 	public function getObtentorId()		 		{return $this->obtentor_id;}
+	public function getTamanoBunchId()		 	{return $this->tamano_bunch_id;}
 	public function getProductoId()		 		{return $this->producto_id;}
+	public function getColorVentasId()		 	{return $this->color_ventas_id;}
+	public function getUrlFicha()		 		{return $this->url_ficha;}
 	public function getEstado() 				{return $this->estado;}
 	public function getFecIngreso() 			{return $this->fec_ingreso;}
 	public function getFecModifica() 			{return $this->fec_modifica;}
@@ -164,7 +182,10 @@ class VariedadData
 	public function setCultivada($valor)		 	{$this->cultivada				= $valor;}
 	public function setCicloProd($valor)		 	{$this->ciclo_prod				= $valor;}
 	public function setObtentorId($valor)		 	{$this->obtentor_id				= $valor;}
+	public function setTamanoBunchId($valor)		{$this->tamano_bunch_id			= $valor;}
 	public function setProductoId($valor)		 	{$this->producto_id				= $valor;}
+	public function setColorVentasId($valor)		{$this->color_ventas_id			= $valor;}
+	public function setUrlFicha($valor)				{$this->url_ficha				= $valor;}
 	public function setEstado($valor) 				{$this->estado					= $valor;}
 	public function setFecIngreso($valor) 			{$this->fec_ingreso				= $valor;}
 	public function setFecModifica($valor) 			{$this->fec_modifica			= $valor;}

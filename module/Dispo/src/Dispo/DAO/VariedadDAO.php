@@ -37,6 +37,9 @@ class VariedadDAO extends Conexion
 				'cultivada'	    			        => $VariedadData->getCultivada(),
 				'ciclo_prod'	                    => $VariedadData->getCicloProd(),
 				'obtentor_id'	                    => $VariedadData->getObtentorId(),
+				'tamano_bunch_id'	                => $VariedadData->getTamanoBunchId(),
+				'color_ventas_id'	                => $VariedadData->getColorVentasId(),
+				'url_ficha'	              			=> $VariedadData->getUrlFicha(),
 				'producto_id'	        		    => $VariedadData->getProductoId(),
 				'estado'		                    => $VariedadData->getEstado(),
 				'fec_ingreso'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
@@ -74,7 +77,9 @@ class VariedadDAO extends Conexion
 				'cultivada'	    			        => $VariedadData->getCultivada(),
 				'ciclo_prod'	                    => $VariedadData->getCicloProd(),
 				'obtentor_id'	                    => $VariedadData->getObtentorId(),
-				//'producto_id'	        		    => $VariedadData->getProductoId(),
+				'tamano_bunch_id'	                => $VariedadData->getTamanoBunchId(),
+				'color_ventas_id'	                => $VariedadData->getColorVentasId(),
+				'url_ficha'	                		=> $VariedadData->getUrlFicha(),
 				'estado'		                    => $VariedadData->getEstado(),
 				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                    => $VariedadData->getUsuarioModId(),
@@ -124,6 +129,9 @@ class VariedadDAO extends Conexion
 					$VariedadData->setCultivada						($row['cultivada']);
 					$VariedadData->setCicloProd						($row['ciclo_prod']);
 					$VariedadData->setObtentorId					($row['obtentor_id']);
+					$VariedadData->setTamanoBunchId					($row['tamano_bunch_id']);
+					$VariedadData->setColorVentasId					($row['color_ventas_id']);
+					$VariedadData->setUrlFicha						($row['url_ficha']);
 					$VariedadData->setEstado    					($row['estado']);
 					$VariedadData->setFecIngreso 					($row['fec_ingreso']);
 					$VariedadData->setFecModifica 					($row['fec_modifica']);
