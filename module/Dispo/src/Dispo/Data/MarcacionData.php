@@ -58,12 +58,12 @@ class MarcacionData
 	 * @var string
 	 */	
 	protected $zip;
-
-	/** 
-	 * @var int
-	 */
-	protected $punto_corte;
 	
+	/**
+	 * @var string
+	 */
+	protected $tipo_caja_default_id;
+
 	/**
 	 * @var string
 	 */
@@ -113,6 +113,7 @@ class MarcacionData
 	public function getContacto() 					{return $this->contacto;}
 	public function getTelefono() 					{return $this->telefono;}
 	public function getZip() 						{return $this->zip;}
+	public function getTipoCajaDefaultId() 			{return $this->tipo_caja_default_id;}
 	public function getPuntoCorte()					{return $this->punto_corte;}
 	public function getEstado() 					{return $this->estado;}
 	public function getFecIngreso() 				{return $this->fec_ingreso;}
@@ -125,23 +126,24 @@ class MarcacionData
 	
 	//metodos SET
 	
-	public function setMarcacionsec($valor) 				{$this->marcacion_sec		= $valor;}
-	public function setClienteId($valor) 					{$this->cliente_id			= $valor;}
-	public function setNombre($valor) 						{$this->nombre				= $valor;}
-	public function setDireccion($valor) 					{$this->direccion			= $valor;}
-	public function setCiudad($valor) 						{$this->ciudad				= $valor;}
-	public function setPaisId($valor) 						{$this->pais_id				= $valor;}
-	public function setContacto($valor) 					{$this->contacto			= $valor;}
-	public function setTelefono($valor) 					{$this->telefono			= $valor;}
-	public function setZip($valor) 							{$this->zip					= $valor;}
-	public function setPuntoCorte($valor)					{$this->punto_corte			= $valor;}
-	public function setEstado($valor) 						{$this->estado				= $valor;}
-	public function setFecIngreso($valor) 					{$this->fec_ingreso			= $valor;}
-	public function setFecModifica($valor) 					{$this->fec_modifica		= $valor;}
-	public function setUsuarioIngId($valor) 				{$this->usuario_ing_id		= $valor;}
-	public function setUsuarioModId($valor) 				{$this->usuario_mod_id		= $valor;}
-	public function setSinronizado($valor) 					{$this->sincronizado		= $valor;}
-	public function setFecSincronizado($valor) 				{$this->fec_sincronizado	= $valor;}
+	public function setMarcacionsec($valor) 				{$this->marcacion_sec			= $valor;}
+	public function setClienteId($valor) 					{$this->cliente_id				= $valor;}
+	public function setNombre($valor) 						{$this->nombre					= $valor;}
+	public function setDireccion($valor) 					{$this->direccion				= $valor;}
+	public function setCiudad($valor) 						{$this->ciudad					= $valor;}
+	public function setPaisId($valor) 						{$this->pais_id					= $valor;}
+	public function setContacto($valor) 					{$this->contacto				= $valor;}
+	public function setTelefono($valor) 					{$this->telefono				= $valor;}
+	public function setZip($valor) 							{$this->zip						= $valor;}
+	public function setTipoCajaDefaultId($valor) 			{$this->tipo_caja_default_id 	= $valor;}
+	public function setPuntoCorte($valor)					{$this->punto_corte				= $valor;}
+	public function setEstado($valor) 						{$this->estado					= $valor;}
+	public function setFecIngreso($valor) 					{$this->fec_ingreso				= $valor;}
+	public function setFecModifica($valor) 					{$this->fec_modifica			= $valor;}
+	public function setUsuarioIngId($valor) 				{$this->usuario_ing_id			= $valor;}
+	public function setUsuarioModId($valor) 				{$this->usuario_mod_id			= $valor;}
+	public function setSinronizado($valor) 					{$this->sincronizado			= $valor;}
+	public function setFecSincronizado($valor) 				{$this->fec_sincronizado		= $valor;}
 
 
 }//fin class

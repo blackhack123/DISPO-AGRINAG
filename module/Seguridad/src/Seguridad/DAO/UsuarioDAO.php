@@ -159,7 +159,7 @@ class UsuarioDAO extends Conexion {
 						'					 LEFT JOIN cliente '.
 						'              				ON cliente.id	= usuario.cliente_id'.	
 						'              	     LEFT JOIN grupo_precio_cab '.
-						'                     		ON grupo_precio_cab.id = cliente.grupo_precio_cab_id '.
+						'                     		ON grupo_precio_cab.id = usuario.grupo_precio_cab_id '.
 						' WHERE usuario.id = :id ';
 				
 				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
