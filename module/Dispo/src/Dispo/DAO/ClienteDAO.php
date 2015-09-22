@@ -383,48 +383,6 @@ class ClienteDAO extends Conexion
 	
 	
 	
-
-	/**
-	 *
-	 * @param ClienteData $ClienteData
-	 * @return number
-	 */
-	function vincularGrupoPrecio(ClienteData $ClienteData)
-	{
-		$key    = array(
-				'id'						        => $ClienteData->getId(),
-		);
-		$record = array(
-				'grupo_precio_cab_id'                => $ClienteData->getGrupoPrecioCabId(),
-				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
-				'usuario_mod_id'                	=> $ClienteData->getUsuarioModId()
-		);
-		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $ClienteData->getId();
-	}//end function vincularGrupoDispo
-	
-	
-	
-	/**
-	 *
-	 * @param ClienteData $ClienteData
-	 * @return number
-	 */
-	function desvincularGrupoPrecio(ClienteData $ClienteData)
-	{
-		$key    = array(
-				'id'						        => $ClienteData->getId(),
-		);
-		$record = array(
-				'grupo_precio_cab_id'                => null,
-				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
-				'usuario_mod_id'                	=> $ClienteData->getUsuarioModId()
-		);
-		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $ClienteData->getId();
-	}//end function desvincularGrupoDispo
-	
-
 }//end class
 
 ?>

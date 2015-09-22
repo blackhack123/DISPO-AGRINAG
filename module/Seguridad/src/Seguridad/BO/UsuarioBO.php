@@ -276,4 +276,65 @@ class UsuarioBO extends Conexion{
 	}//end function desvincularGrupoDispo	
 	
 
+	
+	
+	/**
+	 *
+	 * @param UsuarioData[] $ArrUsuarioData
+	 * @throws Exception
+	 * @return boolean
+	 */
+	function vincularGrupoPrecio($ArrUsuarioData)
+	{
+		$UsuarioDAO = new UsuarioDAO();
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+	
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			foreach($ArrUsuarioData as $UsuarioData)
+			{
+				$UsuarioDAO->vincularGrupoPrecio($UsuarioData);
+			}//end foreach
+	
+			$this->getEntityManager()->getConnection()->commit();
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function desvincularGrupoDispo
+	
+	
+	
+	/**
+	 *
+	 * @param UsuarioData[] $ArrUsuarioData
+	 * @throws Exception
+	 * @return boolean
+	 */
+	function desvincularGrupoPrecio($ArrUsuarioData)
+	{
+		$UsuarioDAO = new UsuarioDAO();
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+	
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			foreach($ArrUsuarioData as $UsuarioData)
+			{
+				$UsuarioDAO->desvincularGrupoPrecio($UsuarioData);
+			}//end foreach
+	
+			$this->getEntityManager()->getConnection()->commit();
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function desvincularGrupoDispo
+	
+	
+	
+	
 }//end class UsuarioBO
