@@ -61,6 +61,7 @@ class TipocajaController extends AbstractActionController
 			$response->setStatusCode(500);
 			$response->setContent($excepcion_msg);
 			return $response;	
+		}
 	}//end function panelAction		
 
 
