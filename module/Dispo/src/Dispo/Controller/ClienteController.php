@@ -109,12 +109,12 @@ class ClienteController extends AbstractActionController
 			$UsuarioBO 				= new UsuarioBO();
 			$PaisBO 				= new PaisBO();
 			$EstadosBO 				= new EstadosBO();
-			$GrupoDispoCabBO		= new GrupoDispoCabBO();
+			//$GrupoDispoCabBO		= new GrupoDispoCabBO();
 			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$EstadosBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			//$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
@@ -134,7 +134,7 @@ class ClienteController extends AbstractActionController
 			$response->cbo_pais_id					= $PaisBO->getComboPais($pais, "&lt;Seleccione&gt;");
 			$response->cbo_usuario_vendedor_id		= $UsuarioBO->getComboTodosVendedores($usuario_vendedor_id, "&lt;Seleccione&gt;");
 			$response->cbo_estado_id				= $EstadosBO->getComboEstados($estados, "&lt;Seleccione&gt;");
-			$response->cbo_grupo_dispo				= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
+			//$response->cbo_grupo_dispo				= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
 			$response->cbo_estado					= \Application\Classes\ComboGeneral::getComboEstado("","");
 			$response->cbo_formato_estado_cta		= \Application\Classes\ComboGeneral::getComboFormatoEnvio("","");
 			$response->respuesta_code 				= 'OK';
@@ -163,12 +163,12 @@ class ClienteController extends AbstractActionController
 			$EstadosBO 				= new EstadosBO();
 			$PaisBO 				= new PaisBO();
 			$UsuarioBO 				= new UsuarioBO();
-			$GrupoDispoCabBO		= new GrupoDispoCabBO();
+			//$GrupoDispoCabBO		= new GrupoDispoCabBO();
 			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$EstadosBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			//$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 	
@@ -182,7 +182,7 @@ class ClienteController extends AbstractActionController
 			$response->row						= $row;
 			$response->cbo_pais_id				= $PaisBO->getComboPais($row['pais_id'], "&lt;Seleccione&gt;");
 			$response->cbo_usuario_vendedor_id	= $UsuarioBO->getComboTodosVendedores($row['usuario_vendedor_id'], "&lt;Seleccione&gt;");
-			$response->cbo_grupo_dispo			= $GrupoDispoCabBO->getComboGrupoDispo($row['grupo_precio_cab_id'], "&lt;Seleccione&gt;");
+			//$response->cbo_grupo_dispo			= $GrupoDispoCabBO->getComboGrupoDispo($row['grupo_precio_cab_id'], "&lt;Seleccione&gt;");
 			$response->cbo_estado				= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
 			$response->cbo_estado_id			= $EstadosBO->getComboEstados($row['estados_id'], "&lt;Seleccione&gt;");
 			$response->cbo_formato_estado_cta	= \Application\Classes\ComboGeneral::getComboFormatoEnvio($row['formato_estado_cta'],"");
@@ -225,7 +225,7 @@ class ClienteController extends AbstractActionController
 			$ClienteData->setId					($json['cliente_id']);
 			$ClienteData->setNombre				($json['nombre']);
 			$ClienteData->setAbreviatura		($json['abreviatura']);
-			$ClienteData->setGrupoPrecioCabId	($json['grupo_precio_cab_id']);
+			//$ClienteData->setGrupoPrecioCabId	($json['grupo_precio_cab_id']);
 			$ClienteData->setDireccion			($json['direccion']);
 			$ClienteData->setCiudad				($json['ciudad']);
 			$ClienteData->setEstadosId			($json['estados_id']);
@@ -365,7 +365,6 @@ class ClienteController extends AbstractActionController
 				$row2['nombre'] 			= trim($row['nombre']);
 				$row2['direccion'] 			= trim($row['direccion']);
 				$row2['pais_nombre']		= trim($row['pais_nombre']);
-				$row2['telefono1'] 			= trim($row['telefono1']);
 				$row2['sincronizado'] 		= trim($row['sincronizado']);
 				$row2['fec_sincronizado'] 	= trim($row['fec_sincronizado']);
 				$row2['estado'] 			= trim($row['estado']);

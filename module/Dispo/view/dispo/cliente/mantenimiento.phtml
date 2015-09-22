@@ -111,14 +111,14 @@
                                         	<input type="text" class="form-control" id="abreviatura" name="abreviatura"  onkeyup="this.value=this.value.toUpperCase()"><br/>
                                       </div>
 									</div>
-                                    <div class="col-lg-12">
+                                  <!-- div class="col-lg-12">
                                         <div class="col-lg-2">
                                             <label for="co1" class="control-label"> Grupo: </label>
                                         </div>
                                         <div class="col-lg-4">
                                      		<select  name="grupo_precio_cab_id" class="form-control" id="grupo_precio_cab_id" validate="required" validateMessage="Grupo Requerido"></select><br/>
                                         </div>
-                                    </div>
+                                    </div  -->
                                     <div class="col-lg-12">
                                         <div class="col-lg-2">
                                             <label for="d1" class="control-label"> Direccíon: </label>
@@ -673,13 +673,13 @@
 				        	        <td><label class="control-label">TELEFONO:</label></td>
 				        	        <td><input name="telefono" type="text" class="form-control input-sm " id="telefono" style="width:350px" value="" maxlength="13" max-lenght="13" ></td>
 			        	         </tr>
+			        	         <tr>
+			        	         <td><label class="control-label">TIPO CAJA:</label></td>
+			        	         <td><select id="tipo_caja_default_id" name="tipo_caja_default_id"  class="select-class2" validate="required" validateMessage="Seleccione Tipo Caja"></select></td>
+			        	         </tr>
 			        	          <tr>
 				        	        <td><label class="control-label">ZIP:</label></td>
 				        	        <td><input name="zip" type="text" id="zip" class="form-control input-sm" style="width:350px" value="" maxlength="9" max-lenght="9" ></td>
-			        	         </tr>
-			        	         <tr>
-				        	        <td><label class="control-label">PTO. DE CORTE:</label></td>
-				        	        <td><input name="punto_corte" type="text" class="form-control input-sm" id="punto_corte" style="width:95px" value="" maxlength="5" max-lenght="5" ></td>
 			        	         </tr>
 				        	     <tr>
 				        	     	<td><label class="control-label">ESTADO:</label></td>
@@ -838,8 +838,16 @@
 			        	        <td><input type="email" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="50" ></td>
 		        	          </tr>
 		        	          <tr>
-			        	        <td><label class="control-label">GRUPO:</label></td>
+			        	        <td><label class="control-label">GRUPO DISPO:</label></td>
 			        	        <td><select  name="grupo_dispo_cab_id" class="form-control" id="grupo_dispo_cab_id" validate="required" validateMessage="Grupo Requerido" style="width:150px"></select></td>
+		        	          </tr>
+		        	          <tr>
+			        	        <td><label class="control-label">GRUPO PRECIO:</label></td>
+			        	        <td><select  name="grupo_precio_cab_id" class="form-control" id="grupo_precio_cab_id" validate="required" validateMessage="Grupo Requerido" style="width:150px"></select></td>
+		        	          </tr>
+		        	          <tr>
+			        	        <td><label class="control-label">INVENTARIO:</label></td>
+			        	        <td><select  name="inventario_id" class="form-control" id="inventario_id" validate="required" validateMessage="Inventario Requerido" style="width:150px"></select></td>
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>

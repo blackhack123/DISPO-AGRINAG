@@ -9,6 +9,7 @@ use Zend\View\Model\JsonModel;
 use Dispo\Data\MarcacionData;
 use Dispo\BO\MarcacionBO;
 use Dispo\BO\PaisBO;
+use Dispo\BO\TipoCajaBO;
 
 
 class MarcacionController extends AbstractActionController
@@ -122,8 +123,10 @@ class MarcacionController extends AbstractActionController
 	
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$PaisBO 				= new PaisBO();
+			$TipoCajaBO 			= new TipoCajaBO();
 			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-	
+			$TipoCajaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 	
@@ -132,12 +135,15 @@ class MarcacionController extends AbstractActionController
 	
 	
 	
-			$response 		= new \stdClass();
-			$pais 			= null;
-			$cliente_id 			= null;
+			$response 					= new \stdClass();
+			$pais 						= null;
+			$cliente_id 				= null;
+			$tipo_caja_defauld_id		= null;
+			
 			$response->cbo_pais_id			= $PaisBO->getComboPais($pais, "&lt;Seleccione&gt;");
 			//	$response->cliente_id			=ClienteBO->
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->cbo_tipo_caja		= $TipoCajaBO->getCombo($tipo_caja_defauld_id, "&lt;Seleccione&gt;");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
 	
@@ -182,8 +188,8 @@ class MarcacionController extends AbstractActionController
 			$MarcacionData->setCiudad				($json['ciudad']);
 			$MarcacionData->setContacto				($json['contacto']);
 			$MarcacionData->setTelefono				($json['telefono']);
+			$MarcacionData->setTipoCajaDefaultId	($json['tipo_caja_default_id']);
 			$MarcacionData->setZip					($json['zip']);
-			$MarcacionData->setPuntoCorte			($json['punto_corte']);
 			$MarcacionData->setEstado				($json['estado']);
 	
 			$response = new \stdClass();
@@ -249,8 +255,11 @@ class MarcacionController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$MarcacionBO 			= new MarcacionBO();
 			$PaisBO 				= new PaisBO();
+			$TipoCajaBO 			= new TipoCajaBO ();
 			$MarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$PaisBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$TipoCajaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 	
@@ -263,6 +272,7 @@ class MarcacionController extends AbstractActionController
 			$response = new \stdClass();
 			$response->row					= $row;
 			$response->cbo_pais_id			= $PaisBO->getComboPais($row['pais_id'], "&lt;Seleccione&gt;");
+			$response->cbo_tipo_caja		= $TipoCajaBO->getCombo($row['tipo_caja_default_id'], "&lt;Seleccione&gt;");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';

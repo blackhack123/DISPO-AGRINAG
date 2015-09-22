@@ -30,8 +30,8 @@ class MarcacionDAO extends Conexion
 				'pais_id'		                    => $MarcacionData->getPaisId(),
 				'contacto'		                    => $MarcacionData->getContacto(),
 				'telefono'		                    => $MarcacionData->getTelefono(),
+				'tipo_caja_default_id'		    	=> $MarcacionData->getTipoCajaDefaultId(),
 				'zip'		                  		=> $MarcacionData->getZip(),
-				'punto_corte'		                => $MarcacionData->getPuntoCorte(),
 				'estado'                			=> $MarcacionData->getEstado(),
 				'fec_ingreso'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_ing_id'                	=> $MarcacionData->getUsuarioIngId(),
@@ -64,8 +64,8 @@ class MarcacionDAO extends Conexion
 				'pais_id'		                    => $MarcacionData->getPaisId(),
 				'contacto'		                    => $MarcacionData->getContacto(),
 				'telefono'		                    => $MarcacionData->getTelefono(),
+				'tipo_caja_default_id'		    	=> $MarcacionData->getTipoCajaDefaultId(),
 				'zip'		                  		=> $MarcacionData->getZip(),
-				'punto_corte'		                => $MarcacionData->getPuntoCorte(),
 				'estado'                			=> $MarcacionData->getEstado(),
 				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                	=> $MarcacionData->getUsuarioModId()
@@ -107,8 +107,8 @@ class MarcacionDAO extends Conexion
 					$MarcacionData->setPaisId		   		($row['pais_id']);
 					$MarcacionData->setContacto		   		($row['contacto']);
 					$MarcacionData->setTelefono		   		($row['telefono']);
+					$MarcacionData->setTipoCajaDefaultId	($row['tipo_caja_default_id']);
 					$MarcacionData->setZip		   			($row['zip']);
-					$MarcacionData->setPuntoCorte			($row['punto_corte']);
 					$MarcacionData->setEstado    			($row['estado']);
 					$MarcacionData->setFecIngreso   		($row['fec_ingreso']);
 					$MarcacionData->setFecModifica  		($row['fec_modifica']);

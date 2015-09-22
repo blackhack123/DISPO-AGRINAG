@@ -176,8 +176,8 @@ $(document).ready(function () {
 						$("#frm_marcacion #ciudad").val('');
 						$("#frm_marcacion #contacto").val('');
 						$("#frm_marcacion #telefono").val('');
+						$("#frm_marcacion #tipo_caja_default_id").html(response.cbo_tipo_caja);
 						$("#frm_marcacion #zip").val('');
-						$("#frm_marcacion #punto_corte").val('');
 						$("#frm_marcacion #estado").html(response.cbo_estado);
 						$("#frm_marcacion #lbl_fec_sincronizado").html('');
 						$("#frm_marcacion #lbl_usuario_ing").html('');
@@ -214,8 +214,8 @@ $(document).ready(function () {
 						 	pais_id: $("#frm_marcacion #pais_id").val(),
 							contacto: $("#frm_marcacion #contacto").val(),
 							telefono: $("#frm_marcacion #telefono").val(),
+							tipo_caja_homologada_id: $("#frm_marcacion #tipo_caja_default_id").val(),
 							zip:$("#frm_marcacion #zip").val(),
-							punto_corte:$("#frm_marcacion #punto_corte").val(),
 							estado: $("#frm_marcacion #estado").val(),
 						}
 			data = JSON.stringify(data);
@@ -284,8 +284,8 @@ $(document).ready(function () {
 				$("#frm_marcacion #ciudad").val(row.ciudad);
 				$("#frm_marcacion #contacto").val(row.contacto);
 				$("#frm_marcacion #telefono").val(row.telefono);
+				$("frm_marcacion  #tipo_caja_default_id").val(row.tipo_caja_default_id);
 				$("#frm_marcacion #zip").val(row.zip);
-				$("#frm_marcacion #punto_corte").val(row.punto_corte);
 				$("#frm_marcacion #estado").html(response.cbo_estado);
 				$("#frm_marcacion #lbl_fec_ingreso").html(row.fec_ingreso);
 				$("#frm_marcacion #lbl_fec_modifica").html(row.fec_modifica);

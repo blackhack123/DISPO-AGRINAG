@@ -15,6 +15,8 @@ use Application\Classes\CorreoElectronico;
 use Dispo\BO\PedidoBO;
 use Seguridad\BO\PerfilBO;
 use Dispo\BO\GrupoDispoCabBO;
+use Dispo\BO\GrupoPrecioCabBO;
+use Dispo\BO\InventarioBO;
 
 class UsuarioController extends AbstractActionController
 {
@@ -234,19 +236,16 @@ class UsuarioController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$UsuarioBO 				= new UsuarioBO();
 			$PerfilBO 				= new PerfilBO();
-			$GrupoDispoCabBO		= new GrupoDispoCabBO();
 			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-				
+			
+			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
-				
-			$grupodispo				= null;
-				
+			
+			
 			$response = new \stdClass();
 			$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido("","");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
-			$response->cbo_grupo_dispo		= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
 	
@@ -275,10 +274,9 @@ class UsuarioController extends AbstractActionController
 			$UsuarioData			= new UsuarioData();
 			$UsuarioBO 				= new UsuarioBO();
 			$PerfilBO 				= new PerfilBO();
-			$GrupoDispoCabBO		= new GrupoDispoCabBO();
+			
 			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-	
+			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 				
@@ -292,7 +290,6 @@ class UsuarioController extends AbstractActionController
 			$UsuarioData->setEmail				($json['email']);
 			$UsuarioData->setPerfilId			($json['perfil_id']);
 			$UsuarioData->setEstado				($json['estado']);
-			//$UsuarioData->setGrupoDispoCabId	($json['grupo_dispo_cab_id']);
 			$response = new \stdClass();
 			switch ($accion)
 			{
@@ -329,7 +326,6 @@ class UsuarioController extends AbstractActionController
 			{
 				$response->row					= $row;
 				$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido($row['perfil_id'], " ");
-				$response->cbo_cbo_grupo_dispo	= $GrupoDispoCabBO->getComboGrupoDispo($row['grupo_dispo_cab_id'], " ");
 				$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
 			}else{
 				$response->row					= null;
@@ -350,13 +346,57 @@ class UsuarioController extends AbstractActionController
 	}//end function grabardataAction
 	
 	
+	
+	public function consultardataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$UsuarioBO 				= new UsuarioBO();
+			$PerfilBO 				= new PerfilBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+				
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$id		= $json['id'];
+	
+			$row					= $UsuarioBO->consultar($id, \Application\Constants\ResultType::MATRIZ);
+				
+				
+				
+			$response = new \stdClass();
+			$response->row					= $row;
+			$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido($row['perfil_id'],"");
+			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function consultardataAction
+	
+	
+	
 	/*
 	 * *****************************************************************
 	 * 		FUNCIONES USUARIO DEL MOD CLIENTE(CLIENTE->USUARIO)
 	 * 
 	 * *****************************************************************
 	 */
-	public function nuevoclientedataAction()
+	public function nuevousuarionormaldataAction()
 	{
 		try
 		{
@@ -366,20 +406,28 @@ class UsuarioController extends AbstractActionController
 			$UsuarioBO 				= new UsuarioBO();
 			//$PerfilBO 				= new PerfilBO();
 			$GrupoDispoCabBO		= new GrupoDispoCabBO();
+			$GrupoPrecioCabBO		= new GrupoPrecioCabBO();
+			$InventarioBO			= new InventarioBO();
 			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 			
 			$grupodispo				= null;
+			$grupoprecio			= null;
+			$inventario_id			= null;
 			
 			$response = new \stdClass();
-			//$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido("","");
-			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado("","");
-			$response->cbo_grupo_dispo		= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
-			$response->respuesta_code 		= 'OK';
-			$response->respuesta_mensaje	= '';
+			//$response->cbo_perfil_id			= $PerfilBO->getComboPerfilRestringido("","");
+			$response->cbo_estado				= \Application\Classes\ComboGeneral::getComboEstado("","");
+			$response->cbo_grupo_dispo			= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
+			$response->cbo_grupo_precio			= $GrupoPrecioCabBO->getComboGrupoPrecio($grupoprecio, "&lt;Seleccione&gt;");
+			$response->cbo_inventario_id		= $InventarioBO->getCombo($inventario_id, "&lt;Seleccione&gt;");
+			$response->respuesta_code 			= 'OK';
+			$response->respuesta_mensaje		= '';
 	
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
@@ -395,7 +443,7 @@ class UsuarioController extends AbstractActionController
 	
 	
 	
-	public function consultardataAction()
+	public function consultarusuarionormaldataAction()
 	{
 		try
 		{
@@ -404,8 +452,13 @@ class UsuarioController extends AbstractActionController
 			$UsuarioBO 				= new UsuarioBO();
 			$PerfilBO 				= new PerfilBO();
 			$GrupoDispoCabBO		= new GrupoDispoCabBO();
+			$GrupoPrecioCabBO		= new GrupoPrecioCabBO();
+			$InventarioBO			= new InventarioBO();
 			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			
 			if ($respuesta==false) return false;
@@ -423,6 +476,8 @@ class UsuarioController extends AbstractActionController
 			$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido($row['perfil_id'],"");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
 			$response->cbo_grupo_dispo		= $GrupoDispoCabBO->getComboGrupoDispo($row['grupo_dispo_cab_id'], "&lt;Seleccione&gt;");
+			$response->cbo_grupo_precio		= $GrupoPrecioCabBO->getComboGrupoPrecio($row['grupo_precio_cab_id'], "&lt;Seleccione&gt;");
+			$response->cbo_inventario_id	= $InventarioBO->getCombo($row['inventario_id'], "&lt;Seleccione&gt;");
 			$response->respuesta_code 		= 'OK';
 			$response->respuesta_mensaje	= '';
 	
@@ -436,12 +491,12 @@ class UsuarioController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function consultarAction
+	}//end function consultardataAction
 	
 	
 	
 	
-	public function grabarclientedataAction()
+	public function grabarusuarionormaldataAction()
 	{
 		try
 		{
@@ -453,9 +508,13 @@ class UsuarioController extends AbstractActionController
 			$UsuarioBO 				= new UsuarioBO();
 			//$PerfilBO 				= new PerfilBO();
 			$GrupoDispoCabBO		= new GrupoDispoCabBO();
+			$GrupoPrecioCabBO		= new GrupoPrecioCabBO();
+			$InventarioBO			= new InventarioBO();
 			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-	
+			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 			
@@ -471,6 +530,8 @@ class UsuarioController extends AbstractActionController
 			$UsuarioData->setPerfilId			(\Application\Constants\Perfil::ID_CLIENTE);
 			$UsuarioData->setEstado				($json['estado']);
 			$UsuarioData->setGrupoDispoCabId	($json['grupo_dispo_cab_id']);
+			$UsuarioData->setGrupoPrecioCabId	($json['grupo_precio_cab_id']);
+			$UsuarioData->setInventarioId		($json['inventario_id']);
 			$response = new \stdClass();
 			switch ($accion)
 			{

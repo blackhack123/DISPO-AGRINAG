@@ -57,6 +57,8 @@ class UsuarioDAO extends Conexion {
 				'cliente_id'                		=> $UsuarioData->getClienteId(),
 				'estado'                			=> $UsuarioData->getEstado(),
 				'grupo_dispo_cab_id'                => $UsuarioData->getGrupoDispoCabId(),
+				'grupo_precio_cab_id'               => $UsuarioData->getGrupoPrecioCabId(),
+				'inventario_id'                		=> $UsuarioData->getInventarioId(),
 				'fec_ingreso'           		    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_ing_id'                	=> $UsuarioData->getUsuarioIngId()
 		);
@@ -87,6 +89,8 @@ class UsuarioDAO extends Conexion {
 				'cliente_id'                		=> $UsuarioData->getClienteId(),
 				'estado'                			=> $UsuarioData->getEstado(),
 				'grupo_dispo_cab_id'                => $UsuarioData->getGrupoDispoCabId(),
+				'grupo_precio_cab_id'               => $UsuarioData->getGrupoPrecioCabId(),
+				'inventario_id'                		=> $UsuarioData->getInventarioId(),
 				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                	=> $UsuarioData->getUsuarioModId()
 		);
@@ -132,6 +136,8 @@ class UsuarioDAO extends Conexion {
 					$UsuarioData->setClienteId			 ($row['cliente_id']);
 					$UsuarioData->setEstado				 ($row['estado']);
 					$UsuarioData->setGrupoDispoCabId	 ($row['grupo_dispo_cab_id']);
+					$UsuarioData->setGrupoPrecioCabId	 ($row['grupo_precio_cab_id']);
+					$UsuarioData->setInventarioId		 ($row['inventario_id']);
 					$UsuarioData->setFecIngreso			 ($row['fec_ingreso']);
 					$UsuarioData->setFecModifica		 ($row['fec_modifica']);
 					$UsuarioData->setUsuarioIngId		 ($row['usuario_ing_id']);
@@ -153,7 +159,7 @@ class UsuarioDAO extends Conexion {
 						'					 LEFT JOIN cliente '.
 						'              				ON cliente.id	= usuario.cliente_id'.	
 						'              	     LEFT JOIN grupo_precio_cab '.
-						'                     		ON grupo_precio_cab.id = cliente.grupo_precio_cab_id '.
+						'                     		ON grupo_precio_cab.id = usuario.grupo_precio_cab_id '.
 						' WHERE usuario.id = :id ';
 				
 				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);

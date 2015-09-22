@@ -158,7 +158,7 @@ $(document).ready(function () {
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'../../seguridad/usuario/nuevoclientedata',
+							'url':'../../seguridad/usuario/nuevousuarionormaldata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
@@ -174,6 +174,8 @@ $(document).ready(function () {
 									$("#frm_nuevo_usuario #email").val('');
 									//$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
 									$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
+									$("#frm_nuevo_usuario #grupo_precio_cab_id").html(response.cbo_grupo_precio);
+									$("#frm_nuevo_usuario #inventario_id").html(response.cbo_inventario_id);
 									$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
 									$("#frm_nuevo_usuario #lbl_usuario_ing").html('');
 									$("#frm_nuevo_usuario #lbl_fec_ingreso").html('');
@@ -259,13 +261,15 @@ $(document).ready(function () {
 					 	email: $("#frm_nuevo_usuario #email").val(),
 					 	//perfil_id: $("#frm_nuevo_usuario #perfil_id").val(),
 					 	grupo_dispo_cab_id: $("#frm_nuevo_usuario #grupo_dispo_cab_id").val(),
+					 	grupo_precio_cab_id: $("#frm_nuevo_usuario #grupo_precio_cab_id").val(),
+					 	inventario_id: $("#frm_nuevo_usuario #inventario_id").val(),
 					 	estado: $("#frm_nuevo_usuario #estado").val(),
 					}
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'../../seguridad/usuario/grabarclientedata',
+							'url':'../../seguridad/usuario/grabarusuarionormaldata',
 							'control_process':true,
 							//usuario_listar: (true),
 							'show_cargando':true,
@@ -327,6 +331,8 @@ $(document).ready(function () {
 			$("#frm_nuevo_usuario #email").val(row.email);
 			//$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
 			$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
+			$("#frm_nuevo_usuario #grupo_precio_cab_id").html(response.cbo_grupo_precio);
+			$("#frm_nuevo_usuario #inventario_id").html(response.cbo_inventario_id);
 			$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
 			$("#frm_nuevo_usuario #lbl_usuario_ing").html(row.usuario_ing_user_name);
 			$("#frm_nuevo_usuario #lbl_fec_ingreso").html(row.fec_ingreso);
@@ -346,7 +352,7 @@ $(document).ready(function () {
 		
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'../../seguridad/usuario/consultardata',
+							'url':'../../seguridad/usuario/consultarusuarionormaldata',
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){

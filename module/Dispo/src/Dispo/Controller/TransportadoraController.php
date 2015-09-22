@@ -95,7 +95,6 @@ class TransportadoraController extends AbstractActionController
 	
 
 	
-	
 	public function nuevodataAction()
 	{
 		try
@@ -127,7 +126,7 @@ class TransportadoraController extends AbstractActionController
 		}
 	}//end function nuevodataAction
 	
-	
+
 	
 	public function consultardataAction()
 	{
@@ -166,7 +165,6 @@ class TransportadoraController extends AbstractActionController
 	}//end function consultarAction
 	
 	
-
 	
 	public function grabardataAction()
 	{
