@@ -12,16 +12,6 @@ $(document).ready(function ()
 		return false;		
 	});
 	
-
-	$("#frm_grupo_usuario #btn_modificar").on('click', function(event){ 	
-		$("#frm_grupo_usuario_mantenimiento #accion").val('M');
-		DispoGrupo_Consultar($("#frm_grupo_usuario #grupo_dispo_cab_id").val())	
-	});
-	
-	$("#frm_grabar_dispo_grupo #btn_grabar_grupo_dispo").on('click', function(event){ 
-		grabar_grupo_dispo();
-		return false;
-	});	
 	
 	
 	$("#frm_grupo_usuario #btn_asignar_grupo").on('click', function(event){ 
@@ -43,6 +33,9 @@ $(document).ready(function ()
 	/*---------------------------------------------------------------*/	
 	jQuery("#grid_grupodispo_noasignados").jqGrid({
 		url:'../../dispo/grupodispo/listadogrupodisponoasignadosdata',
+		postData: {
+			grupo_dispo_cab_id: 	function() {return $("#frm_grupo_usuario #grupo_dispo_cab_id").val();},
+		},		
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
@@ -175,93 +168,6 @@ $(document).ready(function ()
 	
 	
 	
-	function grabar_grupo_dispo()
-	{
-		if (!ValidateControls('frm_grupo_usuario_mantenimiento')) 
-		{
-			return false;
-		}//end if
-				
-		var accion  		= $("#frm_grupo_usuario_mantenimiento #accion").val();
-		var id  			= $("#frm_grupo_usuario_mantenimiento #id").val();
-		var nombre  		= $("#frm_grupo_usuario_mantenimiento #nombre").val();
-		var inventario_id 	= $("#frm_grupo_usuario_mantenimiento #inventario_id").val();
-		var calidad_id  	= $("#frm_grupo_usuario_mantenimiento #calidad_id").val();
-
-		var data = 	{
-						accion:			accion,
-						id:				id,
-						nombre:			nombre,
-						inventario_id:	inventario_id,
-						calidad_id:		calidad_id,
-					}
-		data = JSON.stringify(data);
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'../../dispo/grupodispo/grabardata',
-							'control_process':true,
-							'show_cargando':false,
-							'async':true, 
-							'finish':function(response){
-									if ($("#frm_grupo_usuario_mantenimiento #accion").val()=='I'){
-										//dispoGrupo_ComboGrupoRefresh();
-									}//end if
-									dispoGrupo_ComboGrupoRefresh();
-									DispoMostrarRegistro(response);
-									cargador_visibility('hide');
-									swal({  title: "Informacion grabada con exito!!",   
-										//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-										//html:true,
-										type: "success",
-										showCancelButton: false,
-										confirmButtonColor: "#DD6B55",
-										confirmButtonText: "OK",
-										cancelButtonText: "",
-										closeOnConfirm: false,
-										closeOnCancel: false,
-									});
-							}							
-						 }
-		response = ajax_call(parameters, data);		
-		return false;			
-	}//end function DispoGrupo_GrabarRegistro
-	
-
-
-	function DispoMostrarRegistro(response)
-	{
-		var row = response.row;
-		
-		if (row==null) return false;
-		
-		$("#frm_grupo_usuario_mantenimiento #accion").val("M");
-		$("#frm_grupo_usuario_mantenimiento #id").val(row.id);
-		$("#frm_grupo_usuario_mantenimiento #nombre").val(row.nombre);
-		$("#frm_grupo_usuario_mantenimiento #inventario_id").html(response.inventario_opciones);
-		$("#frm_grupo_usuario_mantenimiento #calidad_id").html(response.calidad_opciones);
-	}//end function MostrarRegistro
-	
-	
-	function DispoGrupo_Consultar(id)
-	{
-		//Se llama mediante AJAX para adicionar 
-		var data = 	{grupo_dispo_cab_id:id}
-		data = JSON.stringify(data);
-
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'../../dispo/grupodispo/consultarregistrodata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									DispoMostrarRegistro(response);
-									cargador_visibility('hide');
-									$('#dialog_dispo_grupo_mantenimiento').modal('show')
-							}							
-						 }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function DispoGrupo_Consultar
 	
 	function grupodispo_listar(limpiar_filtros)
 	{

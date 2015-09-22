@@ -379,7 +379,8 @@ class GrupodispoController extends AbstractActionController
 			$response->respuesta_code 		= 'OK';
 			$response->row					= $row;
 			$response->inventario_opciones	= $InventarioBO->getCombo($row['inventario_id'], "<Seleccione>");
-			$response->calidad_opciones 	= $CalidadBO->getComboCalidad($row['calidad_id'], "<Seleccione>");			
+			$response->calidad_opciones 	= $CalidadBO->getComboCalidad($row['calidad_id'], "<Seleccione>");
+			$response->grupo_opciones		= $GrupoDispoCabBO->getComboGrupoDispo($id);
 	
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
@@ -419,7 +420,7 @@ class GrupodispoController extends AbstractActionController
 			$SesionUsuarioPlugin->isLoginAdmin();
 	
 			$request 					= $this->getRequest();
-			//$cliente_id    				= $request->getQuery('cliente_id', "");
+			$grupo_dispo_cab_id 		= $request->getQuery('grupo_dispo_cab_id', "");
 			$page 						= $request->getQuery('page');
 			$limit 						= $request->getQuery('rows');
 			$sidx						= $request->getQuery('sidx',1);
@@ -432,7 +433,7 @@ class GrupodispoController extends AbstractActionController
 					//"cliente_id"			=> $cliente_id,
 					//"estado"				=> "A"
 			//);
-			$result = $GrupoDispoCabBO->listadoNoAsignadas();
+			$result = $GrupoDispoCabBO->listadoNoAsignadas($grupo_dispo_cab_id);
 			$response = new \stdClass();
 			$i=0;
 			foreach($result as $row){
