@@ -13,23 +13,6 @@ $(document).ready(function () {
 	
 	
 	
-	$("#frm_grupo_usuario #btn_nuevo_grupo_precio").on('click', function(event){ 
-		nuevo_grupo_precio(); 
-		return false;
-	});		
-	
-	$("#frm_grupo_usuario #btn_modificar_grupo_precio").on('click', function(event){ 
-		$("#frm_precio_grupo_mantenimiento #accion").val('M');
-		PrecioGrupo_Consultar($("#frm_grupo_usuario #grupo_precio_cab_id").val())	
-	});
-	
-	
-	$("#frm_grabar_precio_grupo #btn_grabar_grupo_precio").on('click', function(event){ 
-		grabar_grupo_precio();
-		return false;
-	});	
-	
-	
 
 	$("#frm_grupo_usuario #btn_asignar_grupo").on('click', function(event){ 
 		PrecioGrupo_asignarGrupo();
@@ -57,7 +40,7 @@ $(document).ready(function () {
 		/*height:'400',*/
 		colNames:['ID','CLIENTE','USUARIO'],
 		colModel:[
-			{name:'id',index:'id', width:70, sorttype:"integer", hidden:false},
+			{name:'id',index:'id', width:70, sorttype:"integer", hidden:true},
 			{name:'nombre',index:'nombre', width:150, sorttype:"string"},
 			{name:'usuario_nombre',index:'usuario_nombre', width:150, sorttype:"string"}
 		],
@@ -184,133 +167,6 @@ $(document).ready(function () {
 		return false;				
 	}//end function PrecioGrupo_ConsultarInfoDispoGrupoCab
 	
-
-	function nuevo_grupo_precio()
-	{
-		var data = 	{
-					
-				inventario_opciones:	'&lt;SELECCIONE&gt;',
-				calidad_opciones:		'&lt;SELECCIONE&gt;'
-				
-					}		
-		
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'../../dispo/grupoprecio/nuevodata',
-							'control_process':true,
-							'show_cargando':true,
-							
-							'finish':function(response){	
-								$("#frm_precio_grupo_mantenimiento #accion").val("I");
-								$("#dialog_precio_grupo_mantenimiento_titulo").html("NUEVO REGISTRO");
-								$("#frm_precio_grupo_mantenimiento #id").val('');
-								$("#frm_precio_grupo_mantenimiento #nombre").val('');
-								$("#frm_precio_grupo_mantenimiento #inventario_id").html(response.inventario_opciones);
-								$("#frm_precio_grupo_mantenimiento #calidad_id").html(response.calidad_opciones);
-								
-								$('#dialog_precio_grupo_mantenimiento').modal('show');								
-							 }							
-				           }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function nuevo
-
-
-	function grabar_grupo_precio()
-	{
-		if (!ValidateControls('frm_precio_grupo_mantenimiento')) 
-		{
-			return false;
-		}//end if
-				
-		var accion  		= $("#frm_precio_grupo_mantenimiento #accion").val();
-		var id  			= $("#frm_precio_grupo_mantenimiento #id").val();
-		var nombre  		= $("#frm_precio_grupo_mantenimiento #nombre").val();
-		var inventario_id 	= $("#frm_precio_grupo_mantenimiento #inventario_id").val();
-		var calidad_id  	= $("#frm_precio_grupo_mantenimiento #calidad_id").val();
-
-		var data = 	{
-						accion:			accion,
-						id:				id,
-						nombre:			nombre,
-						inventario_id:	inventario_id,
-						calidad_id:		calidad_id,
-					}
-		data = JSON.stringify(data);
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'../../dispo/grupoprecio/grabardata',
-							'control_process':true,
-							'show_cargando':false,
-							'async':true, 
-							'finish':function(response){
-									if ($("#frm_precio_grupo_mantenimiento #accion").val()=='I'){
-										//dispoGrupo_init();
-									}//end if
-									precioGrupo_ComboGrupoRefresh();
-									PrecioMostrarRegistro(response);
-									$("#frm_grupo_usuario #grupo_precio_cab_id").html(response.grupo_precio_opciones);
-									cargador_visibility('hide');
-									swal({  title: "Informacion grabada con exito!!",   
-										//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-										//html:true,
-										type: "success",
-										showCancelButton: false,
-										confirmButtonColor: "#DD6B55",
-										confirmButtonText: "OK",
-										cancelButtonText: "",
-										closeOnConfirm: false,
-										closeOnCancel: false,
-									});
-							}							
-						 }
-		response = ajax_call(parameters, data);		
-		return false;			
-	}//end function grabar_grupo_precio
-
-
-
-	function PrecioMostrarRegistro(response)
-	{
-		var row = response.row;
-		
-		if (row==null) return false;
-		
-		$("#dialog_precio_grupo_mantenimiento_titulo").html(row.nombre);
-		$("#dialog_precio_grupo_mantenimiento #accion").val("M");
-		$("#dialog_precio_grupo_mantenimiento #id").val(row.id);
-		$("#dialog_precio_grupo_mantenimiento #nombre").val(row.nombre);
-		$("#dialog_precio_grupo_mantenimiento #inventario_id").html(response.inventario_opciones);
-		$("#dialog_precio_grupo_mantenimiento #calidad_id").html(response.calidad_opciones);
-	}//end function PrecioMostrarRegistro
-	
-	
-	function PrecioGrupo_Consultar(id)
-	{
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{grupo_precio_cab_id:id}
-		data = JSON.stringify(data);
-
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'../../dispo/grupoprecio/consultarregistrodata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-								PrecioMostrarRegistro(response);
-									cargador_visibility('hide');
-
-									$('#dialog_precio_grupo_mantenimiento').modal('show');
-							}							
-						 }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function PrecioGrupo_Consultar
-	
-
-
 	
 	function PrecioGrupo_asignarGrupo()
 	{
@@ -343,7 +199,7 @@ $(document).ready(function () {
 
 		var parameters = {	'type': 'post',
 				'contentType': 'application/json',
-				'url':'../../dispo/cliente/vinculargrupoprecio',
+				'url':'../../seguridad/usuario/vinculargrupoprecio',
 				'show_cargando':true,
 				'finish':function(response){
 						if (response.respuesta_code=='OK'){
@@ -393,7 +249,7 @@ $(document).ready(function () {
 
 		var parameters = {	'type': 'post',
 				'contentType': 'application/json',
-				'url':'../../dispo/cliente/desvinculargrupoprecio',
+				'url':'../../seguridad/usuario/desvinculargrupoprecio',
 				'show_cargando':true,
 				'finish':function(response){
 						if (response.respuesta_code=='OK'){
@@ -409,27 +265,4 @@ $(document).ready(function () {
 		ajax_call(parameters, data);
 	}//end function DispoGrupo_eliminarGrupo
 	
-	
-	function precioGrupo_ComboGrupoRefresh()
-	{
-		$("#frm_grupo_usuario #info_grupo_precio_cab").html('');
-		
-		var data = 	{
-						texto_primer_elemento:	'&lt;SELECCIONE&gt;',
-						grupo_precio_cab_id:		$("#frm_grupo_usuario #grupo_precio_cab_id").val(),
-					}
-		data = JSON.stringify(data);
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'../../dispo/grupoprecio/getcombo',
-							'show_cargando':false,
-							'async':true,
-							'finish':function(response){	
-								//grupodispo_listar();
-								$("#frm_grupo_usuario #grupo_precio_cab_id").html(response.opciones);
-							 }							
-						 }
-		response = ajax_call(parameters, data);		
-		return false;			
-	}//end function dispoGrupo_ComboGrupoRefresh
 	

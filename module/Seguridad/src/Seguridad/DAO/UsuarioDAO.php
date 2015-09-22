@@ -481,4 +481,47 @@ class UsuarioDAO extends Conexion {
 	}//end function vincularGrupoDispo	
 	
 	
+	
+
+	/**
+	 *
+	 * @param ClienteData $ClienteData
+	 * @return number
+	 */
+	function vincularGrupoPrecio(UsuarioData $UsuarioData)
+	{
+		$key    = array(
+				'id'						=> $UsuarioData->getId(),
+		);
+		$record = array(
+				'grupo_precio_cab_id'       => $UsuarioData->getGrupoPrecioCabId(),
+				'fec_modifica'              => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'            => $UsuarioData->getUsuarioModId()
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $UsuarioData->getId();
+	}//end function vincularGrupoPrecio
+	
+	
+	
+	/**
+	 *
+	 * @param ClienteData $ClienteData
+	 * @return number
+	 */
+	function desvincularGrupoPrecio(UsuarioData $UsuarioData)
+	{
+		$key    = array(
+				'id'						=> $UsuarioData->getId(),
+		);
+		$record = array(
+				'grupo_precio_cab_id'       => null,
+				'fec_modifica'              => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'            => $UsuarioData->getUsuarioModId()
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $UsuarioData->getId();
+	}//end function desvincularGrupoPrecio
+	
+	
 }//end class
