@@ -34,7 +34,25 @@ class GrupoDispoCabBO extends Conexion
 	}//end function getCombo
 
 
+	/**
+	 *
+	 * @param string $inventario_id
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getComboPorInventario($inventario_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$GrupoDispoCabDAO = new UsuarioDAO();
 	
+		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $GrupoDispoCabDAO->consultarPorInventario($inventario_id);
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $inventario_id, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboPorCliente
 	
 	
 	/**

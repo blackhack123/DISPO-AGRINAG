@@ -173,9 +173,10 @@ $(document).ready(function () {
 									$("#frm_nuevo_usuario #password").val('');
 									$("#frm_nuevo_usuario #email").val('');
 									//$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
-									$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
+									//$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
 									$("#frm_nuevo_usuario #grupo_precio_cab_id").html(response.cbo_grupo_precio);
 									$("#frm_nuevo_usuario #inventario_id").html(response.cbo_inventario_id);
+									$("#frm_nuevo_usuario #calidad_id").html(response.cbo_calidad);
 									$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
 									$("#frm_nuevo_usuario #lbl_usuario_ing").html('');
 									$("#frm_nuevo_usuario #lbl_fec_ingreso").html('');
@@ -330,7 +331,7 @@ $(document).ready(function () {
 			$("#frm_nuevo_usuario #password2").val('');
 			$("#frm_nuevo_usuario #email").val(row.email);
 			//$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
-			$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
+			$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.opciones);
 			$("#frm_nuevo_usuario #grupo_precio_cab_id").html(response.cbo_grupo_precio);
 			$("#frm_nuevo_usuario #inventario_id").html(response.cbo_inventario_id);
 			$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
@@ -382,3 +383,30 @@ $(document).ready(function () {
 		
 		$('#frm_usuario_listado #grid_usuario_listado').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 	}//end function listar_agenciacarga
+	
+	
+	
+	function grupo_dispo_listar(inventario_id)
+	{
+		
+		var data = 	{inventario_id: $("#frm_nuevo_usuario #inventario_id").val(),}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../seguridad/usuario/getcomboDispo',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+								mostrar_registro_usuario(response);
+									//usuario_listar(true);
+									cargador_visibility('hide');
+									
+									$("#dialog_nuevo_usuario").modal('show');
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;
+		
+	}
+	

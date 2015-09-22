@@ -827,16 +827,24 @@
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">CLAVE:</label></td>
-			        	        <td><input type="password" name="password"  class="form-control input-sm" id="password" style="width:350px" value="" maxlength="15"></td>
+			        	        <td><input type="password" name="password"  class="form-control input-sm" id="password" style="width:350px" value="" maxlength="15" validate="required" validateMessage="Clave Requerida"></td>
 		        	          </tr>
 		        	           <tr>
 			        	        <td><label class="control-label">CONFIRMAR CLAVE:</label></td>
-			        	        <td><input type="password" name="password2"  class="form-control input-sm" id="password2" style="width:350px" value="" maxlength="15"></td>
+			        	        <td><input type="password" name="password2"  class="form-control input-sm" id="password2" style="width:350px" value="" maxlength="15" alidate="required" validateMessage="Clave Requerida"></td>
 		        	          </tr>
 		        	           <tr>
 			        	        <td><label class="control-label">CORREO:</label></td>
 			        	        <td><input type="email" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="50" ></td>
 		        	          </tr>
+		        	          <tr>
+			        	        <td><label class="control-label">INVENTARIO:</label></td>
+			        	        <td><select  name="inventario_id" class="form-control" id="inventario_id" validate="required" validateMessage="Inventario Requerido" style="width:150px" onchange="grupo_dispo_listar()"></select></td>
+		        	         </tr>
+		        	         <tr>
+			        	        <td><label class="control-label">CALIDAD:</label></td>
+			        	        <td><select  name="calidad_id" class="form-control" id="calidad_id" validate="required" validateMessage="Seleccione Calidad" style="width:150px"></select></td>
+		        	         </tr>
 		        	          <tr>
 			        	        <td><label class="control-label">GRUPO DISPO:</label></td>
 			        	        <td><select  name="grupo_dispo_cab_id" class="form-control" id="grupo_dispo_cab_id" validate="required" validateMessage="Grupo Requerido" style="width:150px"></select></td>
@@ -845,13 +853,9 @@
 			        	        <td><label class="control-label">GRUPO PRECIO:</label></td>
 			        	        <td><select  name="grupo_precio_cab_id" class="form-control" id="grupo_precio_cab_id" validate="required" validateMessage="Grupo Requerido" style="width:150px"></select></td>
 		        	          </tr>
-		        	          <tr>
-			        	        <td><label class="control-label">INVENTARIO:</label></td>
-			        	        <td><select  name="inventario_id" class="form-control" id="inventario_id" validate="required" validateMessage="Inventario Requerido" style="width:150px"></select></td>
-		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">ESTADO:</label></td>
-			        	        <td><select  name="estado" class="select-class2" id="estado" style="width:150px"></select></td>
+			        	        <td><select  name="estado" class="form-control" id="estado" style="width:150px"></select></td>
 		        	          </tr>
 			        	      <tr>
 			        	        <td>&nbsp;</td>

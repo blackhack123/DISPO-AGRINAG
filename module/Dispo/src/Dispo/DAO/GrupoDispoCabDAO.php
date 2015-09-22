@@ -212,6 +212,30 @@ class GrupoDispoCabDAO extends Conexion
 	
 	
 	/**
+	 *
+	 * @param int $inventario_id
+	 * @return array
+	 */
+	function consultarPorInventario($inventario_id)
+	{
+		$sql = 	" SELECT usuario.id, usuario.nombre, usuario.username, CONCAT(usuario.nombre,' (',usuario.username,')') as nombre_completo ".
+				" FROM cliente INNER JOIN usuario ".
+				"                      ON usuario.cliente_id	= cliente.id ".
+				"                     AND usuario.perfil_id		= ".\Application\Constants\Perfil::ID_CLIENTE.
+				" WHERE cliente.id = :cliente_id";
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue('cliente_id', $cliente_id);
+		$stmt->execute();
+	
+		//$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$result = $stmt->fetchAll();
+		return $result;
+	}//end function function consultarPorCliente
+	
+	
+	
+	/**
 	 * consultarTodos
 	 *
 	 * @return array

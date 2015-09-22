@@ -59,6 +59,7 @@ class UsuarioDAO extends Conexion {
 				'grupo_dispo_cab_id'                => $UsuarioData->getGrupoDispoCabId(),
 				'grupo_precio_cab_id'               => $UsuarioData->getGrupoPrecioCabId(),
 				'inventario_id'                		=> $UsuarioData->getInventarioId(),
+				'calidad_id'                		=> $UsuarioData->getCalidadId(),
 				'fec_ingreso'           		    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_ing_id'                	=> $UsuarioData->getUsuarioIngId()
 		);
@@ -91,6 +92,7 @@ class UsuarioDAO extends Conexion {
 				'grupo_dispo_cab_id'                => $UsuarioData->getGrupoDispoCabId(),
 				'grupo_precio_cab_id'               => $UsuarioData->getGrupoPrecioCabId(),
 				'inventario_id'                		=> $UsuarioData->getInventarioId(),
+				'calidad_id'                		=> $UsuarioData->getCalidadId(),
 				'fec_modifica'                		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
 				'usuario_mod_id'                	=> $UsuarioData->getUsuarioModId()
 		);
@@ -138,6 +140,7 @@ class UsuarioDAO extends Conexion {
 					$UsuarioData->setGrupoDispoCabId	 ($row['grupo_dispo_cab_id']);
 					$UsuarioData->setGrupoPrecioCabId	 ($row['grupo_precio_cab_id']);
 					$UsuarioData->setInventarioId		 ($row['inventario_id']);
+					$UsuarioData->setCalidadId			 ($row['calidad_id']);
 					$UsuarioData->setFecIngreso			 ($row['fec_ingreso']);
 					$UsuarioData->setFecModifica		 ($row['fec_modifica']);
 					$UsuarioData->setUsuarioIngId		 ($row['usuario_ing_id']);
