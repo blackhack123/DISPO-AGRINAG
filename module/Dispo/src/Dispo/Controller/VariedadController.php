@@ -197,7 +197,7 @@ class VariedadController extends AbstractActionController
 	
 	
 
-		public function grabardataAction()
+	public function grabardataAction()
 	{
 		try
 		{
