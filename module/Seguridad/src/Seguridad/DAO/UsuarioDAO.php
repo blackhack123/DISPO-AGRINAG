@@ -178,14 +178,16 @@ class UsuarioDAO extends Conexion {
 	
 	
 	/**
-	 *
+	 * 
+	 * @param string $accion
 	 * @param string $id
 	 * @param string $nombre
+	 * @param string $username
 	 * @return array
 	 */
-	public function consultarDuplicado($accion, $id, $nombre)
+	public function consultarDuplicado($accion, $id, $nombre, $username)
 	{
-		$sql = 	' SELECT usuario.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name  '.
+		$sql = 	' SELECT usuario.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name, usuario.username  '.
 				' FROM usuario LEFT JOIN usuario as usuario_ing '.
 				'                           ON usuario_ing.id = usuario.usuario_ing_id '.
 				'					 LEFT JOIN usuario as usuario_mod '.
@@ -195,6 +197,7 @@ class UsuarioDAO extends Conexion {
 			case 'I':
 					$sql = $sql." WHERE usuario.id 	 = '".$id."'".
 					            "    or usuario.nombre = '".$nombre."'";
+								"    or usuario.username = '".$username."'";
 				break;
 				
 			case 'M':

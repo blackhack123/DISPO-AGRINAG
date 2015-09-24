@@ -159,7 +159,7 @@ class UsuarioBO extends Conexion{
 		{
 			$UsuarioDAO = new UsuarioDAO();
 			$UsuarioDAO->setEntityManager($this->getEntityManager());
-			$UsuarioData2 = $UsuarioDAO->consultar($UsuarioData->getId());
+			$UsuarioData2 = $UsuarioDAO->consultarDuplicado('I', $UsuarioData->getId(), $UsuarioData->getNombre(), $UsuarioData->getUsername());
 			if (!empty($UsuarioData2))
 			{
 				$result['validacion_code'] 	= 'EXISTS';
@@ -194,9 +194,10 @@ class UsuarioBO extends Conexion{
 			$UsuarioDAO = new UsuarioDAO();
 			$UsuarioDAO->setEntityManager($this->getEntityManager());
 			//$UsuarioData2 = $UsuarioDAO->consultar($UsuarioData->getId());
-			$result = $UsuarioDAO->consultarDuplicado('M',$UsuarioData->getId(), $UsuarioData->getNombre());
+			$result = $UsuarioDAO->consultarDuplicado('M',$UsuarioData->getId(), $UsuarioData->getNombre(), $UsuarioData->getUsername());
 			$id=		$UsuarioData->getId();
 			$nombre=	$UsuarioData->getNombre();
+			$username=	$UsuarioData->getUsername();
 			if (!empty($result))
 			{
 				

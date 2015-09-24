@@ -78,415 +78,400 @@
                 	<div class="row clear" >
                			<form class="form-horizontal" role="form" name="frm_informacion_general" id="frm_informacion_general">
                         <!--PRIMERA COLUMNA-->
-                            <div class="col-lg-4 table-striped">
-                                    <div class="col-lg-5 " >
-                                        <div class="col-lg-5" >
-                                            <label for="c1" class="control-label"> Cliente: </label>
+                            <div class="col-md-4 table-striped">
+                                    <div class="col-md-12" >
+                                        <div class="col-md-2" >
+                                            <label for="cliente_id" class="control-label"> Cliente: </label>
                                         </div>
-                                        <div class="col-lg-7">
+                                        <div class="col-md-3">
                                             <input type="text" class="form-control " id="cliente_id" name="cliente_id" validate="required" validateMessage="Ingrese un Codigo" ><br/>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-7" >
-                                        <div class="col-lg-5">
-                                            <label for="co1" class="control-label">Created On:</label>
+
+                                        <div class="col-md-4">
+                                            <label for="lbl_fec_ingreso" class="control-label">Created On:</label>
                                         </div>
-                                        <div class="col-lg-7">
+                                        <div class="col-md-3">
                                             <input type="text" class="form-control" id="lbl_fec_ingreso" name="lbl_fec_ingreso" disabled><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                       <div class="col-lg-2">
+                                    <div class="col-md-12">
+                                       <div class="col-md-2">
                                             <label for="co1" class="control-label"> Nombre: </label>
                                         </div>
-                                        <div class="col-lg-10">
+                                        <div class="col-md-10">
                                             <input type="text" class="form-control" id="nombre" name="nombre" validate="required" validateMessage="Ingrese un nombre" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                          </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                      <div class="col-lg-2">
-                                        	<label for="co1" class="control-label"> Abrevia: </label>
+                                    <div class="col-md-12">
+                                      <div class="col-md-2">
+                                        	<label for="abreviatura" class="control-label"> Abrevia: </label>
                                       </div>
-                                      <div class="col-lg-4">
+                                      <div class="col-md-4">
                                         	<input type="text" class="form-control" id="abreviatura" name="abreviatura"  onkeyup="this.value=this.value.toUpperCase()"><br/>
                                       </div>
 									</div>
-                                  <!-- div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="co1" class="control-label"> Grupo: </label>
+                                 
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <label for="d1" class="control-label"> Dir. : </label>
                                         </div>
-                                        <div class="col-lg-4">
-                                     		<select  name="grupo_precio_cab_id" class="form-control" id="grupo_precio_cab_id" validate="required" validateMessage="Grupo Requerido"></select><br/>
-                                        </div>
-                                    </div  -->
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="d1" class="control-label"> Direccíon: </label>
-                                        </div>
-                                        <div class="col-lg-10">
+                                        <div class="col-md-10">
                                             <textarea class="form-control" rows="3" style="resize:none;" id="direccion" name="direccion" validate="required" validateMessage="Ingrese una Direccion"></textarea><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="c1" class="control-label"> Ciudad: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <label for="ciudad" class="control-label"> Ciudad: </label>
                                         </div>
-                                        <div class="col-lg-10">
+                                        <div class="col-md-10">
                                             <input type="text" id="ciudad" class="form-control" name="ciudad" onkeyup="this.value=this.value.toUpperCase()" ><br/>
                                         </div>
                                     </div>
-                                     <div class="col-lg-12">
-                                        <div class="col-lg-2">
+                                     <div class="col-md-12">
+                                        <div class="col-md-2">
                                             <label for="co1" class="control-label"> Estado: </label>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-md-10">
                                      		<select  name="estados_id" class="form-control" id="estados_id" validate="required" validateMessage="Seleccione un Estado"></select><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="c1" class="control-label">Est./Prov.: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <label for="estado_nombre" class="control-label">Est./Prov.: </label>
                                         </div>
-                                        <div class="col-lg-10">
+                                        <div class="col-md-10">
                                             <input type="text" id="estado_nombre" name="estado_nombre" class="form-control" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                         </div>
                               	 	</div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="co1" class="control-label"> Pais: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <label for="pais_id" class="control-label"> Pais: </label>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-md-10">
                                             <select  name="pais_id" class="form-control" id="pais_id" validate="required" validateMessage="Seleccione un Pais"></select></br>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                        	<label for="co1" class="control-label"> ZIP: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                        	<label for="codigo_postal" class="control-label"> ZIP: </label>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-md-4">
                                        		<input type="text" class="form-control" id="codigo_postal" name="codigo_postal"><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="comprador" class="control-label"> Comprador: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-3">
+                                            <label for="comprador" class="control-label">Comprador:</label>
                                         </div>
-                                        <div class="col-lg-10">
+                                        <div class="col-md-9">
                                             <input type="text" id="comprador" name="comprador" class="form-control" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                         </div>
                               	    </div>
-                                  <div class="col-lg-12">
-                                    <div class="col-lg-2">
-                                        <label for="co1" class="control-label"> Fono1: </label>
+                                  <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        <label for="telefono1" class="control-label"> Fono1: </label>
                                     </div>
-                                    <div class="col-lg-7">
+                                    <div class="col-md-7">
                                         <input type="text" class="form-control" id="telefono1" name="telefono1">
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-3">
                                         <input type="text" class="form-control" id="telefono1_ext" name="telefono1_ext"placeholder="Ext"><br/>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <div class="col-lg-2">
-                                        <label for="co1" class="control-label"> Fono2: </label>
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        <label for="telefono2" class="control-label"> Fono2: </label>
                                     </div>
-                                    <div class="col-lg-7">
+                                    <div class="col-md-7">
                                         <input type="text" class="form-control" id="telefono2" name="telefono2">
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-3">
                                         <input type="text" class="form-control" id="telefono2_ext" name="telefono2_ext" placeholder="Ext"><br/>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <div class="col-lg-2">
-                                        <label for="co1" class="control-label"> Fax1: </label>
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        <label for="fax1" class="control-label"> Fax1: </label>
                                     </div>
-                                    <div class="col-lg-7">
+                                    <div class="col-md-7">
                                         <input type="text" class="form-control" id="fax1" name="fax1">
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-3">
                                         <input type="text" class="form-control" id="fax1_ext" placeholder="Ext" name="fax1_ext"><br/>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <div class="col-lg-2">
-                                        <label for="co1" class="control-label"> Fax2: </label>
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        <label for="fax2" class="control-label"> Fax2: </label>
                                     </div>
-                                    <div class="col-lg-7">
+                                    <div class="col-md-7">
                                         <input type="text" class="form-control" id="fax2" name="fax2">
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-3">
                                         <input type="text" class="form-control" id="fax2_ext" placeholder="Ext" name="fax2_ext"><br/>
                                     </div>
                                </div>
                                     
                             </div><!--END PRIMERA COLUMNA-->
                             <!--SEGUNDA COLUMNA-->
-                            <div class="col-lg-4">
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="c1" class="control-label"> Vendedor: </label>
+                            <div class="col-md-4">
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <label for="usuario_vendedor_id" class="control-label"> Vendedor: </label>
                                         </div>
-                                        <div class="col-lg-10">
+                                        <div class="col-md-10">
                                             <select  name="usuario_vendedor_id" class="form-control" id="usuario_vendedor_id" validate="required" validateMessage="Seleccione un Vendedor"></select><br/>
                                         </div>
                                     </div>
-                                 <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="co1" class="control-label">Lmte Cdto:</label>
+                                 <div class="col-md-12">
+                                        <div class="col-md-3">
+                                            <label for="co1" class="control-label">Lte Cdto:</label>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-md-4">
                                             <input type="text" class="form-control" id="tc_limite_credito" name="tc_limite_credito">
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-md-2">
                                             <label for="co1" class="control-label">Interes: </label>
                                         </div>
-                                        <div class="col-lg-5">
+                                        <div class="col-md-3">
                                             <input type="text" class="form-control" id="tc_interes" name="tc_interes"><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-5">
-                                            <label for="co1" class="control-label"> Crdto. Suspendido:
+                                    <div class="col-md-12">
+                                        <div class="col-md-5">
+                                            <label for="est_credito_suspendido" class="control-label">Cdto. Suspend:
                                                <input type="checkbox" id="est_credito_suspendido" name="est_credito_suspendido">
                                             </label>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-md-2">
                                             <label for="credito_suspendido_razon" class="control-label">Razon:</label>
                                         </div>
-                                        <div class="col-lg-5">
+                                        <div class="col-md-5">
                                             <input type="text" class="form-control" id="credito_suspendido_razon" name="credito_suspendido_razon" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
                                             <label for="contacto" class="control-label">Contacto: </label>
                                         </div>
-                                        <div class="col-lg-10">
+                                        <div class="col-md-10">
                                             <input type="text" id="contacto" name="contacto" class="form-control" onkeyup="this.value=this.value.toUpperCase()"><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
                                             <label for="cliente_factura_id" class="control-label">Fact. A:</label>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-md-3">
                                             <input type="text" class="form-control" id="cliente_factura_id" name="cliente_factura_id" validate="required" validateMessage="Valor Requerido"><br/>
                                         </div>
                                          <div class="col-lg-7">
                                             <input type="text" class="form-control" id="nombre_cliente_factura_id" name="nombre_cliente_factura_id" ><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
                                             <label for="co1" class="control-label"> Fono1: </label>
                                         </div>
-                                        <div class="col-lg-7">
+                                        <div class="col-md-7">
                                             <input type="text" class="form-control" id="telefono_fact1"  name="telefono_fact1_ext">
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-md-3">
                                             <input type="text" class="form-control" id="telefono_fact1_ext" name="telefono_fact1_ext" placeholder="Ext"><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="co1" class="control-label"> Fono2: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <label for="telefono_fact2" class="control-label"> Fono2: </label>
                                         </div>
-                                        <div class="col-lg-7">
+                                        <div class="col-md-7">
                                             <input type="text" class="form-control" id="telefono_fact2" name="telefono_fact2">
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-md-3">
                                             <input type="text" class="form-control" id="telefono_fact2_ext" name="telefono_fact2_ext" placeholder="Ext"><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="co1" class="control-label"> Fax1: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <label for="fax_fact1" class="control-label"> Fax1: </label>
                                         </div>
-                                        <div class="col-lg-7">
+                                        <div class="col-md-7">
                                             <input type="text" class="form-control" id="fax_fact1" name="fax_fact1">
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-md-3">
                                             <input type="text" class="form-control" id="fax_fact1_ext"  name="fax_fact1_ext" placeholder="Ext"><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="co1" class="control-label"> Fax2: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <label for="fax_fact2" class="control-label"> Fax2: </label>
                                         </div>
-                                        <div class="col-lg-7">
+                                        <div class="col-md-7">
                                             <input type="text" class="form-control" id="fax_fact2" name="fax_fact2">
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-md-3">
                                             <input type="text" class="form-control" id="fax_fact2_ext" name="fax_fact2_ext" placeholder="Ext"><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                            <label for="c1" class="control-label">Email: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                            <label for="email_factura" class="control-label">Email: </label>
                                         </div>
-                                        <div class="col-lg-10">
+                                        <div class="col-md-10">
                                             <input type="text" id="email_factura" name="email_factura" class="form-control"><br/>
                                         </div>
                                     </div>
-                                  <!--<div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                        	<label for="co1" class="control-label">Comercdra:</label>
+                                  
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                        	<label for="pais_fue" class="control-label"> Pais FUE: </label>
                                         </div>
-                                        <div class="col-lg-5">
-                                        	<input type="text" class="form-control" id="comercializadora" name="comercializadora" value="AGR" placeholder="AGR"  disabled><br/>
-                                        </div>
-                                    </div>-->
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                        	<label for="co1" class="control-label"> Pais FUE: </label>
-                                        </div>
-                                        <div class="col-lg-5">
+                                        <div class="col-md-5">
                                         	<input type="text" class="form-control" id="pais_fue" name="pais_fue"><br/>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                        	<label for="co1" class="control-label">Fact. SRI: </label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-2">
+                                        	<label for="facturacion_sri" class="control-label">Fact. SRI: </label>
                                         </div>
-                                        <div class="col-lg-5">
+                                        <div class="col-md-5">
                                         	<input type="text" class="form-control" id="facturacion_sri" name="facturacion_sri" value="NOR" placeholder="NOR" disabled><br/>
                                         </div>
                                     </div>
-                                	<div class="col-lg-12">
-                                        <div class="col-lg-2">
-                                        <label for="co1" class="control-label">% IVA: </label>
+                                	<div class="col-md-12">
+                                        <div class="col-md-2">
+                                        <label for="porc_iva" class="control-label">% IVA: </label>
                                         </div>
-                                        <div class="col-lg-5">
+                                        <div class="col-md-5">
                                         <input type="text" class="form-control" id="porc_iva" name="porc_iva" value='0'><br/>
                                         </div>
                                     </div>  
                             
                             </div><!--END SEGUNDA COLUMNA-->
                             <!--TERCERA COLUMNA-->
-                            <div class="col-lg-4">
-                                  	<div class="col-lg-12">
-											<div class="col-lg-6">
-												<label for="co1" class="control-label"> Inactivo:</label>
+                            <div class="col-md-4">
+                                  	<div class="col-md-12">
+											<div class="col-md-6">
+												<label for="estado" class="control-label"> Inactivo:</label>
 											</div>
-											<div class="col-lg-6">
+											<div class="col-md-6">
 											<label for="co1" class="control-label">	<input type="checkbox" name="estado" id="estado"></label>
 											</div>
 									</div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-6">
-                                            <label for="co1" class="control-label"> Incobrable:</label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <label for="incobrable" class="control-label"> Incobrable:</label>
                                         </div>
-                                        <div class="col-lg-6">
+                                        <div class="col-md-6">
                                         <label for="co1" class="control-label">	<input type="checkbox" name="incobrable" id="incobrable"></label>
                                         </div>
                                		</div>
-                                    <div class="col-lg-12">
-											<div class="col-lg-6">
-												<label for="co1" class="control-label">Tipo Cliente Especial:</label>
+                                    <div class="col-md-12">
+											<div class="col-md-6">
+												<label for="cliente_especial" class="control-label">Tipo Cliente Especial:</label>
 											</div>
-											<div class="col-lg-6">
-											<label for="co1" class="control-label">	<input type="checkbox" id="cliente_especial" name="cliente_especial"></label>
+											<div class="col-md-6">
+											<label for="" class="control-label">	<input type="checkbox" id="cliente_especial" name="cliente_especial"></label>
 											</div>
 									</div>
-                                    <div class="col-lg-12">
-											<div class="col-lg-6">
-												<label for="co1" class="control-label">Enviar Estado de Cuenta:</label>
+                                    <div class="col-md-12">
+											<div class="col-md-6">
+												<label for="envia_estadocta" class="control-label">Enviar Estado de Cuenta:</label>
 											</div>
-											<div class="col-lg-6">
+											<div class="col-md-6">
 											<label for="co1" class="control-label">	<input type="checkbox" id="envia_estadocta" name="envia_estadocta"></label></br><br/>
 											</div>
 									</div>
-                                    <div class="col-lg-12">
-                                        <div class="col-lg-5">
-                                            <label for="co1" class="control-label">Formato Est. de Cta:</label>
+                                    <div class="col-md-12">
+                                        <div class="col-md-5">
+                                            <label for="formato_estado_cta" class="control-label">Formato Est. de Cta:</label>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-md-4">
                                            <select  name="formato_estado_cta" class="form-control" id="formato_estado_cta" ></select><br/>
                                         </div>
                                 </div> 
-                                <div class="col-lg-12">
-                                    <div class="col-lg-6 ">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
                                     <span class="additional-info-wrap"> 
                                         <label class="radio-inline" >   
                                         <input type="radio" name="tipo_envio_estcta" class="S" id="programacion_semana" onclick="tipoProgramacion('S');" value="S" >Dia Semana</label>
                                     </span> 
                                     </div>     
                            	 	</div>
-                                <div class="col-lg-12">
-                                    <div class="col-lg-6">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
                                     <span class="additional-info-wrap"> 
                                         <label class="radio-inline">   
                                         <input type="radio" name="tipo_envio_estcta" class="C" id="programacion_calendario" onclick="tipoProgramacion('C');" value="C">Dia Calendario</label>
                                         </span> 
                                      </div>     
                             	</div>
-                                <div class="col-lg-12">
-                                    <div class="col-lg-6">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <span class="additional-info-wrap"> 
                                             <label class="radio-inline">   
                                             <input type="radio" name="tipo_envio_estcta" class="I" id="programacion_inmediato" onclick="tipoProgramacion('I');" value="I">Inmediato</label></br></br>
                                          </span>
                                      </div> 
                        			 </div>
-                                 <div class="col-lg-12">
-                                    <div class="col-lg-12" id="semanal" style="display:none;">
-                                        <div class="col-lg-12">
+                                 <div class="col-md-12">
+                                    <div class="col-md-12" id="semanal" style="display:none;">
+                                        <div class="col-md-12">
                                             <br/><p><label> Programación semanal </label></p>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                                 <label> L </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                                 <label> M </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                                 <label> M </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                                 <label> J </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                                 <label> V </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                                 <label> S </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                                 <label> D </label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-12">
-                                            <div class="col-lg-1 ">
+                                        <div class="col-md-12">
+                                            <div class="col-md-1 ">
                                             	<label class="radio-inline" >
                                                 <input type="radio" aria-label="..." name="dia_semana" id="L" value="L">
                                                 </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                             	<label class="radio-inline" >
                                                 <input type="radio" aria-label="..." name="dia_semana" id="M" value="M">
                                                 </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                             	<label class="radio-inline">
                                                 <input type="radio" aria-label="..." name="dia_semana" id="I" value="I">
                                                 </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                             	<label class="radio-inline">
                                                 <input type="radio" aria-label="..." name="dia_semana" id="J" value="J">
                                                 </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                             	<label class="radio-inline">
                                                 <input type="radio" aria-label="..." name="dia_semana" id="V" value="V">
                                                 </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                             	<label class="radio-inline">
                                                 <input type="radio" aria-label="..." name="dia_semana" id="S" value="S">
                                                 </label>
                                             </div>
-                                            <div class="col-lg-1">
+                                            <div class="col-md-1">
                                             	<label class="radio-inline">
                                                 <input type="radio" aria-label="..." name="dia_semana" id="D" value="D">
                                                 </label>
@@ -494,33 +479,33 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-12" id="calendario" style="display:none;">
-                                		<div class="col-lg-12">
+                                <div class="col-md-12" id="calendario" style="display:none;">
+                                		<div class="col-md-12">
                                             <br/><p><label> Programación calendario </label><p>
-                                            <div class="col-lg-3">
+                                            <div class="col-md-3">
                                                 <input type="text" class="form-control" maxlength="2" pattern="[0-9]" name="diacal_fecha1" id="diacal_fecha1"/>
                                             </div>
-                                            <div class="col-lg-3">
+                                            <div class="col-md-3">
                                                 <input type="text" class="form-control" maxlength="2" pattern="[0-9]"  name="diacal_fecha2" id="diacal_fecha2"/>
                                             </div>
                                		 	</div>
                                 </div>
-                                <div class="col-lg-12" id="p_inmediato" style="display:none;">
-                                    <div class="col-lg-12">
+                                <div class="col-md-12" id="p_inmediato" style="display:none;">
+                                    <div class="col-md-12">
                                         <br/><p><label> Programación inmediato </label><p>
-                                        <div class="col-lg-12">
+                                        <div class="col-md-12">
                                             <label><input type="checkbox" aria-label="..." name="inmediato" id="inmediato"> Inmediato </label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
-                                	<div class="col-lg-6 ">
+                                <div class="col-md-12">
+                                	<div class="col-md-6 ">
                                 	</br>
                                 	</br>
                                 	</div>
                                 </div>
-                                <div class="col-lg-12">
-                                    <div class="col-lg-6 ">
+                                <div class="col-md-12">
+                                    <div class="col-md-6 ">
                                  <a id="btn_grabar_informacion_general" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a> 
                                		</div>
                                 </div> 
@@ -831,7 +816,7 @@
 		        	          </tr>
 		        	           <tr>
 			        	        <td><label class="control-label">CONFIRMAR CLAVE:</label></td>
-			        	        <td><input type="password" name="password2"  class="form-control input-sm" id="password2" style="width:350px" value="" maxlength="15" alidate="required" validateMessage="Clave Requerida"></td>
+			        	        <td><input type="password" name="password2"  class="form-control input-sm" id="password2" style="width:350px" value="" maxlength="15" alidate="required" validateMessage="Confirmacion Requerida"></td>
 		        	          </tr>
 		        	           <tr>
 			        	        <td><label class="control-label">CORREO:</label></td>
