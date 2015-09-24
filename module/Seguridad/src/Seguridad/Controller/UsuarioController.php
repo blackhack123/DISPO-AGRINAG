@@ -433,6 +433,8 @@ class UsuarioController extends AbstractActionController
 			$response->cbo_grupo_precio			= $GrupoPrecioCabBO->getComboGrupoPrecio($grupoprecio, "&lt;Seleccione&gt;");
 			$response->cbo_inventario_id		= $InventarioBO->getCombo($inventario_id, "&lt;Seleccione&gt;");
 			$response->cbo_calidad				= $CalidadBO->getComboCalidad($calidad_id, "&lt;Seleccione&gt;");
+			$response->cbo_grupo_dispo			= '<option value="">&lt;Seleccione&gt;</option>';
+			$response->cbo_grupo_precio			= '<option value="">&lt;Seleccione&gt;</option>';
 			$response->respuesta_code 			= 'OK';
 			$response->respuesta_mensaje		= '';
 	
@@ -618,12 +620,12 @@ class UsuarioController extends AbstractActionController
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 			//var_dump($json); exit;
-			$texto_primer_elemento		= null;
+			//$texto_primer_elemento		= null;
 			$grupo_dispo_cab_id			= null;
 			$inventario_id 				= $json['inventario_id'];
 			$calidad_id 				= $json['calidad_id'];
 	
-			$opciones_dispo = $GrupoDispoCabBO->getComboPorInventario($grupo_dispo_cab_id, $inventario_id, $calidad_id, $texto_primer_elemento);
+			$opciones_dispo = $GrupoDispoCabBO->getComboPorInventario($grupo_dispo_cab_id, $inventario_id, $calidad_id);
 	
 			$response = new \stdClass();
 			$response->opciones_dispo				= $opciones_dispo;
@@ -657,12 +659,12 @@ class UsuarioController extends AbstractActionController
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 			//var_dump($json); exit;
-			$texto_primer_elemento		= null;
-			$grupo_precio_cab_id			= null;
+			//$texto_primer_elemento		= null;
+			$grupo_precio_cab_id		= null;
 			$inventario_id 				= $json['inventario_id'];
 			$calidad_id 				= $json['calidad_id'];
 	
-			$opciones_precio = $GrupoPrecioCabBO->getComboPorInventario($grupo_precio_cab_id, $inventario_id, $calidad_id, $texto_primer_elemento);
+			$opciones_precio = $GrupoPrecioCabBO->getComboPorInventario($grupo_precio_cab_id, $inventario_id, $calidad_id);
 	
 			$response = new \stdClass();
 			$response->opciones_precio				= $opciones_precio;

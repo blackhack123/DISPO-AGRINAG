@@ -19,6 +19,16 @@ $(document).ready(function () {
 		usuario_grabar();
 		return false;
 	});     
+	
+
+	$("#frm_nuevo_usuario #inventario_id").on('change', function(event){ 
+		usuario_llenar_combos();
+	});
+
+	$("#frm_nuevo_usuario #calidad_id").on('change', function(event){ 
+		usuario_llenar_combos();
+	});
+	
 
 /*
 	$("#frm_usuario_listado #btn_consultar_usuario").on('click', function(event){    
@@ -172,10 +182,10 @@ $(document).ready(function () {
 									$("#frm_nuevo_usuario #password").val('');
 									$("#frm_nuevo_usuario #email").val('');
 									//$("#frm_nuevo_usuario #perfil_id").html(response.cbo_perfil_id);
-									//$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
-									//$("#frm_nuevo_usuario #grupo_precio_cab_id").html(response.cbo_grupo_precio);
 									$("#frm_nuevo_usuario #inventario_id").html(response.cbo_inventario_id);
 									$("#frm_nuevo_usuario #calidad_id").html(response.cbo_calidad);
+									$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.cbo_grupo_dispo);
+									$("#frm_nuevo_usuario #grupo_precio_cab_id").html(response.cbo_grupo_precio);
 									$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
 									$("#frm_nuevo_usuario #lbl_usuario_ing").html('');
 									$("#frm_nuevo_usuario #lbl_fec_ingreso").html('');
@@ -383,8 +393,20 @@ $(document).ready(function () {
 	}//end function listar_agenciacarga
 	
 	
+	function usuario_llenar_combos()
+	{
+		if (($("#frm_nuevo_usuario #inventario_id").val()=="")||($("#frm_nuevo_usuario #calidad_id").val()==""))
+		{
+			//alert("Seleccione Inventario");
+			return false;
+		}//end if
+		
+		usuario_llenar_cbo_dispo();
+		usuario_llenar_cbo_precio();
+	}//end function usuario_llenar_combos
 	
-	function grupo_dispo_listar(inventario_id, calidad_id)
+	
+	function usuario_llenar_cbo_dispo()
 	{
 		
 		var data = 	{
@@ -392,42 +414,28 @@ $(document).ready(function () {
 						calidad_id: $("#frm_nuevo_usuario #calidad_id").val() 
 					}
 		
-		if (frm_nuevo_usuario.elements["inventario_id"].selectedIndex == '') 
-		{
-			  alert("Seleccione Inventario");
-		}
-		else
-		{
-			  if (frm_nuevo_usuario.elements["calidad_id"].selectedIndex == '') 
-			  {
-				  alert("Seleccione Calidad");
-			  }
-		}
+		data = JSON.stringify(data);
 		
-			data = JSON.stringify(data);
-			
-			var parameters = {	'type': 'POST',//'POST',
-								'contentType': 'application/json',
-								'url':'../../seguridad/usuario/getcomboDispo',
-								'control_process':true,
-								'show_cargando':true,
-								'finish':function(response){
-									//mostrar_registro_usuario(response);
-										cargador_visibility('hide');
-										
-										$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.opciones_dispo);
-								}							
-			                 }
-			response = ajax_call(parameters, data);		
-			return false;
-	
-		
-	}
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../seguridad/usuario/getcomboDispo',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+								//mostrar_registro_usuario(response);
+									cargador_visibility('hide');
+									
+									$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.opciones_dispo);
+							}							
+						 }
+		response = ajax_call(parameters, data);		
+		return false;
+	}//end function usuario_llenar_cbo_dispo
 	
 	
-	function grupo_precio_listar(inventario_id, calidad_id)
+	
+	function usuario_llenar_cbo_precio()
 	{
-		
 		var data = 	{
 						inventario_id: $("#frm_nuevo_usuario #inventario_id").val(),
 						calidad_id: $("#frm_nuevo_usuario #calidad_id").val() 
@@ -448,6 +456,5 @@ $(document).ready(function () {
 		                 }
 		response = ajax_call(parameters, data);		
 		return false;
-		
-	}
+	}//end function usuario_llenar_cbo_precio
 	
