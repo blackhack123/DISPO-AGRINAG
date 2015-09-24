@@ -212,22 +212,23 @@ class GrupoDispoCabDAO extends Conexion
 	
 	
 	/**
-	 *
-	 * @param int $inventario_id
+	 * 
+	 * @param string $inventario_id
+	 * @param int $calidad_id
 	 * @return array
 	 */
-	function consultarPorInventario($inventario_id)
+	function consultarPorInventario($inventario_id, $calidad_id)
 	{
-		$sql = 	" SELECT usuario.id, usuario.nombre, usuario.username, CONCAT(usuario.nombre,' (',usuario.username,')') as nombre_completo ".
-				" FROM cliente INNER JOIN usuario ".
-				"                      ON usuario.cliente_id	= cliente.id ".
-				"                     AND usuario.perfil_id		= ".\Application\Constants\Perfil::ID_CLIENTE.
-				" WHERE cliente.id = :cliente_id";
+		$sql = 	" SELECT  grupo_dispo_cab.id, grupo_dispo_cab.nombre ".
+				" FROM grupo_dispo_cab ".
+				" WHERE grupo_dispo_cab.inventario_id = :inventario_id".
+				" AND   grupo_dispo_cab.calidad_id  = :calidad_id";
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
-		$stmt->bindValue('cliente_id', $cliente_id);
+		$stmt->bindValue('inventario_id', $inventario_id);
+		$stmt->bindValue('calidad_id', $calidad_id);
 		$stmt->execute();
-	
+		
 		//$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$result = $stmt->fetchAll();
 		return $result;

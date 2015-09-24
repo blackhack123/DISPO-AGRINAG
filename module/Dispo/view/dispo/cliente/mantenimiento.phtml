@@ -839,11 +839,11 @@
 		        	          </tr>
 		        	          <tr>
 			        	        <td><label class="control-label">INVENTARIO:</label></td>
-			        	        <td><select  name="inventario_id" class="form-control" id="inventario_id" validate="required" validateMessage="Inventario Requerido" style="width:150px" onchange="grupo_dispo_listar()"></select></td>
+			        	        <td><select  name="inventario_id" class="form-control" id="inventario_id" validate="required" validateMessage="Inventario Requerido" style="width:150px" onchange="grupo_dispo_listar(); grupo_precio_listar();"></select></td>
 		        	         </tr>
 		        	         <tr>
 			        	        <td><label class="control-label">CALIDAD:</label></td>
-			        	        <td><select  name="calidad_id" class="form-control" id="calidad_id" validate="required" validateMessage="Seleccione Calidad" style="width:150px"></select></td>
+			        	        <td><select  name="calidad_id" class="form-control" id="calidad_id" validate="required" validateMessage="Seleccione Calidad" style="width:150px" onchange="grupo_dispo_listar(); grupo_precio_listar();"></select></td>
 		        	         </tr>
 		        	          <tr>
 			        	        <td><label class="control-label">GRUPO DISPO:</label></td>

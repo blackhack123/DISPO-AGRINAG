@@ -242,5 +242,29 @@ class GrupoPrecioCabDAO extends Conexion
 	}//end function listadoAsignadas
 	
 	
+	
+	/**
+	 *
+	 * @param string $inventario_id
+	 * @param int $calidad_id
+	 * @return array
+	 */
+	function consultarPorInventario($inventario_id, $calidad_id)
+	{
+		$sql = 	" SELECT  grupo_precio_cab.id, grupo_precio_cab.nombre ".
+				" FROM grupo_precio_cab ".
+				" WHERE grupo_precio_cab.inventario_id = :inventario_id".
+				" AND   grupo_precio_cab.calidad_id  = :calidad_id";
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue('inventario_id', $inventario_id);
+		$stmt->bindValue('calidad_id', $calidad_id);
+		$stmt->execute();
+	
+		//$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$result = $stmt->fetchAll();
+		return $result;
+	}//end function function consultarPorCliente
+	
 }//end class
 

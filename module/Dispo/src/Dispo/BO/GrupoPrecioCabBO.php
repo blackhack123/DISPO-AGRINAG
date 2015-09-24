@@ -265,4 +265,25 @@ class GrupoPrecioCabBO extends Conexion
 	}//end function listadoAsignadas
 	
 	
+	/**
+	 *
+	 * @param integer $grupo_precio_cab_id
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getComboPorInventario($grupo_precio_cab_id, $inventario_id, $calidad_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$GrupoPrecioCabDAO = new GrupoPrecioCabDAO();
+	
+		$GrupoPrecioCabDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $GrupoPrecioCabDAO->consultarPorInventario($inventario_id, $calidad_id);
+	
+		$opciones_precio = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre',$grupo_precio_cab_id,  $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones_precio;
+	}//end function getComboPorInventario
+	
+	
 }//end class

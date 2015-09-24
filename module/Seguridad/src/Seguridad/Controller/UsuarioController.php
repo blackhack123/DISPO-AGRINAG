@@ -619,12 +619,53 @@ class UsuarioController extends AbstractActionController
 			$json = json_decode($body, true);
 			//var_dump($json); exit;
 			$texto_primer_elemento		= null;
-			$inventario_id 				= $json['inventario_id '];
+			$grupo_dispo_cab_id			= null;
+			$inventario_id 				= $json['inventario_id'];
+			$calidad_id 				= $json['calidad_id'];
 	
-			$opciones = $GrupoDispoCabBO->getComboPorInventario($inventario_id, $texto_primer_elemento);
+			$opciones_dispo = $GrupoDispoCabBO->getComboPorInventario($grupo_dispo_cab_id, $inventario_id, $calidad_id, $texto_primer_elemento);
 	
 			$response = new \stdClass();
-			$response->opciones				= $opciones;
+			$response->opciones_dispo				= $opciones_dispo;
+			$response->respuesta_code 		= 'OK';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+	
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function getcomboAction
+	
+	
+	public function getcomboPrecioAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$GrupoPrecioCabBO = new GrupoPrecioCabBO();
+			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginVentas();  //Solo el Vendedor Puede hacer este procedimiento
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			//var_dump($json); exit;
+			$texto_primer_elemento		= null;
+			$grupo_precio_cab_id			= null;
+			$inventario_id 				= $json['inventario_id'];
+			$calidad_id 				= $json['calidad_id'];
+	
+			$opciones_precio = $GrupoPrecioCabBO->getComboPorInventario($grupo_precio_cab_id, $inventario_id, $calidad_id, $texto_primer_elemento);
+	
+			$response = new \stdClass();
+			$response->opciones_precio				= $opciones_precio;
 			$response->respuesta_code 		= 'OK';
 	
 			$json = new JsonModel(get_object_vars($response));
