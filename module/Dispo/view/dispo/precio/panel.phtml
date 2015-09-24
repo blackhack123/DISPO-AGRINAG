@@ -1,10 +1,17 @@
 <meta charset="UTF-8">
+<style>
+.rojo{
+    color:#9C0A0C;
+}
+</style>
+
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/precio/init.js')); ?>"></script>
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/precio/precio_x_grupo.js')); ?>"></script>
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/precio/grupo_usuario.js')); ?>"></script>
+
 <script>
 	$(document).ready(function () {
-		
+		InputData_initNumberNoDecimal();
 	});//$(document).ready
 </script>
 
@@ -17,17 +24,19 @@
 		  <!-- Nav tabs -->
 		  <ul class="nav nav-tabs" role="tablist">
 				<li role="presentation" class="active"><a href="#precio_grupo" aria-controls="grupo_dispo" role="tab" data-toggle="tab">PRECIO X GRUPO</a></li>          
-			    <li role="presentation"><a href="#grupo_usuario" aria-controls="grupo_precio" role="tab" data-toggle="tab">GRUPO DE USUARIOS</a></li>			    
+			    <li role="presentation"><a href="#grupo_usuario" aria-controls="grupo_usuario" role="tab" data-toggle="tab">GRUPO DE USUARIOS</a></li>			    
 		  </ul>
 		
 		  <!-- Tab panes -->
 		  <div class="tab-content">
  
-         		<!-- TAB MANTENIMIENTO DE PRECIO GRUPO --->
+         		<!-- TAB MANTENIMIENTO DE PRECIO GRUPO --->				
 			    <div role="tabpanel" class="tab-pane active" id="precio_grupo">
-                
+					<form id="frm_precio_grupo" name="frm_precio_grupo" action="#" method="post" class="form-inline">                                
+					<div class="row-fluid">
+						<div class="pull-left">                    
                         	<!--- Grilla principal de la PRECIO X GRUPO --->
-                        	<form id="frm_precio_grupo" name="frm_precio_grupo" action="#" method="post" class="form-inline">
+                        	
                                 <div class="form-group">
                                 	 <section class="body-admin-section">
                                      	<div class="accion-admin-section">
@@ -39,18 +48,48 @@
                                             	 <select  id="grupo_precio_cab_id" class="form-control input-sm"></select>
                                                  <select  id="tipo_precio" class="form-control input-sm"></select>
                                                  &nbsp;&nbsp;<span id="info_grupo_precio_cab" class="bg-info"> </span>
+                                                 
+                                                 <input type="hidden" id="inventario_id" name="inventario_id" value="" />
+                                                 <input type="hidden" id="calidad_id" name="calidad_id" value="" />
+                                                 <input type="hidden" id="variedad_seleccionada_id" name="variedad_seleccionada_id" value="" />
+                                                 <input type="hidden" id="variedad_seleccionada_nombre" name="variedad_seleccionada_nombre" value="" />
+                                                 <input type="hidden" id="grado_seleccionado_id" name="grado_seleccionado_id" value="" />
                                             </div>
                                         </div>
                                      </section>
                                 	 
                                      
                                 </div>
-                                <table id="grid_precio_grupo" class="grid grid-autoheight"></table>
-                                <div id="pager_precio_grupo"></div>
-                            </form> 
-
-			    </div>
  
+                                	
+                            <table id="grid_precio_grupo" class="grid grid-autoheight"></table>
+                            <div id="pager_precio_grupo"></div>
+                        </div>
+                        
+                        <div class="pull-left" style="height:80vh;; background:#360BE7; width:5px;">.
+                        </div>
+                        
+                        <div class="pull-left" style="vertical-align:top">
+                        	<h5><b>OFERTA <i>(<span id="lbl_titulo"></span>)</i></b></h5>
+                            
+						    <div class="form-inline">
+                                <div class="form-group">
+                                     <button id="btn_row_new" type="button" class="btn btn-primary btn-xs btn-success"><i class="glyphicon glyphicon-plus"></i></button>
+                                     <button id="btn_row_eliminar" type="button" class="btn btn-primary btn-xs btn-success"><i class="glyphicon glyphicon-minus"></i></button>
+                                </div>
+                            </div>                                        
+                            
+                            <table id="grid_oferta" class="grid grid-autoheight"></table>
+                            <div id="pager_oferta"></div>
+                        </div>
+                               	
+                            
+					</div>
+                    </form>
+			    </div>
+
+                 
+                 
  				<!-- TAB MANTENIMIENTO DE TIPO CAJA MARCACION --->
 			    <div role="tabpanel" class="tab-pane" id="grupo_usuario">
 			    	  	<form id="frm_grupo_usuario" name="frm_grupo_usuario" action="#" method="post" class="form-inline">
@@ -98,7 +137,7 @@
 
 
 
-    <!-- Modal -->
+    <!-- Modal MANTENIMIENTO DE GRUPO PRECIO -->
 	<div class="modal fade" id="dialog_precio_grupo_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="dialog_precio_grupo_mantenimiento">
 		  <div class="modal-dialog" role="document">
 			    <div class="modal-content">
@@ -144,3 +183,50 @@
 			    </div>
 		  </div>
 	</div>
+
+
+
+    <!-- Modal  OFERTA -->
+        <div class="modal fade" id="dialog_oferta" tabindex="-1" role="dialog" aria-labelledby="dialog_oferta">
+			<form name="frm_oferta" id="frm_oferta">            
+              <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                          <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel"><span id="dialog_oferta_titulo">DIALOG OFERTA TITULO</span></h4>
+                          </div>
+                          <div class="modal-body">
+                                    <div class="form-horizontal" >
+                                        <input type="text" id="accion" name="accion" value="">
+                                         <div class="form-group">
+                                            <label for="variedad_combo_id" class="col-sm-3 control-label">VARIEDAD:</label>
+                                            <div class="col-sm-9">
+                                                <select  id="variedad_combo_id"  name="variedad_combo_id" class="form-control" validate="required" validateMessage="Seleccione una variedad"></select>
+                                            </div>
+                                         </div>
+                                         <div class="form-group">
+                                            <label for="grado_combo_id" class="col-sm-3 control-label">GRADO:</label>
+                                            <div class="col-sm-9">
+                                                <select  id="grado_combo_id"  name="grado_combo_id" class="form-control" validate="required" validateMessage="Seleccione un grado"></select>
+                                            </div>
+                                         </div>
+                                         <div class="form-group">
+                                            <label for="factor_combo" class="col-sm-3 control-label">FACTOR COMBO:</label>
+                                            <div class="col-sm-9">
+                                            	<input id="factor_combo" name="factor_combo" type="text" class="form-control inputdata-number-no-decimal" validate="required" validateMessage="Ingrese el Factor Combo" maxlength="3" />
+                                            </div>
+                                         </div>
+                                    </div>
+                                
+                              </div>
+                              <div class="modal-footer">					      
+                                <div class="form-horizontal" >
+                                    <button type="button" class="btn btn-primary btn-sm " id="btn_grabar_grupo_precio" name="btn_grabar_grupo_precio"><i class="glyphicon glyphicon-plus"></i> GRABAR</button>
+                                </div>
+                              </div>
+                            
+                    </div>
+              </div>
+              </form>
+        </div>    
+	  

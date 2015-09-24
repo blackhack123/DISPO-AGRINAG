@@ -7,6 +7,8 @@ var seliRow_PrecioGrupoGrid 	= 0;
 var seliCol_PrecioGrupoGrid 	= 0;	
 var valAnt_PrecioGrupoGrid		= null;
 
+var primera_vez_gridPrecioGrupo = true;
+
 $(document).ready(function () {
 	
 	/*----------------------Se cargan los controles -----------------*/
@@ -22,7 +24,7 @@ $(document).ready(function () {
 	
 	
 	$("#frm_grabar_precio_grupo #btn_grabar_grupo_precio").on('click', function(event){ 
-		GrupoPrecio_Grabar();
+		GrupoPrecio_GrabarMantenimiento();
 		return false;
 	});	
 	
@@ -45,6 +47,24 @@ $(document).ready(function () {
 		$('#grid_precio_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;
 	});	
+	
+	
+	
+	$("body #frm_precio_grupo #btn_row_new").on('click', function(event){ 
+		Oferta_Nuevo();
+	});	
+	
+	
+	
+	$("#frm_precio_grupo #btn_row_eliminar").on('click', function(event){ 	
+		Oferta_Eliminar();
+	});	
+	
+	
+	$("#frm_oferta #btn_grabar_grupo_precio").on('click', function(event){ 	
+		Oferta_Grabar();
+	});		
+			
 	/*
 	$("#frm_precio_grupo #btn_nuevo").on('click', function(event){ 
 		$("#dialog_dispo_variedad_titulo").html('Variedad - Grado: 30');
@@ -63,7 +83,7 @@ $(document).ready(function () {
 	
 	
 	/*---------------------------------------------------------------*/
-	/*-----Se configura los JQGRID de Dispobilidad General-----------*/
+	/*-----Se configura los JQGRID del PRECIO X GRUPO----------------*/
 	/*---------------------------------------------------------------*/		
 	jQuery("#grid_precio_grupo").jqGrid({
 		url:'../../dispo/grupoprecio/listadodata',
@@ -74,10 +94,18 @@ $(document).ready(function () {
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['Id','Variedad','40','50','60','70','80','90','100','110'],
+		colNames:['Id','Variedad','ofer40','ofer50','ofer60','ofer70','ofer80','ofer90','ofer100','ofer110', '40','50','60','70','80','90','100','110'],
 		colModel:[
 			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
 			{name:'variedad',index:'variedad', width:170, sorttype:"string"},
+			{name:'ofer40',index:'ofer40', width:50, hidden:true},
+			{name:'ofer50',index:'ofer50', width:50, hidden:true},
+			{name:'ofer60',index:'ofer60', width:50, hidden:true},
+			{name:'ofer70',index:'ofer70', width:50, hidden:true},
+			{name:'ofer80',index:'ofer80', width:50, hidden:true},
+			{name:'ofer90',index:'ofer90', width:50, hidden:true},
+			{name:'ofer100',index:'ofer100', width:50, hidden:true},
+			{name:'ofer110',index:'ofer110', width:50, hidden:true},																					
 			{name:'40',index:'40', width:50, align:"center", sorttype:"int", editable:true, formatter: gridGrupoPrecio_GradosFormatter, unformat:gridGrupoPrecio_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },									
@@ -278,10 +306,15 @@ $(document).ready(function () {
 //		loadComplete: grid_setAutoHeight,
 		loadComplete: function (data) {
 			autoHeight_JqGrid_Refresh("grid_precio_grupo");
+			primera_vez_gridPrecioGrupo = false;
 		},
 		loadBeforeSend: function (xhr, settings) {
+			
 			this.p.loadBeforeSend = null; //remove event handler
 			return false; // dont send load data request
+		},
+		beforeProcessing: function(data, status, xhr){
+			primera_vez_gridPrecioGrupo = true;
 		},
 		loadError: function (jqXHR, textStatus, errorThrown) {
 			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
@@ -292,7 +325,7 @@ $(document).ready(function () {
 			seliRow_PrecioGrupoGrid  = iRow;
 			valAnt_PrecioGrupoGrid   = value;
 			
-			//console.log('beforeEditCell iCol:', iCol,'*iRow:',iRow,'*val_PrecioGrupoGrid:',val_PrecioGrupoGrid);			
+			PrecioGrupo_CargarOferta(rowid, value, iRow, iCol);
 		},			
 		afterSaveCell : function(rowid,name,val,iRow,iCol) {
 			//Evita se llame la funcion grabar sin que se haya modificado el valor
@@ -318,12 +351,33 @@ $(document).ready(function () {
 //	$("#grid_precio_grupo").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});
 	
 	function gridGrupoPrecio_GradosFormatter(cellvalue, options, rowObject){
+		if (primera_vez_gridPrecioGrupo == true)
+		{
+			col_grado_name = options.colModel.name;
+			col_oferta_name = 'ofer'+col_grado_name;
+			
+			//valor = eval('rowObject.'+col_oferta_name);
+			
+			precio_oferta	= number_val(eval('rowObject.'+col_oferta_name));			
+		}else{
+			pos_col_grado 	= options.pos;
+			pos_col_oferta  = options.pos - 8;
+			precio_oferta = number_val(rowObject[pos_col_oferta]);
+			
+		}//end if
+
 		cellvalue = number_val(cellvalue, 2);		
 		var color = "Black";
 		if (cellvalue==0)
 		{
 			color = "LightGray";
 		}
+		
+		if (precio_oferta>0)
+		{
+			color = "red";
+		}
+		
 		cellvalue = $.number( cellvalue, 2, '.',','); 		
 		new_format_value = '<span style="color:'+color+'">'+cellvalue+ '</a>';
 		return new_format_value;
@@ -338,7 +392,78 @@ $(document).ready(function () {
 
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/
+	
+	
+	/*---------------------------------------------------------------*/
+	/*-----Se configura los JQGRID de COMBO- ------------------------*/
+	/*---------------------------------------------------------------*/		
+	jQuery("#grid_oferta").jqGrid({
+		url:'../../dispo/grupoprecio/listadoofertadata',
+		postData: {
+			grupo_precio_cab_id: 	function() {return $("#frm_precio_grupo #grupo_precio_cab_id").val();},
+			variedad_id:			function() {return $("#frm_precio_grupo #variedad_seleccionada_id").val();},
+			grado_id:				function() {return $("#frm_precio_grupo #grado_seleccionado_id").val();},			
+		},
+		datatype: "json",
+		loadonce: true,			
+		/*height:'400',*/
+		colNames:['grupo_precio_cab_id','variedad_id','grado_id','variedad_combo_id','Variedad','Grado','Factor',''],
+		colModel:[
+			{name:'grupo_precio_cab_id',index:'grupo_precio_cab_id', width:50, align:"center", sorttype:"int", hidden:true},		
+			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int", hidden:true},
+			{name:'grado_id',index:'grado_id', width:50, sorttype:"string", hidden:true},			
+			{name:'variedad_combo_id',index:'variedad_combo_id', width:50, sorttype:"string"},
+			{name:'variedad_combo_nombre',index:'variedad_combo_nombre', width:150, sorttype:"string"},			
+			{name:'grado_combo_id',index:'grado_combo_id', width:50, sorttype:"string"},						
+			{name:'factor_combo',index:'factor_combo', width:50, sorttype:"number"},	
+			{name:'btn_editar_cliente',index:'', width:30, align:"center", formatter:GridOferta_FormatterEdit,
+			   cellattr: function () { return ' title=" Modificar"'; }
+			},					
+		],
+		rowNum:999999,
+		pager: '#pager_oferta',
+		toppager:false,
+		pgbuttons:false,
+		pginput:false,
+		rownumbers: true,
+		rowList:false,
+		loadComplete:  grid_setAutoHeight, 
+		resizeStop: grid_setAutoHeight, 
+		gridview:false,	
+		multiselect: true,
+		jsonReader: {
+			repeatitems : false,
+		},
+//		loadComplete: grid_setAutoHeight,
+		loadComplete: function (data) {
+			autoHeight_JqGrid_Refresh("grid_oferta");
+		},
+		loadBeforeSend: function (xhr, settings) {
+			this.p.loadBeforeSend = null; //remove event handler
+			return false; // dont send load data request
+		},
+		loadError: function (jqXHR, textStatus, errorThrown) {
+			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+		}
+	});	
+	
+	jQuery("#grid_oferta").jqGrid('navGrid','#pager_oferta',{edit:false,add:false,del:false});	
 });
+	
+
+
+		function GridOferta_FormatterEdit(cellvalue, options, rowObject){
+			var grupo_precio_cab_id = rowObject.grupo_precio_cab_id;
+			var variedad_id 		= rowObject.variedad_id;
+			var grado_id 			= rowObject.grado_id;
+			var variedad_combo_id	= rowObject.variedad_combo_id;
+			var grado_combo_id		= rowObject.grado_combo_id;			
+			var factor_combo		= rowObject.factor_combo;	
+			//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
+			new_format_value = '<a href="javascript:void(0)" onclick="Oferta_Consultar(\''+grupo_precio_cab_id+'\',\''+variedad_id+'\',\''+grado_id+'\',\''+variedad_combo_id+'\',\''+grado_combo_id+'\',\''+factor_combo+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange"></i></a>'; 
+			return new_format_value
+		}//end function ListadoCliente_FormatterEdit
+	
 	
 	
 function GrupoPrecio_Grabar(grupo_precio_cab_id, variedad_id, grado_id, tipo_precio, precio)
@@ -387,6 +512,8 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 						'finish':function(response){
 							if (response.respuesta_code == 'OK')
 							{
+								$("#frm_precio_grupo #inventario_id").val(response.row.inventario_id);
+								$("#frm_precio_grupo #calidad_id").val(response.row.calidad_id);
 								$("#frm_precio_grupo #info_grupo_precio_cab").html(response.row.inventario_id+' - '+response.row.calidad_nombre+' - '+response.row.calidad_clasifica_fox );
 							}else{
 								message_error('ERROR', response);
@@ -433,7 +560,7 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 	}//end function nuevo
 
 
-	function GrupoPrecio_Grabar()
+	function GrupoPrecio_GrabarMantenimiento()
 	{
 		if (!ValidateControls('frm_precio_grupo_mantenimiento')) 
 		{
@@ -551,3 +678,258 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 		return false;			
 	}//end function dispoGrupo_ComboGrupoRefresh
 	
+	
+	
+	function PrecioGrupo_CargarOferta(rowid, value, iRow, iCol)
+	{
+		var col_variedad_id 	= jqgrid_get_columnIndexByName($("#grid_precio_grupo"), "variedad_id");
+		var col_variedad_nombre = jqgrid_get_columnIndexByName($("#grid_precio_grupo"), "variedad");	
+		var grado_id			= jqgrid_get_columnNameByIndex($("#grid_precio_grupo"), iCol);
+		var variedad_id			= $("#grid_precio_grupo").jqGrid('getCell',rowid, col_variedad_id);		
+		var variedad_nombre		= $("#grid_precio_grupo").jqGrid('getCell',rowid, col_variedad_nombre);
+
+		//Muestra la Etiqueta de acuerdo a lo seleccionado
+		$("#frm_precio_grupo #lbl_titulo").html(variedad_nombre + ' - '+grado_id)
+		
+		//Establece los valores seleccionados de la GRILLA para realizar la carga del GRID DE OFERTAS
+		$("#frm_precio_grupo #variedad_seleccionada_id").val(variedad_id);
+		$("#frm_precio_grupo #variedad_seleccionada_nombre").val(variedad_nombre);
+		$("#frm_precio_grupo #grado_seleccionado_id").val(grado_id);
+
+		$('#grid_oferta').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+	}//end function PrecioGrupo_CargarOferta
+	
+
+
+
+	function Oferta_Nuevo()
+	{
+		if ($('#frm_precio_grupo #grupo_precio_cab_id').val() == "")
+		{
+			alert('Debe de seleccionar un GRUPO PRECIO');
+			$('#frm_precio_grupo #grupo_precio_cab_id').focus();
+			return false;
+		}//end if
+		
+		if ($('#frm_precio_grupo #variedad_seleccionada_id').val() == "")
+		{
+			alert('Debe de seleccionar una Variedad que tenga Precio de Oferta');
+			return false;
+		}//end if
+
+		if ($('#frm_precio_grupo #grado_seleccionado_id').val() == "")
+		{
+			alert('Debe de seleccionar un Grado que tenga Precio de Oferta');
+			return false;
+		}//end if
+		
+		Oferta_GetCombos($("#frm_precio_grupo #grupo_precio_cab_id").val());		
+		
+		$('#frm_oferta #accion').val('I');
+		$('#frm_oferta #variedad_combo_id').attr('disabled',false);	
+		$('#frm_oferta #grado_combo_id').attr('disabled',false);
+		$('#frm_oferta #factor_combo').val('');
+		
+		var etiqueta = 'OFERTA '+$('#frm_precio_grupo #variedad_seleccionada_nombre').val()+ ' - GRADO '+$('#frm_precio_grupo #grado_seleccionado_id').val();
+		$('#frm_oferta #dialog_oferta_titulo').html(etiqueta);
+		
+		$('#dialog_oferta').modal('show')
+		
+	}//end Oferta_Nuevo
+
+
+
+
+	function Oferta_Grabar()
+	{
+		if (!ValidateControls('frm_oferta')) {
+			return false;
+		}//end if
+
+		var data = 	{	accion: 			$("#frm_oferta #accion").val(),
+						grupo_precio_cab_id:$("#frm_precio_grupo #grupo_precio_cab_id").val(),
+						variedad_id:		$("#frm_precio_grupo #variedad_seleccionada_id").val(),
+						grado_id:			$("#frm_precio_grupo #grado_seleccionado_id").val(),
+					 	variedad_combo_id: 	$("#frm_oferta #variedad_combo_id").val(),
+					 	grado_combo_id: 	$("#frm_oferta #grado_combo_id").val(),
+					 	factor_combo: 		$("#frm_oferta #factor_combo").val(),
+					}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/grupoprecio/grabarofertadata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									if (response.validacion_code == 'OK')
+									{
+										//Se oculta el modal
+										$('#dialog_oferta').modal('hide')
+										//Se recarga la grilla de promocion
+										$('#grid_oferta').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+										
+										
+										cargador_visibility('hide');
+										swal({  title: "Informacion grabada con exito!!",   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "success",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									}else{
+										swal({title: response.respuesta_mensaje,   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "error",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									
+									}									
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;				
+	}//end function Oferta_Grabar
+	
+	
+	function Oferta_Consultar(grupo_precio_cab_id, variedad_id, grado_id, variedad_combo_id, grado_combo_id, factor_combo)
+	{
+		Oferta_GetCombos(grupo_precio_cab_id);		
+		
+		$('#frm_oferta #accion').val('M');
+		var etiqueta = 'OFERTA '+$('#frm_precio_grupo #variedad_seleccionada_nombre').val()+ ' - GRADO '+$('#frm_precio_grupo #grado_seleccionado_id').val();
+		$('#frm_oferta #dialog_oferta_titulo').html(etiqueta);
+
+		$('#frm_oferta #variedad_combo_id').val(variedad_combo_id);
+		$('#frm_oferta #grado_combo_id').val(grado_combo_id);
+		$('#frm_oferta #factor_combo').val(factor_combo);	
+		
+		$('#frm_oferta #variedad_combo_id').attr('disabled',true);	
+		$('#frm_oferta #grado_combo_id').attr('disabled',true);
+
+		$('#dialog_oferta').modal('show')
+		
+		return false;				
+	}//end function Oferta_Consultar
+	
+	
+	
+	function Oferta_Eliminar()
+	{
+		var r = confirm("Esta seguro de eliminar?");
+		if (r == false) 
+		{
+			return false;
+		}//end if
+				
+		var col_grupo_precio_cab_id 	= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "grupo_precio_cab_id");
+		var col_variedad_id 			= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "variedad_id");
+		var col_grado_id			 	= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "grado_id");
+		var col_variedad_combo_id 		= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "variedad_combo_id");
+		var col_grado_combo_id			= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "grado_combo_id");		
+								
+		var grid = $("#frm_precio_grupo #grid_oferta");
+		var rowKey = grid.getGridParam("selrow");
+		
+		if (!rowKey)
+		{
+			alert("SELECCIONE UN REGISTRO PARA ELIMINAR");
+			return false;
+		}
+		
+       	var selectedIDs = grid.getGridParam("selarrrow");
+		var usuario_id  = null;
+		
+		var arr_data 	= new Array();
+		for (var i = 0; i < selectedIDs.length; i++) {
+			grupo_precio_cab_id = jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_grupo_precio_cab_id);
+			variedad_id 		= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_variedad_id);
+			grado_id 			= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_grado_id);
+			variedad_combo_id 	= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_variedad_combo_id);
+			grado_combo_id 		= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_grado_combo_id);
+		
+			var element					= {};
+			element.grupo_precio_cab_id = grupo_precio_cab_id;
+			element.variedad_id 		= variedad_id;
+			element.grado_id 			= grado_id;
+			element.variedad_combo_id	= variedad_combo_id;
+			element.grado_combo_id 		= grado_combo_id;
+
+			arr_data.push(element);
+		}//end for
+		
+		var data = {						
+				grid_data: 	arr_data,
+			};			
+			data = JSON.stringify(data);
+		
+
+		var parameters = {	'type': 'post',
+				'contentType': 'application/json',
+				'url':'../../dispo/grupoprecio/eliminarofertas',
+				'show_cargando':true,
+				'finish':function(response){
+						if (response.respuesta_code=='OK'){
+							$('#grid_oferta').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+						}else{
+							message_error('ERROR', response);
+						}//end if
+				}
+		};
+		
+		ajax_call(parameters, data);		
+	}//end function Oferta_Eliminar
+	
+	
+	
+	function Oferta_GetCombos(grupo_precio_cab_id)
+	{
+		var data = 	{	
+						//grupo_precio_cab_id:$("#frm_precio_grupo #grupo_precio_cab_id").val(),
+						grupo_precio_cab_id: grupo_precio_cab_id
+					}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/grupoprecio/getcombosofertas',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									if (response.validacion_code == 'OK')
+									{
+										$("#frm_oferta #variedad_combo_id").html(response.variedad_opciones);
+										$("#frm_oferta #grado_combo_id").html(response.grado_opciones);
+									}else{
+										swal({title: response.respuesta_mensaje,   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "error",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									
+									}									
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;						
+	}//end getcombosofertasAction

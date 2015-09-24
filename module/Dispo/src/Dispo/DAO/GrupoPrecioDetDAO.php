@@ -183,7 +183,16 @@ class GrupoPrecioDetDAO extends Conexion
 					" 		 sum(if(grupo_precio_det.grado_id=80,  grupo_precio_det.precio_oferta, 0)) as '80',".
 					" 		 sum(if(grupo_precio_det.grado_id=90,  grupo_precio_det.precio_oferta, 0)) as '90',".
 					" 		 sum(if(grupo_precio_det.grado_id=100, grupo_precio_det.precio_oferta, 0)) as '100',".
-					" 		 sum(if(grupo_precio_det.grado_id=110, grupo_precio_det.precio_oferta, 0)) as '110'".
+					" 		 sum(if(grupo_precio_det.grado_id=110, grupo_precio_det.precio_oferta, 0)) as '110',".
+					//DUPLICIDAD PARA QUE NO DE CONFLICTO
+					" 		 sum(if(grupo_precio_det.grado_id=40,  grupo_precio_det.precio_oferta, 0)) as 'ofer40',".
+					" 		 sum(if(grupo_precio_det.grado_id=50,  grupo_precio_det.precio_oferta, 0)) as 'ofer50',".
+					" 		 sum(if(grupo_precio_det.grado_id=60,  grupo_precio_det.precio_oferta, 0)) as 'ofer60',".
+					" 		 sum(if(grupo_precio_det.grado_id=70,  grupo_precio_det.precio_oferta, 0)) as 'ofer70',".
+					" 		 sum(if(grupo_precio_det.grado_id=80,  grupo_precio_det.precio_oferta, 0)) as 'ofer80',".
+					" 		 sum(if(grupo_precio_det.grado_id=90,  grupo_precio_det.precio_oferta, 0)) as 'ofer90',".
+					" 		 sum(if(grupo_precio_det.grado_id=100, grupo_precio_det.precio_oferta, 0)) as 'ofer100',".
+					" 		 sum(if(grupo_precio_det.grado_id=110, grupo_precio_det.precio_oferta, 0)) as 'ofer110'".					
 					' FROM grupo_precio_det INNER JOIN variedad '.
 					'		                      ON variedad.id = grupo_precio_det.variedad_id '.
 					' WHERE grupo_precio_det.grupo_precio_cab_id = '.$condiciones['grupo_precio_cab_id'].
@@ -198,7 +207,15 @@ class GrupoPrecioDetDAO extends Conexion
 					" 		 sum(if(grupo_precio_det.grado_id=80,  grupo_precio_det.precio, 0)) as '80',".
 					" 		 sum(if(grupo_precio_det.grado_id=90,  grupo_precio_det.precio, 0)) as '90',".
 					" 		 sum(if(grupo_precio_det.grado_id=100, grupo_precio_det.precio, 0)) as '100',".
-					" 		 sum(if(grupo_precio_det.grado_id=110, grupo_precio_det.precio, 0)) as '110'".
+					" 		 sum(if(grupo_precio_det.grado_id=110, grupo_precio_det.precio, 0)) as '110',".
+					" 		 sum(if(grupo_precio_det.grado_id=40,  grupo_precio_det.precio_oferta, 0)) as 'ofer40',".
+					" 		 sum(if(grupo_precio_det.grado_id=50,  grupo_precio_det.precio_oferta, 0)) as 'ofer50',".
+					" 		 sum(if(grupo_precio_det.grado_id=60,  grupo_precio_det.precio_oferta, 0)) as 'ofer60',".
+					" 		 sum(if(grupo_precio_det.grado_id=70,  grupo_precio_det.precio_oferta, 0)) as 'ofer70',".
+					" 		 sum(if(grupo_precio_det.grado_id=80,  grupo_precio_det.precio_oferta, 0)) as 'ofer80',".
+					" 		 sum(if(grupo_precio_det.grado_id=90,  grupo_precio_det.precio_oferta, 0)) as 'ofer90',".
+					" 		 sum(if(grupo_precio_det.grado_id=100, grupo_precio_det.precio_oferta, 0)) as 'ofer100',".
+					" 		 sum(if(grupo_precio_det.grado_id=110, grupo_precio_det.precio_oferta, 0)) as 'ofer110'".					
 					' FROM grupo_precio_det INNER JOIN variedad '.
 					'		                      ON variedad.id = grupo_precio_det.variedad_id '.
 					' WHERE grupo_precio_det.grupo_precio_cab_id = '.$condiciones['grupo_precio_cab_id'].
@@ -256,6 +273,32 @@ class GrupoPrecioDetDAO extends Conexion
 	}//end function registrarPrecio	
 	
 	
-	
+	/**
+	 *
+	 * @param int $grupo_precio_cab_id
+	 * @return array
+	 */
+	public function consultarPorVariedad($grupo_precio_cab_id)
+	{
+		$sql = 	' SELECT grupo_precio_det.variedad_id, variedad.nombre as variedad_nombre '.
+				' FROM grupo_precio_det INNER JOIN variedad  '.
+				'                              ON variedad.id = grupo_precio_det.variedad_id '.
+				' WHERE grupo_precio_det.grupo_precio_cab_id = '.$grupo_precio_cab_id .
+				' GROUP BY grupo_precio_det.variedad_id, variedad.nombre '.
+				' ORDER BY variedad.nombre ';
+
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		//$stmt->bindValue(':grupo_precio_cab_id',$grupo_precio_cab_id);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		
+		foreach($result as &$row)
+		{
+			$row['variedad_nombre'] = trim($row['variedad_nombre']);
+		}//end foreach
+
+		return $result;
+	}//end function consultarPorVariedad
+		
 }//end class
 ?>

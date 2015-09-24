@@ -14,6 +14,10 @@ use Zend\Http\Client;
 use Zend\Http\Request;
 use Dispo\Data\GrupoPrecioDetData;
 use Dispo\Data\GrupoPrecioCabData;
+use Dispo\BO\GrupoPrecioOfertaBO;
+use Dispo\BO\Dispo\BO;
+use Dispo\Data\GrupoPrecioOfertaData;
+use Dispo\BO\GradoBO;
 
 
 class GrupoprecioController extends AbstractActionController
@@ -118,7 +122,7 @@ class GrupoprecioController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function disponibilidaddataAction
+	}//end function listadodataAction
 
 	
 	public function nuevodataAction()
@@ -512,5 +516,226 @@ class GrupoprecioController extends AbstractActionController
 	
 	}//end function getcomboAction
 	
+	
+	public function listadoofertadataAction()
+	{
+		try 
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+			
+			$GrupoPrecioOfertaBO = new GrupoPrecioOfertaBO();
+			$GrupoPrecioOfertaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+			
+			$request 				= $this->getRequest();
+			$grupo_precio_cab_id  	= $request->getQuery('grupo_precio_cab_id');
+			$variedad_id  			= $request->getQuery('variedad_id');
+			$grado_id  				= $request->getQuery('grado_id');
+			$page 			= $request->getQuery('page');
+			$limit 			= $request->getQuery('rows');
+			$sidx			= $request->getQuery('sidx',1);
+			$sord 			= $request->getQuery('sord', "");
+			$GrupoPrecioOfertaBO->setPage($page);
+			$GrupoPrecioOfertaBO->setLimit($limit);
+			$GrupoPrecioOfertaBO->setSidx($sidx);
+			$GrupoPrecioOfertaBO->setSord($sord);
+			$condiciones = array(
+					"grupo_precio_cab_id"	=> $grupo_precio_cab_id,
+					"variedad_id"			=> $variedad_id,
+					"grado_id"				=> $grado_id
+			);
+			$result = $GrupoPrecioOfertaBO->listado($condiciones);
+			$response = new \stdClass();
+			$i=0;
+			if ($result)
+			{ 
+				foreach($result as $row){
+					$row2 = null;
+					$row2['grupo_precio_cab_id'] 	= $row['grupo_precio_cab_id'];
+					$row2['variedad_id'] 			= $row['variedad_id'];
+					$row2['grado_id'] 				= $row['grado_id'];
+					$row2['variedad_combo_id']		= $row['variedad_combo_id'];
+					$row2['grado_combo_id']			= $row['grado_combo_id'];
+					$row2['factor_combo']			= $row['factor_combo'];
+					$row2['variedad_combo_nombre']	= $row['variedad_combo_nombre'];
+
+					$response->rows[$i] = $row;
+					$i++;
+				}//end foreach
+			}//end if
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadoofertadataAction
+	
+
+	//REVISAR ESTA FUNCION
+	public function grabarofertadataAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$GrupoPrecioOfertaData	= new GrupoPrecioOfertaData();
+			$GrupoPrecioOfertaBO	= new GrupoPrecioOfertaBO();
+				
+			$GrupoPrecioOfertaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+				
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$accion								= $json['accion'];  //I, M
+			$GrupoPrecioOfertaData->setGrupoPrecioCabId 	($json['grupo_precio_cab_id']);
+			$GrupoPrecioOfertaData->setVariedadId			($json['variedad_id']);
+			$GrupoPrecioOfertaData->setGradoId				($json['grado_id']);
+			$GrupoPrecioOfertaData->setVariedadComboId		($json['variedad_combo_id']);
+			$GrupoPrecioOfertaData->setGradoComboId			($json['grado_combo_id']);
+			$GrupoPrecioOfertaData->setFactorCombo			($json['factor_combo']);
+			$GrupoPrecioOfertaData->setUsuarioIngId			($usuario_id);
+			$GrupoPrecioOfertaData->setUsuarioModId			($usuario_id);
+
+			$result = $GrupoPrecioOfertaBO->registrar($GrupoPrecioOfertaData);
+									
+			//Retorna la informacion resultante por JSON
+			$row	= null;
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->validacion_code 		= $result['validacion_code'];
+			$response->respuesta_mensaje	= $result['respuesta_mensaje'];
+			if ($row)
+			{
+				$response->row					= $row;
+			}else{
+				$response->row					= null;
+			}//end if
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function grabarofertadataAction
+	
+	
+	
+	public function eliminarofertasAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+		
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$GrupoPrecioOfertaBO 	= new GrupoPrecioOfertaBO();
+		
+			$GrupoPrecioOfertaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+		
+			//Recibe las variables del Json
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+		
+			$grid_data 			= $json['grid_data'];
+		
+			//Prepara el Buffer de datos antes de llamar al BO
+			$ArrGrupoPrecioOfertaData   	= array();
+			foreach ($grid_data as $reg)
+			{
+				$GrupoPrecioOfertaData = new GrupoPrecioOfertaData();
+				$GrupoPrecioOfertaData->setGrupoPrecioCabId 	($reg['grupo_precio_cab_id']);
+				$GrupoPrecioOfertaData->setVariedadId			($reg['variedad_id']);
+				$GrupoPrecioOfertaData->setGradoId				($reg['grado_id']);
+				$GrupoPrecioOfertaData->setVariedadComboId		($reg['variedad_combo_id']);
+				$GrupoPrecioOfertaData->setGradoComboId			($reg['grado_combo_id']);
+
+				$ArrGrupoPrecioOfertaData[] = $GrupoPrecioOfertaData;
+			}//end foreach
+		
+			//Graba
+			$result = $GrupoPrecioOfertaBO->eliminarMasivo($ArrGrupoPrecioOfertaData);
+		
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function eliminarofertasAction
+
+	
+	public function getcombosofertasAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+		
+			$GrupoPrecioCabBO	= new GrupoPrecioCabBO();
+			$GradoBO			= new GradoBO();
+			
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+			
+			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$GradoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			
+			$grupo_precio_cab_id	= $json['grupo_precio_cab_id'];
+			$grado_id				= null;
+			$variedad_id			= null;
+			
+			$variedad_opciones		= $GrupoPrecioCabBO->getComboVariedad($variedad_id, $grupo_precio_cab_id);
+			$grado_opciones			= $GradoBO->getCombo($grado_id);			
+
+			$response = new \stdClass();
+			$response->variedad_opciones	= $variedad_opciones;
+			$response->grado_opciones		= $grado_opciones;
+			$response->respuesta_code 		= 'OK';
+			$response->validacion_code 		= 'OK';
+
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function getcombosofertasAction
 	
 }

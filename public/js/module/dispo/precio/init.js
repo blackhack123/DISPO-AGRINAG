@@ -20,8 +20,11 @@ $(document).ready(function ()
 							$("body #frm_precio_grupo #grupo_precio_cab_id").html(response.grupo_precio_opciones);
 							$("body #frm_precio_grupo #tipo_precio").html(response.tipo_precio_opciones);							
 							$("body #frm_grupo_usuario #grupo_precio_cab_id").html(response.grupo_precio_opciones);
-							
-						 }							
+
+							//Combos de la pantalla de DIALOG
+							$("body #frm_oferta #variedad_combo_id").html(response.variedad_opciones);
+							$("body #frm_oferta #grado_combo_id").html(response.grado_opciones);														
+						 }
 					 }
 	response = ajax_call(parameters, data);		
 	return false;	
