@@ -33,7 +33,6 @@ $(document).ready(function () {
 	
 	$("#frm_dispo_grupo #btn_modificar").on('click', function(event){ 
 		$("#frm_grupo_usuario_mantenimiento #accion").val('M');
-		console.log('paso 01');
 		DispoGrupo_Consultar($("#frm_dispo_grupo #grupo_dispo_cab_id").val())	
 		return false;
 	});		
@@ -300,7 +299,6 @@ $(document).ready(function () {
 			seliCol_DispoGrupoGrid  = iCol;
 			seliRow_DispoGrupoGrid  = iRow;
 			valAnt_DispoGrupoGrid   = value;
-			//console.log('beforeEditCell iCol:', iCol,'*iRow:',iRow,'*valAnt_DispoGrupoGrid:',valAnt_DispoGrupoGrid);			
 		},			
 		afterSaveCell : function(rowid,name,val,iRow,iCol) {
 			//Evita se llame la funcion grabar sin que se haya modificado el valor
@@ -317,13 +315,11 @@ $(document).ready(function () {
 			var nameColGrado		= jqgrid_get_columnNameByIndex($("#grid_dispo_grupo"), iCol);
 			var arrColGrado			= nameColGrado.split("_");
 			var grado_id			= arrColGrado[1];
-			//console.log('grado_id:',grado_id);
 			
 			iCol_StockMaximo = iCol - 1;			
 			var stock_maximo = number_val(jQuery("#grid_dispo_grupo").jqGrid('getCell',rowid, iCol_StockMaximo), 0);
 			var stock_grupo  = number_val(jQuery("#grid_dispo_grupo").jqGrid('getCell',rowid, iCol), 0);
 
-			//console.log('stock_maximo:',stock_maximo,'*stock_grupo:',stock_grupo);
 			if (stock_grupo > stock_maximo)
 			{				
 				 alert('Stock del Grupo no puede sobrepasar al Stock General');
@@ -380,7 +376,9 @@ $(document).ready(function () {
 
 	function dispoGrupo_init()
 	{
-		//if (typeof(grupo_dispo_1er_elemento) == 'undefined') {grupo_dispo_1er_elemento = '&lt;SELECCIONE&gt;';}
+		//Deshabilita la botonera
+		$("#frm_dispo_grupo button").prop('disabled', true);
+
 		$("#grid_dispo_grupo").jqGrid('clearGridData');
 		$("#frm_dispo_grupo #info_grupo_dispo_cab").html('');
 		
@@ -395,8 +393,11 @@ $(document).ready(function () {
 							'url':'../../dispo/grupodispo/initcontrols',
 							'show_cargando':false,
 							'async':true,
-							'finish':function(response){		
+							'finish':function(response){										
 								$("body #frm_dispo_grupo #grupo_dispo_cab_id").html(response.grupo_dispo_opciones);
+								
+								//Habilita la botonera
+								$("#frm_dispo_grupo button").prop('disabled', false);
 							 }							
 						 }
 		response = ajax_call(parameters, data);		
@@ -552,11 +553,10 @@ $(document).ready(function () {
 
 	function DispoGrupo_MostrarRegistro(response)
 	{
-		console.log('DispoGrupo_MostrarRegistro');
 		var row = response.row;
 		
 		if (row==null) return false;
-		console.log('row:',row);
+		$("#dialog_dispo_grupo_mantenimiento_titulo").html($("#frm_dispo_grupo #grupo_dispo_cab_id option:selected").text());
 		$("#frm_dispo_grupo_mantenimiento #accion").val("M");
 		$("#frm_dispo_grupo_mantenimiento #id").val(row.id);
 		$("#frm_dispo_grupo_mantenimiento #nombre").val(row.nombre);
@@ -568,7 +568,6 @@ $(document).ready(function () {
 	function DispoGrupo_Consultar(id)
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
-		console.log('paso02');
 		var data = 	{grupo_dispo_cab_id:id}
 		data = JSON.stringify(data);
 
@@ -578,7 +577,6 @@ $(document).ready(function () {
 							'control_process':true,
 							'show_cargando':true,
 							'finish':function(response){
-									console.log('paso 03');
 									DispoGrupo_MostrarRegistro(response);
 									cargador_visibility('hide');
 

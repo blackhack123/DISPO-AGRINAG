@@ -11,6 +11,7 @@ use Dispo\DAO\PedidoDetDAO;
 use Dispo\DAO\VariedadDAO;
 use Dispo\DAO\GrupoPrecioDetDAO;
 use Dispo\DAO\GrupoPrecioOfertaDAO;
+use Dispo\DAO\CalidadDAO;
 
 
 
@@ -491,8 +492,6 @@ class DispoBO extends Conexion
 	}//end function consultarPorInventarioPorCalidadPorProveedorPorGrado
 	
 	
-	
-	
 	/**
 	 * 
 	 * @param string $inventario_id
@@ -575,5 +574,99 @@ class DispoBO extends Conexion
 
 		return $result;		
 	}//end function listadoVariedadPorInventario
+
+	
+	
+	function getComboVariedadNoExiste($inventario_id, $calidad_id, $variedad_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$DispoDAO 	= new DispoDAO();
+		$CalidadDAO = new CalidadDAO();
+
+		$DispoDAO->setEntityManager($this->getEntityManager());
+		$CalidadDAO->setEntityManager($this->getEntityManager());
+
+		$CalidadData = $CalidadDAO->consultar($calidad_id);		
+		$clasifica_fox = null;
+		if ($CalidadData)
+		{
+			$clasifica_fox = $CalidadData->getClasificaFox();
+		}//end if
+
+		$result = $DispoDAO->variedadesNoExiste($inventario_id, $clasifica_fox);
+
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'variedad_id', 'variedad_nombre',$variedad_id, $texto_1er_elemento, $color_1er_elemento);
+
+		return $opciones;
+	}//end function getComboVariedadPorInventario	
+	
+	
+	
+	public function consultarPorInventarioPorCalidadPorVariedadPorGrado($inventario_id, $calidad_id, $variedad_id, $grado_id)
+	{
+		$DispoDAO 		= new DispoDAO();
+		$CalidadDAO		= new CalidadDAO();
+
+		$DispoDAO->setEntityManager($this->getEntityManager());
+		$CalidadDAO->setEntityManager($this->getEntityManager());
+
+		$CalidadData =  $CalidadDAO->consultar($calidad_id);
+		$clasifica_fox = null;
+		if ($CalidadData)
+		{
+			$clasifica_fox = $CalidadData->getClasificaFox();
+		}//end if
+		
+		$result = $DispoDAO->consultarPorInventarioPorCalidadPorVariedadPorGrado($inventario_id, $clasifica_fox, $variedad_id, $grado_id);
+
+		$row = null;
+		foreach($result as $reg)
+		{
+			$row[$reg['proveedor_id']]['tot_bunch_disponible'] = $reg['tot_bunch_disponible'];
+		}//end if
+	
+		return $row;
+	}//end function consultarPorInventarioPorCalidadPorVariedad
+
+
+	
+	public function registrarStockNuevo($inventario_id, $producto, $calidad_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock)
+	{		
+		try
+		{
+			$DispoDAO 	= new DispoDAO();
+			$CalidadDAO = new CalidadDAO();
+			
+			$DispoDAO->setEntityManager($this->getEntityManager());
+			$CalidadDAO->setEntityManager($this->getEntityManager());
+			
+			$CalidadData = $CalidadDAO->consultar($calidad_id);
+			if (empty($CalidadData))
+			{
+				$result['validacion_code'] 	= 'CALIDAD';
+				$result['respuesta_mensaje']= 'ID de Calidad no existe';
+				return $result;
+			}else{
+				$clasifica_fox = $CalidadData->getClasificaFox();
+			}//end if
+		
+			$this->getEntityManager()->getConnection()->beginTransaction();			
+			//TODAS LAS FINCAS
+			foreach($stock as $clave => $valor)
+			{
+				$valor = (empty($valor)?0:$valor);
+				$DispoDAO->actualizarStock($inventario_id, $producto, $clasifica_fox, $clave, $variedad_id, $grado_id, $tallos_x_bunch, $valor);
+			}//end foreach
+		
+			$result['validacion_code'] 	= 'OK';
+			$result['respuesta_mensaje']= '';
+		
+			$this->getEntityManager()->getConnection()->commit();
+			return $result;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}		
+	}//end function 	
 	
 }//end class DispoBO

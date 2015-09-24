@@ -75,7 +75,7 @@ class CalidadDAO extends Conexion
 		if($row){
 			$CalidadData->setId				    ($row['id']);
 			$CalidadData->setNombre		   		($row['nombre']);
-		
+			$CalidadData->setClasificaFox		($row['clasifica_fox']);
 			return $CalidadData;
 		}else{
 			return null;

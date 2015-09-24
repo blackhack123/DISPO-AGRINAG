@@ -752,7 +752,7 @@ class DisponibilidadController extends AbstractActionController
 	
 	function consultarPorInventarioPorCalidadPorProveedorPorGradoAction()
 	{
-			try
+		try
 		{
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
@@ -790,6 +790,49 @@ class DisponibilidadController extends AbstractActionController
 			return $response;
 		}		
 	}//end function consultarPorInventarioPorCalidadPorProveedorPorGradoAction
+	
+	
+	
+	function consultarPorInventarioPorCalidadPorVariedadPorGradoAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+				
+			$DispoBO 			= new DispoBO();
+				
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$inventario_id		= $json['inventario_id'];
+			//$clasifica_fox		= $json['clasifica_fox'];
+			$calidad_id			= $json['calidad_id'];
+			$variedad_id		= $json['variedad_id'];
+			$grado_id			= $json['grado_id'];
+
+			$row				= $DispoBO->consultarPorInventarioPorCalidadPorVariedadPorGrado($inventario_id, $calidad_id, $variedad_id, $grado_id);
+		
+			$response = new \stdClass();
+			$response->row					= $row;
+			$response->respuesta_code 		= 'OK';
+			$response->respuesta_mensaje	= '';
+		
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function consultarPorInventarioPorCalidadPorVariedadPorGradoAction
 	
 	
 	
@@ -893,6 +936,96 @@ class DisponibilidadController extends AbstractActionController
 	}//end function listadodialogdataAction	
 
 	
+
+	
+	public function getcombovariedadnoexisteAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$DispoBO = new DispoBO();
+	
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			//var_dump($json); exit;
+			$texto_primer_elemento	= $json['texto_primer_elemento'];
+			$inventario_id			= $json['inventario_id'];
+			$calidad_id				= $json['calidad_id'];
+			$variedad_id			= $json['variedad_id'];
+	
+			$variedad_opciones 	= $DispoBO->getComboVariedadNoExiste($inventario_id, $calidad_id, $variedad_id, $texto_primer_elemento);
+	
+			$response = new \stdClass();
+			$response->variedad_opciones	= $variedad_opciones;
+			$response->respuesta_code 		= 'OK';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+	
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function getcomboMarcacionAgenciacargaAction
+	
+	
+	
+	function grabarStockNuevoAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+	
+			$config = $this->getServiceLocator()->get('Config');
+	
+			$DispoBO 			= new DispoBO();
+	
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+	
+			$inventario_id  	= $json['inventario_id'];
+			$producto			= 'ROS';
+			$calidad_id  		= $json['calidad_id'];
+			//$clasifica_fox  	= $json['clasifica_fox'];
+			$variedad_id  		= $json['variedad_id'];			
+			$grado_id  			= $json['grado_id'];
+			$stock['AGR'] 		= $json['agr_cantidad_bunch'];
+			$stock['HTC'] 		= $json['htc_cantidad_bunch'];
+			$stock['LMA'] 		= $json['lma_cantidad_bunch'];
+			$result = $DispoBO->registrarStockNuevo($inventario_id, $producto, $calidad_id, $variedad_id, $grado_id, $config['tallos_x_bunch_default'], $stock);
+	
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->validacion_code 		= $result['validacion_code'];
+			$response->respuesta_mensaje	= $result['respuesta_mensaje'];
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function grabarstocknuevoAction	
 	
 	
 }

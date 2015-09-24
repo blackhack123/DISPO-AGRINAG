@@ -556,8 +556,55 @@ class DispoDAO extends Conexion
 		return $result;
 	}//end function agrupadoPorInventarioPorVariedadPorGrado
 
-	
 
+
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param int $clasifica_fox
+	 * @return array
+	 */
+	public function variedadesNoExiste($inventario_id, $clasifica_fox)
+	{
+		$sql = 	' SELECT variedad.id as variedad_id, variedad.nombre as variedad_nombre '.
+				' FROM variedad LEFT JOIN dispo '.
+				'                      ON  dispo.variedad_id = variedad.id'. 
+				"					   AND dispo.inventario_id = '".$inventario_id."'".
+				"                      AND dispo.clasifica = '".$clasifica_fox."'".
+				" WHERE variedad.estado = 'A'".
+				'   and dispo.id IS NULL ';
+		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$result = $stmt->fetchAll();
+		return $result;		
+	}//end function variedadesNoExiste
+
+	
+	
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $clasifica_fox
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @return array
+	 */
+	public function consultarPorInventarioPorCalidadPorVariedadPorGrado($inventario_id, $clasifica_fox, $variedad_id, $grado_id)
+	{
+		$sql = 	' SELECT proveedor_id, sum(cantidad_bunch_disponible) as tot_bunch_disponible '.
+				' FROM dispo '.
+				" WHERE inventario_id 	= '".$inventario_id."'".
+				"   and clasifica		= '".$clasifica_fox."'".
+				"   and variedad_id		= '".$variedad_id."'".
+				"   and grado_id		= '".$grado_id."'";
+		$sql = $sql." GROUP BY proveedor_id";
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+
+		return $result;
+	}//end function consultarPorInventarioPorCalidadPorProveedorPorGrado
+	
 }//end class
 
 ?>
