@@ -30,21 +30,6 @@ $(document).ready(function () {
 	});
 	
 
-/*
-	$("#frm_usuario_listado #btn_consultar_usuario").on('click', function(event){    
-		listar_usuario(false);
-	});
-
-	$(".btn_editar_usuario").on('click', function(event){ 
-		var tr 						= $(this).closest('tr');
-		var id						= tr.attr('id');
-
-		consultar_usuario(id);
-		//$("#dialog_mantenimiento").modal('show') 
-	});
-
-	*/
-
 	/*---------------------------------------------------------------*/
 	/*-----------------Se configura los JQGRID's USUARIOS------------*/
 	/*---------------------------------------------------------------*/		
@@ -61,13 +46,10 @@ $(document).ready(function () {
 		/*height:'400',*/
 		colNames:['Código','Nombre','Usuario','Email','Estado', ''],
 		colModel:[
-			//{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
 			{name:'id',index:'marcacion_sec', width:50, align:"center", sorttype:"int"},
 			{name:'nombre',index:'nombre', width:230, sorttype:"string"},
 			{name:'username',index:'username', width:150, sorttype:"string"},	
 			{name:'email',index:'email', width:150, sorttype:"string"},	
-			//{name:'sincronizado',index:'sincronizado', width:30, align:"center", sorttype:"number", formatter: ListadoUsuario_FormatterSincronizado},
-			//{name:'fec_sincronizado',index:'fec_sincronizado', width:130, sorttype:"string", align:"center"},
 			{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
 			{name:'btn_editar_usuario',index:'', width:30, align:"center", formatter:ListadoUsuario_FormatterEdit,
 			   cellattr: function () { return ' title=" Modificar"'; }
@@ -105,12 +87,7 @@ $(document).ready(function () {
 		}
 	}).navGrid();
 
-/*	$('#grid_usuario_listado').setGroupHeaders(
-	{
-		useColSpanStyle: true,
-		groupHeaders: [{ "numberOfColumns": 2, "titleText": "Sincronizacion", "startColumnName": "sincronizado" }]
-	});		*/
-	
+
 	//Se configura el grid para que pueda navegar procesar la fila con el ENTER
 	jQuery("#grid_usuario_listado").jqGrid('bindKeys', {
 		   "onEnter" : function( rowid ) { 
@@ -320,7 +297,7 @@ $(document).ready(function () {
 							}							
 		                 }
 		response = ajax_call(parameters, data);		
-			
+		$("#dialog_nuevo_usuario").modal('hide');	
 		return false;		
 	}//end function grabar
 
@@ -344,6 +321,7 @@ $(document).ready(function () {
 			$("#frm_nuevo_usuario #grupo_dispo_cab_id").html(response.opciones_dispo);
 			$("#frm_nuevo_usuario #grupo_precio_cab_id").html(response.opciones_precio);
 			$("#frm_nuevo_usuario #inventario_id").html(response.cbo_inventario_id);
+			$("#frm_nuevo_usuario #calidad_id").html(response.cbo_calidad);
 			$("#frm_nuevo_usuario #estado").html(response.cbo_estado);
 			$("#frm_nuevo_usuario #lbl_usuario_ing").html(row.usuario_ing_user_name);
 			$("#frm_nuevo_usuario #lbl_fec_ingreso").html(row.fec_ingreso);
@@ -370,7 +348,6 @@ $(document).ready(function () {
 								mostrar_registro_usuario(response);
 									//usuario_listar(true);
 									cargador_visibility('hide');
-									
 									$("#dialog_nuevo_usuario").modal('show');
 							}							
 		                 }
@@ -458,3 +435,23 @@ $(document).ready(function () {
 		return false;
 	}//end function usuario_llenar_cbo_precio
 	
+	
+	$(function() 
+	{
+		function log( message ) 
+		{
+			$( "<div>" ).text( message ).prependTo( "#log" );
+			$( "#log" ).scrollTop( 0 );
+		}
+		 
+		$( "#birds" ).autocomplete({
+			source: "search.php",
+			//'url':'../../seguridad/usuario/getcomboPrecio',
+			minLength: 2,
+			select: function( event, ui ) {
+			log( ui.item ?
+			"Selected: " + ui.item.value + " aka " + ui.item.id :
+			"Nothing selected, input was " + this.value );
+			 }
+		 });
+	 });

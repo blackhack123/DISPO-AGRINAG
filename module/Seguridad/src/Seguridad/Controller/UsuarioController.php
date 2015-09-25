@@ -18,7 +18,7 @@ use Dispo\BO\GrupoDispoCabBO;
 use Dispo\BO\GrupoPrecioCabBO;
 use Dispo\BO\InventarioBO;
 use Dispo\BO\CalidadBO;
-
+use Dispo\BO\ClienteBO;
 
 class UsuarioController extends AbstractActionController
 {
@@ -429,8 +429,8 @@ class UsuarioController extends AbstractActionController
 			$response = new \stdClass();
 			//$response->cbo_perfil_id			= $PerfilBO->getComboPerfilRestringido("","");
 			$response->cbo_estado				= \Application\Classes\ComboGeneral::getComboEstado("","");
-			$response->cbo_grupo_dispo			= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
-			$response->cbo_grupo_precio			= $GrupoPrecioCabBO->getComboGrupoPrecio($grupoprecio, "&lt;Seleccione&gt;");
+			//$response->cbo_grupo_dispo			= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
+			//$response->cbo_grupo_precio			= $GrupoPrecioCabBO->getComboGrupoPrecio($grupoprecio, "&lt;Seleccione&gt;");
 			$response->cbo_inventario_id		= $InventarioBO->getCombo($inventario_id, "&lt;Seleccione&gt;");
 			$response->cbo_calidad				= $CalidadBO->getComboCalidad($calidad_id, "&lt;Seleccione&gt;");
 			$response->cbo_grupo_dispo			= '<option value="">&lt;Seleccione&gt;</option>';
@@ -480,14 +480,15 @@ class UsuarioController extends AbstractActionController
 	
 			$row					= $UsuarioBO->consultar($id, \Application\Constants\ResultType::MATRIZ);
 			
-			
-			
+
 			$response = new \stdClass();
 			$response->row					= $row;
 			$response->cbo_perfil_id		= $PerfilBO->getComboPerfilRestringido($row['perfil_id'],"");
 			$response->cbo_estado			= \Application\Classes\ComboGeneral::getComboEstado($row['estado'],"");
-			$response->cbo_grupo_dispo		= $GrupoDispoCabBO->getComboGrupoDispo($row['grupo_dispo_cab_id'], "&lt;Seleccione&gt;");
-			$response->cbo_grupo_precio		= $GrupoPrecioCabBO->getComboGrupoPrecio($row['grupo_precio_cab_id'], "&lt;Seleccione&gt;");
+//			$response->opciones_dispo		= $GrupoDispoCabBO->getComboGrupoDispo($row['grupo_dispo_cab_id'], "&lt;Seleccione&gt;");
+//			$response->opciones_precio		= $GrupoPrecioCabBO->getComboGrupoPrecio($row['grupo_precio_cab_id'], "&lt;Seleccione&gt;");
+			$response->opciones_dispo 		= $GrupoDispoCabBO->getComboPorInventario($row['grupo_dispo_cab_id'], $row['inventario_id'], $row['calidad_id']);
+			$response->opciones_precio 		= $GrupoPrecioCabBO->getComboPorInventario($row['grupo_precio_cab_id'], $row['inventario_id'], $row['calidad_id']);
 			$response->cbo_inventario_id	= $InventarioBO->getCombo($row['inventario_id'], "&lt;Seleccione&gt;");
 			$response->cbo_calidad			= $CalidadBO->getComboCalidad($row['calidad_id'], "&lt;Seleccione&gt;");
 			$response->respuesta_code 		= 'OK';
@@ -683,7 +684,45 @@ class UsuarioController extends AbstractActionController
 	}//end function getcomboAction
 	
 	
-		
+	public function getClienteFacturaAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$ClienteBO = new $ClienteBO();
+			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginVentas();  //Solo el Vendedor Puede hacer este procedimiento
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			//var_dump($json); exit;
+			//$texto_primer_elemento		= null;
+			//$grupo_dispo_cab_id			= null;
+			$cliente_factura_id 		= $json['cliente_factura_id'];
+			$nombre_cliente 			= $json['nombre_cliente'];
+	
+			$clientes = $ClienteBO->getClienteFactura($cliente_factura_id, $nombre_cliente);
+			
+			$response = new \stdClass();
+			$response->clientes				= $clientes;
+			$response->respuesta_code 		= 'OK';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+	
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function getcomboAction
+	
+	
 	/*-----------------------------------------------------------------------------*/
 	public function listadodataAction()
 	/*-----------------------------------------------------------------------------*/

@@ -230,6 +230,7 @@ $(document).ready(function () {
 										{
 											marcacion_mostrar_registro(response)
 											marcacion_listar(false);
+											
 											cargador_visibility('hide');
 											swal({  title: "Informacion grabada con exito!!",   
 												//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
@@ -257,11 +258,14 @@ $(document).ready(function () {
 												/*timer: 2000*/
 											});
 										
-										}									
+										}	
+										
 								}							
 			                 }
-			response = ajax_call(parameters, data);		
-			return false;		
+			response = ajax_call(parameters, data);	
+			$("#dialog_nueva_marcacion").modal('hide');
+			return false;	
+			
 		}//end function grabar
 		
 
@@ -305,8 +309,6 @@ $(document).ready(function () {
 		}//end function mostrar_registro
 
 
-
-
 		function marcacion_consultar(marcacion_sec)
 		{
 		
@@ -330,7 +332,6 @@ $(document).ready(function () {
 			response = ajax_call(parameters, data);		
 			return false;
 		}//end function marcacion_consultar_marcacion
-		
 		
 		
 		function marcacion_listar(limpiar_filtros)

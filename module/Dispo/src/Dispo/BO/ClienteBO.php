@@ -141,5 +141,24 @@ class ClienteBO extends Conexion
 		}
 	}//end function ingresar
 	
+	
+	
+	/**
+	 *
+	 * En las condiciones se puede pasar los siguientes criterios de busqueda:
+	 *   1) criterio_busqueda,  utilizado para buscar en nombre, id, direccion, telefono
+	 *   2) estado
+	 *   3) sincronizado
+	 *
+	 * @param array $condiciones
+	 * @return array
+	 */
+	function getClienteFactura($condiciones)
+	{
+		$ClienteDAO = new ClienteDAO();
+		$ClienteDAO->setEntityManager($this->getEntityManager());
+		$result = $ClienteDAO->listado($condiciones);
+		return $result;
+	}//end function listado
 		
 }//end class MarcacionBO
