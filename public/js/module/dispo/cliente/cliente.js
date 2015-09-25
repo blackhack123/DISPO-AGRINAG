@@ -23,6 +23,40 @@
 		    $("#dialog_mantenimiento").css("overflow-y", "auto"); // 'auto' or 'scroll'
 		});			
 
+		
+		/*-------------------------------------------------------------*/
+		/*--------------------- AUTOCOMPLETAR -------------------------*/
+		/*-------------------------------------------------------------*/
+	    $( "#cliente_factura_id" ).autocomplete({
+	    	
+	        source: "../../dispo/cliente/consultarClienteFactur",
+	        minLength: 2,
+	        select: function( event, ui ) {
+	          log( ui.item ?
+	            "Selected: " + ui.item.value + " aka " + ui.item.id :
+	            "Nothing selected, input was " + this.value );
+	        }	    	
+/*	        source: function( request, response ) {
+	          $.ajax({
+	            url: '../../dispo/cliente/consultarClienteFactura',
+	            dataType: "jsonp",
+	            data: {
+	              term: request.term
+	            },
+	            success: function( data ) {
+	              response( data );
+	            }
+	          });
+	        },
+	        minLength: 3,
+	        select: function( event, ui ) {
+	          log( ui.item ?
+	            "Selected: " + ui.item.label :
+	            "Nothing selected, input was " + this.value);
+	        },	*/	
+	    });		
+		
+		
 		/*---------------------------------------------------------------*/
 		/*----------- Se configura los JQGRID de Cliente ----------------*/
 		/*---------------------------------------------------------------*/		
@@ -636,4 +670,29 @@
 			                 }
 			response = ajax_call(parameters, data);		
 			return false;		
-		}//end function cliente_consultar(
+		}//end function cliente_consultar
+		
+		
+		
+/*		  $(function() 
+					{
+						    function log( message )
+						    {
+							      $( "input" ).text( message ).prependTo( "#cliente_factura_id" );
+							      $( "#cliente_factura_id" ).scrollTop( 0 );
+						    }
+						 
+						    $( "#cliente_factura_id" ).autocomplete({
+								    //  'url':' ../../dispo/cliente/ConsultarClienteFactura',
+								      url: '../../dispo/cliente/ConsultarClienteFactura',
+								      minLength: 3,
+								      select: function( event, ui ) 
+								      {
+									        log( ui.item ?
+									           + ui.item.value +  + ui.item.id :
+									          "Nothing selected, input was " + this.value 
+									          );
+								      }
+						    });
+					  });
+*/

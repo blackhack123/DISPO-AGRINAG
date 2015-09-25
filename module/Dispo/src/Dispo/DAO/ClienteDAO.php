@@ -381,6 +381,31 @@ class ClienteDAO extends Conexion
 		return $result;
 	}//end function listado
 	
+	/**
+	 *
+	 * En las condiciones se puede pasar los siguientes criterios de busqueda:
+	 *   1) criterio_busqueda,  utilizado para buscar en nombre, id, direccion, telefono
+	 *   2) estado
+	 *   3) sincronizado
+	 *
+	 * @param array $condiciones
+	 * @return array
+	 */
+	public function ConsultarClienteFactura($condiciones)
+	{
+	
+		$sql = 	' SELECT cliente.id, cliente.nombre'.
+				' FROM cliente   '.
+				' WHERE 1 = 1 ';
+	
+		if (!empty($condiciones['cliente_factura_id']))
+		{
+			$sql = $sql." and (cliente.id like '%".$condiciones['cliente_factura_id']."%'".
+					"      or cliente.nombre like '%".$condiciones['cliente_factura_id']."%'";
+		}//end if
+		
+	}
+	
 	
 	
 }//end class
