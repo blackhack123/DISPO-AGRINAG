@@ -87,6 +87,7 @@ class GrupoPrecioCabBO extends Conexion
 				"inventario_id"	=> $reg_grupoPrecioCab['inventario_id'],
 				"proveedor_id"	=> null,
 				"clasifica"		=> $reg_grupoPrecioCab['clasifica_fox'],
+				"color_ventas_id"	=> $condiciones['color_ventas_id']				
 		);
 		$result_dispo = $DispoDAO->listado($condiciones2);
 		
@@ -95,6 +96,7 @@ class GrupoPrecioCabBO extends Conexion
 		 */
 		$condiciones2 = array(
 				"grupo_precio_cab_id"	=> $condiciones['grupo_precio_cab_id'],
+				"color_ventas_id"		=> $condiciones['color_ventas_id']				
 		);		
 		$result_dispo_grupo = $GrupoDispoDetDAO->listado($tipo_precio, $condiciones2);
 		
@@ -106,26 +108,29 @@ class GrupoPrecioCabBO extends Conexion
 		$result = null;
 		foreach($result_dispo as $reg)
 		{
-			$reg_new['variedad_id'] = $reg['variedad_id'];
-			$reg_new['variedad'] 	= $reg['variedad'];
-			$reg_new['40'] 			= 0;
-			$reg_new['50'] 			= 0;
-			$reg_new['60'] 			= 0;
-			$reg_new['70'] 			= 0;
-			$reg_new['80'] 			= 0;
-			$reg_new['90'] 			= 0;
-			$reg_new['100']			= 0;
-			$reg_new['110']			= 0;
-			$reg_new['ofer40'] 		= 0;
-			$reg_new['ofer50'] 		= 0;
-			$reg_new['ofer60'] 		= 0;
-			$reg_new['ofer70'] 		= 0;
-			$reg_new['ofer80'] 		= 0;
-			$reg_new['ofer90'] 		= 0;
-			$reg_new['ofer100']		= 0;
-			$reg_new['ofer110']		= 0;
-			$reg_new['existe']		= 0;
-			$result[$reg['variedad_id']] = $reg_new;
+			$reg_new['producto_id'] 	= $reg['producto_id'];
+			$reg_new['variedad_id'] 	= $reg['variedad_id'];
+			$reg_new['variedad'] 		= trim($reg['variedad']);
+			$reg_new['tallos_x_bunch'] 	= $reg['tallos_x_bunch'];
+			$reg_new['color_ventas_nombre'] 	= $reg['color_ventas_nombre'];				
+			$reg_new['40'] 				= 0;
+			$reg_new['50'] 				= 0;
+			$reg_new['60'] 				= 0;
+			$reg_new['70'] 				= 0;
+			$reg_new['80'] 				= 0;
+			$reg_new['90'] 				= 0;
+			$reg_new['100']				= 0;
+			$reg_new['110']				= 0;
+			$reg_new['ofer40'] 			= 0;
+			$reg_new['ofer50'] 			= 0;
+			$reg_new['ofer60'] 			= 0;
+			$reg_new['ofer70'] 			= 0;
+			$reg_new['ofer80'] 			= 0;
+			$reg_new['ofer90'] 			= 0;
+			$reg_new['ofer100']			= 0;
+			$reg_new['ofer110']			= 0;
+			$reg_new['existe']			= 0;
+			$result[$reg['producto_id'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch']] = $reg_new;
 		}//end foreach
 		
 		//Completa los campos del RESULT con la DISPO POR GRUPO
@@ -133,10 +138,13 @@ class GrupoPrecioCabBO extends Conexion
 		{
 			//Se puede dar el caso que el registro exista en la lista de precios y no exista en el dispo
 			//esto se puede deber a que de la dispo general lo han quitado por alguna razon de comercializacion
-			if (!array_key_exists($reg['variedad_id'], $result))
+			$key = $reg['producto_id'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch'];
+			if (!array_key_exists($key, $result))
 			{
-				$reg_new['variedad_id'] = $reg['variedad_id'];
-				$reg_new['variedad'] 	= $reg['variedad'];
+				$reg_new['variedad_id'] 		= $reg['variedad_id'];
+				$reg_new['variedad'] 			= trim($reg['variedad']);
+				$reg_new['tallos_x_bunch'] 		= $reg['tallos_x_bunch'];
+				$reg_new['color_ventas_nombre']	= $reg['color_ventas_nombre'];				
 				$reg_new['40'] 			= 0;
 				$reg_new['50'] 			= 0;
 				$reg_new['60'] 			= 0;
@@ -153,10 +161,10 @@ class GrupoPrecioCabBO extends Conexion
 				$reg_new['ofer90'] 		= 0;
 				$reg_new['ofer100']		= 0;
 				$reg_new['ofer110']		= 0;
-				$result[$reg['variedad_id']]= $reg_new;
+				$result[$key]= $reg_new;
 			}//end if
 			
-			$reg_result = &$result[$reg['variedad_id']];
+			$reg_result = &$result[$key];
 			
 			$reg_result['40']	= $reg['40'];
 			$reg_result['50']	= $reg['50'];
@@ -293,19 +301,20 @@ class GrupoPrecioCabBO extends Conexion
 	
 	/**
 	 * 
+	 * @param string $producto_id
 	 * @param string $variedad_id
 	 * @param int $grupo_precio_cab_id
 	 * @param string $texto_1er_elemento
 	 * @param string $color_1er_elemento
 	 * @return string
 	 */
-	function getComboVariedad($variedad_id, $grupo_precio_cab_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	function getComboVariedad($producto_id, $variedad_id, $grupo_precio_cab_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
 	{
 		$GrupoPrecioDetDAO = new GrupoPrecioDetDAO();
 	
 		$GrupoPrecioDetDAO->setEntityManager($this->getEntityManager());
 	
-		$result = $GrupoPrecioDetDAO->consultarPorVariedad($grupo_precio_cab_id);
+		$result = $GrupoPrecioDetDAO->consultarPorVariedad($producto_id, $grupo_precio_cab_id);
 	
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'variedad_id', 'variedad_nombre', $variedad_id, $texto_1er_elemento, $color_1er_elemento);
 			

@@ -16,6 +16,7 @@ use Dispo\BO\Dispo\BO;
 use Dispo\BO\CalidadBO;
 use Dispo\BO\InventarioBO;
 use Dispo\BO\ProveedorBO;
+use Dispo\BO\ColorVentasBO;
 
 class DisponibilidadController extends AbstractActionController
 {
@@ -654,6 +655,7 @@ class DisponibilidadController extends AbstractActionController
 			$inventario_id  = $request->getQuery('inventario_id', "");
 			$proveedor_id  	= $request->getQuery('proveedor_id', "");
 			$clasifica  	= $request->getQuery('clasifica', "");
+			$color_ventas_id= $request->getQuery('color_ventas_id', "");
 			$page 			= $request->getQuery('page');
 			$limit 			= $request->getQuery('rows');
 			$sidx			= $request->getQuery('sidx',1);
@@ -663,9 +665,10 @@ class DisponibilidadController extends AbstractActionController
 			$DispoBO->setSidx($sidx);
 			$DispoBO->setSord($sord);
 			$condiciones = array(
-					"inventario_id"	=> $inventario_id,
-					"proveedor_id"	=> $proveedor_id,
-					"clasifica"		=> $clasifica
+					"inventario_id"		=> $inventario_id,
+					"proveedor_id"		=> $proveedor_id,
+					"clasifica"			=> $clasifica,
+					"color_ventas_id"	=> $color_ventas_id
 			);
 			$result = $DispoBO->listado($condiciones);
 			$response = new \stdClass();
@@ -712,26 +715,32 @@ class DisponibilidadController extends AbstractActionController
 					$InventarioBO 	= new InventarioBO();
 					$CalidadBO		= new CalidadBO();
 					$ProveedorBO	= new ProveedorBO();
+					$ColorVentasBO  = new ColorVentasBO();
 					
 					$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 					$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 					$ProveedorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+					$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 										
 					$inventario_1er_elemento	= $json['inventario_1er_elemento'];
 					$calidad_1er_elemento		= $json['calidad_1er_elemento'];
 					$proveedor_1er_elemento		= $json['proveedor_1er_elemento'];
+					$color_ventas_1er_elemento	= $json['color_ventas_1er_elemento'];
 					$inventario_id	= null;
 					$clasifica_fox	= null;
 					$proveedor_id	= null;
+					$color_ventas_id= null;
 					
 					$inventario_opciones 	= $InventarioBO->getCombo($inventario_id, $inventario_1er_elemento);
 					$calidad_opciones 		= $CalidadBO->getComboCalidadFox($clasifica_fox, $calidad_1er_elemento);
 					$proveedor_opciones 	= $ProveedorBO->getCombo($proveedor_id, $proveedor_1er_elemento);
+					$color_ventas_opciones 	= $ColorVentasBO->getCombo($color_ventas_id, $color_ventas_1er_elemento);
 					
 					$response = new \stdClass();
 					$response->inventario_opciones		= $inventario_opciones;
 					$response->calidad_opciones			= $calidad_opciones;
 					$response->proveedor_opciones		= $proveedor_opciones;
+					$response->color_ventas_opciones	= $color_ventas_opciones;
 					$response->respuesta_code 			= 'OK';
 					break;
 			}//end switch
@@ -750,7 +759,7 @@ class DisponibilidadController extends AbstractActionController
 	
 	
 	
-	function consultarPorInventarioPorCalidadPorProveedorPorGradoAction()
+	function consultarPorInventarioPorCalidadPorProveedorPorGradoPorTalloAction()
 	{
 		try
 		{
@@ -771,8 +780,9 @@ class DisponibilidadController extends AbstractActionController
 			$proveedor_id		= $json['proveedor_id'];
 			$variedad_id		= $json['variedad_id'];
 			$grado_id			= $json['grado_id'];
+			$tallos_x_bunch		= $json['tallos_x_bunch'];
 
-			$row				= $DispoBO->consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+			$row				= $DispoBO->consultarPorInventarioPorCalidadPorProveedorPorGradoPorTallo($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch);
 
 			$response = new \stdClass();
 			$response->row					= $row;
@@ -843,8 +853,7 @@ class DisponibilidadController extends AbstractActionController
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 				
-			$config = $this->getServiceLocator()->get('Config');
-						
+			//$config = $this->getServiceLocator()->get('Config');
 			$DispoBO 			= new DispoBO();
 				
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
@@ -861,10 +870,11 @@ class DisponibilidadController extends AbstractActionController
 			$proveedor_id  		= $json['proveedor_id'];
 			$variedad_id  		= $json['variedad_id'];
 			$grado_id  			= $json['grado_id'];
+			$tallos_x_bunch		= $json['tallos_x_bunch'];
 			$stock['AGR'] 		= $json['stock_agr'];
 			$stock['HTC'] 		= $json['stock_htc'];
 			$stock['LMA'] 		= $json['stock_lma'];
-			$result = $DispoBO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $config['tallos_x_bunch_default'], $stock);
+			$result = $DispoBO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock);
 
 			//Retorna la informacion resultante por JSON
 			$response = new \stdClass();

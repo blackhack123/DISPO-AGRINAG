@@ -43,6 +43,17 @@ $(document).ready(function () {
 	});	
 	
 	
+	$("#frm_precio_grupo #color_ventas_id").on('change', function(event){
+		if ($('#frm_precio_grupo #grupo_precio_cab_id').val()=='') 
+		{
+			$("#grid_precio_grupo").jqGrid('clearGridData');
+			return false;
+		}//end if
+
+		$('#grid_precio_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		return false;		
+	});	
+	
 	$("#frm_precio_grupo #btn_consultar").on('click', function(event){ 
 		$('#grid_precio_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;
@@ -65,20 +76,6 @@ $(document).ready(function () {
 		Oferta_Grabar();
 	});		
 			
-	/*
-	$("#frm_precio_grupo #btn_nuevo").on('click', function(event){ 
-		$("#dialog_dispo_variedad_titulo").html('Variedad - Grado: 30');
-		$('#dialog_dispo_variedad').modal('show')
-		return false;
-	});		
-	
-	$("#frm_precio_grupo_stock #btn_grabar").on('click', function(event){ 
-		grabar_dispoGrupo_stock();
-		return false;
-	});	
-	*/
-
-	
 	/*---------------------------------------------------------------*/	
 	
 	
@@ -90,14 +87,18 @@ $(document).ready(function () {
 		postData: {
 			grupo_precio_cab_id: 	function() {return $("#frm_precio_grupo #grupo_precio_cab_id").val();},
 			tipo_precio:			function() {return $("#frm_precio_grupo #tipo_precio").val();},
+			color_ventas_id:		function() {return $("#frm_precio_grupo #color_ventas_id").val();}
 		},
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['Id','Variedad','ofer40','ofer50','ofer60','ofer70','ofer80','ofer90','ofer100','ofer110', '40','50','60','70','80','90','100','110'],
+		colNames:['producto_id','tallos_x_bunch','Id','Variedad','Color','ofer40','ofer50','ofer60','ofer70','ofer80','ofer90','ofer100','ofer110', '40','50','60','70','80','90','100','110'],
 		colModel:[
+			{name:'producto_id',index:'producto_id', width:50, sorttype:"string", hidden:true},
+			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:50, sorttype:"int", hidden:true},		
 			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
-			{name:'variedad',index:'variedad', width:170, sorttype:"string"},
+			{name:'variedad',index:'variedad', width:170, sorttype:"string", formatter: gridDispoGrupo_VariedadNombreFormatter},
+			{name:'color_ventas_nombre',index:'color_ventas_nombre', width:80, sorttype:"string"},			
 			{name:'ofer40',index:'ofer40', width:50, hidden:true},
 			{name:'ofer50',index:'ofer50', width:50, hidden:true},
 			{name:'ofer60',index:'ofer60', width:50, hidden:true},
@@ -276,9 +277,7 @@ $(document).ready(function () {
 													}
 													else if ((key == 38))//arriba
 													{
-														setTimeout("jQuery('#grid_precio_grupo').editCell(" + seliRow_PrecioGrupoGrid + " - 1, " + seliCol_PrecioGrupoGrid + ", true);", 10);
-													}else{
-														return false;
+														setTimeout("jQuery('#grid_precio_grupo').editCell(" + seliRow_PrecioGrupoGrid + " - 1, " + seliCol_PrecioGrupoGrid + ", true);", 10);													
 													}//end if													
 												}
 											}
@@ -336,14 +335,18 @@ $(document).ready(function () {
 			}//end if
 
 			//Asigna las variables para poderlo pasar en la funcion grabar
-			var grupo_precio_cab_id  = $("#frm_precio_grupo #grupo_precio_cab_id").val();			
+			var grupo_precio_cab_id  = $("#frm_precio_grupo #grupo_precio_cab_id").val();
+			var col_producto_id 	= jqgrid_get_columnIndexByName($("#grid_precio_grupo"), "producto_id");
 			var col_variedad_id 	= jqgrid_get_columnIndexByName($("#grid_precio_grupo"), "variedad_id");
+			var col_tallos_x_bunch 	= jqgrid_get_columnIndexByName($("#grid_precio_grupo"), "tallos_x_bunch");
+			var producto_id			= jQuery("#grid_precio_grupo").jqGrid('getCell',rowid, col_producto_id);
 			var variedad_id			= jQuery("#grid_precio_grupo").jqGrid('getCell',rowid, col_variedad_id);
+			var tallos_x_bunch			= jQuery("#grid_precio_grupo").jqGrid('getCell',rowid, col_tallos_x_bunch);
 
 			var grado_id			= jqgrid_get_columnNameByIndex($("#grid_precio_grupo"), iCol);
 			var tipo_precio			= $("#frm_precio_grupo #tipo_precio").val();
-			
-			GrupoPrecio_Grabar(grupo_precio_cab_id, variedad_id, grado_id, tipo_precio, precio);
+
+			GrupoPrecio_Grabar(producto_id, grupo_precio_cab_id, variedad_id, grado_id, tallos_x_bunch, tipo_precio, precio);
 		},
 	});
 	
@@ -390,6 +393,18 @@ $(document).ready(function () {
 		
 	jQuery("#grid_precio_grupo").jqGrid('navGrid','#pager_precio_grupo',{edit:false,add:false,del:false});
 
+
+	function gridDispoGrupo_VariedadNombreFormatter(cellvalue, options, rowObject)
+	{
+		if (rowObject.tallos_x_bunch==25)
+		{
+			new_format_value = rowObject.variedad;
+		}else{
+			new_format_value = rowObject.variedad + ' <em><b style="color:orange; font-style: italic;">('+rowObject.tallos_x_bunch+')</b></em>';
+		}//end if
+		return new_format_value;
+	}//end function gridDispoGeneral_VariedadNombreFormatter
+
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/
 	
@@ -401,21 +416,28 @@ $(document).ready(function () {
 		url:'../../dispo/grupoprecio/listadoofertadata',
 		postData: {
 			grupo_precio_cab_id: 	function() {return $("#frm_precio_grupo #grupo_precio_cab_id").val();},
+			producto_id: 			function() {return $("#frm_precio_grupo #producto_seleccionado_id").val();},						
 			variedad_id:			function() {return $("#frm_precio_grupo #variedad_seleccionada_id").val();},
-			grado_id:				function() {return $("#frm_precio_grupo #grado_seleccionado_id").val();},			
+			grado_id:				function() {return $("#frm_precio_grupo #grado_seleccionado_id").val();},
+			tallos_x_bunch:			function() {return $("#frm_precio_grupo #tallos_x_bunch_seleccionado").val();},			
 		},
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['grupo_precio_cab_id','variedad_id','grado_id','variedad_combo_id','Variedad','Grado','Factor',''],
+		colNames:['grupo_precio_cab_id','producto_id','variedad_id','grado_id','tallos_x_bunch','producto_combo_id','Id','Variedad','Color','Grado','tallos_x_bunch_combo','Factor',''],
 		colModel:[
 			{name:'grupo_precio_cab_id',index:'grupo_precio_cab_id', width:50, align:"center", sorttype:"int", hidden:true},		
+			{name:'producto_id',index:'producto_id', width:50, align:"center", sorttype:"int", hidden:true},
 			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int", hidden:true},
-			{name:'grado_id',index:'grado_id', width:50, sorttype:"string", hidden:true},			
-			{name:'variedad_combo_id',index:'variedad_combo_id', width:50, sorttype:"string"},
-			{name:'variedad_combo_nombre',index:'variedad_combo_nombre', width:150, sorttype:"string"},			
-			{name:'grado_combo_id',index:'grado_combo_id', width:50, sorttype:"string"},						
-			{name:'factor_combo',index:'factor_combo', width:50, sorttype:"number"},	
+			{name:'grado_id',index:'grado_id', width:50, sorttype:"string", hidden:true},
+			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:50, sorttype:"int", hidden:true},						
+			{name:'producto_combo_id',index:'producto_combo_id', width:50, align:"center", sorttype:"int", hidden:true},
+			{name:'variedad_combo_id',index:'variedad_combo_id', width:30, sorttype:"string"},
+			{name:'variedad_combo_nombre',index:'variedad_combo_nombre', width:130, sorttype:"string", formatter: gridOferta_VariedadComboNombreFormatter},
+			{name:'color_ventas_combo_nombre',index:'color_ventas_combo_nombre', width:70, sorttype:"string"},
+			{name:'grado_combo_id',index:'grado_combo_id', width:40, align:"center", sorttype:"string"},
+			{name:'tallos_x_bunch_combo',index:'tallos_x_bunch_combo', width:50, sorttype:"int", hidden:true},					
+			{name:'factor_combo',index:'factor_combo', width:50, sorttype:"number", align:"center", },
 			{name:'btn_editar_cliente',index:'', width:30, align:"center", formatter:GridOferta_FormatterEdit,
 			   cellattr: function () { return ' title=" Modificar"'; }
 			},					
@@ -448,30 +470,50 @@ $(document).ready(function () {
 	});	
 	
 	jQuery("#grid_oferta").jqGrid('navGrid','#pager_oferta',{edit:false,add:false,del:false});	
+	
+	
+	
+	function gridOferta_VariedadComboNombreFormatter(cellvalue, options, rowObject)
+	{
+		if (rowObject.tallos_x_bunch==25)
+		{
+			new_format_value = rowObject.variedad_combo_nombre;
+		}else{
+			new_format_value = rowObject.variedad_combo_nombre + ' <em><b style="color:orange; font-style: italic;">('+rowObject.tallos_x_bunch_combo+')</b></em>';
+		}//end if
+		return new_format_value;
+	}//end function gridOferta_VariedadNombreFormatter
+	
 });
 	
 
 
-		function GridOferta_FormatterEdit(cellvalue, options, rowObject){
-			var grupo_precio_cab_id = rowObject.grupo_precio_cab_id;
-			var variedad_id 		= rowObject.variedad_id;
-			var grado_id 			= rowObject.grado_id;
-			var variedad_combo_id	= rowObject.variedad_combo_id;
-			var grado_combo_id		= rowObject.grado_combo_id;			
-			var factor_combo		= rowObject.factor_combo;	
-			//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
-			new_format_value = '<a href="javascript:void(0)" onclick="Oferta_Consultar(\''+grupo_precio_cab_id+'\',\''+variedad_id+'\',\''+grado_id+'\',\''+variedad_combo_id+'\',\''+grado_combo_id+'\',\''+factor_combo+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange"></i></a>'; 
-			return new_format_value
-		}//end function ListadoCliente_FormatterEdit
+function GridOferta_FormatterEdit(cellvalue, options, rowObject){
+	var grupo_precio_cab_id = rowObject.grupo_precio_cab_id;
+	var producto_id 		= rowObject.producto_id;
+	var variedad_id 		= rowObject.variedad_id;
+	var grado_id 			= rowObject.grado_id;
+	var tallos_x_bunch		= rowObject.tallos_x_bunch;
+	var producto_combo_id	= rowObject.producto_combo_id;
+	var variedad_combo_id	= rowObject.variedad_combo_id;
+	var grado_combo_id		= rowObject.grado_combo_id;
+	var tallos_x_bunch_combo= rowObject.tallos_x_bunch_combo;
+	var factor_combo		= rowObject.factor_combo;	
+	//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
+	new_format_value = '<a href="javascript:void(0)" onclick="Oferta_Consultar(\''+grupo_precio_cab_id+'\',\''+producto_id+'\',\''+variedad_id+'\',\''+grado_id+'\',\''+tallos_x_bunch+'\',\''+producto_combo_id+'\',\''+variedad_combo_id+'\',\''+grado_combo_id+'\',\''+tallos_x_bunch_combo+'\',\''+factor_combo+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange"></i></a>'; 
+	return new_format_value
+}//end function ListadoCliente_FormatterEdit
 	
 	
-	
-function GrupoPrecio_Grabar(grupo_precio_cab_id, variedad_id, grado_id, tipo_precio, precio)
+
+function GrupoPrecio_Grabar(producto_id, grupo_precio_cab_id, variedad_id, grado_id, tallos_x_bunch, tipo_precio, precio)
 {
 	var data = 	{
 					grupo_precio_cab_id:		grupo_precio_cab_id,
+					producto_id:				producto_id,
 					variedad_id:				variedad_id,
 					grado_id:					grado_id,
+					tallos_x_bunch:				tallos_x_bunch,
 					precio:						precio,
 					tipo_precio:			    tipo_precio
 				}
@@ -514,7 +556,8 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 							{
 								$("#frm_precio_grupo #inventario_id").val(response.row.inventario_id);
 								$("#frm_precio_grupo #calidad_id").val(response.row.calidad_id);
-								$("#frm_precio_grupo #info_grupo_precio_cab").html(response.row.inventario_id+' - '+response.row.calidad_nombre+' - '+response.row.calidad_clasifica_fox );
+								$("#frm_precio_grupo #info_grupo_precio_cab").html('');								
+/*								$("#frm_precio_grupo #info_grupo_precio_cab").html(response.row.inventario_id+' - '+response.row.calidad_nombre+' - '+response.row.calidad_clasifica_fox);*/
 							}else{
 								message_error('ERROR', response);
 							}//end if									
@@ -682,19 +725,25 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 	
 	function PrecioGrupo_CargarOferta(rowid, value, iRow, iCol)
 	{
+		var col_producto_id 	= jqgrid_get_columnIndexByName($("#grid_precio_grupo"), "producto_id");		
 		var col_variedad_id 	= jqgrid_get_columnIndexByName($("#grid_precio_grupo"), "variedad_id");
 		var col_variedad_nombre = jqgrid_get_columnIndexByName($("#grid_precio_grupo"), "variedad");	
+		var col_tallos_x_bunch 	= jqgrid_get_columnIndexByName($("#grid_precio_grupo"), "tallos_x_bunch");						
 		var grado_id			= jqgrid_get_columnNameByIndex($("#grid_precio_grupo"), iCol);
+		var producto_id			= $("#grid_precio_grupo").jqGrid('getCell',rowid, col_producto_id);				
 		var variedad_id			= $("#grid_precio_grupo").jqGrid('getCell',rowid, col_variedad_id);		
 		var variedad_nombre		= $("#grid_precio_grupo").jqGrid('getCell',rowid, col_variedad_nombre);
+		var tallos_x_bunch		= $("#grid_precio_grupo").jqGrid('getCell',rowid, col_tallos_x_bunch);
 
 		//Muestra la Etiqueta de acuerdo a lo seleccionado
 		$("#frm_precio_grupo #lbl_titulo").html(variedad_nombre + ' - '+grado_id)
 		
 		//Establece los valores seleccionados de la GRILLA para realizar la carga del GRID DE OFERTAS
+		$("#frm_precio_grupo #producto_seleccionado_id").val(producto_id);
 		$("#frm_precio_grupo #variedad_seleccionada_id").val(variedad_id);
 		$("#frm_precio_grupo #variedad_seleccionada_nombre").val(variedad_nombre);
 		$("#frm_precio_grupo #grado_seleccionado_id").val(grado_id);
+		$("#frm_precio_grupo #tallos_x_bunch_seleccionado").val(tallos_x_bunch);		
 
 		$('#grid_oferta').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 	}//end function PrecioGrupo_CargarOferta
@@ -748,10 +797,14 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 
 		var data = 	{	accion: 			$("#frm_oferta #accion").val(),
 						grupo_precio_cab_id:$("#frm_precio_grupo #grupo_precio_cab_id").val(),
+						producto_id:		$("#frm_precio_grupo #producto_seleccionado_id").val(),
 						variedad_id:		$("#frm_precio_grupo #variedad_seleccionada_id").val(),
 						grado_id:			$("#frm_precio_grupo #grado_seleccionado_id").val(),
-					 	variedad_combo_id: 	$("#frm_oferta #variedad_combo_id").val(),
+					 	tallos_x_bunch: 	$("#frm_precio_grupo #tallos_x_bunch_seleccionado").val(),												
+					 	producto_combo_id: 	$("#frm_oferta #producto_combo_id").val(),
+					 	variedad_combo_id: 	$("#frm_oferta #variedad_combo_id").val(),						
 					 	grado_combo_id: 	$("#frm_oferta #grado_combo_id").val(),
+					 	tallos_x_bunch_combo: $("#frm_oferta #tallos_x_bunch_combo").val(),						
 					 	factor_combo: 		$("#frm_oferta #factor_combo").val(),
 					}
 		data = JSON.stringify(data);
@@ -805,7 +858,7 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 	}//end function Oferta_Grabar
 	
 	
-	function Oferta_Consultar(grupo_precio_cab_id, variedad_id, grado_id, variedad_combo_id, grado_combo_id, factor_combo)
+	function Oferta_Consultar(grupo_precio_cab_id, producto_id, variedad_id, grado_id, tallos_x_bunch, producto_combo_id, variedad_combo_id, grado_combo_id, tallos_x_bunch_combo, factor_combo)
 	{
 		Oferta_GetCombos(grupo_precio_cab_id);		
 		
@@ -813,12 +866,16 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 		var etiqueta = 'OFERTA '+$('#frm_precio_grupo #variedad_seleccionada_nombre').val()+ ' - GRADO '+$('#frm_precio_grupo #grado_seleccionado_id').val();
 		$('#frm_oferta #dialog_oferta_titulo').html(etiqueta);
 
+		$('#frm_oferta #producto_combo_id').val(producto_combo_id);
 		$('#frm_oferta #variedad_combo_id').val(variedad_combo_id);
 		$('#frm_oferta #grado_combo_id').val(grado_combo_id);
+		$('#frm_oferta #tallos_x_bunch_combo').val(tallos_x_bunch_combo);			
 		$('#frm_oferta #factor_combo').val(factor_combo);	
-		
+
+		$('#frm_oferta #producto_combo_id').attr('disabled',true);			
 		$('#frm_oferta #variedad_combo_id').attr('disabled',true);	
 		$('#frm_oferta #grado_combo_id').attr('disabled',true);
+		$('#frm_oferta #tallos_x_bunch_combo').attr('disabled',true);		
 
 		$('#dialog_oferta').modal('show')
 		
@@ -836,10 +893,14 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 		}//end if
 				
 		var col_grupo_precio_cab_id 	= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "grupo_precio_cab_id");
+		var col_producto_id				= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "producto_id");		
 		var col_variedad_id 			= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "variedad_id");
 		var col_grado_id			 	= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "grado_id");
+		var col_tallos_x_bunch			= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "tallos_x_bunch");
+		var col_producto_combo_id		= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "producto_combo_id");		
 		var col_variedad_combo_id 		= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "variedad_combo_id");
-		var col_grado_combo_id			= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "grado_combo_id");		
+		var col_grado_combo_id			= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "grado_combo_id");
+		var col_tallos_x_bunch_combo	= jqgrid_get_columnIndexByName($("#frm_precio_grupo #grid_oferta"), "tallos_x_bunch_combo");		
 								
 		var grid = $("#frm_precio_grupo #grid_oferta");
 		var rowKey = grid.getGridParam("selrow");
@@ -856,17 +917,25 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 		var arr_data 	= new Array();
 		for (var i = 0; i < selectedIDs.length; i++) {
 			grupo_precio_cab_id = jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_grupo_precio_cab_id);
+			producto_id 		= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_producto_id);
 			variedad_id 		= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_variedad_id);
 			grado_id 			= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_grado_id);
+			tallos_x_bunch 		= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_tallos_x_bunch);
+			producto_combo_id 	= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_producto_combo_id);			
 			variedad_combo_id 	= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_variedad_combo_id);
 			grado_combo_id 		= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_grado_combo_id);
+			tallos_x_bunch_combo= jQuery("#frm_precio_grupo #grid_oferta").jqGrid('getCell',selectedIDs[i], col_tallos_x_bunch_combo);			
 		
 			var element					= {};
 			element.grupo_precio_cab_id = grupo_precio_cab_id;
+			element.producto_id 		= producto_id;
 			element.variedad_id 		= variedad_id;
 			element.grado_id 			= grado_id;
+			element.tallos_x_bunch		= tallos_x_bunch;
+			element.producto_combo_id	= producto_combo_id;
 			element.variedad_combo_id	= variedad_combo_id;
 			element.grado_combo_id 		= grado_combo_id;
+			element.tallos_x_bunch_combo= tallos_x_bunch_combo;
 
 			arr_data.push(element);
 		}//end for
@@ -899,7 +968,9 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 	{
 		var data = 	{	
 						//grupo_precio_cab_id:$("#frm_precio_grupo #grupo_precio_cab_id").val(),
-						grupo_precio_cab_id: grupo_precio_cab_id
+						grupo_precio_cab_id: grupo_precio_cab_id,
+						producto_combo_id:	 'ROS',
+						producto_combo_1er_elemento: '&lt;Seleccione&gt;'
 					}
 		data = JSON.stringify(data);
 		
@@ -911,6 +982,7 @@ function GrupoPrecio_ConsultarInfoPrecioGrupoCab(grupo_precio_cab_id)
 							'finish':function(response){
 									if (response.validacion_code == 'OK')
 									{
+										$("#frm_oferta #producto_combo_id").html(response.producto_opciones);
 										$("#frm_oferta #variedad_combo_id").html(response.variedad_opciones);
 										$("#frm_oferta #grado_combo_id").html(response.grado_opciones);
 									}else{

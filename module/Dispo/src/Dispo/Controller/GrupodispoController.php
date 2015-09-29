@@ -15,6 +15,7 @@ use Dispo\Data\GrupoDispoDetData;
 use Dispo\BO\InventarioBO;
 use Dispo\BO\CalidadBO;
 use Dispo\Data\GrupoDispoCabData;
+use Dispo\BO\ColorVentasBO;
 
 class GrupodispoController extends AbstractActionController
 {
@@ -38,15 +39,22 @@ class GrupodispoController extends AbstractActionController
 				case 'panel-grupo-clientes':
 				case 'panel-control-disponibilidad':
 					$GrupoDispoCabBO 	= new GrupoDispoCabBO();
+					$ColorVentasBO  	= new ColorVentasBO();
+					
 					$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+					$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 						
 					$grupo_dispo_1er_elemento	= $json['grupo_dispo_1er_elemento'];
-					$grupo_dispo_cab_id		= null;
+					$color_ventas_1er_elemento	= $json['color_ventas_1er_elemento'];
+					$grupo_dispo_cab_id			= null;
+					$color_ventas_id			= null;
 					
 					$grupo_dispo_opciones 	= $GrupoDispoCabBO->getComboGrupoDispo($grupo_dispo_cab_id, $grupo_dispo_1er_elemento);
+					$color_ventas_opciones 	= $ColorVentasBO->getCombo($color_ventas_id, $color_ventas_1er_elemento);
 					
 					$response = new \stdClass();
 					$response->grupo_dispo_opciones		= $grupo_dispo_opciones;
+					$response->color_ventas_opciones	= $color_ventas_opciones;
 					$response->respuesta_code 			= 'OK';
 					break;
 					
@@ -102,6 +110,7 @@ class GrupodispoController extends AbstractActionController
 
 			$request 		= $this->getRequest();
 			$grupo_dispo_cab_id  	= $request->getQuery('grupo_dispo_cab_id', "");
+			$color_ventas_id		= $request->getQuery('color_ventas_id', "");
 			$flag_con_valores		= $request->getQuery('flag_con_valores', 0);
 			$page 			= $request->getQuery('page');
 			$limit 			= $request->getQuery('rows');
@@ -113,6 +122,7 @@ class GrupodispoController extends AbstractActionController
 			$GrupoDispoCabBO->setSord($sord);
 			$condiciones = array(
 					"grupo_dispo_cab_id"	=> $grupo_dispo_cab_id,
+					"color_ventas_id"		=> $color_ventas_id
 			);
 			$result = $GrupoDispoCabBO->listado($condiciones);
 			$response = new \stdClass();
@@ -176,14 +186,16 @@ class GrupodispoController extends AbstractActionController
 		
 			$GrupoDispoDetData 		= new GrupoDispoDetData();
 			$GrupoDispoDetData->setGrupoDispoCabId			($json['grupo_dispo_cab_id']);
+			$GrupoDispoDetData->setProductoId 				($json['producto_id']);
 			$GrupoDispoDetData->setVariedadId				($json['variedad_id']);
 			$GrupoDispoDetData->setGradoId					($json['grado_id']);
+			$GrupoDispoDetData->setTallosXBunch				($json['tallos_x_bunch']);
 			$GrupoDispoDetData->setCantidadBunchDisponible	($json['cantidad_bunch_disponible']);
 			$GrupoDispoDetData->setUsuarioIngId				($usuario_id);
 			$GrupoDispoDetData->setUsuarioModId 			($usuario_id);
-			
+
 			$result = $GrupoDispoCabBO->registrarStock($GrupoDispoDetData);
-		
+
 			//Retorna la informacion resultante por JSON
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';

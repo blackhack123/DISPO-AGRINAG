@@ -57,7 +57,7 @@ class GrupoDispoCabBO extends Conexion
 	
 	/**
 	 * 
-	 * @param array $condiciones  (grupo_dispo_cab_id)
+	 * @param array $condiciones  (grupo_dispo_cab_id, color_ventas_id)
 	 * @return array
 	 */
 	public function listado($condiciones)
@@ -82,9 +82,10 @@ class GrupoDispoCabBO extends Conexion
 		 * Se obtiene los registro de la DISPO GENERAL  (UNIVERSO)
 		 */
 		$condiciones2 = array(
-				"inventario_id"	=> $reg_grupoDispoCab['inventario_id'],
-				"proveedor_id"	=> null,
-				"clasifica"		=> $reg_grupoDispoCab['clasifica_fox'],
+				"inventario_id"		=> $reg_grupoDispoCab['inventario_id'],
+				"proveedor_id"		=> null,
+				"clasifica"			=> $reg_grupoDispoCab['clasifica_fox'],
+				"color_ventas_id"	=> $condiciones['color_ventas_id']
 		);
 		$result_dispo = $DispoDAO->listado($condiciones2);
 		
@@ -93,6 +94,7 @@ class GrupoDispoCabBO extends Conexion
 		 */
 		$condiciones2 = array(
 				"grupo_dispo_cab_id"	=> $condiciones['grupo_dispo_cab_id'],
+				"color_ventas_id"		=> $condiciones['color_ventas_id']
 		);		
 		$result_dispo_grupo = $GrupoDispoCabDAO->listado($condiciones2);
 		
@@ -104,32 +106,35 @@ class GrupoDispoCabBO extends Conexion
 		$result = null;
 		foreach($result_dispo as $reg)
 		{
-			$reg_new['variedad_id'] = $reg['variedad_id'];
-			$reg_new['variedad'] 	= $reg['variedad'];
-			$reg_new['dgen_40'] 	= $reg['40'];
-			$reg_new['dgen_50'] 	= $reg['50'];
-			$reg_new['dgen_60'] 	= $reg['60'];
-			$reg_new['dgen_70'] 	= $reg['70'];
-			$reg_new['dgen_80'] 	= $reg['80'];
-			$reg_new['dgen_90'] 	= $reg['90'];
-			$reg_new['dgen_100'] 	= $reg['100'];
-			$reg_new['dgen_110'] 	= $reg['110'];
-			$reg_new['dgru_40']		= 0;
-			$reg_new['dgru_50']		= 0;
-			$reg_new['dgru_60']		= 0;
-			$reg_new['dgru_70']		= 0;
-			$reg_new['dgru_80']		= 0;
-			$reg_new['dgru_90']		= 0;
-			$reg_new['dgru_100']	= 0;
-			$reg_new['dgru_110']	= 0;
-			$reg_new['existe']		= 0;
-			$result[$reg['variedad_id']] = $reg_new;
+			$reg_new['producto_id'] 	= $reg['producto_id'];
+			$reg_new['variedad_id'] 	= $reg['variedad_id'];
+			$reg_new['variedad'] 		= trim($reg['variedad']);
+			$reg_new['tallos_x_bunch'] 	= $reg['tallos_x_bunch'];
+			$reg_new['color_ventas_nombre'] 	= $reg['color_ventas_nombre'];
+			$reg_new['dgen_40'] 		= $reg['40'];
+			$reg_new['dgen_50'] 		= $reg['50'];
+			$reg_new['dgen_60'] 		= $reg['60'];
+			$reg_new['dgen_70'] 		= $reg['70'];
+			$reg_new['dgen_80'] 		= $reg['80'];
+			$reg_new['dgen_90'] 		= $reg['90'];
+			$reg_new['dgen_100'] 		= $reg['100'];
+			$reg_new['dgen_110'] 		= $reg['110'];
+			$reg_new['dgru_40']			= 0;
+			$reg_new['dgru_50']			= 0;
+			$reg_new['dgru_60']			= 0;
+			$reg_new['dgru_70']			= 0;
+			$reg_new['dgru_80']			= 0;
+			$reg_new['dgru_90']			= 0;
+			$reg_new['dgru_100']		= 0;
+			$reg_new['dgru_110']		= 0;
+			$reg_new['existe']			= 0;
+			$result[$reg['producto_id'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch']] = $reg_new;
 		}//end foreach
 		
 		//Completa los campos del RESULT con la DISPO POR GRUPO
 		foreach($result_dispo_grupo as $reg)
 		{
-			$reg_result = &$result[$reg['variedad_id']]; 
+			$reg_result = &$result[$reg['producto_id'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch']]; 
 			
 			$reg_result['dgru_40']	= $reg['40'];
 			$reg_result['dgru_50']	= $reg['50'];

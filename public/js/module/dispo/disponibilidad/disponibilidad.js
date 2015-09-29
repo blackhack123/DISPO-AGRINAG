@@ -3,6 +3,7 @@
  */
 var selRowId_DispoGeneralGrid 		= 0;	
 var selColName_DispoGeneralGrid 	= 0;	
+var primera_vez_DispoGeneralGrid 	= true;
 
 var selRowId_DispoVariedadGrid		= null;
 
@@ -11,7 +12,7 @@ $(document).ready(function () {
 	/*----------------------Se cargan los controles -----------------*/
 	disponibilidad_init();
 	
-	$("#frm_dispo #inventario_id, #frm_dispo #calidad_id, #frm_dispo #proveedor_id").on('change', function(event){
+	$("#frm_dispo #inventario_id, #frm_dispo #calidad_id, #frm_dispo #proveedor_id, #frm_dispo #color_ventas_id").on('change', function(event){
 //		$("#grid_dispo_general").jqGrid('clearGridData');
 		$('#grid_dispo_general').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;		
@@ -50,16 +51,20 @@ $(document).ready(function () {
 		postData: {
 			inventario_id: 	function() {return $("#frm_dispo #inventario_id").val();},
 			proveedor_id: 	function() {return $("#frm_dispo #proveedor_id").val();},
-			clasifica: 		function() {return $("#frm_dispo #calidad_id").val();}
+			clasifica: 		function() {return $("#frm_dispo #calidad_id").val();},
+			color_ventas_id:function() {return $("#frm_dispo #color_ventas_id").val();}
 		},
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['Id','Variedad','40','50','60','70','80','90', '100', '110'],
+		colNames:['tallos_x_bunch','variedad_nombre','Id','Variedad','Color','40','50','60','70','80','90', '100', '110'],
 		colModel:[
 /*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
+			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:50, align:"center", sorttype:"int", hidden:true},
+			{name:'variedad',index:'variedad_nombre', width:50, sorttype:"string", hidden:true},
 			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
-			{name:'variedad',index:'variedad', width:170, sorttype:"string"},
+			{name:'variedad',index:'variedad', width:170, sorttype:"string", formatter: gridDispoGeneral_VariedadNombreFormatter},
+			{name:'color_ventas_nombre',index:'color_ventas_nombre', width:120, sorttype:"string"},
 			{name:'40',index:'40', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
 			{name:'50',index:'50', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
 			{name:'60',index:'60', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
@@ -77,12 +82,19 @@ $(document).ready(function () {
 		rowList:false,
 		gridview:false,	
 		shrinkToFit: false,
-		loadComplete: grid_setAutoHeight,
+		//loadComplete: grid_setAutoHeight,
+		loadComplete: function (data) {
+			autoHeight_JqGrid_Refresh("grid_dispo_general");
+			primera_vez_DispoGeneralGrid = false;
+		},		
 		resizeStop: grid_setAutoHeight, 
 		rownumbers: true,
 		jsonReader: {
 			repeatitems : false,
 		},		
+		beforeProcessing: function(data, status, xhr){
+			primera_vez_DispoGeneralGrid = true;
+		},
 		loadBeforeSend: function (xhr, settings) {
 			this.p.loadBeforeSend = null; //remove event handler
 			return false; // dont send load data request
@@ -92,18 +104,49 @@ $(document).ready(function () {
 		}
 	});
 	$("#grid_dispo_general").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});
-		
-		
+
+
+
+	function gridDispoGeneral_VariedadNombreFormatter(cellvalue, options, rowObject){
+		if (rowObject.tallos_x_bunch==25)
+		{
+			new_format_value = rowObject.variedad;
+		}else{
+			new_format_value = rowObject.variedad + ' <em><b style="color:orange; font-style: italic;">('+rowObject.tallos_x_bunch+')</b></em>';
+		}//end if
+		return new_format_value;
+	}//end function gridDispoGeneral_VariedadNombreFormatter
+
+
 	function gridDispoGeneral_GradosFormatter(cellvalue, options, rowObject){
+
+		if (primera_vez_DispoGeneralGrid == true)
+		{
+			col_grado_name 	= options.colModel.name;
+			stock			= number_val(cellvalue);	
+			variedad_id		= rowObject.variedad_id;
+			variedad		= rowObject.variedad_nombre; //Nombre
+			tallos_x_bunch	= rowObject.tallos_x_bunch;
+		}else{
+			pos_col_grado 			= options.pos;
+			pos_col_variedad_id 	= 3;
+			pos_col_variedad_nombre	= 2;
+			pos_col_tallos_x_bunch 	= 1;			
+			stock 			= number_val(rowObject[pos_col_grado]);	
+			variedad_id		= rowObject[pos_col_variedad_id];
+			variedad		= rowObject[pos_col_variedad_nombre]; //Nombre
+			tallos_x_bunch	= number_val(rowObject[pos_col_tallos_x_bunch]);
+		}//end if		
 		var color = "Black"
 		if (cellvalue==0)
 		{
 			color = "LightGray";
-		}
+		}//end if
 		
-		new_format_value = '<a href="javascript:void(0)" data-toggle="modal" data-target="#dialog_dispo_proveedores" onclick="open_dialog_dispo(\''+options.rowId+'\',\''+options.colModel.name+'\',\''+rowObject.variedad_id+'\',\''+rowObject.variedad+'\',\''+options.colModel.name+'\')" style="color:'+color+'">'+cellvalue+ '</a>';
+		new_format_value = '<a href="javascript:void(0)" data-toggle="modal" data-target="#dialog_dispo_proveedores" onclick="open_dialog_dispo(\''+options.rowId+'\',\''+options.colModel.name+'\',\''+variedad_id+'\',\''+variedad+'\',\''+options.colModel.name+'\',\''+tallos_x_bunch+'\')" style="color:'+color+'">'+cellvalue+ '</a>';		
 		return new_format_value;
-	}
+	}//end function gridDispoGeneral_GradosFormatter
+	
 		
 	jQuery("#grid_dispo_general").jqGrid('navGrid','#pager_dispo_general',{edit:false,add:false,del:false});
 
@@ -184,7 +227,8 @@ $(document).ready(function () {
 						opcion: 'panel-control-disponibilidad',
 						inventario_1er_elemento:	'',
 						calidad_1er_elemento:		'',
-						proveedor_1er_elemento:		'&lt;TODAS&gt;'
+						proveedor_1er_elemento:		'&lt;TODAS LAS FINCAS&gt;',
+						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;'
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',
@@ -196,6 +240,7 @@ $(document).ready(function () {
 								$("body #frm_dispo #inventario_id").html(response.inventario_opciones);
 								$("body #frm_dispo #calidad_id").html(response.calidad_opciones);
 								$("body #frm_dispo #proveedor_id").html(response.proveedor_opciones);
+								$("body #frm_dispo #color_ventas_id").html(response.color_ventas_opciones);
 								
 								//Habilita los botones del formulario
 								$("#frm_dispo button").prop('disabled', false);
@@ -206,13 +251,13 @@ $(document).ready(function () {
 	}//end function disponibilidad_init
 
 	
-	function open_dialog_dispo(rowId, colName, variedad_id, variedad_nombre, grado_id)
+	function open_dialog_dispo(rowId, colName, variedad_id, variedad_nombre, grado_id, tallos_x_bunch)
 	{
 		selRowId_DispoGeneralGrid 	= rowId;
 		selColName_DispoGeneralGrid = colName;
 			
 			
-		$("#dialog_dispo_proveedores_titulo").html(variedad_nombre+' - Grado:'+grado_id);
+		$("#dialog_dispo_proveedores_titulo").html(variedad_nombre+' - Grado:'+grado_id+' Tallos:'+tallos_x_bunch);
 
 		$("body #frm_dispo_proveedor #stock_agr").val("");
 		$("body #frm_dispo_proveedor #stock_htc").val("");
@@ -251,11 +296,12 @@ $(document).ready(function () {
 						proveedor_id:	$("#frm_dispo #proveedor_id").val(),
 						variedad_id:	variedad_id,
 						grado_id:		grado_id,
+						tallos_x_bunch:	tallos_x_bunch
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
-							'url':'../../dispo/disponibilidad/consultarPorInventarioPorCalidadPorProveedorPorGrado',
+							'url':'../../dispo/disponibilidad/consultarPorInventarioPorCalidadPorProveedorPorGradoPorTallo',
 							'show_cargando':false,
 							'async':true,
 							'finish':function(response){
@@ -264,8 +310,9 @@ $(document).ready(function () {
 								$("#frm_dispo_proveedor #calidad_id").val($("#frm_dispo #calidad_id").val());
 								$("#frm_dispo_proveedor #proveedor_id").val($("#frm_dispo #proveedor_id").val());
 								$("#frm_dispo_proveedor #grado_id").val(grado_id);
-								$("#frm_dispo_proveedor #variedad_id").val(variedad_id);								
-								
+								$("#frm_dispo_proveedor #variedad_id").val(variedad_id);
+								$("#frm_dispo_proveedor #tallos_x_bunch").val(tallos_x_bunch);
+
 								//Se asigna los valores del stock
 								if(response.hasOwnProperty("row")){
 									if(response.row.hasOwnProperty("AGR")){
@@ -285,7 +332,7 @@ $(document).ready(function () {
 	}//end if
 	
 
-	function grabar_dispo_proveedor()
+	function grabar_dispo_proveedor() //moronitor
 	{
 		var stock_agr = $("#frm_dispo_proveedor #stock_agr").val();
 		var stock_htc = $("#frm_dispo_proveedor #stock_htc").val();
@@ -303,6 +350,7 @@ $(document).ready(function () {
 						proveedor_id:	$("#frm_dispo_proveedor #proveedor_id").val(),
 						variedad_id:	$("#frm_dispo_proveedor #variedad_id").val(),
 						grado_id:		$("#frm_dispo_proveedor #grado_id").val(),
+						tallos_x_bunch: $("#frm_dispo_proveedor #tallos_x_bunch").val(),
 						stock_agr:		stock_agr,
 						stock_htc:		stock_htc,
 						stock_lma:		stock_lma
@@ -324,6 +372,7 @@ $(document).ready(function () {
 
 									
 									//mostrar_registro(response)
+									$('#dialog_dispo_proveedores').modal('hide');
 									cargador_visibility('hide');
 									swal({  title: "Informacion grabada con exito!!",   
 										//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
@@ -335,7 +384,7 @@ $(document).ready(function () {
 										cancelButtonText: "",
 										closeOnConfirm: false,
 										closeOnCancel: false,
-										/*timer: 2000*/
+										timer: 1000
 									});
 								}else{
 									message_error('ERROR', response);
@@ -424,8 +473,7 @@ $(document).ready(function () {
 	}//end function disponibilidad_nuevo_variedad_carga_finca
 	
 	
-	
-	
+
 	function grabar_disponibilidad_nueva()
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras

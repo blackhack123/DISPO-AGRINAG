@@ -31,8 +31,15 @@
 		  <div class="tab-content">
  
          		<!-- TAB MANTENIMIENTO DE PRECIO GRUPO --->				
-			    <div role="tabpanel" class="tab-pane active" id="precio_grupo">
-					<form id="frm_precio_grupo" name="frm_precio_grupo" action="#" method="post" class="form-inline">                                
+			    <div role="tabpanel" class="tab-pane active" id="precio_grupo">                
+					<form id="frm_precio_grupo" name="frm_precio_grupo" action="#" method="post" class="form-inline">    
+							                    <input type="hidden" id="inventario_id" name="inventario_id" value="" />                            
+												<input type="hidden" id="calidad_id" name="calidad_id" value="" />
+                                                <input type="hidden" id="producto_seleccionado_id" name="producto_seleccionado_id" value="" />
+                                                <input type="hidden" id="variedad_seleccionada_id" name="variedad_seleccionada_id" value="" />
+                                                <input type="hidden" id="variedad_seleccionada_nombre" name="variedad_seleccionada_nombre" value="" />
+                                                <input type="hidden" id="grado_seleccionado_id" name="grado_seleccionado_id" value="" />
+                                                <input type="hidden" id="tallos_x_bunch_seleccionado" name="tallos_x_bunch_seleccionado" value="" />                    
 					<div class="row-fluid">
 						<div class="pull-left">                    
                         	<!--- Grilla principal de la PRECIO X GRUPO --->
@@ -48,27 +55,20 @@
                                             	 <select  id="grupo_precio_cab_id" class="form-control input-sm"></select>
                                                  <select  id="tipo_precio" class="form-control input-sm"></select>
                                                  &nbsp;&nbsp;<span id="info_grupo_precio_cab" class="bg-info"> </span>
-                                                 
-                                                 <input type="hidden" id="inventario_id" name="inventario_id" value="" />
-                                                 <input type="hidden" id="calidad_id" name="calidad_id" value="" />
-                                                 <input type="hidden" id="variedad_seleccionada_id" name="variedad_seleccionada_id" value="" />
-                                                 <input type="hidden" id="variedad_seleccionada_nombre" name="variedad_seleccionada_nombre" value="" />
-                                                 <input type="hidden" id="grado_seleccionado_id" name="grado_seleccionado_id" value="" />
+                                                 <select  id="color_ventas_id" class="form-control input-sm"></select> 
                                             </div>
                                         </div>
                                      </section>
-                                	 
-                                     
                                 </div>
  
                                 	
                             <table id="grid_precio_grupo" class="grid grid-autoheight"></table>
                             <div id="pager_precio_grupo"></div>
                         </div>
-                        
-                        <div class="pull-left" style="height:80vh;; background:#360BE7; width:5px;">.
+
+                        <div class="pull-left" style="height:80vh; background:#360BE7; width:5px;">.
                         </div>
-                        
+
                         <div class="pull-left" style="vertical-align:top">
                         	<h5><b>OFERTA <i>(<span id="lbl_titulo"></span>)</i></b></h5>
                             
@@ -198,6 +198,12 @@
                           <div class="modal-body">
                                     <div class="form-horizontal" >
                                         <input type="text" id="accion" name="accion" value="">
+										<div class="form-group">
+                                            <label for="producto_combo_id" class="col-sm-3 control-label">PRODUCTO:</label>
+                                            <div class="col-sm-9">
+                                                <select  id="producto_combo_id"  name="producto_combo_id" class="form-control" validate="required" validateMessage="Seleccione el Tipo de Producto"></select>
+                                            </div>
+                                         </div>                                        
                                          <div class="form-group">
                                             <label for="variedad_combo_id" class="col-sm-3 control-label">VARIEDAD:</label>
                                             <div class="col-sm-9">
@@ -208,6 +214,12 @@
                                             <label for="grado_combo_id" class="col-sm-3 control-label">GRADO:</label>
                                             <div class="col-sm-9">
                                                 <select  id="grado_combo_id"  name="grado_combo_id" class="form-control" validate="required" validateMessage="Seleccione un grado"></select>
+                                            </div>
+                                         </div>
+                                         <div class="form-group">
+                                            <label for="grado_combo_id" class="col-sm-3 control-label">TALLOS POR BUNCH:</label>
+                                            <div class="col-sm-9">
+                                                <input id="tallos_x_bunch_combo"  name="tallos_x_bunch_combo" type="text" class="form-control inputdata-number-no-decimal" validate="required" validateMessage="Ingrese el numero de tallos por bunch" maxlength="2"></select>
                                             </div>
                                          </div>
                                          <div class="form-group">

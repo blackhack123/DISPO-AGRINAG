@@ -12,10 +12,27 @@ $(document).ready(function () {
 	/*----------------------Se cargan los controles -----------------*/
 	dispoGrupo_init();
 	//DispoGrupo_initMantenimiento();
-	
+
 	$("#frm_dispo_grupo #grupo_dispo_cab_id").on('change', function(event){
-		//$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		if ($('#frm_dispo_grupo #grupo_dispo_cab_id').val()=='') 
+		{
+			$("#grid_dispo_grupo").jqGrid('clearGridData');
+			return false;
+		}//end if
+		
 		DispoGrupo_ConsultarInfoDispoGrupoCab($("#frm_dispo_grupo #grupo_dispo_cab_id").val());
+		$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		return false;		
+	});
+
+	
+	$("#frm_dispo_grupo #color_ventas_id").on('change', function(event){
+		if ($('#frm_dispo_grupo #grupo_dispo_cab_id').val()=='') 
+		{
+			$("#grid_dispo_grupo").jqGrid('clearGridData');
+			return false;
+		}//end if
+
 		$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;		
 	});
@@ -59,14 +76,18 @@ $(document).ready(function () {
 		url:'../../dispo/grupodispo/listadodata',
 		postData: {
 			grupo_dispo_cab_id: 	function() {return $("#frm_dispo_grupo #grupo_dispo_cab_id").val();},
+			color_ventas_id:		function() {return $("#frm_dispo_grupo #color_ventas_id").val();}
 		},
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['Id','Variedad','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU'],
+		colNames:['producto_id','tallos_x_bunch','Id','Variedad','Color','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU','GEN','GRU'],
 		colModel:[
+			{name:'producto_id',index:'producto_id', width:50, sorttype:"string", hidden:true},
+			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:50, sorttype:"int", hidden:true},
 			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
-			{name:'variedad',index:'variedad', width:170, sorttype:"string"},
+			{name:'variedad',index:'variedad', width:170, sorttype:"string", formatter: gridDispoGrupo_VariedadNombreFormatter},
+			{name:'color_ventas_nombre',index:'color_ventas_nombre', width:100, sorttype:"string"},
 			{name:'dgen_40',index:'dgen_40', width:50, align:"center", sorttype:"int", formatter:gridDispoGrupo_GradosFormatter, unformat:gridDispoGrupo_GradosUnFormatter},	
 			{name:'dgru_40',index:'dgru_40', width:50, align:"center", sorttype:"int", editable:true, formatter:gridDispoGrupo_GradosFormatter, unformat:gridDispoGrupo_GradosUnFormatter, 
 						editoptions: {
@@ -310,7 +331,11 @@ $(document).ready(function () {
 						
 			var grupo_dispo_cab_id  = $("#frm_dispo_grupo #grupo_dispo_cab_id").val();			
 			var col_variedad_id 	= jqgrid_get_columnIndexByName($("#grid_dispo_grupo"), "variedad_id");
+			var col_producto_id 	= jqgrid_get_columnIndexByName($("#grid_dispo_grupo"), "producto_id");			
+			var col_tallos_x_bunch	= jqgrid_get_columnIndexByName($("#grid_dispo_grupo"), "tallos_x_bunch");			
 			var variedad_id			= jQuery("#grid_dispo_grupo").jqGrid('getCell',rowid, col_variedad_id);
+			var producto_id			= jQuery("#grid_dispo_grupo").jqGrid('getCell',rowid, col_producto_id);
+			var tallos_x_bunch		= jQuery("#grid_dispo_grupo").jqGrid('getCell',rowid, col_tallos_x_bunch);
 
 			var nameColGrado		= jqgrid_get_columnNameByIndex($("#grid_dispo_grupo"), iCol);
 			var arrColGrado			= nameColGrado.split("_");
@@ -328,7 +353,7 @@ $(document).ready(function () {
 			}//end if
 
 
-			DispoGrupo_GrabarStock(grupo_dispo_cab_id, variedad_id, grado_id, stock_grupo);
+			DispoGrupo_GrabarStock(producto_id, grupo_dispo_cab_id, variedad_id, grado_id, tallos_x_bunch, stock_grupo);
 		},
 	});
 	
@@ -351,6 +376,19 @@ $(document).ready(function () {
 	});	
 	
 	jQuery("#grid_dispo_grupo").jqGrid('navGrid','#pager_dispo_grupo',{edit:false,add:false,del:false});
+
+
+
+	function gridDispoGrupo_VariedadNombreFormatter(cellvalue, options, rowObject){
+		if (rowObject.tallos_x_bunch==25)
+		{
+			new_format_value = rowObject.variedad;
+		}else{
+			new_format_value = rowObject.variedad + ' <em><b style="color:orange; font-style: italic;">('+rowObject.tallos_x_bunch+')</b></em>';
+		}//end if
+		return new_format_value;
+	}//end function gridDispoGeneral_VariedadNombreFormatter
+
 
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/
@@ -386,6 +424,7 @@ $(document).ready(function () {
 						opcion: 'panel-control-disponibilidad',
 						grupo_dispo_1er_elemento:	'&lt;SELECCIONE&gt;',
 						//grupo_dispo_cab_id:			grupo_dispo_cab_id;
+						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;'
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',
@@ -395,6 +434,7 @@ $(document).ready(function () {
 							'async':true,
 							'finish':function(response){										
 								$("body #frm_dispo_grupo #grupo_dispo_cab_id").html(response.grupo_dispo_opciones);
+								$("body #frm_dispo_grupo #color_ventas_id").html(response.color_ventas_opciones);
 								
 								//Habilita la botonera
 								$("#frm_dispo_grupo button").prop('disabled', false);
@@ -406,12 +446,14 @@ $(document).ready(function () {
 	
 	
 	
-	function DispoGrupo_GrabarStock(grupo_dispo_cab_id, variedad_id, grado_id, stock_grupo)
+	function DispoGrupo_GrabarStock(producto_id, grupo_dispo_cab_id, variedad_id, grado_id, tallos_x_bunch, stock_grupo)
 	{
 		var data = 	{
+						producto_id: 				producto_id,
 						grupo_dispo_cab_id:			grupo_dispo_cab_id,
 						variedad_id:				variedad_id,
 						grado_id:					grado_id,
+						tallos_x_bunch:				tallos_x_bunch,
 						cantidad_bunch_disponible:	stock_grupo,
 					}
 		data = JSON.stringify(data);

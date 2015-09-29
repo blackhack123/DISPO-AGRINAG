@@ -16,7 +16,7 @@ class GrupoPrecioOfertaBO extends Conexion
 	
 	/**
 	 * @param string
-	 * @param array $condiciones  (grupo_precio_cab_id, $variedad_id, $grado_id)
+	 * @param array $condiciones  (grupo_precio_cab_id, producto_id, $variedad_id, $grado_id, tallos_x_bunch)
 	 * @return array
 	 */
 	public function listado($condiciones)
