@@ -441,4 +441,40 @@ class ClienteController extends AbstractActionController
 	}//end function listadodialogdataAction
 	
 	
+	
+	
+	public function consultarclientefacturaAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+		
+			$ClienteBO = new ClienteBO();
+			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+		
+			$request 			= $this->getRequest();
+			//$criterio_busqueda  = $request->getQuery('cliente_factura_id');
+			
+			$condiciones = array(
+					"criterio_busqueda"	=> $request->getQuery('term'),
+			);
+			$result = $ClienteBO->ConsultarClienteFactura($condiciones);
+			$response = new \stdClass();
+			
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+		
+		
+		
+	}//end function consultarClienteFacturaAction 
+	
+	
 }//end controller
