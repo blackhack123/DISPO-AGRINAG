@@ -266,12 +266,13 @@ class DispoDAO extends Conexion
 
 	/**
 	 *
-	 * @param array $condiciones (inventario_id, proveedor_id, $clasifica)
+	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id)
 	 * @return array:
 	 */
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT variedad.nombre as variedad, dispo.variedad_id, '.
+		$sql = 	' SELECT dispo.producto as producto_id, variedad.nombre as variedad, dispo.variedad_id, dispo.tallos_x_bunch, '.
+				'        color_ventas.nombre as color_ventas_nombre, '.
 				" 		 SUM(if(dispo.grado_id=40,  dispo.cantidad_bunch_disponible, 0)) as '40',".
 				" 		 SUM(if(dispo.grado_id=50,  dispo.cantidad_bunch_disponible, 0)) as '50',".
 				" 		 SUM(if(dispo.grado_id=60,  dispo.cantidad_bunch_disponible, 0)) as '60',".
@@ -282,6 +283,8 @@ class DispoDAO extends Conexion
 				" 		 SUM(if(dispo.grado_id=110, dispo.cantidad_bunch_disponible, 0)) as '110'".				
 				' FROM dispo LEFT JOIN variedad '.
 				'		                ON variedad.id      = dispo.variedad_id '.
+				'            LEFT JOIN color_ventas '.
+				'                       ON color_ventas.id	= variedad.color_ventas_id '.
 				' WHERE 1 = 1 ';
 
 		if (!empty($condiciones['inventario_id']))
@@ -298,8 +301,13 @@ class DispoDAO extends Conexion
 		{
 			$sql = $sql." and dispo.clasifica = '".$condiciones['clasifica']."'";
 		}//end if
+		
+		if (!empty($condiciones['color_ventas_id']))
+		{
+			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."'";
+		}//end if		
 
-		$sql=$sql.' GROUP BY variedad.nombre, dispo.variedad_id ';
+		$sql=$sql.' GROUP BY variedad.nombre, dispo.variedad_id, tallos_x_bunch, color_ventas.nombre ';
 		$sql=$sql." ORDER BY variedad.nombre ";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
@@ -317,16 +325,18 @@ class DispoDAO extends Conexion
 	 * @param string $proveedor_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param int $tallos_x_bunch 
 	 * @return array
 	 */
-	public function consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id)
+	public function consultarPorInventarioPorCalidadPorProveedorPorGradoPorTallo($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch)
 	{
 		$sql = 	' SELECT proveedor_id, sum(cantidad_bunch_disponible) as tot_bunch_disponible '.
 				' FROM dispo '.
 				" WHERE inventario_id 	= '".$inventario_id."'".
 				"   and clasifica		= '".$clasifica_fox."'".
 				"   and variedad_id		= '".$variedad_id."'".
-				"   and grado_id		= '".$grado_id."'";
+				"   and grado_id		= '".$grado_id."'".
+				"   and tallos_x_bunch  = ".$tallos_x_bunch;
 
 		if (!empty($proveedor_id))
 		{
@@ -346,7 +356,7 @@ class DispoDAO extends Conexion
 		}//end foreach
 */
 		return $result;		
-	}//end function consultarPorInventarioPorCalidadPorProveedorPorGrado
+	}//end function consultarPorInventarioPorCalidadPorProveedorPorGradoPorTallo
 	
 	
 	
@@ -386,9 +396,10 @@ class DispoDAO extends Conexion
 	 * @param string $proveedor_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param int $tallos_x_bunch
 	 * @return array
 	 */
-	public function consultarRegistrosPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id)
+	public function consultarRegistrosPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch)
 	{
 		$DispoData 		    = new DispoData();
 		
@@ -400,6 +411,7 @@ class DispoDAO extends Conexion
 				"   and proveedor_id	= '".$proveedor_id."'".				
 				"   and variedad_id		= '".$variedad_id."'".
 				"   and grado_id		= '".$grado_id."'".
+				"   and tallos_x_bunch  = ".$tallos_x_bunch.
 				" ORDER BY id DESC";
 				//" LIMIT 1";
 		
@@ -448,11 +460,11 @@ class DispoDAO extends Conexion
 		
 		//Consulta el ultimo registro para obtener el ID
 		//$DispoData = $this->consultarMaximoRegistroPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
-		$result = $this->consultarRegistrosPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+		$result = $this->consultarRegistrosPorStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch);
 		
 		if ($result)
 		{
-			$reg_stock = $this->consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+			$reg_stock = $this->consultarPorInventarioPorCalidadPorProveedorPorGradoPorTallo($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch);
 			$stock_actual = $reg_stock[0]['tot_bunch_disponible'];
 			$stock_process= $stock_new;
 			$stock_diferencia = $stock_actual - $stock_new;
@@ -466,7 +478,7 @@ class DispoDAO extends Conexion
 					$incremento = $stock_new - $stock_actual;					
 					$bunch_disponible = $reg['cantidad_bunch_disponible'] + $incremento;					
 					$id = $this->modificarBunchDisponibles($reg['id'], $bunch_disponible);
-					
+
 					break;
 				}//end if
 
@@ -486,7 +498,7 @@ class DispoDAO extends Conexion
 
 					//Actualiza
 					$id = $this->modificarBunchDisponibles($reg['id'], $bunch_disponible);
-					
+
 					//Si el stock_process es CERO se sale del proceso
 					if ($stock_diferencia==0)
 					{
@@ -603,7 +615,7 @@ class DispoDAO extends Conexion
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
 
 		return $result;
-	}//end function consultarPorInventarioPorCalidadPorProveedorPorGrado
+	}//end function consultarPorInventarioPorCalidadPorVariedadPorGrado
 	
 }//end class
 

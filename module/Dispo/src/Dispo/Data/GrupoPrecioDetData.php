@@ -14,6 +14,11 @@ class GrupoPrecioDetData
 	/**
 	 * @var string
 	 */	
+	protected $producto_id;
+
+	/**
+	 * @var string
+	 */	
 	protected $variedad_id;
 
 	/**
@@ -21,6 +26,11 @@ class GrupoPrecioDetData
 	 */	
 	protected $grado_id;
 
+	/**
+	 * @var int
+	 */
+	protected $tallos_x_bunch;
+	
 	/**
 	 * @var float
 	 */	
@@ -34,20 +44,23 @@ class GrupoPrecioDetData
 
 
 	//metodos GET
-	public function getGrupoPrecioCabId()				 	 {return $this->grupo_precio_cab_id;}
-	public function getVariedadId() 						 {return $this->variedad_id;}
-	public function getGradoId() 							 {return $this->grado_id;}
-	public function getPrecio() 							 {return $this->precio;}
-	public function getPrecioOferta() 						 {return $this->precio_oferta;}
+	public function getGrupoPrecioCabId()				 	{return $this->grupo_precio_cab_id;}
+	public function getProductoId()				 	 		{return $this->producto_id;}	
+	public function getVariedadId() 						{return $this->variedad_id;}
+	public function getGradoId() 							{return $this->grado_id;}
+	public function getTallosXBunch() 						{return $this->tallos_x_bunch;}	
+	public function getPrecio() 							{return $this->precio;}
+	public function getPrecioOferta() 						{return $this->precio_oferta;}
 
 
 	//metodos SET
 	public function setGrupoPrecioCabId($valor) 			{$this->grupo_precio_cab_id		= $valor;}
+	public function setProductoId($valor)					{$this->producto_id				= $valor;}
 	public function setVariedadId($valor) 					{$this->variedad_id				= $valor;}
 	public function setGradoId($valor) 						{$this->grado_id				= $valor;}
+	public function setTallosXBunch($valor) 				{$this->tallos_x_bunch			= $valor;}	
 	public function setPrecio($valor) 						{$this->precio					= $valor;}
 	public function setPrecioOferta($valor) 				{$this->precio_oferta			= $valor;}
-
 
 }//end class
 

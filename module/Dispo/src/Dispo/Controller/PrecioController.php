@@ -11,6 +11,8 @@ use Dispo\Data\TipoCajaData;
 use Dispo\BO\GrupoPrecioCabBO;
 use Dispo\BO\VariedadBO;
 use Dispo\BO\GradoBO;
+use Dispo\BO\ColorVentasBO;
+use Dispo\BO\ProductoBO;
 
 
 class PrecioController extends AbstractActionController
@@ -52,8 +54,12 @@ class PrecioController extends AbstractActionController
 			$EntityManagerPlugin = $this->EntityManagerPlugin();
 
 			$GrupoPrecioCabBO 	= new GrupoPrecioCabBO();
+			$ProductoBO			= new ProductoBO();
+			$ColorVentasBO  	= new ColorVentasBO();			
 
 			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ProductoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());			
 
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
@@ -67,18 +73,25 @@ class PrecioController extends AbstractActionController
 			{
 				case 'panel-precio':
 					$grupo_dispo_1er_elemento	= $json['grupo_dispo_1er_elemento'];
-					$tipo_precio_1er_elemento	= '';					
+					$producto_1er_elemento		= $json['producto_1er_elemento'];
+					$color_ventas_1er_elemento	= $json['color_ventas_1er_elemento'];					
+					$tipo_precio_1er_elemento	= '';
 					$grupo_precio_cab_id		= null;
+					$producto_id				= null;
 					$variedad_id				= null;
 					$grado_id					= null;
+					$color_ventas_id			= null;					
 						
 					$grupo_precio_opciones 	= $GrupoPrecioCabBO->getComboGrupoPrecio($grupo_precio_cab_id, $grupo_dispo_1er_elemento);
+					$producto_opciones		= $ProductoBO->getComboProductoId($producto_id, $producto_1er_elemento);
 					$tipo_precio_opciones	= $GrupoPrecioCabBO->getComboTipoPrecio('', $tipo_precio_1er_elemento);
+					$color_ventas_opciones 	= $ColorVentasBO->getCombo($color_ventas_id, $color_ventas_1er_elemento);					
 					//$variedad_opciones		= $VariedadBO->getCombo($variedad_id);
 					
 					$response = new \stdClass();
 					$response->grupo_precio_opciones	= $grupo_precio_opciones;
 					$response->tipo_precio_opciones		= $tipo_precio_opciones;
+					$response->color_ventas_opciones	= $color_ventas_opciones;
 					$response->respuesta_code 			= 'OK';
 					break;
 

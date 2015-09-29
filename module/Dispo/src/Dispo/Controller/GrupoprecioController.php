@@ -18,6 +18,7 @@ use Dispo\BO\GrupoPrecioOfertaBO;
 use Dispo\BO\Dispo\BO;
 use Dispo\Data\GrupoPrecioOfertaData;
 use Dispo\BO\GradoBO;
+use Dispo\BO\ProductoBO;
 
 
 class GrupoprecioController extends AbstractActionController
@@ -85,19 +86,21 @@ class GrupoprecioController extends AbstractActionController
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
 
-			$request 		= $this->getRequest();
-			$grupo_precio_cab_id  	= $request->getQuery('grupo_precio_cab_id');
-			$tipo_precio  	= $request->getQuery('tipo_precio');
-			$page 			= $request->getQuery('page');
-			$limit 			= $request->getQuery('rows');
-			$sidx			= $request->getQuery('sidx',1);
-			$sord 			= $request->getQuery('sord', "");
+			$request 			= $this->getRequest();
+			$grupo_precio_cab_id= $request->getQuery('grupo_precio_cab_id');
+			$tipo_precio  		= $request->getQuery('tipo_precio');
+			$color_ventas_id	= $request->getQuery('color_ventas_id', "");
+			$page 				= $request->getQuery('page');
+			$limit 				= $request->getQuery('rows');
+			$sidx				= $request->getQuery('sidx',1);
+			$sord 				= $request->getQuery('sord', "");
 			$GrupoPrecioCabBO->setPage($page);
 			$GrupoPrecioCabBO->setLimit($limit);
 			$GrupoPrecioCabBO->setSidx($sidx);
 			$GrupoPrecioCabBO->setSord($sord);
 			$condiciones = array(
-					"grupo_precio_cab_id"	=> $grupo_precio_cab_id,					
+					"grupo_precio_cab_id"	=> $grupo_precio_cab_id,
+					"color_ventas_id"		=> $color_ventas_id
 			);
 			$result = $GrupoPrecioCabBO->listado($tipo_precio, $condiciones);
 			$response = new \stdClass();
@@ -297,11 +300,13 @@ class GrupoprecioController extends AbstractActionController
 		
 			$GrupoPrecioDetData = new GrupoPrecioDetData();
 			$GrupoPrecioDetData->setGrupoPrecioCabId 		($json['grupo_precio_cab_id']);
+			$GrupoPrecioDetData->setProductoId 				($json['producto_id']);
 			$GrupoPrecioDetData->setVariedadId				($json['variedad_id']);
 			$GrupoPrecioDetData->setGradoId					($json['grado_id']);
+			$GrupoPrecioDetData->setTallosXBunch 			($json['tallos_x_bunch']);			
 			$GrupoPrecioDetData->setPrecio  				($json['precio']);
 			$GrupoPrecioDetData->setPrecioOferta 			($json['precio']);  
-			
+
 			$result = $GrupoPrecioCabBO->registrarPrecio($json['tipo_precio'], $GrupoPrecioDetData);
 		
 			//Retorna la informacion resultante por JSON
@@ -531,8 +536,10 @@ class GrupoprecioController extends AbstractActionController
 			
 			$request 				= $this->getRequest();
 			$grupo_precio_cab_id  	= $request->getQuery('grupo_precio_cab_id');
+			$producto_id  			= $request->getQuery('producto_id');			
 			$variedad_id  			= $request->getQuery('variedad_id');
 			$grado_id  				= $request->getQuery('grado_id');
+			$tallos_x_bunch			= $request->getQuery('tallos_x_bunch');			
 			$page 			= $request->getQuery('page');
 			$limit 			= $request->getQuery('rows');
 			$sidx			= $request->getQuery('sidx',1);
@@ -543,8 +550,10 @@ class GrupoprecioController extends AbstractActionController
 			$GrupoPrecioOfertaBO->setSord($sord);
 			$condiciones = array(
 					"grupo_precio_cab_id"	=> $grupo_precio_cab_id,
+					"producto_id"			=> $producto_id,
 					"variedad_id"			=> $variedad_id,
-					"grado_id"				=> $grado_id
+					"grado_id"				=> $grado_id,
+					"tallos_x_bunch"		=> $tallos_x_bunch
 			);
 			$result = $GrupoPrecioOfertaBO->listado($condiciones);
 			$response = new \stdClass();
@@ -554,12 +563,17 @@ class GrupoprecioController extends AbstractActionController
 				foreach($result as $row){
 					$row2 = null;
 					$row2['grupo_precio_cab_id'] 	= $row['grupo_precio_cab_id'];
+					$row2['producto_id'] 			= $row['producto_id'];
 					$row2['variedad_id'] 			= $row['variedad_id'];
 					$row2['grado_id'] 				= $row['grado_id'];
+					$row2['tallos_x_bunch'] 		= $row['tallos_x_bunch'];
+					$row2['producto_combo_id']		= $row['producto_combo_id'];
 					$row2['variedad_combo_id']		= $row['variedad_combo_id'];
 					$row2['grado_combo_id']			= $row['grado_combo_id'];
+					$row2['tallos_x_bunch_combo']	= $row['tallos_x_bunch_combo'];					
 					$row2['factor_combo']			= $row['factor_combo'];
-					$row2['variedad_combo_nombre']	= $row['variedad_combo_nombre'];
+					$row2['variedad_combo_nombre']	= trim($row['variedad_combo_nombre']);
+					$row2['color_ventas_combo_nombre']	= $row['color_ventas_combo_nombre'];
 
 					$response->rows[$i] = $row;
 					$i++;
@@ -592,7 +606,7 @@ class GrupoprecioController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 			$GrupoPrecioOfertaData	= new GrupoPrecioOfertaData();
 			$GrupoPrecioOfertaBO	= new GrupoPrecioOfertaBO();
-				
+
 			$GrupoPrecioOfertaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
@@ -603,10 +617,14 @@ class GrupoprecioController extends AbstractActionController
 			$json = json_decode($body, true);
 			$accion								= $json['accion'];  //I, M
 			$GrupoPrecioOfertaData->setGrupoPrecioCabId 	($json['grupo_precio_cab_id']);
+			$GrupoPrecioOfertaData->setProductoId 			($json['producto_id']);
 			$GrupoPrecioOfertaData->setVariedadId			($json['variedad_id']);
 			$GrupoPrecioOfertaData->setGradoId				($json['grado_id']);
+			$GrupoPrecioOfertaData->setTallosXBunch 		($json['tallos_x_bunch']);
+			$GrupoPrecioOfertaData->setProductoComboId 		($json['producto_combo_id']);
 			$GrupoPrecioOfertaData->setVariedadComboId		($json['variedad_combo_id']);
 			$GrupoPrecioOfertaData->setGradoComboId			($json['grado_combo_id']);
+			$GrupoPrecioOfertaData->setTallosXBunchCombo  	($json['tallos_x_bunch_combo']);
 			$GrupoPrecioOfertaData->setFactorCombo			($json['factor_combo']);
 			$GrupoPrecioOfertaData->setUsuarioIngId			($usuario_id);
 			$GrupoPrecioOfertaData->setUsuarioModId			($usuario_id);
@@ -667,10 +685,14 @@ class GrupoprecioController extends AbstractActionController
 			{
 				$GrupoPrecioOfertaData = new GrupoPrecioOfertaData();
 				$GrupoPrecioOfertaData->setGrupoPrecioCabId 	($reg['grupo_precio_cab_id']);
+				$GrupoPrecioOfertaData->setProductoId 			($reg['producto_id']);
 				$GrupoPrecioOfertaData->setVariedadId			($reg['variedad_id']);
 				$GrupoPrecioOfertaData->setGradoId				($reg['grado_id']);
+				$GrupoPrecioOfertaData->setTallosXBunch 		($reg['tallos_x_bunch']);
+				$GrupoPrecioOfertaData->setProductoComboId 		($reg['producto_combo_id']);
 				$GrupoPrecioOfertaData->setVariedadComboId		($reg['variedad_combo_id']);
 				$GrupoPrecioOfertaData->setGradoComboId			($reg['grado_combo_id']);
+				$GrupoPrecioOfertaData->setTallosXBunchCombo 	($reg['tallos_x_bunch_combo']);
 
 				$ArrGrupoPrecioOfertaData[] = $GrupoPrecioOfertaData;
 			}//end foreach
@@ -701,26 +723,35 @@ class GrupoprecioController extends AbstractActionController
 		{
 			$EntityManagerPlugin = $this->EntityManagerPlugin();
 		
+			$config = $this->getServiceLocator()->get('Config');
+			
 			$GrupoPrecioCabBO	= new GrupoPrecioCabBO();
+			$ProductoBO			= new ProductoBO();
 			$GradoBO			= new GradoBO();
 			
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
 			
 			$GrupoPrecioCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ProductoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$GradoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 			
-			$grupo_precio_cab_id	= $json['grupo_precio_cab_id'];
-			$grado_id				= null;
-			$variedad_id			= null;
-			
-			$variedad_opciones		= $GrupoPrecioCabBO->getComboVariedad($variedad_id, $grupo_precio_cab_id);
+			$grupo_precio_cab_id			= $json['grupo_precio_cab_id'];
+			$producto_combo_id				= $json['producto_combo_id'];			
+			$variedad_id					= null;
+			$grado_id						= null;
+			$tallos_x_bunch					= $config['tallos_x_bunch_default'];
+			$producto_combo_1er_elemento	= $json['producto_combo_1er_elemento'];
+
+			$producto_opciones		= $ProductoBO->getComboProductoId($producto_combo_id, $producto_combo_1er_elemento);
+			$variedad_opciones		= $GrupoPrecioCabBO->getComboVariedad($producto_combo_id, $variedad_id, $grupo_precio_cab_id);
 			$grado_opciones			= $GradoBO->getCombo($grado_id);			
 
 			$response = new \stdClass();
+			$response->producto_opciones	= $producto_opciones;
 			$response->variedad_opciones	= $variedad_opciones;
 			$response->grado_opciones		= $grado_opciones;
 			$response->respuesta_code 		= 'OK';

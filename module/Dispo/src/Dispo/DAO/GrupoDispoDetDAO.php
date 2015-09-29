@@ -20,13 +20,17 @@ class GrupoDispoDetDAO extends Conexion
 	{
 		$key    = array(
 				'grupo_dispo_cab_id'				=> $GrupoDispoDetData->getGrupoDispoCabId(),
+				'producto_id'						=> $GrupoDispoDetData->getProductoId(),
 				'variedad_id'						=> $GrupoDispoDetData->getVariedadId(),
 				'grado_id'							=> $GrupoDispoDetData->getGradoId(),
+				'tallos_x_bunch'					=> $GrupoDispoDetData->getTallosXBunch()
 		);
 		$record = array(
 				'grupo_dispo_cab_id'				=> $GrupoDispoDetData->getGrupoDispoCabId(),
+				'producto_id'						=> $GrupoDispoDetData->getProductoId(),
 				'variedad_id'		                => $GrupoDispoDetData->getVariedadId(),
 				'grado_id'		            		=> $GrupoDispoDetData->getGradoId(),
+				'tallos_x_bunch'					=> $GrupoDispoDetData->getTallosXBunch(),
 				'cantidad_bunch'                	=> $GrupoDispoDetData->getCantidadBunch(),
 				'cantidad_bunch_disponible'         => $GrupoDispoDetData->getCantidadBunchDisponible(),
 				'usuario_ing_id'                	=> $GrupoDispoDetData->getUsuarioIngId(),
@@ -51,13 +55,12 @@ class GrupoDispoDetDAO extends Conexion
 	{
 		$key    = array(
 				'grupo_dispo_cab_id'		      		  => $GrupoDispoDetData->getGrupoDispoCabId(),
+				'producto_id'							  => $GrupoDispoDetData->getProductoId(),
 				'variedad_id'						      => $GrupoDispoDetData->getVariedadId(),
 				'grado_id'						       	  => $GrupoDispoDetData->getGradoId(),
+				'tallos_x_bunch'						  => $GrupoDispoDetData->getTallosXBunch()
 		);
 		$record = array(
-				'grupo_dispo_cab_id'				=> $GrupoDispoDetData->getGrupoDispoCabId(),
-				'variedad_id'		                => $GrupoDispoDetData->getVariedadId(),
-				'grado_id'		            		=> $GrupoDispoDetData->getGradoId(),
 				'cantidad_bunch'                	=> $GrupoDispoDetData->getCantidadBunch(),
 				'cantidad_bunch_disponible'         => $GrupoDispoDetData->getCantidadBunchDisponible(),
 				'usuario_mod_id'                	=> $GrupoDispoDetData->getUsuarioModId(),
@@ -71,31 +74,38 @@ class GrupoDispoDetDAO extends Conexion
 	/**
 	 * 
 	 * @param int $grupo_dispo_cab_id
+	 * @param string $producto_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
 	 * @return \Dispo\Data\GrupoDispoDetData|NULL
 	 */
-	public function consultar($grupo_dispo_cab_id, $variedad_id, $grado_id)
+	public function consultar($grupo_dispo_cab_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch)
 	{
 		$GrupoDispoDetData 		    = new GrupoDispoDetData();
 
 		$sql = 	' SELECT grupo_dispo_det.* '.
 				' FROM grupo_dispo_det '.
 				' WHERE grupo_dispo_cab_id 	= :grupo_dispo_cab_id '.
+				'   and producto_id			= :producto_id'.
 				'   and variedad_id			= :variedad_id'.
-				'   and grado_id			= :grado_id';
+				'   and grado_id			= :grado_id'.
+				'   and tallos_x_bunch		= :tallos_x_bunch';
 
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->bindValue(':grupo_dispo_cab_id',$grupo_dispo_cab_id);
+		$stmt->bindValue(':producto_id',$producto_id);
 		$stmt->bindValue(':variedad_id',$variedad_id);
 		$stmt->bindValue(':grado_id',$grado_id);
+		$stmt->bindValue(':tallos_x_bunch', $tallos_x_bunch);
 		$stmt->execute();
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		if($row){
 			$GrupoDispoDetData->setGrupoDispoCabId 				($row['grupo_dispo_cab_id']);
+			$GrupoDispoDetData->setProductoId 					($row['producto_id']);
 			$GrupoDispoDetData->setVariedadId					($row['variedad_id']);
 			$GrupoDispoDetData->setGradoId		    			($row['grado_id']);
+			$GrupoDispoDetData->setTallosXBunch					($row['tallos_x_bunch']);
 			$GrupoDispoDetData->setCantidadBunch 				($row['cantidad_bunch']);
 			$GrupoDispoDetData->setCantidadBunchDisponible 		($row['cantidad_bunch_disponible']);
 			$GrupoDispoDetData->setUsuarioIngId    				($row['usuario_ing_id']);
@@ -117,7 +127,7 @@ class GrupoDispoDetDAO extends Conexion
 	 * @param GrupoDispoDetData $DispoGrupoDetData
 	 * @param number $cantidad_descontar
 	 */
-	public function rebajar(GrupoDispoDetData $DispoGrupoDetData, $cantidad_descontar)
+	public function rebajar_MORONITOR(GrupoDispoDetData $DispoGrupoDetData, $cantidad_descontar)  /*MORONITOR*/
 	{
 		if ($cantidad_descontar==0)
 		{
@@ -126,8 +136,10 @@ class GrupoDispoDetDAO extends Conexion
 		$sql = 	" UPDATE grupo_dispo_det ".
 				" SET cantidad_bunch_disponible = cantidad_bunch_disponible - ".$cantidad_descontar.
 				" WHERE grupo_dispo_cab_id	= ".$DispoGrupoDetData->getGrupoDispoCabId().
+				"   and producto_id			= '".$DispoGrupoDetData->getProductoId()."'".
 				"   and variedad_id			= '".$DispoGrupoDetData->getVariedadId()."'".
-				"   and grado_id			= '".$DispoGrupoDetData->getGradoId()."'";
+				"   and grado_id			= '".$DispoGrupoDetData->getGradoId()."'".
+				"   and tallos_x_bunch		= ".$DispoGrupoDetData->getTallosXBunch();
 
 		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
 		return $count;
@@ -140,9 +152,11 @@ class GrupoDispoDetDAO extends Conexion
 	 * @param GrupoDispoDetData $GrupoDispoDetData
 	 * @return multitype:number Ambigous <multitype:, multitype:number string , number>
 	 */
-	public function registrarStock(GrupoDispoDetData $GrupoDispoDetData)
+	public function registrarStock(GrupoDispoDetData $GrupoDispoDetDat) 
 	{
-		$GrupoDispoDetData2 = $this->consultar($GrupoDispoDetData->getGrupoDispoCabId(), $GrupoDispoDetData->getVariedadId(), $GrupoDispoDetData->getGradoId());
+		$GrupoDispoDetData2 = $this->consultar(	$GrupoDispoDetData->getGrupoDispoCabId(), $GrupoDispoDetData->getProductoId(), 
+												$GrupoDispoDetData->getVariedadId(), $GrupoDispoDetData->getGradoId(), 
+												$GrupoDispoDetData->getTallosXBunch());
 		if ($GrupoDispoDetData2)
 		{
 			$accion = \Application\Constants\Accion::MODIFICAR;
@@ -161,10 +175,7 @@ class GrupoDispoDetDAO extends Conexion
 	
 	/**
 	 * 
-	 * @param int $grupo_dispo_cab_id
-	 * @param string $variedad_id
-	 * @param string $grado_id
-	 * @param int $cantidad_bunch_disponible
+	 * @param GrupoDispoDetData $GrupoDispoDetData
 	 * @return int
 	 */
 	public function actualizarStock(GrupoDispoDetData $GrupoDispoDetData)
@@ -174,8 +185,10 @@ class GrupoDispoDetDAO extends Conexion
 				"	  usuario_mod_id            = ".$GrupoDispoDetData->getUsuarioModId().",".
 				"     fec_modifica              = '".\Application\Classes\Fecha::getFechaHoraActualServidor()."'".
 				" WHERE grupo_dispo_cab_id	= ".$GrupoDispoDetData->getGrupoDispoCabId().
+				"   and producto_id			= '".$GrupoDispoDetData->getProductoId()."'".
 				"   and variedad_id			= '".$GrupoDispoDetData->getVariedadId()."'".
-				"   and grado_id			= '".$GrupoDispoDetData->getGradoId()."'";
+				"   and grado_id			= '".$GrupoDispoDetData->getGradoId()."'".
+				"   and tallos_x_bunch		= ".$GrupoDispoDetData->getTallosXBunch();
 
 		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
 		return $count;

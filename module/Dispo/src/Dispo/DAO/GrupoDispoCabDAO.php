@@ -264,12 +264,13 @@ class GrupoDispoCabDAO extends Conexion
 
 	/**
 	 *
-	 * @param array $condiciones (grupo_dispo_cab_id)
+	 * @param array $condiciones (grupo_dispo_cab_id, color_ventas_id)
 	 * @return array
 	 */
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT variedad.nombre as variedad, grupo_dispo_det.variedad_id, '.
+		$sql = 	' SELECT grupo_dispo_det.producto_id, variedad.nombre as variedad, grupo_dispo_det.variedad_id, grupo_dispo_det.tallos_x_bunch, '.
+				'        color_ventas.nombre as color_ventas_nombre, '.
 				" 		 SUM(if(grupo_dispo_det.grado_id=40,  grupo_dispo_det.cantidad_bunch_disponible, 0)) as '40',".
 				" 		 SUM(if(grupo_dispo_det.grado_id=50,  grupo_dispo_det.cantidad_bunch_disponible, 0)) as '50',".
 				" 		 SUM(if(grupo_dispo_det.grado_id=60,  grupo_dispo_det.cantidad_bunch_disponible, 0)) as '60',".
@@ -279,9 +280,17 @@ class GrupoDispoCabDAO extends Conexion
 				" 		 SUM(if(grupo_dispo_det.grado_id=100, grupo_dispo_det.cantidad_bunch_disponible, 0)) as '100',".
 				" 		 SUM(if(grupo_dispo_det.grado_id=110, grupo_dispo_det.cantidad_bunch_disponible, 0)) as '110'".
 				' FROM grupo_dispo_det INNER JOIN variedad '.
-				'		                      ON variedad.id = grupo_dispo_det.variedad_id '. 
-				' WHERE grupo_dispo_det.grupo_dispo_cab_id = '.$condiciones['grupo_dispo_cab_id'].
-				' GROUP BY variedad.nombre, variedad.id'.
+				'		                      ON variedad.id = grupo_dispo_det.variedad_id '.
+				'            		   LEFT JOIN color_ventas '.
+				'                       	  ON color_ventas.id	= variedad.color_ventas_id '.
+				' WHERE grupo_dispo_det.grupo_dispo_cab_id = '.$condiciones['grupo_dispo_cab_id'];
+
+		if (!empty($condiciones['color_ventas_id']))
+		{
+			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."'";
+		}//end if
+						
+		$sql = $sql.' GROUP BY grupo_dispo_det.producto_id, variedad.nombre, variedad.id, tallos_x_bunch, color_ventas.nombre '.
 				" ORDER BY variedad.nombre ";
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);

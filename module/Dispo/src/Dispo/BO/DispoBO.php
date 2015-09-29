@@ -455,7 +455,7 @@ class DispoBO extends Conexion
 	
 	/**
 	 * 
-	 * @param array $condiciones (inventario_id, proveedor_id, $clasifica)
+	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id)
 	 * @return array:
 	 */
 	public function listado($condiciones)
@@ -474,13 +474,14 @@ class DispoBO extends Conexion
 	 * @param string $proveedor_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param int $tallos_x_bunch
 	 * @return Ambigous <NULL, array>
 	 */
-	public function consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id)
+	public function consultarPorInventarioPorCalidadPorProveedorPorGradoPorTallo($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch)
 	{
 		$DispoDAO = new DispoDAO();
 		$DispoDAO->setEntityManager($this->getEntityManager());
-		$result = $DispoDAO->consultarPorInventarioPorCalidadPorProveedorPorGrado($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id);
+		$result = $DispoDAO->consultarPorInventarioPorCalidadPorProveedorPorGradoPorTallo($inventario_id, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch);
 		
 		$row = null;
 		foreach($result as $reg)
