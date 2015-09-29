@@ -455,14 +455,27 @@ class ClienteController extends AbstractActionController
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
 		
-			$request 			= $this->getRequest();
-			//$criterio_busqueda  = $request->getQuery('cliente_factura_id');
+			$request 			= 	$this->    getRequest();
+			$cliente_factura_id	= 	$request-> getQuery('term');
+			
+			//$term  = $request->getRequest('term');
 			
 			$condiciones = array(
-					"criterio_busqueda"	=> $request->getQuery('term'),
+					"cliente_factura_id"	=> $cliente_factura_id,
 			);
 			$result = $ClienteBO->ConsultarClienteFactura($condiciones);
-			$response = new \stdClass();
+			//$response = new \stdClass();
+			$i=0;
+			$result2 = null;
+			foreach($result as $row){
+				//$row['variedad'] = trim($row['variedad']);
+				$row2['id'] 			= $row['id'];
+				$row2['label'] 			= trim($row['nombre']);
+				$row2['nombre'] 		= trim($row['nombre']);
+				$result2[] 				= $row2;
+			}//end foreach
+			$data = new JsonModel($result2);
+			return $data;
 			
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
@@ -471,7 +484,6 @@ class ClienteController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-		
 		
 		
 	}//end function consultarClienteFacturaAction 

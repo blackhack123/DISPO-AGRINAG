@@ -27,34 +27,33 @@
 		/*-------------------------------------------------------------*/
 		/*--------------------- AUTOCOMPLETAR -------------------------*/
 		/*-------------------------------------------------------------*/
-	    $( "#cliente_factura_id" ).autocomplete({
+		
+	    $( "#frm_informacion_general #cliente_factura_nombre" ).autocomplete({
 	    	
-	        source: "../../dispo/cliente/consultarClienteFactur",
+	        source: "../../dispo/cliente/consultarclientefactura",
 	        minLength: 2,
+	        focus: function( event, ui ) {
+	            $( "#frm_informacion_general #cliente_factura_nombre" ).val( ui.item.label );
+	            return false;
+	          },	        
 	        select: function( event, ui ) {
-	          log( ui.item ?
+	        	if (ui.item)
+	        	{
+	        		$("#frm_informacion_general #cliente_factura_id").val(ui.item.id);
+	        	}else{
+	        		$("#frm_informacion_general #cliente_factura_id").val('');
+	        	}//end if
+/*	        	( ui.item ?
 	            "Selected: " + ui.item.value + " aka " + ui.item.id :
-	            "Nothing selected, input was " + this.value );
-	        }	    	
-/*	        source: function( request, response ) {
-	          $.ajax({
-	            url: '../../dispo/cliente/consultarClienteFactura',
-	            dataType: "jsonp",
-	            data: {
-	              term: request.term
-	            },
-	            success: function( data ) {
-	              response( data );
-	            }
-	          });
-	        },
-	        minLength: 3,
-	        select: function( event, ui ) {
-	          log( ui.item ?
-	            "Selected: " + ui.item.label :
-	            "Nothing selected, input was " + this.value);
-	        },	*/	
-	    });		
+	            "Nothing selected, input was " + this.value );*/
+	        }
+	     })
+	     .autocomplete( "instance" )._renderItem = function( ul, item ) {
+	          return $( "<li>" )
+	              .append( "<a>" + item.label + "<br>" + item.label + "</a>" )
+	              .appendTo( ul );
+	     };	        
+	    		
 		
 		
 		/*---------------------------------------------------------------*/

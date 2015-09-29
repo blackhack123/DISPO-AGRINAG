@@ -381,9 +381,10 @@ class ClienteDAO extends Conexion
 		return $result;
 	}//end function listado
 	
+	
 	/**
 	 *
-	 * En las condiciones se puede pasar los siguientes criterios de busqueda:
+	 * 	En las condiciones se puede pasar los siguientes criterios de busqueda:
 	 *   1) criterio_busqueda,  utilizado para buscar en nombre, id, direccion, telefono
 	 *   2) estado
 	 *   3) sincronizado
@@ -394,16 +395,16 @@ class ClienteDAO extends Conexion
 	public function ConsultarClienteFactura($condiciones)
 	{
 	
-		$sql = 	' SELECT cliente.id, cliente.nombre'.
+		$sql = 	' SELECT cliente.id, cliente.nombre '.
 				' FROM cliente   '.
-				' WHERE 1 = 1 ';
+				" WHERE nombre like '%".$condiciones['cliente_factura_id']."%'".
+				" or id like '%".$condiciones['cliente_factura_id']."%'";
 	
-		if (!empty($condiciones['cliente_factura_id']))
-		{
-			$sql = $sql." and (cliente.id like '%".$condiciones['cliente_factura_id']."%'".
-					"      or cliente.nombre like '%".$condiciones['cliente_factura_id']."%'";
-		}//end if
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
 		
+		return $result;
 	}
 	
 	
