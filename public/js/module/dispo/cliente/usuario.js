@@ -44,12 +44,16 @@ $(document).ready(function () {
 		loadonce: true,		
 		gridview:false,	
 		/*height:'400',*/
-		colNames:['Código','Nombre','Usuario','Email','Estado', ''],
+		colNames:['Código','Nombre','Usuario','Email','Grupo Dispo','Grupo Precio','Inventario','Calidad','Estado', ''],
 		colModel:[
 			{name:'id',index:'marcacion_sec', width:50, align:"center", sorttype:"int"},
-			{name:'nombre',index:'nombre', width:230, sorttype:"string"},
-			{name:'username',index:'username', width:150, sorttype:"string"},	
+			{name:'nombre',index:'nombre', width:150, sorttype:"string"},
+			{name:'username',index:'username', width:100, sorttype:"string"},	
 			{name:'email',index:'email', width:150, sorttype:"string"},	
+			{name:'grupo_dispo',index:'grupo_dispo', width:120, sorttype:"string"},
+			{name:'grupo_precio',index:'grupo_precio', width:120, sorttype:"string"},
+			{name:'inventario_id',index:'inventario_id', width:100, sorttype:"string"},
+			{name:'nombre_calidad',index:'nombre_calidad', width:100, sorttype:"string"},
 			{name:'estado',index:'estado', width:60, sorttype:"string", align:"center"},
 			{name:'btn_editar_usuario',index:'', width:30, align:"center", formatter:ListadoUsuario_FormatterEdit,
 			   cellattr: function () { return ' title=" Modificar"'; }

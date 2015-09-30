@@ -12,6 +12,7 @@
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/agencia-carga.js')); ?>"></script>
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/cliente/usuario.js')); ?>"></script>
 
+
 <div class="title-admin-section">
 	<h1><strong>Cliente</strong></h1>
 </div>
@@ -263,10 +264,10 @@
                                             <label for="cliente_factura_id" class="control-label">Fact. A:</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="text" class="form-control" id="cliente_factura_id" name="cliente_factura_id" validate="required" validateMessage="Valor Requerido" placeholder="Codigo"><br/>
+                                            <input type="text" class="form-control" id="cliente_factura_id" name="cliente_factura_id" validate="required" validateMessage="Valor Requerido" placeholder="Codigo" autocomplete="off"><br/>
                                         </div>
                                         <div class="col-lg-7">
-                                            <input type="text" class="form-control" id="cliente_factura_nombre" name="cliente_factura_nombre" placeholder="Nombre"><br/>
+                                            <input type="text" class="form-control" id="cliente_factura_nombre" name="cliente_factura_nombre" placeholder="Nombre" data-provide="typeahead" autocomplete="off"><br/>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -363,7 +364,7 @@
                                             <label for="incobrable" class="control-label"> Incobrable:</label>
                                         </div>
                                         <div class="col-md-6">
-                                        <label for="co1" class="control-label">	<input type="checkbox" name="incobrable" id="incobrable"></label>
+                                        <label for="co1" class="control-label">	<input type="checkbox" name="incobrable" id="incobrable" autocomplete="off"></label>
                                         </div>
                                		</div>
                                     <div class="col-md-12">

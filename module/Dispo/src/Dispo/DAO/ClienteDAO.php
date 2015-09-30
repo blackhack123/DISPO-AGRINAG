@@ -351,7 +351,7 @@ class ClienteDAO extends Conexion
 		
 		if (!empty($condiciones['criterio_busqueda']))
 		{
-			$sql = $sql." and (pais.nombre like '%".$condiciones['criterio_busqueda']."%'".
+			$sql = $sql." and pais.nombre like '%".$condiciones['criterio_busqueda']."%'".
 					"      or cliente.nombre like '%".$condiciones['criterio_busqueda']."%'".
 					"      or cliente.id like '%".$condiciones['criterio_busqueda']."%'".
 					"      or cliente.direccion like '%".$condiciones['criterio_busqueda']."%'".

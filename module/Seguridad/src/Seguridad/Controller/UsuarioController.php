@@ -765,6 +765,10 @@ class UsuarioController extends AbstractActionController
 				$row2["nombre"] 			= trim($row["nombre"]);
 				$row2["username"] 			= trim($row["username"]);
 				$row2["email"] 				= trim($row["email"]);
+				$row2["inventario_id"] 		= trim($row["inventario_id"]);
+				$row2["grupo_dispo"] 		= trim($row["grupo_dispo"]);
+				$row2["grupo_precio"]		= trim($row["grupo_precio"]);
+				$row2["nombre_calidad"]		= trim($row["nombre_calidad"]);
 				//$row2["sincronizado"] 		= $row["sincronizado"];
 				//$row2["fec_sincronizado"] 	= $row["fec_sincronizado"];
 				$row2["estado"] 			= $row["estado"];

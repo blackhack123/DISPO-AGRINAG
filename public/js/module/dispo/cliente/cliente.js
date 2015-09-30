@@ -27,35 +27,9 @@
 		/*-------------------------------------------------------------*/
 		/*--------------------- AUTOCOMPLETAR -------------------------*/
 		/*-------------------------------------------------------------*/
+
 		
-	    $( "#frm_informacion_general #cliente_factura_nombre" ).autocomplete({
-	    	
-	        source: "../../dispo/cliente/consultarclientefactura",
-	        minLength: 2,
-	        focus: function( event, ui ) {
-	            $( "#frm_informacion_general #cliente_factura_nombre" ).val( ui.item.label );
-	            return false;
-	          },	        
-	        select: function( event, ui ) {
-	        	if (ui.item)
-	        	{
-	        		$("#frm_informacion_general #cliente_factura_id").val(ui.item.id);
-	        	}else{
-	        		$("#frm_informacion_general #cliente_factura_id").val('');
-	        	}//end if
-/*	        	( ui.item ?
-	            "Selected: " + ui.item.value + " aka " + ui.item.id :
-	            "Nothing selected, input was " + this.value );*/
-	        }
-	     })
-	     .autocomplete( "instance" )._renderItem = function( ul, item ) {
-	          return $( "<li>" )
-	              .append( "<a>" + item.label + "<br>" + item.label + "</a>" )
-	              .appendTo( ul );
-	     };	        
-	    		
-		
-		
+			
 		/*---------------------------------------------------------------*/
 		/*----------- Se configura los JQGRID de Cliente ----------------*/
 		/*---------------------------------------------------------------*/		
@@ -672,26 +646,3 @@
 		}//end function cliente_consultar
 		
 		
-		
-/*		  $(function() 
-					{
-						    function log( message )
-						    {
-							      $( "input" ).text( message ).prependTo( "#cliente_factura_id" );
-							      $( "#cliente_factura_id" ).scrollTop( 0 );
-						    }
-						 
-						    $( "#cliente_factura_id" ).autocomplete({
-								    //  'url':' ../../dispo/cliente/ConsultarClienteFactura',
-								      url: '../../dispo/cliente/ConsultarClienteFactura',
-								      minLength: 3,
-								      select: function( event, ui ) 
-								      {
-									        log( ui.item ?
-									           + ui.item.value +  + ui.item.id :
-									          "Nothing selected, input was " + this.value 
-									          );
-								      }
-						    });
-					  });
-*/
