@@ -244,7 +244,8 @@ class PedidoCabDAO extends Conexion
 	public function consultarUltimoPedidoComprando($cliente_id)
 	{
 		$sql = 	' SELECT pedido_cab.*, agencia_carga.nombre as agencia_carga_nombre, '.
-				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id '.
+				'        marcacion.nombre as marcacion_nombre, marcacion.tipo_caja_default_id, '.
+				'        pedido_cab.cliente_id '.
 				//'        marcacion.punto_corte as marcacion_punto_corte '.
 				' FROM pedido_cab LEFT JOIN agencia_carga '.
 				'                    ON agencia_carga.id 		= pedido_cab.agencia_carga_id '.

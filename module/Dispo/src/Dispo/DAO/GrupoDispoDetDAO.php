@@ -152,7 +152,7 @@ class GrupoDispoDetDAO extends Conexion
 	 * @param GrupoDispoDetData $GrupoDispoDetData
 	 * @return multitype:number Ambigous <multitype:, multitype:number string , number>
 	 */
-	public function registrarStock(GrupoDispoDetData $GrupoDispoDetDat) 
+	public function registrarStock(GrupoDispoDetData $GrupoDispoDetData) 
 	{
 		$GrupoDispoDetData2 = $this->consultar(	$GrupoDispoDetData->getGrupoDispoCabId(), $GrupoDispoDetData->getProductoId(), 
 												$GrupoDispoDetData->getVariedadId(), $GrupoDispoDetData->getGradoId(), 

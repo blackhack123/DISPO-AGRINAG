@@ -44,6 +44,7 @@
                             <tr>
                                 <td class="th-inner"  width="60">ID Item</td>
                                 <td class="th-inner" width="100%">Variedad</td>
+                                <td class="th-inner"  width="90">Color</td>
                                 <td class="th-inner"  width="90">Grado(cm)</td>
                                 <td class="th-inner"  width="90">Und/Bunch</td>
                                 <td class="th-inner"  width="100">Tipo Caja</td>
@@ -66,13 +67,18 @@
             {
                 foreach ($this->rs_pedido_det as $reg)
                 {	
+					$html_tallos_x_bunch = '';
+					if ($reg['tallos_x_bunch']!=25)
+					{
+						$html_tallos_x_bunch = '&nbsp;<span class="tallos_buches_no_standar">('.$reg['tallos_x_bunch'].')</span>';
+					}//end if				
         ?>
                             <tr class="tr_det_<?php echo($reg['pedido_det_sec']); ?>" oferta="<?php echo($reg['estado_reg_oferta']); ?>" pedido_cab_oferta_id="<?php echo($reg['pedido_cab_oferta_id']); ?>" pedido_det_oferta_sec="<?php echo($reg['pedido_det_oferta_sec']); ?>" variedad_nombre_oferta_vinculada="<?php echo($reg['variedad_nombre_oferta_vinculada']); ?>">    
                                 <td>                                        
                                     <?php echo($reg['pedido_det_sec']); ?>
                                 </td>                          
                                 <td align="left">
-                                    <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span>
+                                    <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span><?php echo($html_tallos_x_bunch); ?>
                                     <?php if ($reg['estado_reg_oferta']==1){ ?>
                                         <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange;">
                                                     <span class="glyphicon glyphicon-star pointer"
@@ -86,6 +92,7 @@
                                         </div>
                                     <?php }//end if ?>
                                 </td>
+                                <td><h5><small><?php echo($reg['color_ventas_nombre']); ?></small></h5></td>
                                 <td>
                                     <?php echo($reg['grado_id']); ?>
                                 </td>
@@ -114,7 +121,7 @@
                                     <img src="<?php echo($this->basePath()); ?>/images/status-<?php echo($this->pedido_cab_estado); ?>.png" alt="">
                                 </td>
                                 <td>
-                                    <img pedido_det_sec="<?php echo($reg['pedido_det_sec']); ?>" class="pointer btn_eliminar_detalle"  src="<?php echo($this->basePath()); ?>/images/delete-icon.png" alt="">
+                                    <img pedido_det_sec="<?php echo($reg['pedido_det_sec']); ?>" class="btn_eliminar_detalle"  src="<?php echo($this->basePath()); ?>/images/delete-icon.png" alt="" style="cursor:pointer">
                                 </td>
                             </tr>
         <?php 	} //end foreach 

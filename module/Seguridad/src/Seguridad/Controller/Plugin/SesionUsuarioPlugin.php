@@ -20,7 +20,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	public function getUserClienteNombre()				{return $this->getRecord()['cliente_nombre'];}
 	public function getClienteSeleccionMarcacionSec()	{return $this->getRecord()['cliente_seleccion_marcacion_sec'];}
 	public function getClienteSeleccionMarcacionNombre(){return $this->getRecord()['cliente_seleccion_marcacion_nombre'];}	
-	public function getClienteSeleccionMarcacionPuntoCorte(){return $this->getRecord()['cliente_seleccion_marcacion_puntocorte'];}
+	/*public function getClienteSeleccionMarcacionPuntoCorte(){return $this->getRecord()['cliente_seleccion_marcacion_puntocorte'];}*/
 	public function getClienteSeleccionAgenciaId()		{return $this->getRecord()['cliente_seleccion_agencia_id'];}
 	public function getClientePedidoCabIdActual()		{return $this->getRecord()['cliente_pedido_cab_id_actual'];}
 	public function getVendedorUsuarioId()				{return $this->getRecord()['vendedor_usuario_id'];}
@@ -29,8 +29,16 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	public function getClienteUsuarioId()				{return $this->getRecord()['cliente_usuario_id'];}
 	public function getClienteUsuarioNombre()			{return $this->getRecord()['cliente_usuario_nombre'];}	
 	public function getClienteUsuarioUserName()			{return $this->getRecord()['cliente_usuario_username'];}
-	public function getClienteCalidadId()				{return $this->getRecord()['cliente_calidad_id'];}
-	
+	/*public function getClienteCalidadId()				{return $this->getRecord()['cliente_calidad_id'];}*/
+	//2015-09-29 Nuevos Campos
+	public function getUserInventarioId()				{return $this->getRecord()['cliente_usuario_inventario_id'];}
+	public function getUserCalidadId()					{return $this->getRecord()['cliente_usuario_calidad_id'];}
+	public function getUserGrupoPrecioCabId()			{return $this->getRecord()['cliente_usuario_grupo_precio_cab_id'];}
+	public function getUserGrupoDispoCabId()			{return $this->getRecord()['cliente_usuario_grupo_dispo_cab_id'];}
+	public function getUserPuntoCorte()					{return $this->getRecord()['cliente_usuario_punto_corte'];}
+	public function getMarcacionTipoCajaDefaultId()		{return $this->getRecord()['marcacion_tipo_caja_default_id'];}
+	//------------------------
+
 	
 	public function getUserLayout(){
 		$record = $this->getRecord();
@@ -54,13 +62,13 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	public function setClienteSeleccionMarcacionNombre($valor){
 		$session = new Container('usuario');
 		$session->offsetSet('cliente_seleccion_marcacion_nombre', $valor);
-	}//end function
-	
-	public function setClienteSeleccionMarcacionPuntoCorte($valor){
+	}//end function	
+/*	
+ 	public function setClienteSeleccionMarcacionPuntoCorte($valor){
 		$session = new Container('usuario');
 		$session->offsetSet('cliente_seleccion_marcacion_puntocorte', $valor);
 	}//end function
-	
+*/	
 	public function setClienteSeleccionAgenciaId($valor){
 		$session = new Container('usuario');
 		$session->offsetSet('cliente_seleccion_agencia_id', $valor);
@@ -81,11 +89,37 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 		$session = new Container('usuario');
 		$session->offsetSet('cliente_usuario_username', $valor);
 	}//end function
-	public function setClienteCalidadId($valor){
+/*	public function setClienteCalidadId($valor){
 		$session = new Container('usuario');
 		$session->offsetSet('cliente_calidad_id', $valor);
 	}//end function
-	
+*/	
+	//2015-09-29 Nuevos Campos
+	public function setUserInventarioId($valor){
+		$session = new Container('usuario');
+		$session->offsetSet('inventario_id', $valor);
+	}//end function
+	public function setUserCalidadId($valor){
+		$session = new Container('usuario');
+		$session->offsetSet('calidad_id', $valor);
+	}//end function
+	public function setUserGrupoPrecioCabId($valor){
+		$session = new Container('usuario');
+		$session->offsetSet('grupo_precio_cab_id', $valor);
+	}//end function
+	public function setUserGrupoDispoCabId($valor){
+		$session = new Container('usuario');
+		$session->offsetSet('grupo_dispo_cab_id', $valor);
+	}//end function
+	public function setUserPuntoCorte($valor){
+		$session = new Container('usuario');
+		$session->offsetSet('punto_corte', $valor);
+	}//end function
+	public function setMarcacionTipoCajaDefaultId($valor){
+		$session = new Container('usuario');
+		$session->offsetSet('marcacion_tipo_caja_default_id', $valor);
+	}//end function	
+	//-----------------------------
 	
 	/*-----------------------------------------------------------------------------*/
 	public function getRecord()
@@ -108,7 +142,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 					'cliente_seleccion_marcacion_sec'	=> $session->offsetGet('cliente_seleccion_marcacion_sec'),
 					'cliente_seleccion_marcacion_nombre'=> $session->offsetGet('cliente_seleccion_marcacion_nombre'),
 					'cliente_seleccion_agencia_id'		=> $session->offsetGet('cliente_seleccion_agencia_id'),
-					'cliente_seleccion_marcacion_puntocorte'=> $session->offsetGet('cliente_seleccion_marcacion_puntocorte'),
+//					'cliente_seleccion_marcacion_puntocorte'=> $session->offsetGet('cliente_seleccion_marcacion_puntocorte'),
 					'cliente_pedido_cab_id_actual'		=> $session->offsetGet('cliente_pedido_cab_id_actual'),
 					'vendedor_usuario_id'				=> $session->offsetGet('vendedor_usuario_id'),
 					'vendedor_nombre_usuario'			=> $session->offsetGet('vendedor_nombre_usuario'),
@@ -116,7 +150,13 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 					'cliente_usuario_id'				=> $session->offsetGet('cliente_usuario_id'),
 					'cliente_usuario_nombre'			=> $session->offsetGet('cliente_usuario_nombre'),
 					'cliente_usuario_username'			=> $session->offsetGet('cliente_usuario_username'),
-					'cliente_calidad_id'				=> $session->offsetGet('cliente_calidad_id'),
+					'cliente_usuario_inventario_id'		=> $session->offsetGet('inventario_id'),		//2015-09-29 NUEVO
+					'cliente_usuario_calidad_id'		=> $session->offsetGet('calidad_id'),			//2015-09-29 NUEVO
+					'cliente_usuario_grupo_precio_cab_id'=> $session->offsetGet('grupo_precio_cab_id'),	//2015-09-29 NUEVO
+					'cliente_usuario_grupo_dispo_cab_id'=> $session->offsetGet('grupo_dispo_cab_id'),	//2015-09-29 NUEVO
+					'cliente_usuario_punto_corte'		=> $session->offsetGet('punto_corte'),			//2015-09-29 NUEVO
+					'marcacion_tipo_caja_default_id'	=> $session->offsetGet('marcacion_tipo_caja_default_id'),	//2015-09-29 NUEVO
+//					'cliente_calidad_id'				=> $session->offsetGet('cliente_calidad_id'),
 					];
 		return $result;
 	}//end function getRecord

@@ -17,6 +17,8 @@ use Dispo\BO\CalidadBO;
 use Dispo\BO\InventarioBO;
 use Dispo\BO\ProveedorBO;
 use Dispo\BO\ColorVentasBO;
+use Dispo\BO\ClienteAgenciaCargaBO;
+use Dispo\BO\TipoCajaBO;
 
 class DisponibilidadController extends AbstractActionController
 {
@@ -79,7 +81,14 @@ class DisponibilidadController extends AbstractActionController
 			//Consulta la marcacion para obtener el nombre
 			$MarcacionData = $MarcacionBO->consultar($marcacion_sec);
 			$SesionUsuarioPlugin->setClienteSeleccionMarcacionNombre($MarcacionData->getNombre());
-			$SesionUsuarioPlugin->setClienteSeleccionMarcacionPuntoCorte($MarcacionData->getPuntoCorte());
+			//$SesionUsuarioPlugin->setClienteSeleccionMarcacionPuntoCorte($MarcacionData->getPuntoCorte());
+			$tipo_caja_default_id = $MarcacionData->getTipoCajaDefaultId();
+			if (empty($tipo_caja_default_id))
+			{
+				$SesionUsuarioPlugin->setMarcacionTipoCajaDefaultId('HB'); //CAJA POR DEFECTO EN CASO QUE NO TENGA ASIGNADO LA MARCACION
+			}else{				
+				$SesionUsuarioPlugin->setMarcacionTipoCajaDefaultId($MarcacionData->getTipoCajaDefaultId());
+			}//end if
 			unset($MarcacionData, $MarcacionBO);
 			 
 			//Consulta la carga para obtener el nombre
@@ -187,7 +196,9 @@ class DisponibilidadController extends AbstractActionController
 			$SesionUsuarioPlugin->isLoginClienteVendedor();
 				
 			$DispoBO				= new DispoBO();
+			$TipoCajaBO				= new TipoCajaBO();
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$TipoCajaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 
 			//Se pregunta si se ha seleccionado una marcacion y una agencia, caso contrario lo rutea
 			//para obligarlo a seleccionar
@@ -205,12 +216,16 @@ class DisponibilidadController extends AbstractActionController
 			$cliente_id 	= $SesionUsuarioPlugin->getUserClienteId();
 			$usuario_id 	= $SesionUsuarioPlugin->getClienteUsuarioId();
 			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
+			$tipo_caja_id	= $SesionUsuarioPlugin->getMarcacionTipoCajaDefaultId();		
 
-			$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec);
+			$result_cajas	= $TipoCajaBO->getArrayIndexado();
+
+			$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id);
 
 			$viewModel 							= new ViewModel();
 			$viewModel->respuesta_dispo_code	= $result['respuesta_code'];
-			$viewModel->respuesta_dispo_msg		= $result['respuesta_msg'];	
+			$viewModel->respuesta_dispo_msg		= $result['respuesta_msg'];
+			$viewModel->result_cajas			= $result_cajas;	
 			if (!empty($result['result_dispo']))
 			{
 				$viewModel->result					= $result['result_dispo'];
@@ -246,10 +261,12 @@ class DisponibilidadController extends AbstractActionController
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 		
 			$body = $this->getRequest()->getContent();
-			$json = json_decode($body, true);			
+			$json = json_decode($body, true);
+			$producto_id		= $json['producto_id'];			
 			$tipo_caja_id		= $json['tipo_caja_id'];
 			$variedad_id		= $json['variedad_id'];
 			$grado_id			= $json['grado_id'];
+			$tallos_x_bunch		= $json['tallos_x_bunch'];
 				
 			//Se pregunta si se ha seleccionado una marcacion y una agencia, caso contrario lo rutea
 			//para obligarlo a seleccionar
@@ -263,7 +280,8 @@ class DisponibilidadController extends AbstractActionController
 
 			$cbo_nro_caja		= "";
 			$nro_cajas			= 0;			
-			$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id);
+			$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id,
+												false, true, false, $producto_id, $tallos_x_bunch);
 
 			if($result)
 			{
@@ -308,10 +326,10 @@ class DisponibilidadController extends AbstractActionController
 		{
 			$EntityManagerPlugin = $this->EntityManagerPlugin();
 				
-			$AgenciaCargaBO = new AgenciaCargaBO();
+			$ClienteAgenciaCargaBO = new ClienteAgenciaCargaBO();
 			$MarcacionBO 	= new MarcacionBO();
 						
-			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ClienteAgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			$MarcacionBO->setEntityManager($EntityManagerPlugin->getEntityManager());			
 		
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
@@ -327,13 +345,13 @@ class DisponibilidadController extends AbstractActionController
 			$agencia_carga_id 	= null;
 
 			$marcacion_opciones 	= $MarcacionBO->getComboActivosPorClienteId($cliente_id, $marcacion_sec, $marcacion_texto_primer_elemento);
-			$agenciacarga_opciones 	= $AgenciaCargaBO->getComboActivos($agencia_carga_id, $agenciacarga_texto_primer_elemento);	
+			$agenciacarga_opciones 	= $ClienteAgenciaCargaBO->getComboAgencia($cliente_id, $agencia_carga_id, $agenciacarga_texto_primer_elemento);	
 
 			$response = new \stdClass();
-			$response->marcacion_opciones				= $marcacion_opciones;
-			$response->agenciacarga_opciones			= $agenciacarga_opciones;			
-			$response->respuesta_code 		= 'OK';
-		
+			$response->marcacion_opciones		= $marcacion_opciones;
+			$response->agenciacarga_opciones	= $agenciacarga_opciones;			
+			$response->respuesta_code 			= 'OK';
+
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
 		
@@ -369,15 +387,19 @@ class DisponibilidadController extends AbstractActionController
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 
+			$producto_id		= $json['producto_id'];
 			$variedad_id		= $json['variedad_id'];
 			$grado_id			= $json['grado_id'];
+			$tallos_x_bunch		= $json['tallos_x_bunch'];
 			//$tipo_caja_id		= $json['tipo_caja_id'];  //Envia el tipo de caja con que el cliente ha seleccionado en la grilla de dispo
 			$cliente_id 		= $SesionUsuarioPlugin->getUserClienteId();
 			$cliente_usuario_id	= $SesionUsuarioPlugin->getClienteUsuarioId();
-			$marcacion_sec	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();			
+			$marcacion_sec		= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();		
+			$tipo_caja_id		= $SesionUsuarioPlugin->getMarcacionTipoCajaDefaultId();
 
 			//Consulta el cliente para saber con que precio especial debe de trabajar
-			$dispo_precio_oferta = $DispoBO->consultarPrecioOfertaPorCliente($cliente_id, $cliente_usuario_id, $marcacion_sec, $variedad_id, $grado_id); 
+			$dispo_precio_oferta = $DispoBO->consultarPrecioOfertaPorCliente($cliente_id, $cliente_usuario_id, $marcacion_sec, 
+																			 $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $tipo_caja_id); 
 			$reg_dispo_precio_oferta = null;
 			if ($dispo_precio_oferta) {
 				$reg_dispo_precio_oferta = $dispo_precio_oferta['result_dispo'][0];
@@ -429,10 +451,12 @@ class DisponibilidadController extends AbstractActionController
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 			$oferta_tipo_caja_id		= $json['oferta_tipo_caja_id'];
+			$ofertas_producto_id		= $json['oferta_producto_id'];			
 			$oferta_variedad_id			= $json['oferta_variedad_id'];
 			$oferta_grado_id			= $json['oferta_grado_id'];
+			$oferta_tallos_x_bunch		= $json['oferta_tallos_x_bunch'];
 			$oferta_nro_caja			= $json['oferta_nro_caja'];
-	
+
 			//Se pregunta si se ha seleccionado una marcacion y una agencia, caso contrario lo rutea
 			//para obligarlo a seleccionar
 			$marcacion_id	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
@@ -442,8 +466,10 @@ class DisponibilidadController extends AbstractActionController
 			$cliente_id 		= $SesionUsuarioPlugin->getUserClienteId();
 			$cliente_usuario_id = $SesionUsuarioPlugin->getClienteUsuarioId();
 			$marcacion_sec		= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
-			
-			$result_hueso = $DispoBO->consultarPrecioOfertaPorClienteHueso($cliente_id, $cliente_usuario_id, $marcacion_sec, $oferta_variedad_id, $oferta_grado_id, $oferta_tipo_caja_id, $oferta_nro_caja);
+
+			$result_hueso = $DispoBO->consultarPrecioOfertaPorClienteHueso($cliente_id, $cliente_usuario_id, $marcacion_sec, 
+														$ofertas_producto_id, $oferta_variedad_id, $oferta_grado_id, $oferta_tallos_x_bunch, 
+														$oferta_tipo_caja_id, $oferta_nro_caja);
 	
 			$response = new \stdClass();
 			$response->respuesta_code 		= 'OK';

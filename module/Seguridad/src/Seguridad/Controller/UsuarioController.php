@@ -89,8 +89,15 @@ class UsuarioController extends AbstractActionController
 			$SesionUsuarioPlugin->setClienteUsuarioId			($usuario_id);
 			$SesionUsuarioPlugin->setClienteUsuarioNombre		($reg_usuario['nombre']);
 			$SesionUsuarioPlugin->setClienteUsuarioUserName		($reg_usuario['username']);
-			$SesionUsuarioPlugin->setClienteCalidadId			($reg_usuario['calidad_id']);
-
+			//$SesionUsuarioPlugin->setClienteCalidadId			($reg_usuario['calidad_id']);
+			//-------------2015-09-29 Se asignan las nuevas variables de session --------------------
+			$SesionUsuarioPlugin->setUserInventarioId			($reg_usuario['inventario_id']);
+			$SesionUsuarioPlugin->setUserCalidadId				($reg_usuario['calidad_id']);
+			$SesionUsuarioPlugin->setUserGrupoPrecioCabId		($reg_usuario['grupo_precio_cab_id']);
+			$SesionUsuarioPlugin->setUserGrupoDispoCabId		($reg_usuario['grupo_dispo_cab_id']);
+			$SesionUsuarioPlugin->setUserPuntoCorte				($reg_usuario['punto_corte']);
+			//---------------------------------------------------------------------------------------
+			
 			$response = new \stdClass();
 			$response->respuesta_code 			= 'OK';
 			$response->cliente_id				= $cliente_id;
@@ -109,28 +116,9 @@ class UsuarioController extends AbstractActionController
 				$session->offsetSet('cliente_seleccion_marcacion_sec', $reg_pedido['marcacion_sec']);
 				$session->offsetSet('cliente_seleccion_marcacion_nombre', $reg_pedido['marcacion_nombre']);
 				$session->offsetSet('cliente_seleccion_agencia_id', $reg_pedido['agencia_carga_id']);
+				$session->offsetSet('marcacion_tipo_caja_default_id', $reg_pedido['tipo_caja_default_id']);
+			}//end if
 
-				//Se consulta la marcacion y la agencia de carga del detalle de la factura
-/*				$reg_det	= $PedidoBO->consultarPedidoDetUltimoRegistro($reg_pedido['id']);//end if
-				if ($reg_det)
-				{
-					if (!empty($reg_det['marcacion_sec']))
-					{
-						$session->offsetSet('cliente_seleccion_marcacion_sec', $reg_det['marcacion_sec']);
-					}else{
-						$session->offsetSet('cliente_seleccion_marcacion_sec', null);
-					}//end if
-					$session->offsetSet('cliente_seleccion_marcacion_nombre', $reg_det['marcacion_nombre']);
-					if (!empty($reg_det['marcacion_sec']))
-					{					
-						$session->offsetSet('cliente_seleccion_agencia_id', $reg_det['agencia_carga_id']);
-					}else{
-						$session->offsetSet('cliente_seleccion_agencia_id', null);
-					}
-				}//end if
-*/			}//end if			
-			
-			
 			$json = new JsonModel(get_object_vars($response));
 			return $json;			
 

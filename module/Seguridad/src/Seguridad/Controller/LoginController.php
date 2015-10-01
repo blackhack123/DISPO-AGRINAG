@@ -104,7 +104,18 @@ class LoginController extends AbstractActionController
 								$session->offsetSet('perfil_nombre', $rsUsuario['perfil_nombre']);
 								$session->offsetSet('cliente_id', $rsUsuario['cliente_id']);
 								$session->offsetSet('cliente_nombre', $rsUsuario['cliente_nombre']);
-								$session->offsetSet('cliente_calidad_id', $rsUsuario['calidad_id']);								
+								//$session->offsetSet('cliente_calidad_id', $rsUsuario['calidad_id']);
+								
+								/** -------------------------------------------------------------------
+								 * 2015-09-29  - Variables nuevas que se implemento al usuario
+								 */
+								$session->offsetSet('cliente_usuario_inventario_id', $rsUsuario['usuario_inventario_id']);								
+								$session->offsetSet('cliente_usuario_calidad_id', $rsUsuario['usuario_calidad_id']);
+								$session->offsetSet('cliente_usuario_grupo_precio_cab_id', $rsUsuario['usuario_grupo_precio_cab_id']);
+								$session->offsetSet('cliente_usuario_grupo_dispo_cab_id', $rsUsuario['usuario_grupo_dispo_cab_id']);
+								$session->offsetSet('cliente_usuario_punto_corte', $rsUsuario['usuario_punto_corte']);
+								/** ------------------------------------------------------------------ */
+
 								$session->offsetSet('cliente_seleccion_marcacion_sec', null);
 								$session->offsetSet('cliente_seleccion_agencia_id', null);
 								//Variables de sesion usadas por el usuario de vendedor para emular a los clientes
@@ -130,7 +141,9 @@ class LoginController extends AbstractActionController
 											$session->offsetSet('cliente_seleccion_marcacion_sec', 		$reg_pedido['marcacion_sec']);
 											$session->offsetSet('cliente_seleccion_marcacion_nombre', 	$reg_pedido['marcacion_nombre']);
 											$session->offsetSet('cliente_seleccion_agencia_id', 		$reg_pedido['agencia_carga_id']);
-											$session->offsetSet('cliente_seleccion_marcacion_puntocorte',$reg_pedido['marcacion_punto_corte']);
+											$session->offsetSet('marcacion_tipo_caja_default_id', 		$reg_pedido['tipo_caja_default_id']);
+
+											//$session->offsetSet('cliente_seleccion_marcacion_puntocorte',$reg_pedido['marcacion_punto_corte']);
 											
 											//Se consulta la marcacion y la agencia de carga del detalle de la factura
 /*											$reg_det	= $PedidoBO->consultarPedidoDetUltimoRegistro($reg_pedido['id']);//end if

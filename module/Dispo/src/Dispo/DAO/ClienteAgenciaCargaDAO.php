@@ -149,6 +149,27 @@ class ClienteAgenciaCargaDAO extends Conexion
 		return $result;
 	}//end function listado
 	
+
 	
+	/**
+	 *
+	 * @param string $cliente_id
+	 * @return array
+	 */
+	public function consultarPorCliente($cliente_id)
+	{
+		$sql = 	' SELECT agencia_carga.id, agencia_carga.nombre, agencia_carga.tipo '.
+				' FROM cliente_agencia_carga INNER JOIN agencia_carga '.
+				'								     ON agencia_carga.id 		= cliente_agencia_carga.agencia_carga_id '.
+				"                                   AND agencia_carga.estado	= 'A'".
+				" WHERE cliente_agencia_carga.cliente_id = '".$cliente_id."'";
+
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function consultarTodos
+		
 }//end class
 

@@ -161,47 +161,66 @@ class DispoDAO extends Conexion
 	 * RESTRICCION en GRUPO_DISPO se aplica la regla para la dispo por grupo
 	 * 
 	 * @param string $cliente_id
-	 * @param int $grupo_dispo_cab_id
+	 * @param string $producto_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param int $tallos_x_bunch
 	 * @param string $clasifica_fox
 	 * @return array
 	 */
-	public function consultarInventarioPorCliente($cliente_id, $inventario_id, $grupo_dispo_cab_id, $variedad_id, $grado_id, $clasifica_fox)
+	/*public function consultarInventarioPorCliente($cliente_id, $inventario_id, $grupo_dispo_cab_id, $variedad_id, $grado_id, $clasifica_fox)*/
+	public function consultarInventarioPorUsuario($usuario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $clasifica_fox)
 	{
-		$sql = 	' SELECT variedad.nombre as variedad_nombre,'.
+		$sql = 	' SELECT dispo.producto as producto_id, '.
+				'       variedad.nombre as variedad_nombre,'.
 				'		dispo.variedad_id, '.
 				'		dispo.grado_id,'.
+				'       dispo.tallos_x_bunch,'.
 				'		dispo.proveedor_id, '.				
 				'		grupo_dispo_det.cantidad_bunch_disponible as grupo_dispo_det_cantidad_bunch_disponible, '.
 				'       grupo_precio_det.precio, grupo_precio_det.precio_oferta, '.
+				'		color_ventas.nombre as color_nombre,'.
 				'	sum(dispo.cantidad_bunch_disponible) as tot_bunch_disponible, '.
 				'	sum(dispo.tallos_x_bunch) as tot_tallos_x_bunch,'.
 				'	count(*) as veces_tallos_x_bunch'.
-				' FROM cliente INNER JOIN grupo_precio_det'.
-				'					 ON grupo_precio_det.grupo_precio_cab_id = cliente.grupo_precio_cab_id';
+				' FROM  usuario INNER JOIN cliente '.
+				'                       ON cliente.id = usuario.cliente_id'.
+				'		        INNER JOIN grupo_precio_det'.
+				'					 ON grupo_precio_det.grupo_precio_cab_id = usuario.grupo_precio_cab_id';  /*GRUPO PRECIO*/
+		if (!empty($producto_id)){
+			$sql = $sql."           AND grupo_precio_det.producto_id   = '".$producto_id."'";
+		}//end if
 		if (!empty($variedad_id)){
 			$sql = $sql."		    AND grupo_precio_det.variedad_id	= '".$variedad_id."'";
 		}//end if
 		if (!empty($grado_id)){
 			$sql = $sql."		    AND grupo_precio_det.grado_id		= '".$grado_id."'";
-		}//end if				
+		}//end if
+		if (!empty($tallos_x_bunch)){
+			$sql = $sql."           AND grupo_precio_det.tallos_x_bunch = ".$tallos_x_bunch;
+		}//end if			
 		$sql = $sql.'		 INNER JOIN dispo '.
-				"					 ON dispo.inventario_id	= '".$inventario_id."'".
+				"					 ON dispo.inventario_id	= usuario.inventario_id ".  /*INVENTARIO*/
+				'                   AND dispo.producto      = grupo_precio_det.producto_id'.
 				'					AND dispo.variedad_id	= grupo_precio_det.variedad_id'.
 				'					AND dispo.grado_id		= grupo_precio_det.grado_id'.
+				'					AND dispo.tallos_x_bunch= grupo_precio_det.tallos_x_bunch'.
 				"					AND dispo.clasifica		= '".$clasifica_fox."'".
 				'					AND dispo.cantidad_bunch_disponible > 0'.
 				'		 	 INNER JOIN variedad'.
 				'					 ON variedad.id			= dispo.variedad_id'.
+				'            LEFT JOIN color_ventas '.
+				'                    ON color_ventas.id		= variedad.color_ventas_id'.
 				'            LEFT JOIN grupo_dispo_det '.
-				'                    ON grupo_dispo_det.grupo_dispo_cab_id 		= '.$grupo_dispo_cab_id.
+				'                    ON grupo_dispo_det.grupo_dispo_cab_id 		= usuario.grupo_dispo_cab_id'. /*GRUPO DISPO*/
+				'                   AND grupo_dispo_det.producto_id				= dispo.producto'.
 				'                   AND grupo_dispo_det.variedad_id				= dispo.variedad_id'.
 				'					AND grupo_dispo_det.grado_id    			= dispo.grado_id '.
-				" WHERE cliente.id = '".$cliente_id."'".
+				'                   AND grupo_dispo_det.tallos_x_bunch			= dispo.tallos_x_bunch'.
+				" WHERE usuario.id = ".$usuario_id.
 				//" AND dispo.clasifica = '1'".//PARA TOMAR CALIDAD DE FLOR (RECIEN ADICIONADO)
-				' GROUP BY variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.proveedor_id, grupo_dispo_det.cantidad_bunch_disponible, grupo_precio_det.precio, grupo_precio_det.precio_oferta '.
-				' ORDER BY variedad.nombre, dispo.variedad_id, dispo.grado_id, tot_bunch_disponible DESC';
+				' GROUP BY dispo.producto, variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.tallos_x_bunch, dispo.proveedor_id, grupo_dispo_det.cantidad_bunch_disponible, grupo_precio_det.precio, grupo_precio_det.precio_oferta, color_ventas.nombre '.
+				' ORDER BY dispo.producto, variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.tallos_x_bunch, tot_bunch_disponible DESC';
 
 		//die($sql);
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);

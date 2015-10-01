@@ -296,11 +296,13 @@ class PedidoDetDAO extends Conexion
 	 * @param string $grado_id
 	 * @return array
 	 */
-	public function consultarPedidosEstadoComprando($cliente_id, $inventario_id, $variedad_id, $grado_id)
+	public function consultarPedidosEstadoComprando($cliente_id, $inventario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch)
 	{
 		$sql =  " SELECT ".
+				'   variedad.producto_id,'.
 				"	pedido_det.variedad_id,".
 				"	pedido_det.grado_id,".
+				'   pedido_det.tallos_x_bunch,'.
 				"	sum(pedido_det.cantidad_bunch) as pedido_tot_bunch".
 				" FROM pedido_cab INNER JOIN pedido_det".
 				"						ON pedido_det.pedido_cab_id = pedido_cab.id".
@@ -311,9 +313,17 @@ class PedidoDetDAO extends Conexion
 		if (!empty($grado_id)){
 			$sql = $sql."			   AND pedido_det.grado_id 		= '".$grado_id."'";
 		}
-		$sql = $sql." WHERE pedido_cab.cliente_id 	= '".$cliente_id."'".
+		if (!empty($tallos_x_bunch)){
+			$sql = $sql."			   AND pedido_det.tallos_x_bunch= ".$tallos_x_bunch;
+		}
+		$sql = $sql.'             INNER JOIN variedad'.
+				'                       ON variedad.id  			= pedido_det.variedad_id ';
+		if (!empty($producto_id)){
+			$sql = $sql."			   AND variedad.producto_id 	= '".$producto_id."'";
+		}
+		$sql = $sql."  WHERE pedido_cab.cliente_id 	= '".$cliente_id."'".
 				"  AND pedido_cab.estado 		= 'C'".
-				" GROUP BY variedad_id, grado_id";
+				" GROUP BY variedad.producto_id, pedido_det.variedad_id, pedido_det.grado_id, pedido_det.tallos_x_bunch";
 	
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$result = $stmt->fetchAll();
@@ -333,9 +343,10 @@ class PedidoDetDAO extends Conexion
 	 * @param string $grado_id
 	 * @param string $estado_pedido
 	 * @param string $tipo_caja_id
+	 * @param int $tallos_x_bunch
 	 * @return number
 	 */
-	public function getCajasHomologadaPedido($inventario_id, $cliente_id, $marcacion_sec, $variedad_id, $grado_id, $estado_pedido, $tipo_caja_id)
+	public function getCajasHomologadaPedido($inventario_id, $cliente_id, $marcacion_sec, $variedad_id, $grado_id, $estado_pedido, $tipo_caja_id, $tallos_x_bunch)
 	{
 		/**
 			* Se resta del stock los pedidos del cliente que se encuentra comprando
@@ -363,6 +374,7 @@ class PedidoDetDAO extends Conexion
 				"					   AND pedido_det.inventario_id	= '".$inventario_id."'".
 				"					   AND pedido_det.variedad_id	= '".$variedad_id."'".
 				"					   AND pedido_det.grado_id		= '".$grado_id."'".
+				"                      AND pedido_det.tallos_x_bunch= ".$tallos_x_bunch.
 				"					INNER JOIN tipo_caja_matriz".
 				"					    ON tipo_caja_matriz.inventario_id 	= pedido_det.inventario_id".
 				"		   			   AND tipo_caja_matriz.variedad_id 	= pedido_det.variedad_id".
@@ -461,7 +473,8 @@ class PedidoDetDAO extends Conexion
 	{
 /*		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
 				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id, '.
-*/		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, pedido_cab.cliente_id, pedido_cab.marcacion_sec, pedido_cab.agencia_carga_id, '.				
+*/		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, pedido_cab.cliente_id, pedido_cab.marcacion_sec, '.
+				' 		 pedido_cab.agencia_carga_id, color_ventas.nombre as color_ventas_nombre, '.				
 				'		 CASE pedido_det.estado_reg_oferta '.
 				'			WHEN 1 THEN variedad_hueso.nombre '.
 				'			WHEN 0 THEN variedad_carne.nombre '.
@@ -478,11 +491,9 @@ class PedidoDetDAO extends Conexion
 		}//end if
 		$sql .=	'				  INNER JOIN variedad '.
 				'                    ON variedad.id				= pedido_det.variedad_id '.
-/*				'				  LEFT JOIN agencia_carga '.
-				'                    ON agencia_carga.id 		= pedido_det.agencia_carga_id '.
-				'				  LEFT JOIN marcacion '.
-				'					 ON marcacion.marcacion_sec	= pedido_det.marcacion_sec '.
-*/				'                 LEFT JOIN pedido_det as pedido_det_vinculado_carne '.
+				'				  INNER JOIN color_ventas '.
+				' 					 ON color_ventas.id			= variedad.color_ventas_id '.				
+				'                 LEFT JOIN pedido_det as pedido_det_vinculado_carne '.
 				'					 ON pedido_det_vinculado_carne.pedido_cab_id	= pedido_det.pedido_cab_oferta_id '.
 				'				    AND pedido_det_vinculado_carne.pedido_det_sec	= pedido_det.pedido_det_oferta_sec '.
 				'                 LEFT JOIN variedad as variedad_carne '.

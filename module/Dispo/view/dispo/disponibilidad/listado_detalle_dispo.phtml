@@ -55,16 +55,20 @@
 	{		
 		var tr 				= obj.closest('tr');
 		var id_tr			= tr.attr('id');
+		var producto_id		= tr.attr('producto_id');
 		var variedad_id 	= tr.attr('variedad_id');
 		var grado_id		= tr.attr('grado_id');
+		var tallos_x_bunch	= tr.attr('tallos_x_bunch');
 		var tipo_caja_id	= $('#'+id_tr+'_tipo_caja_id').val(); 	
 
 		//Se inicializa la cantidad de cajas y el combo de seleccion de cajas
 		 $('#'+id_tr+'_cantidad_order').html('');
 		 $('#'+id_tr+'_stock').html('loading..');
 		 		
-		var data = 	{	variedad_id: variedad_id,
+		var data = 	{	producto_id: producto_id,
+						variedad_id: variedad_id,
 						grado_id: grado_id,
+						tallos_x_bunch: tallos_x_bunch,
 						tipo_caja_id: tipo_caja_id,
 					}
 
@@ -111,14 +115,18 @@
 		cargador_visibility('show');		
 		var tr 				= obj.closest('tr');
 		var id_tr			= tr.attr('id');
+		var producto_id 	= tr.attr('producto_id');		
 		var variedad_id 	= tr.attr('variedad_id');
 		var grado_id		= tr.attr('grado_id');
+		var tallos_x_bunch	= tr.attr('tallos_x_bunch');
 		var tipo_caja_id	= $('#'+id_tr+'_tipo_caja_id').val(); 
 		var cantidad_order	= $('#'+id_tr+'_cantidad_order').val();
 
 		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{	variedad_id: variedad_id,
+		var data = 	{	producto_id: producto_id,
+						variedad_id: variedad_id,
 						grado_id: grado_id,
+						tallos_x_bunch: tallos_x_bunch,
 						tipo_caja_id: tipo_caja_id,
 						cantidad_order: cantidad_order
 					}
@@ -158,20 +166,27 @@
 	}//end function addOrder
 
 
+
 	function mostrar_oferta_dispo(obj)
 	{
 		//cargador_visibility('show');		
 		var tr 				= obj.closest('tr');
 		var id_tr			= tr.attr('id');
+		var producto_id		= tr.attr('producto_id');
 		var variedad_id 	= tr.attr('variedad_id');
+//		console.log('tr.html:',tr.html(),'*tr:',tr);
+		var variedad_nombre = tr.find('.variedad_nombre').html();
+		//console.log('variedad_nombre:',variedad_nombre);
 		var grado_id		= tr.attr('grado_id');
+		var tallos_x_bunch	= tr.attr('tallos_x_bunch');
 
-
-		$("#dialog_oferta_variedad_nombre").val($("#variedad_nombre").html());
+		$("#dialog_oferta_variedad_nombre").html(variedad_nombre);
 
 		//Se llama mediante AJAX para llamar la oferta que tiene la variedad
-		var data = 	{	variedad_id: variedad_id,
+		var data = 	{	producto_id: producto_id,
+						variedad_id: variedad_id,
 						grado_id: grado_id,
+						tallos_x_bunch: tallos_x_bunch
 						//tipo_caja_id: tipo_caja_id,
 						//cantidad_order: cantidad_order
 					}
@@ -213,6 +228,7 @@
                 	<thead>
                         <tr>
                             <th class="th-inner"  width="300">Description</th>
+                            <th class="th-inner"  width="70">Color</th>
                             <th class="th-inner"  width="70">40</th>
                             <th class="th-inner"  width="70">50</th>
                             <th class="th-inner"  width="70">60</th>
@@ -231,6 +247,7 @@
 	            	<tbody class="searchable" style="border: 1px solid #cdcdcd;">
                		
 <?php 
+
 	if ($this->result)
 	{
 		$ind = 0;
@@ -293,11 +310,21 @@
  					break;
 			}//end switch
 			
+			$html_tallos_x_bunch = '';
+			if ($reg['tallos_x_bunch']!=25)
+			{
+				$html_tallos_x_bunch = '&nbsp;<span class="tallos_buches_no_standar">('.$reg['tallos_x_bunch'].')</span>';
+			}//end if
+			
 			//Se configura el combo de caja
 			$options_cbo_caja = '';
 			foreach($reg['cajas'] as $caja)
 			{
-				$options_cbo_caja .='<option value="'.$caja.'">'.$caja.'</option>';
+				$seleccionado = '';
+				if ($reg['tipo_caja_default_id']==$caja){
+					$seleccionado = "selected";
+				}//end if
+				$options_cbo_caja .='<option value="'.$caja.'" '.$seleccionado.' >'.$this->result_cajas[$caja]['nombre'].'</option>';
 			}//end foreach
 			
 			
@@ -309,17 +336,18 @@
 				$options_cbo_order .='<option value="'.$i.'">'.$i.'</option>';
 			}//end foreach
 ?>
-	                    <tr id="<?php echo($ind); ?>" variedad_id="<?php echo($reg['variedad_id']); ?>" grado_id="<?php echo($grado_id); ?>"   class="<?php echo($class_row); ?>">                                
+	                    <tr id="<?php echo($ind); ?>"  producto_id="<?php echo($reg['producto_id']); ?>"  variedad_id="<?php echo($reg['variedad_id']); ?>" grado_id="<?php echo($grado_id); ?>"  tallos_x_bunch="<?php echo($reg['tallos_x_bunch']); ?>"  class="<?php echo($class_row); ?>">
 	                        <td>
-	                            <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span>
+	                            <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span><?php echo($html_tallos_x_bunch); ?>
 
-								<?php if (!empty($reg['precio_oferta'])){ ?>
+								<?php if (!empty($reg['precio_oferta'])&&($reg['precio_oferta']>0)){ ?>
 		                            <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange; cursor:pointer">
 		                                <span class="glyphicon glyphicon-star pointer"
 		                                aria-hidden="true" data-toggle="modal" data-target="#dialog_oferta"></span>
 		                            </div>
 	                            <?php }//end if ?>
 	                        </td>
+	                        <td><h5><small><?php echo($reg['color_nombre']); ?><small></h5></td>
 	                        <td>
 	                            <?php echo($precio_40); ?>                                    
 	                        </td>

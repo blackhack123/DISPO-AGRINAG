@@ -1,9 +1,14 @@
 <?php
 	//Se configura el combo de caja
 	$options_cbo_caja = '';
+	//echo('<pre>');var_dump($this->reg_dispo_precio_oferta);
 	foreach($this->reg_dispo_precio_oferta['cajas'] as $caja)
 	{
-		$options_cbo_caja .='<option value="'.$caja.'">'.$caja.'</option>';
+		$seleccionado = '';
+		if ($this->reg_dispo_precio_oferta['tipo_caja_default_id']==$caja){
+			$seleccionado = "selected";
+		}//end if		
+		$options_cbo_caja .='<option value="'.$caja.'" '.$seleccionado.' >'.$caja.'</option>';
 	}//end foreach
 	
 	
@@ -29,12 +34,14 @@
 
 
 		 $("#oferta_cbo_order").on('change', function(event){
+			var producto_id			= $("#oferta_producto_id").val();
 			var variedad_id 		= $('#oferta_variedad_id').val();
 			var grado_id			= $('#oferta_grado_id').val();
+			var tallos_x_bunch		= $("#oferta_tallos_x_bunch").val();
 			var tipo_caja_id		= $('#oferta_cbo_tipo_caja_id').val(); 	
 			var nro_cajas_oferta 	= $('#oferta_cbo_order').val();
 
-        	consultar_oferta_detalle(variedad_id, grado_id, tipo_caja_id, nro_cajas_oferta);
+        	consultar_oferta_detalle(producto_id, variedad_id, grado_id, tallos_x_bunch, tipo_caja_id, nro_cajas_oferta);
 			return true;
         });        
 
@@ -47,27 +54,34 @@
 		
 		
 		//Se carga inicialmente el detalle		
+		var producto_id			= $("#oferta_producto_id").val();
 		var variedad_id 		= $('#oferta_variedad_id').val();
 		var grado_id			= $('#oferta_grado_id').val();
+		var tallos_x_bunch		= $("#oferta_tallos_x_bunch").val();
 		var tipo_caja_id		= $('#oferta_cbo_tipo_caja_id').val(); 	
 		var nro_cajas_oferta 	= $('#oferta_cbo_order').val();
-		consultar_oferta_detalle(variedad_id, grado_id, tipo_caja_id, nro_cajas_oferta);
+		consultar_oferta_detalle(producto_id, variedad_id, grado_id, tallos_x_bunch, tipo_caja_id, nro_cajas_oferta);
 	});//$(document).ready
 	
 	
 
 	function oferta_consultar_nro_cajas()
-	{		
+	{	
+		var producto_id		= $('#oferta_producto_id').val();	
 		var variedad_id 	= $('#oferta_variedad_id').val();
 		var grado_id		= $('#oferta_grado_id').val();
+		var tallos_x_bunch	= $('#oferta_tallos_x_bunch').val();		
 		var tipo_caja_id	= $('#oferta_cbo_tipo_caja_id').val(); 	
 	
 		//Se inicializa la cantidad de cajas y el combo de seleccion de cajas
 		 $('#oferta_cbo_order').html('');
 		 $('#oferta_stock').html('loading..');
 		 		
-		var data = 	{	variedad_id: variedad_id,
+		//MORONITOR		
+		var data = 	{	producto_id: producto_id,
+						variedad_id: variedad_id,
 						grado_id: grado_id,
+						tallos_x_bunch: tallos_x_bunch,
 						tipo_caja_id: tipo_caja_id,
 					}
 	
@@ -92,7 +106,7 @@
 											 //$('#'+id_tr+'_add').show();
 										 }
 										 var nro_cajas_oferta = $('#oferta_cbo_order').val();
-										 consultar_oferta_detalle(variedad_id, grado_id, tipo_caja_id, nro_cajas_oferta);
+										 consultar_oferta_detalle(producto_id, variedad_id, grado_id, tallos_x_bunch, tipo_caja_id, nro_cajas_oferta);
 									}else{
 										swal({title: '('+ response.respuesta_codex + ') '+response.respuesta_mensaje,		    											
 											type: "error",
@@ -111,11 +125,13 @@
 	}//end function consultarDispoPorCaja
 	
 	
-	function consultar_oferta_detalle(variedad_id, grado_id, tipo_caja_id, nro_caja)
+	function consultar_oferta_detalle(producto_id, variedad_id, grado_id, tallos_x_bunch, tipo_caja_id, nro_caja)
 	{
 		var data = 	{	oferta_tipo_caja_id: tipo_caja_id,
+						oferta_producto_id: producto_id,
 						oferta_variedad_id: variedad_id,
 						oferta_grado_id: grado_id,
+						oferta_tallos_x_bunch: tallos_x_bunch,
 						oferta_nro_caja: nro_caja
 					};
 
@@ -134,7 +150,7 @@
 											for (var i = 0; i < response.result.length; i++) {											
 												row = response.result[i];
 												ind = i + 1;
-												row_html		= '<tr id="row_hueso_'+ind+'" variedad_id="'+row.variedad_id+'" grado_id="'+row.grado_id+'" tipo_caja_id="'+row.tipo_caja_id+'" nro_cajas_requeridas="'+row.nro_cajas_requeridas+'" >'
+												row_html		= '<tr id="row_hueso_'+ind+'" producto_id="'+row.producto_id+'" variedad_id="'+row.variedad_id+'" grado_id="'+row.grado_id+'" tallos_x_bunch="'+row.tallos_x_bunch+'" tipo_caja_id="'+row.tipo_caja_id+'" nro_cajas_requeridas="'+row.nro_cajas_requeridas+'" >'
 																  +'<td>'+row.variedad_nombre+'</td>'
 																  +'<td>'+row.grado_id+'</td>'
 																  +'<td>'+row.precio+'</td>'
@@ -172,30 +188,45 @@
 		}//end if
 
 //		cargador_visibility('show');		
-
-		var tr 						= $('#row_hueso_'+radioValue);
+		console.log('paso01');
+		var tr 							= $('#row_hueso_'+radioValue);
+		console.log('tr:',tr);
+		var hueso_producto_id			= tr.attr('producto_id');
+		console.log('hueso_producto_id:',hueso_producto_id)
 		var hueso_variedad_id 			= tr.attr('variedad_id');
+		console.log('hueso_variedad_id:',hueso_variedad_id);
 		var hueso_grado_id 				= tr.attr('grado_id');
-		var hueso_tipo_caja_id 			= tr.attr('tipo_caja_id');		
+		console.log('hueso_grado_id:',hueso_grado_id);
+		var hueso_tallos_x_bunch		= tr.attr('tallos_x_bunch');
+		console.log('tallos_x_bunch:',hueso_tallos_x_bunch);
+		var hueso_tipo_caja_id 			= tr.attr('tipo_caja_id');
+		console.log('tipo_caja_id:',hueso_tipo_caja_id);
 		var hueso_nro_cajas_requeridas	= tr.attr('nro_cajas_requeridas');
+		console.log('nro_cajas_requeridas:',hueso_nro_cajas_requeridas);
 		
 		//console.log('hueso_variedad_id:',hueso_variedad_id, '*hueso_grado_id:',hueso_grado_id,'*hueso_tipo_caja_id:',hueso_tipo_caja_id,'*hueso_nro_cajas_requeridas:',hueso_nro_cajas_requeridas);
 		
+		var oferta_producto_id			= $("#oferta_producto_id").val();
 		var oferta_variedad_id			= $("#oferta_variedad_id").val();
 		var oferta_grado_id				= $("#oferta_grado_id").val();
+		var oferta_tallos_x_bunch		= $("#oferta_tallos_x_bunch").val();
 		var oferta_tipo_caja_id			= $("#oferta_cbo_tipo_caja_id").val();
 		var oferta_nro_cajas			= $("#oferta_cbo_order").val();
 		//console.log('oferta_variedad_id:',oferta_variedad_id,'*oferta_grado_id:',oferta_grado_id,'*oferta_tipo_caja_id:',oferta_tipo_caja_id,'*oferta_nro_cajas:',oferta_nro_cajas);
 		
 		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{	variedad_id: 			oferta_variedad_id,
+		var data = 	{	producto_id:			oferta_producto_id,
+						variedad_id: 			oferta_variedad_id,
 						grado_id: 				oferta_grado_id,
+						tallos_x_bunch:			oferta_tallos_x_bunch,
 						tipo_caja_id: 			oferta_tipo_caja_id,
 						cantidad_order: 		oferta_nro_cajas,
+						hueso_producto_id:		hueso_producto_id,
 						hueso_variedad_id: 		hueso_variedad_id,
 						hueso_grado_id: 		hueso_grado_id,
+						hueso_tallos_x_bunch:	hueso_tallos_x_bunch,
 						hueso_tipo_caja_id: 	hueso_tipo_caja_id,
-						hueso_cantidad_order: 	hueso_nro_cajas_requeridas,						
+						hueso_cantidad_order: 	hueso_nro_cajas_requeridas,
 					}
 		data = JSON.stringify(data);
 		
@@ -237,8 +268,10 @@
 </script>
 
 	<div class="table-container">  
-  		 <input type="hidden" id="oferta_variedad_id" value="<?php echo($this->reg_dispo_precio_oferta['variedad_id']); ?> " />
-  		 <input type="hidden" id="oferta_grado_id" value="<?php echo($this->reg_dispo_precio_oferta['grado_id']); ?> " />         
+    	 <input type="hidden" id="oferta_producto_id" value="<?php echo($this->reg_dispo_precio_oferta['producto_id']); ?>" />
+  		 <input type="hidden" id="oferta_variedad_id" value="<?php echo($this->reg_dispo_precio_oferta['variedad_id']); ?>" />
+  		 <input type="hidden" id="oferta_grado_id" value="<?php echo($this->reg_dispo_precio_oferta['grado_id']); ?>" />  
+         <input type="hidden" id="oferta_tallos_x_bunch" value="<?php echo($this->reg_dispo_precio_oferta['tallos_x_bunch']); ?>" />       
           <table class="table-dispo border" width="100%">
               <tr>
                   <td class="th-inner"  width="90">Precio Normal</td>
@@ -307,7 +340,7 @@
                       <?php echo($this->reg_dispo_precio_oferta['grado_id']); ?> 
                   </td>
                   <td width="90">
-                      {{ctrl.get_cantidad_x_factor(oferta.factor_combo,ctrl.item_oferta.listindex)}}
+                      
                   </td>
                   <td width="150">
                       <input type="radio" class="form-control" id="hueso_escogido" name="hueso_escogido" />

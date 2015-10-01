@@ -38,25 +38,29 @@ class PedidoController extends AbstractActionController
 			$marcacion_sec 		= $SesionUsuarioPlugin->getClienteSeleccionMarcacionSec();
 			$agencia_carga_id 	= $SesionUsuarioPlugin->getClienteSeleccionAgenciaId();
 			$pedido_cab_id		= $SesionUsuarioPlugin->getClientePedidoCabIdActual();
-			$cliente_calidad_id = $SesionUsuarioPlugin->getClienteCalidadId();
-			$marcacion_punto_corte = $SesionUsuarioPlugin->getClienteSeleccionMarcacionPuntoCorte();
+			$usuario_calidad_id = $SesionUsuarioPlugin->getUserCalidadId();
+			//$marcacion_punto_corte = $SesionUsuarioPlugin->getClienteSeleccionMarcacionPuntoCorte();
+			$marcacion_punto_corte = $SesionUsuarioPlugin->getUserPuntoCorte();
+			$producto_id		= $json['producto_id'];
 			$variedad_id		= $json['variedad_id'];
 			$grado_id			= $json['grado_id'];
+			$tallos_x_bunch		= $json['tallos_x_bunch'];
 			$tipo_caja_id		= $json['tipo_caja_id'];
 			$cantidad_order		= $json['cantidad_order'];
 			$flag_oferta		= false;
-			
+
 			//CONFIGURACION ADICIONAL
-			$PedidoBO->setCalidadId($cliente_calidad_id);		//Setea clasifica al PedidoBO (Calidad de la Flor)
+			$PedidoBO->setCalidadId($usuario_calidad_id);		//Setea clasifica al PedidoBO (Calidad de la Flor)
 			$PedidoBO->setPuntoCorte($marcacion_punto_corte);	//Setea el punto de corte del Pedido
-			
 
 			//Se obtiene la bandera de oferta y el hueso
 			if (!(empty($json['hueso_variedad_id'])))
 			{
 				$flag_oferta = true;
+				$hueso_producto_id		= $json['hueso_producto_id']; //NUEVO
 				$hueso_variedad_id		= $json['hueso_variedad_id'];
 				$hueso_grado_id			= $json['hueso_grado_id'];
+				$hueso_tallos_x_bunch	= $json['tallos_x_bunch']; //NUEVO
 				$hueso_tipo_caja_id		= $json['hueso_tipo_caja_id'];
 				$hueso_cantidad_order	= $json['hueso_cantidad_order'];
 			}//end if
@@ -72,11 +76,12 @@ class PedidoController extends AbstractActionController
 			//Se invoca la llamada
 			if ($flag_oferta == false)
 			{
-				$result = $PedidoBO->addItem($pedido_cab_id, $cliente_id, $usuario_id, $vendedor_usuario_id, $marcacion_sec, $agencia_carga_id, $variedad_id, $grado_id, $tipo_caja_id, $cantidad_order);
+				$result = $PedidoBO->addItem($pedido_cab_id, $cliente_id, $usuario_id, $vendedor_usuario_id, $marcacion_sec, $agencia_carga_id, 
+											 $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $tipo_caja_id, $cantidad_order);
 			}else{
 				list($result, $result_hueso) = $PedidoBO->addItemOferta($pedido_cab_id, $cliente_id, $usuario_id, $vendedor_usuario_id, $marcacion_sec, $agencia_carga_id,
-																		$variedad_id, $grado_id, $tipo_caja_id, $cantidad_order,
-																		$hueso_variedad_id, $hueso_grado_id, $hueso_tipo_caja_id, $hueso_cantidad_order);
+													$producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $tipo_caja_id, $cantidad_order,
+													$hueso_producto_id, $hueso_variedad_id, $hueso_grado_id, $hueso_tallos_x_bunch, $hueso_tipo_caja_id, $hueso_cantidad_order);
 			}//end if
 
 			$response = new \stdClass();
@@ -221,7 +226,7 @@ class PedidoController extends AbstractActionController
 				$viewModel->rs_pedido_det				= null;
 			}else{
 				list($reg_pedido_cab, $rs_pedido_det) 		= $PedidoBO->consultarPedido($pedido_cab_actual_id);
-		
+
 				$viewModel->pedido_cab_id				= $reg_pedido_cab['id'];
 				$viewModel->nro_pedido_formateado		= \Application\Classes\Mascara::getNroPedidoFormateado($reg_pedido_cab['id'], $config['mascara_pedido']);
 				$viewModel->marcacion_nombre			= $reg_pedido_cab['marcacion_nombre'];

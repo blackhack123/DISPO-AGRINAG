@@ -49,4 +49,28 @@ class TipoCajaBO extends Conexion
 		return $opciones;
 	}//end function getComboDataGrid	
 	
+	
+	
+	/**
+	 * 
+	 * @return Ambigous <NULL, array>
+	 */
+	function getArrayIndexado()
+	{
+		$TipoCajaDAO = new TipoCajaDAO();
+		
+		$TipoCajaDAO->setEntityManager($this->getEntityManager());
+		
+		$result = $TipoCajaDAO->consultarTodos();
+
+		$result2 = null;
+		foreach($result as $reg)
+		{
+			$result2[$reg['id']] = $reg;
+		}//end foreach
+		
+		return $result2;
+	}//end function getArrayIndexado
+	
+	
 }//end class

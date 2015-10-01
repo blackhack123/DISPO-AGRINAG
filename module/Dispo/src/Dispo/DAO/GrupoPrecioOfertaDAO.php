@@ -174,29 +174,38 @@ class GrupoPrecioOfertaDAO extends Conexion
 	/**
 	 * 
 	 * @param int $grupo_precio_cab_id
+	 * @param string $producto_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param int $tallos_x_bunch
 	 * @return array
 	 */
-	public function consultarPorGrupoPrecioCabPorVariedadIdPorGradoIdMoronitor($grupo_precio_cab_id, $variedad_id, $grado_id) /*Moronitor*/
+	//consultarPorGrupoPrecioCabPorVariedadIdPorGradoId
+	public function consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($grupo_precio_cab_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch)
 	{
 		$sql = 	' SELECT grupo_precio_oferta.*, variedad.nombre as variedad_combo_nombre, grupo_precio_det.precio as precio_combo '.
 				' FROM grupo_precio_oferta INNER JOIN grupo_precio_det '.
 				'							       ON grupo_precio_det.grupo_precio_cab_id 		= grupo_precio_oferta.grupo_precio_cab_id '.
+				'								  AND grupo_precio_det.producto_id				= grupo_precio_oferta.producto_id'.
 				'								  AND grupo_precio_det.variedad_id				= grupo_precio_oferta.variedad_combo_id  '.
 				'								  AND grupo_precio_det.grado_id					= grupo_precio_oferta.grado_combo_id  '.
+				'								  AND grupo_precio_det.tallos_x_bunch			= grupo_precio_oferta.tallos_x_bunch'.
 				'						   INNER JOIN variedad '.
 				'								   ON variedad.id = grupo_precio_det.variedad_id '.
 				' WHERE grupo_precio_oferta.grupo_precio_cab_id	= :grupo_precio_cab_id '.
+				'   and grupo_precio_oferta.producto_id			= :producto_id'.
 				'   and grupo_precio_oferta.variedad_id			= :variedad_id'.
 				'   and grupo_precio_oferta.grado_id			= :grado_id'.
-				' ORDER BY variedad.nombre, grupo_precio_oferta.grado_combo_id ';
+				'   and grupo_precio_oferta.tallos_x_bunch		= :tallos_x_bunch'.
+				' ORDER BY variedad.nombre, grupo_precio_oferta.tallos_x_bunch, grupo_precio_oferta.grado_combo_id ';
 		
 		
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->bindValue(':grupo_precio_cab_id',$grupo_precio_cab_id);
+		$stmt->bindValue(':producto_id',$producto_id);
 		$stmt->bindValue(':variedad_id',$variedad_id);
 		$stmt->bindValue(':grado_id',$grado_id);
+		$stmt->bindValue(':tallos_x_bunch',$tallos_x_bunch);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
 		return $result;

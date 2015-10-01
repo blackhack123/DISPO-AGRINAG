@@ -31,9 +31,32 @@ class PedidoBO extends Conexion
 	
 	
 	
+	/**
+	 * 
+	 * @param int $pedido_cab_id
+	 * @param string $cliente_id
+	 * @param int $usuario_cliente_id
+	 * @param int $usuario_vendedor_id
+	 * @param int $marcacion_sec
+	 * @param int $agencia_carga_id
+	 * @param string $producto_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @param int $tallos_x_bunch
+	 * @param string $tipo_caja_id
+	 * @param int $nro_cajas_seleccionada
+	 * @param string $hueso_producto_id
+	 * @param string $hueso_variedad_id
+	 * @param string $hueso_grado_id
+	 * @param int $hueso_tallos_x_bunch
+	 * @param string $hueso_tipo_caja_id
+	 * @param int $hueso_nro_cajas_seleccionada
+	 * @throws Exception
+	 * @return array
+	 */
 	public function addItemOferta(	$pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
-								    $variedad_id, $grado_id, $tipo_caja_id, $nro_cajas_seleccionada,
-									$hueso_variedad_id, $hueso_grado_id, $hueso_tipo_caja_id, $hueso_nro_cajas_seleccionada)
+								    $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $tipo_caja_id, $nro_cajas_seleccionada,
+									$hueso_producto_id, $hueso_variedad_id, $hueso_grado_id, $hueso_tallos_x_bunch, $hueso_tipo_caja_id, $hueso_nro_cajas_seleccionada)
 	{
 		$DispoBO		= new DispoBO();
 				
@@ -45,7 +68,7 @@ class PedidoBO extends Conexion
 
 			//Se registra la oferta
 			$result_oferta 	= $this->addItem($pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
-											 $variedad_id, $grado_id, $tipo_caja_id, $nro_cajas_seleccionada, false, 'oferta_carne');
+											 $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $tipo_caja_id, $nro_cajas_seleccionada, false, 'oferta_carne');
 			if ($result_oferta['respuesta_code']!='OK')
 			{
 				$this->getEntityManager()->getConnection()->rollback();
@@ -54,7 +77,8 @@ class PedidoBO extends Conexion
 			
 			//Se registra el hueso
 			$result_hueso 	= $this->addItem($pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
-											 $hueso_variedad_id, $hueso_grado_id, $hueso_tipo_caja_id, $hueso_nro_cajas_seleccionada, false, 'oferta_hueso', $result_oferta['pedido_cab_sec']);
+										 $hueso_producto_id, $hueso_variedad_id, $hueso_grado_id, $hueso_tallos_x_bunch, $hueso_tipo_caja_id, $hueso_nro_cajas_seleccionada,
+										 false, 'oferta_hueso', $result_oferta['pedido_cab_sec']);
 			if ($result_hueso['respuesta_code']!='OK')
 			{
 				$this->getEntityManager()->getConnection()->rollback();
@@ -81,14 +105,16 @@ class PedidoBO extends Conexion
 	 * @param int $usuario_vendedor_id
 	 * @param int $marcacion_sec
 	 * @param string $agencia_carga_id
+	 * @param string $producto_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param string $tallos_x_bunch
 	 * @param string $tipo_caja_id
 	 * @param int $nro_cajas_seleccionada
 	 * @return array
 	 */
 	public function addItem($pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
-						    $variedad_id, $grado_id, $tipo_caja_id, $nro_cajas_seleccionada,
+						    $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $tipo_caja_id, $nro_cajas_seleccionada,
 							$control_transaccion = true, $tipo_oferta = null, $carne_pedido_cab_sec = null)
 	{
 		$DispoBO		= new DispoBO();		
@@ -120,7 +146,8 @@ class PedidoBO extends Conexion
 			/*
 			 * 2. Se obtiene la DISPO ACTUAL
 			 */
-			$result_dispo = $DispoBO->getDispo($cliente_id, $usuario_cliente_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id, false, true, true);
+			$result_dispo = $DispoBO->getDispo($cliente_id, $usuario_cliente_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id, 
+											   false, true, true, $producto_id, $tallos_x_bunch);
 			if ($result_dispo['respuesta_code']!='OK'){
 				if ($control_transaccion){
 					$this->getEntityManager()->getConnection()->rollback();
@@ -164,7 +191,7 @@ class PedidoBO extends Conexion
 				$precio 		= $reg_dispo['precio_oferta'];
 			}else{
 				$precio 		= $reg_dispo['precio'];
-			}
+			}//end if
 			$precio_total	= $tallos_total *  $precio; //Se multiplica el precio del tallo						
 
 			$PedidoDetData->setPedidoCabId			($pedido_cab_id);
@@ -213,7 +240,6 @@ class PedidoBO extends Conexion
 			 * 5. Actualizar el total de la CABECERA de PEDIDO
 			 */
 			$PedidoCabDAO->actualizarTotal($pedido_cab_id);
-			
 
 			/*
 			 * 6. Devuelve el resultado del registro del PEDIDO

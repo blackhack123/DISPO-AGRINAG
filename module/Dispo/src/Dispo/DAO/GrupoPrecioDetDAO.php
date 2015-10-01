@@ -156,29 +156,34 @@ class GrupoPrecioDetDAO extends Conexion
 
 	/**
 	 * 
-	 * @param string $cliente_id
+	 * @param string $usuario_id
+	 * @param string $producto_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param int $tallos_x_bunch
 	 * @return \Dispo\Data\GrupoPrecioDetData|NULL
 	 */
-	public function consultarPorClienteIdPorVariedadIdPorGradoIdMORONITOR($cliente_id, $variedad_id, $grado_id) /*MORONITOR*/
+	/*consultarPorClienteIdPorVariedadIdPorGradoId*/
+	public function consultarPorUsuarioIdPorVariedadIdPorGradoId($usuario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch) /*MORONITOR*/
 	{
 		$GrupoPrecioDetData 		    = new GrupoPrecioDetData();
 		
 		$sql = 	' SELECT grupo_precio_det.*, variedad.nombre variedad_nombre '.
-				' FROM grupo_precio_det INNER JOIN cliente '.
-				"                               ON cliente.id 	= '".$cliente_id."'".
+				' FROM grupo_precio_det INNER JOIN usuario '.
+				"                               ON usuario.id 	= ".$usuario_id.
 				'						INNER JOIN variedad '.
 				'								ON variedad.id	= grupo_precio_det.variedad_id '. 
-				' WHERE grupo_precio_det.grupo_precio_cab_id 	= cliente.grupo_precio_cab_id '.
+				' WHERE grupo_precio_det.grupo_precio_cab_id 	= usuario.grupo_precio_cab_id '.
+				"   and grupo_precio_det.producto_id			= '".$producto_id."'".
 				"   and grupo_precio_det.variedad_id		 	= '".$variedad_id."'".
-				"   and grupo_precio_det.grado_id				= '".$grado_id."'";
+				"   and grupo_precio_det.grado_id				= '".$grado_id."'".
+				'   and grupo_precio_det.tallos_x_bunch			= '.$tallos_x_bunch;
 
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$stmt->execute();
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		return $row;
-	}//end function consultarPorClienteIdPorVariedadIdPorGradoId
+	}//end function consultarPorUsuarioIdPorVariedadIdPorGradoId
 
 	
 	
@@ -306,6 +311,7 @@ class GrupoPrecioDetDAO extends Conexion
 		return array($accion, $result);
 	}//end function registrarPrecio	
 	
+
 	
 	/**
 	 *

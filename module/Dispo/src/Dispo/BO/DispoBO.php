@@ -30,10 +30,13 @@ class DispoBO extends Conexion
 	 * @param int $grado_id
 	 * @param boolean $get_fincas
 	 * @param boolean $rebajar_cajas_pedido
+	 * @param string $producto_id
+	 * @param int $tallos_x_bunch
 	 * @return array
 	 */
 	function getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id = null, $variedad_id = null, $grado_id = null, 
-					  $get_fincas = false, $rebajar_cajas_pedido = true, $validar_variedad_faltante = false)
+					  $get_fincas = false, $rebajar_cajas_pedido = true, $validar_variedad_faltante = false,
+					  $producto_id = null, $tallos_x_bunch = null)
 	{	
 		$UsuarioDAO				= new UsuarioDAO();
 		$DispoDAO				= new DispoDAO();
@@ -53,7 +56,7 @@ class DispoBO extends Conexion
 			/**
 			 * Consulta el GRUPO_DISPO_CAB_ID del usuario de cliente
 			 */
-			$row_usuario = $UsuarioDAO->consultarGrupoDispoCab($usuario_id);
+			$row_usuario = $UsuarioDAO->consultar($usuario_id, \Application\Constants\ResultType::MATRIZ);
 			if (empty($row_usuario))
 			{
 				$result = array('respuesta_code' 	=> '01',
@@ -61,6 +64,7 @@ class DispoBO extends Conexion
 				);
 				return $result;
 			}else{
+				$grupo_precio_cab_id= $row_usuario['grupo_precio_cab_id']; //MORONITOR
 				$grupo_dispo_cab_id = $row_usuario['grupo_dispo_cab_id'];
 				$inventario_id 		= $row_usuario['inventario_id'];
 				$clasifica_fox		= $row_usuario['clasifica_fox'];;
@@ -88,23 +92,65 @@ class DispoBO extends Conexion
 				return $result;
 			}//end if			
 
+			if (empty($grupo_precio_cab_id))
+			{
+				$result = array('respuesta_code' 	=> '02',
+						'respuesta_msg'				=> 'Usuario no tiene asignado GRUPO PRECIO, comuniquese con su asesor'
+				);
+				return $result;
+			}//end if
+
 			if (empty($grupo_dispo_cab_id))
 			{
 				$result = array('respuesta_code' 	=> '02',
-						'respuesta_msg'		=> 'Cliente no tiene asignado GRUPO PRECIO, comuniquese con su asesor'
+						'respuesta_msg'				=> 'Usuario no tiene asignado GRUPO DISPO, comuniquese con su asesor'
 				);
 				return $result;
 			}//end if
 					
 			
-			$result = $DispoDAO->consultarInventarioPorCliente($cliente_id, $inventario_id, $grupo_dispo_cab_id, $variedad_id, $grado_id, $clasifica_fox);			
+			if ($row_usuario['inventario_id']!=$row_usuario['grupo_precio_cab_inventario_id'])
+			{
+				$result = array('respuesta_code' 	=> 'NO-CONFIG-INV-PRECIO',
+						'respuesta_msg'				=> 'INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO PRECIO)'
+				);
+				return $result;
+			}//end if			
+
+			if ($row_usuario['inventario_id']!=$row_usuario['grupo_dispo_cab_inventario_id'])
+			{
+				$result = array('respuesta_code' 	=> 'NO-CONFIG-INV-DISPO',
+						'respuesta_msg'				=> 'INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO DISPO)'
+				);
+				return $result;
+			}//end if	
+
+			if ($row_usuario['calidad_id']!=$row_usuario['grupo_precio_cab_calidad_id'])
+			{
+				$result = array('respuesta_code' 	=> 'NO-CONFIG-CAL-PRECIO',
+						'respuesta_msg'				=> 'INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE CALIDAD (GRUPO PRECIO)'
+				);
+				return $result;
+			}//end if
+
+			if ($row_usuario['calidad_id']!=$row_usuario['grupo_dispo_cab_calidad_id'])
+			{
+				$result = array('respuesta_code' 	=> 'NO-CONFIG-CAL-DISPO',
+						'respuesta_msg'				=> 'INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE CALIDAD (GRUPO DISPO)'
+				);
+				return $result;
+			}//end if			
+
+			$result = $DispoDAO->consultarInventarioPorUsuario($usuario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $clasifica_fox);			
 			
 			/**
 			 *Ajusta el stock de los bunch de las fincas para mostrar la dispo de acuerdo al GRUPO_DISPO_DET
-			 *se debe de hacer un quiebre por variedad, grado y  finca, para ajustar la dispo segun las restricciones
+			 *se debe de hacer un quiebre por producto, variedad, grado, tallos_x_bunch y  finca, para ajustar la dispo segun las restricciones
 			 */
+			$producto_id_ant	= null;
 			$variedad_id_ant 	= null;
 			$grado_id_ant		= null;
+			$tallos_x_bunch_ant	= null;
 			$grupo_dispo_det_cantidad_bunch_disponible = 0;
 			//while($row = $result->fetch_array(MYSQLI_ASSOC))
 			
@@ -151,9 +197,14 @@ class DispoBO extends Conexion
 						$tot_bunch_disponibles		= $row['grupo_dispo_det_cantidad_bunch_disponible'];
 					}
 				}//end if
+				
+				if ($row['precio']==0) //Si el precio viene con CERO se salta directamente al FOR
+				{
+					break;
+				}
 			
 				//Si varia la variedad_id y el grado_id se indica la cantidad de bunch disponibles del GRUPO DISPO
-				if (($variedad_id_ant != $row['variedad_id'])||($grado_id_ant != $row['grado_id']))
+				if (($producto_id_ant != $row['producto_id'])||($variedad_id_ant != $row['variedad_id'])||($grado_id_ant != $row['grado_id'])||($tallos_x_bunch_ant != $row['tallos_x_bunch']))
 				{
 					if (empty($row['grupo_dispo_det_cantidad_bunch_disponible']))
 					{
@@ -161,11 +212,13 @@ class DispoBO extends Conexion
 					}else{
 						$grupo_dispo_det_cantidad_bunch_disponible = $row['grupo_dispo_det_cantidad_bunch_disponible'];
 					}//end if
-			
+
+					$producto_id_ant 	= $row['producto_id'];
 					$variedad_id_ant	= $row['variedad_id'];
 					$grado_id_ant 		= $row['grado_id'];
+					$tallos_x_bunch_ant	= $row['tallos_x_bunch'];
 				}//end if
-			
+
 				$grupo_dispo_det_cantidad_bunch_disponible_ant = $grupo_dispo_det_cantidad_bunch_disponible;
 			
 				//configura la cantidad de bunch de la FINCA en relacion del GRUPO DISPO
@@ -181,10 +234,12 @@ class DispoBO extends Conexion
 				if (!empty($tot_bunch_disponibles))
 				{
 					$row_dispo = $row;
+					$row_dispo['producto_id']			= $row_dispo['producto_id'];
 					$row_dispo['variedad_nombre']		= trim($row_dispo['variedad_nombre']);
 					$row_dispo['proveedor_id']			= $row_dispo['proveedor_id'];
 					$row_dispo['variedad_id']			= $row_dispo['variedad_id'];
 					$row_dispo['grado_id']				= $row_dispo['grado_id'];
+					//$row_dispo['tallos_x_bunch']		= $row_dispo['tallos_x_bunch'];
 					$row_dispo['precio']				= $row_dispo['precio'];
 					$row_dispo['precio_oferta']			= $row_dispo['precio_oferta'];					
 					$row_dispo['grupo_dispo_det_cantidad_bunch_disponible']	= $grupo_dispo_det_cantidad_bunch_disponible_ant;
@@ -192,13 +247,13 @@ class DispoBO extends Conexion
 					//$row_dispo['tot_bunch_disponible'] 	= floor($row_dispo['tot_bunch_disponible']*$porcentaje);
 					$row_dispo['tot_bunch_disponible'] 	= $tot_bunch_disponibles;
 					$row_dispo['tallos_x_bunch']		= $row_dispo['tot_tallos_x_bunch'] / $row_dispo['veces_tallos_x_bunch'];
-			
-					//Los siguientes se llenaran mÃ¡s adelante
+					$row_dispo['color_nombre']			= $row_dispo['color_nombre'];
+					//Los siguientes se llenaran más adelante
 					$row_dispo['tipo_caja_origen_estado'] 	= NULL;
 					$row_dispo['tipo_caja_origen_id']		= NULL;
 					$row_dispo['tipo_caja_unds_bunch']		= NULL;
 					$row_dispo['nro_cajas']					= NULL;
-			
+
 					$result_dispo[] = $row_dispo;
 				}//end if
 			}//end foreach
@@ -213,6 +268,7 @@ class DispoBO extends Conexion
 					$row_dispo['tipo_caja_origen_estado'] 	= $row['tipo_caja_origen_estado'];
 					$row_dispo['tipo_caja_origen_id']		= $row['tipo_caja_origen_id'];
 					$row_dispo['tipo_caja_unds_bunch']		= $row['tipo_caja_unds_bunch'];
+					$row_dispo['tallos_x_bunch']			= $row_dispo['tallos_x_bunch']; //MEJORA POR LOS BUNCHS 
 					$row_dispo['nro_cajas']					= floor($row_dispo['tot_bunch_disponible']/$row['tipo_caja_unds_bunch']);
 				
 					//obtiene la dispo por proveedores
@@ -226,7 +282,7 @@ class DispoBO extends Conexion
 					}//end if
 				}else{
 					$result = array('respuesta_code' 	=> '03',
-							'respuesta_msg'			=> 'Error, no tiene caja disponible'
+							'respuesta_msg'			=> 'Error, no tiene caja disponible - Variedad:'.$row_dispo['variedad_nombre'].' - Grado:'.$row_dispo['grado_id']
 					);
 					//throw new Exception('Error, no tiene caja disponible');
 					return $result;
@@ -239,19 +295,21 @@ class DispoBO extends Conexion
 			 */
 			$result_consolidado = NULL;
 			$bd_1era_vez		= true;
+			$producto_id_ant	= NULL;
 			$variedad_id_ant	= NULL;
 			$grado_id_ant		= NULL;
+			$tallos_x_bunch_ant = NULL;
 			
 			//echo("<pre>");var_dump($result_dispo);echo("</pre>"); exit
 			foreach($result_dispo as $row)
 			{
-				if (($bd_1era_vez == true)||($variedad_id_ant!=$row['variedad_id'])||($grado_id_ant!=$row['grado_id']))
+				if (($bd_1era_vez == true)||($producto_id_ant!=$row['producto_id'])||($variedad_id_ant!=$row['variedad_id'])||($grado_id_ant!=$row['grado_id'])||($tallos_x_bunch_ant!=$row['tallos_x_bunch']))
 				{
 					if ($bd_1era_vez == false)
 					{
 						if (!empty($row_new['nro_cajas']))   //SALTAR CAJAS EN CERO
 						{
-							$key = $variedad_id_ant.'-'.trim($grado_id_ant);
+							$key = $producto_id_ant.'-'.$variedad_id_ant.'-'.trim($grado_id_ant).'-'.$tallos_x_bunch_ant;
 							$result_consolidado[$key] = $row_new;
 						}//end if
 					}//end if
@@ -266,6 +324,7 @@ class DispoBO extends Conexion
 				}//end if
 			
 				//Se totaliza el registro
+				$row_new['producto_id']					= $row['producto_id'];
 				$row_new['inventario_id']				= $inventario_id;
 				$row_new['grado_id']					= $row['grado_id'];
 				$row_new['variedad_id']					= $row['variedad_id'];
@@ -274,22 +333,26 @@ class DispoBO extends Conexion
 				$row_new['tipo_caja_origen_estado']		= $row['tipo_caja_origen_estado'];
 				$row_new['tipo_caja_origen_id']			= $row['tipo_caja_origen_id'];
 				$row_new['cantidad_bunch'] 				= $row['tipo_caja_unds_bunch'];
+				$row_new['tipo_caja_default_id']		= $tipo_caja_id;
 				$row_new['nro_cajas'] 					= $row_new['nro_cajas'] +  $row['nro_cajas'];
 				$row_new['tot_bunch_disponible']		= $row_new['tot_bunch_disponible'] + $row['tot_bunch_disponible'];
 				$row_new['tallos_x_bunch'] 				= $row['tallos_x_bunch'];
+				$row_new['color_nombre']				= $row['color_nombre'];
 				$row_new['precio'] 						= $row['precio'];
 				$row_new['precio_oferta']				= $row['precio_oferta'];				
 			
 				//Control para el quiebre
+				$producto_id_ant						= $row['producto_id'];
 				$variedad_id_ant						= $row['variedad_id'];
 				$grado_id_ant							= $row['grado_id'];
+				$tallos_x_bunch_ant						= $row['tallos_x_bunch'];
 			}//end foreach
 			
 			if ($bd_1era_vez == false)
 			{
 				if (!empty($row_new['nro_cajas']))   //SALTAR CAJAS EN CERO
 				{
-					$key = $variedad_id_ant.'-'.trim($grado_id_ant);
+					$key =  $producto_id_ant.'-'.$variedad_id_ant.'-'.trim($grado_id_ant).'-'.$tallos_x_bunch_ant;
 					$result_consolidado[$key] = $row_new;
 				}//end if
 			}//end if			
@@ -299,18 +362,18 @@ class DispoBO extends Conexion
 			 * Consulta todos los pedido del cliente en estado comprando
 			 * para poder homologar las cajas para poderlas restar del stock
 			 */			
-			$result = $PedidoDetDAO->consultarPedidosEstadoComprando($cliente_id, $inventario_id, $variedad_id, $grado_id);
+			$result = $PedidoDetDAO->consultarPedidosEstadoComprando($cliente_id, $inventario_id, $producto_id, $variedad_id, $grado_id,$tallos_x_bunch);
 			//Ajusta el porcentaje de acuerdo a la restriccion de GRUPO_DISPO
 			//var_dump($result_consolidado);
 			$nro_cajas = 0;
 			foreach($result as $row)
 			{
-				$key = $row['variedad_id'].'-'.trim($row['grado_id']);
+				$key = $row['producto_id'].'-'.$row['variedad_id'].'-'.trim($row['grado_id']).'-'.$row['tallos_x_bunch'];
 				$row_consolidado = &$result_consolidado[$key];
 					
 				if ($rebajar_cajas_pedido == true)
 				{
-					$nro_cajas_homologada = $PedidoDetDAO->getCajasHomologadaPedido($inventario_id, $cliente_id, $marcacion_sec, $row['variedad_id'], $row['grado_id'], "C", $row_consolidado['tipo_caja_id']);
+					$nro_cajas_homologada = $PedidoDetDAO->getCajasHomologadaPedido($inventario_id, $cliente_id, $marcacion_sec, $row['variedad_id'], $row['grado_id'], "C", $row_consolidado['tipo_caja_id'], $row['tallos_x_bunch']);
 				}else{
 					$nro_cajas_homologada = 0;
 				}
@@ -339,7 +402,7 @@ class DispoBO extends Conexion
 						foreach($result_cajas as $row_caja)
 						{
 							$cajas[] = $row_caja['tipo_caja_id'];
-						}//end while
+						}//end while						
 						$reg['cajas'] = $cajas;
 			
 						//obtiene la dispo por proveedores
@@ -360,6 +423,11 @@ class DispoBO extends Conexion
 			);
 						
 			//return $result_consolidado2;
+/*			echo('<pre>');
+			var_dump($result);
+			echo('</pre>');
+			die();
+*/
 			return $result;
 
 /*		} catch (Exception $e) {
@@ -375,11 +443,14 @@ class DispoBO extends Conexion
 	/**
 	 * 
 	 * @param string $cliente_id
+	 * @param string $producto_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
-	 * @return multitype:Ambigous <\Dispo\Data\GrupoPrecioDetData, NULL> multitype:
+	 * @param int $tallos_x_bunch
+	 * @param string $tipo_caja_id
+	 * @return multitype:Ambigous <\Dispo\Data\GrupoPrecioDetData, array> multitype:
 	 */
-	public function consultarPrecioOfertaPorCliente ($cliente_id, $usuario_id, $marcacion_sec, $variedad_id, $grado_id)
+	public function consultarPrecioOfertaPorCliente ($cliente_id, $usuario_id, $marcacion_sec, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $tipo_caja_id)
 	{
 		$GrupoPrecioDetDAO			= new GrupoPrecioDetDAO();
 		$GrupoPrecioOfertaDAO		= new GrupoPrecioOfertaDAO();
@@ -389,10 +460,11 @@ class DispoBO extends Conexion
 		
 		
 		//AQUI SE DEBE DE CONSULTAR LA GET DISPO PERO PARA ESTE REGISTRO ESPECIFICO Y REPLICAR EL FUNCIONAMIENTO DE LA GRILLA
-		$reg_grupo_precio_det	= $GrupoPrecioDetDAO->consultarPorClienteIdPorVariedadIdPorGradoId($cliente_id, $variedad_id, $grado_id);
+		$reg_grupo_precio_det	= $GrupoPrecioDetDAO->consultarPorUsuarioIdPorVariedadIdPorGradoId($usuario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch);
 
-		$tipo_caja_id = null;  //No se especifica el tipo de caja
-		$dispo_precio_oferta = $this->getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id);
+		$dispo_precio_oferta = $this->getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id, $variedad_id, $grado_id,
+												false, true, false,
+					  							$producto_id, $tallos_x_bunch);
 
 		//Obtiene el registro de la carne (Registro Cabecera)		
 		/*$rs_precio_oferta 	= $GrupoPrecioOfertaDAO->consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($reg_grupo_precio_det['grupo_precio_cab_id'],
@@ -407,7 +479,8 @@ class DispoBO extends Conexion
 	
 	
 	
-	public function consultarPrecioOfertaPorClienteHueso ($cliente_id, $usuario_id, $marcacion_sec, $oferta_variedad_id, $oferta_grado_id, $oferta_tipo_caja_id, $oferta_nro_caja)
+	public function consultarPrecioOfertaPorClienteHueso ($cliente_id, $usuario_id, $marcacion_sec, $oferta_producto_id,  $oferta_variedad_id, 
+														  $oferta_grado_id, $oferta_tallos_x_bunch,  $oferta_tipo_caja_id, $oferta_nro_caja)
 	{
 		$GrupoPrecioDetDAO			= new GrupoPrecioDetDAO();
 		$GrupoPrecioOfertaDAO		= new GrupoPrecioOfertaDAO();
@@ -417,33 +490,41 @@ class DispoBO extends Conexion
 	
 	
 		//Nos permite identificar el grupo_precio_cab_id en que se encuentra el cliente para poder saber con que precio va a trabajar
-		$reg_grupo_precio_det	= $GrupoPrecioDetDAO->consultarPorClienteIdPorVariedadIdPorGradoId($cliente_id, $oferta_variedad_id, $oferta_grado_id);
+		$reg_grupo_precio_det	= $GrupoPrecioDetDAO->consultarPorUsuarioIdPorVariedadIdPorGradoId($usuario_id, $oferta_producto_id, 
+																		$oferta_variedad_id, $oferta_grado_id, $oferta_tallos_x_bunch);
 			
 		//Se obtiene los registros HUESO (EL COMBO), de acuerdo a la CARNE 
-		$rs_precio_oferta 	= $GrupoPrecioOfertaDAO->consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($reg_grupo_precio_det['grupo_precio_cab_id'], $oferta_variedad_id, $oferta_grado_id);
+		$rs_precio_oferta 	= $GrupoPrecioOfertaDAO->consultarPorGrupoPrecioCabPorVariedadIdPorGradoId($reg_grupo_precio_det['grupo_precio_cab_id'], $oferta_producto_id, $oferta_variedad_id, $oferta_grado_id, $oferta_tallos_x_bunch);
 
 		//Se pregunta registro por registro la disponibilidad y la conversion de las cajas
 		$result_hueso = null;
 		foreach($rs_precio_oferta as $reg_precio_oferta)
 		{
-			$rs_dispo_precio_oferta = $this->getDispo($cliente_id, $usuario_id, $marcacion_sec, $oferta_tipo_caja_id, $reg_precio_oferta['variedad_combo_id'], $reg_precio_oferta['grado_combo_id']);			
-			if ($rs_dispo_precio_oferta) {
-				$reg_dispo_precio_oferta = $rs_dispo_precio_oferta['result_dispo'][0];
-				
-				$hueso_cajas_minima = $reg_precio_oferta['factor_combo'] *  $oferta_nro_caja;
-				
-				if ($reg_dispo_precio_oferta['nro_cajas'] >=  $hueso_cajas_minima)
-				{
-					$reg_hueso = array();
-					$reg_hueso['variedad_id'] 			= $reg_dispo_precio_oferta['variedad_id'];
-					$reg_hueso['variedad_nombre'] 		= $reg_dispo_precio_oferta['variedad_nombre'];
-					$reg_hueso['grado_id'] 				= $reg_dispo_precio_oferta['grado_id'];
-					$reg_hueso['tipo_caja_id'] 			= $reg_dispo_precio_oferta['tipo_caja_id'];
-					$reg_hueso['precio'] 				= $reg_dispo_precio_oferta['precio'];
-					$reg_hueso['nro_cajas'] 			= $reg_dispo_precio_oferta['nro_cajas'];
-					$reg_hueso['nro_cajas_requeridas'] 	= $hueso_cajas_minima;
-
-					$result_hueso[] = $reg_hueso;
+			$rs_dispo_precio_oferta = $this->getDispo($cliente_id, $usuario_id, $marcacion_sec, $oferta_tipo_caja_id, 
+													  $reg_precio_oferta['variedad_combo_id'], $reg_precio_oferta['grado_combo_id'],
+													  false, true, false, $oferta_producto_id, $oferta_tallos_x_bunch);			
+			if ($rs_dispo_precio_oferta) {	
+				if (array_key_exists('result_dispo',$rs_dispo_precio_oferta))
+				{			
+					$reg_dispo_precio_oferta = $rs_dispo_precio_oferta['result_dispo'][0];
+					
+					$hueso_cajas_minima = $reg_precio_oferta['factor_combo'] *  $oferta_nro_caja;
+					
+					if ($reg_dispo_precio_oferta['nro_cajas'] >=  $hueso_cajas_minima)
+					{
+						$reg_hueso = array();
+						$reg_hueso['producto_id']			= $reg_dispo_precio_oferta['producto_id'];
+						$reg_hueso['variedad_id'] 			= $reg_dispo_precio_oferta['variedad_id'];
+						$reg_hueso['variedad_nombre'] 		= $reg_dispo_precio_oferta['variedad_nombre'];
+						$reg_hueso['grado_id'] 				= $reg_dispo_precio_oferta['grado_id'];
+						$reg_hueso['tallos_x_bunch']		= $reg_dispo_precio_oferta['tallos_x_bunch'];
+						$reg_hueso['tipo_caja_id'] 			= $reg_dispo_precio_oferta['tipo_caja_id'];
+						$reg_hueso['precio'] 				= $reg_dispo_precio_oferta['precio'];
+						$reg_hueso['nro_cajas'] 			= $reg_dispo_precio_oferta['nro_cajas'];
+						$reg_hueso['nro_cajas_requeridas'] 	= $hueso_cajas_minima;
+	
+						$result_hueso[] = $reg_hueso;
+					}//end if
 				}//end if
 			}//end if			
 		}//end foreach	

@@ -154,7 +154,12 @@ class UsuarioDAO extends Conexion {
 			case \Application\Constants\ResultType::MATRIZ:
 				$sql = 	' SELECT usuario.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name, '.
 						'        cliente.nombre cliente_nombre, '.
-						'        grupo_precio_cab.calidad_id '.
+						'		 calidad.clasifica_fox, '.
+						'        inventario.punto_corte, '.
+						'        grupo_precio_cab.inventario_id as grupo_precio_cab_inventario_id, '.
+						'        grupo_precio_cab.calidad_id as grupo_precio_cab_calidad_id, '.
+						'        grupo_dispo_cab.inventario_id as grupo_dispo_cab_inventario_id, '.
+						'        grupo_dispo_cab.calidad_id as grupo_dispo_cab_calidad_id '.
 						' FROM usuario LEFT JOIN usuario as usuario_ing '.
 						'                           ON usuario_ing.id = usuario.usuario_ing_id '.
 						'					 LEFT JOIN usuario as usuario_mod '.
@@ -162,7 +167,13 @@ class UsuarioDAO extends Conexion {
 						'					 LEFT JOIN cliente '.
 						'              				ON cliente.id	= usuario.cliente_id'.	
 						'              	     LEFT JOIN grupo_precio_cab '.
-						'                     		ON grupo_precio_cab.id = usuario.grupo_precio_cab_id '.
+						'                     		ON grupo_precio_cab.id  = usuario.grupo_precio_cab_id '.
+						'					 LEFT JOIN grupo_dispo_cab '.
+						'                           ON grupo_dispo_cab.id	= usuario.grupo_dispo_cab_id '.
+						'					 LEFT JOIN inventario '.
+						'                           ON inventario.id		= usuario.inventario_id'.
+						'			   		 LEFT JOIN calidad '.
+						'                           ON calidad.id			= usuario.calidad_id '.						
 						' WHERE usuario.id = :id ';
 				
 				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
@@ -289,19 +300,31 @@ class UsuarioDAO extends Conexion {
 	
  		
 	function login($usuario, $clave, $ipAcceso, $nombreHost, $AgenteUsuario)
-	{		
+	{
 		$sql = 	" SELECT usuario.id, usuario.nombre as usuario_nombre, usuario.username, usuario.password, ".
 				"        usuario.email, usuario.perfil_id, ".
-				"        usuario.cliente_id, usuario.estado, usuario.grupo_dispo_cab_id,".
+				"        usuario.cliente_id, usuario.estado, ".
+				"		 usuario.grupo_dispo_cab_id, usuario.grupo_precio_cab_id,".
 				"        perfil.nombre as perfil_nombre, ".
 				"        cliente.nombre as cliente_nombre, ".
-				"        grupo_precio_cab.calidad_id ".
+				"        usuario.inventario_id as usuario_inventario_id,".
+				"		 usuario.calidad_id as usuario_calidad_id, ".
+				"		 usuario.grupo_dispo_cab_id as usuario_grupo_dispo_cab_id, ".
+				"		 usuario.grupo_precio_cab_id as usuario_grupo_precio_cab_id,".
+				"        grupo_precio_cab.inventario_id as grupo_precio_cab_inventario_id, grupo_precio_cab.calidad_id as grupo_precio_cab_calidad_id,".
+				"        grupo_dispo_cab.inventario_id as grupo_dispo_cab_inventario_id, grupo_dispo_cab.calidad_id as grupo_dispo_cab_calidad_id, ".
+				"        inventario.punto_corte as usuario_punto_corte ".
+/*				"        grupo_precio_cab.calidad_id ".*/
 				" FROM usuario INNER JOIN perfil ".
 				"                      ON perfil.id		= usuario.perfil_id".
 				"              LEFT JOIN cliente ".
 				"                      ON cliente.id	= usuario.cliente_id".
 				'              LEFT JOIN grupo_precio_cab '.
 				'                      ON grupo_precio_cab.id = usuario.grupo_precio_cab_id '.
+				'              LEFT JOIN grupo_dispo_cab '.
+				'                      ON grupo_dispo_cab.id  = usuario.grupo_dispo_cab_id'.
+				'              LEFT JOIN inventario '.
+				'                      ON inventario.id = usuario.inventario_id'.
 				" WHERE username = :username";
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
@@ -315,28 +338,69 @@ class UsuarioDAO extends Conexion {
 		if (empty($reg))
 		{
 			$reg['respuesta_codigo']	='UNE';			
-			$reg['respuesta_mensaje']	='USUARIO NO EXISTE EN SISTEMA';			
-		}else{
-			if ($reg['estado']=='A')
-			{
-				//ACTIVO
-				$clave_encriptada = $this->encriptar($clave);
-				if ($reg['password'] == $clave_encriptada)
-				{
-					$reg['respuesta_codigo']	='OK';
-					$reg['respuesta_mensaje']	='';
-				}else{
-					$reg['respuesta_codigo']	='CEU';
-					$reg['respuesta_mensaje']	='CLAVE ERRADA PARA EL USUARIO INGRESADO';						
-				}
-			}else{
-				//INACTIVO
-				$reg['respuesta_codigo']	='UI';
-				$reg['respuesta_mensaje']	='EL USUARIO ESTA INACTIVO, POR FAVOR CONSULTE CON SOPORTE A USUARIO';				
-			}//end if
+			$reg['respuesta_mensaje']	='USUARIO NO EXISTE EN SISTEMA';	
+			return $reg;
 		}//end if
 
-		return $reg;		
+		if ($reg['estado']!='A')
+		{
+			//INACTIVO
+			$reg['respuesta_codigo']	='UI';
+			$reg['respuesta_mensaje']	='EL USUARIO ESTA INACTIVO, POR FAVOR CONSULTE CON SOPORTE A USUARIO';
+			return $reg;
+		}//end if
+
+		//Validaciones extras si el usuario es un cliente
+		if ($reg['perfil_id']==\Application\Constants\Perfil::ID_CLIENTE)
+		{
+			if ($reg['inventario_id']!=$reg['grupo_precio_cab_inventario_id'])
+			{
+				$reg['respuesta_codigo']	='NO-CONFIG-INV-PRECIO';
+				$reg['respuesta_mensaje']	='INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO PRECIO)';					
+				return $reg;
+			}//end if
+	
+			if ($reg['inventario_id']!=$reg['grupo_dispo_cab_inventario_id'])
+			{
+				$reg['respuesta_codigo']	='NO-CONFIG-INV-DISPO';
+				$reg['respuesta_mensaje']	='INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO DISPO)';
+				return $reg;
+			}//end if			
+	
+			if ($reg['calidad_id']!=$reg['grupo_precio_cab_calidad_id'])
+			{
+				$reg['respuesta_codigo']	='NO-CONFIG-CAL-PRECIO';
+				$reg['respuesta_mensaje']	='INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE PRECIO (GRUPO PRECIO)';
+				return $reg;
+			}//end if
+	
+			if ($reg['calidad_id']!=$reg['grupo_dispo_cab_calidad_id'])
+			{
+				$reg['respuesta_codigo']	='NO-CONFIG-CAL-DISPO';
+				$reg['respuesta_mensaje']	='INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE PRECIO (GRUPO DISPO)';
+				return $reg;
+			}//end if
+			
+			if (empty($reg['punto_corte']))
+			{
+				$reg['respuesta_codigo']	='NO-PUNTO-CORTE';
+				$reg['respuesta_mensaje']	='NO TIENE PUNTO DE CORTE EL INVENTARIO ('.$reg['inventario_id'].') ';
+				return $reg;
+			}//end if
+		}//end if
+			
+		//ACTIVO
+		$clave_encriptada = $this->encriptar($clave);
+		if ($reg['password'] == $clave_encriptada)
+		{
+			$reg['respuesta_codigo']	='OK';
+			$reg['respuesta_mensaje']	='';
+			return $reg;
+		}else{
+			$reg['respuesta_codigo']	='CEU';
+			$reg['respuesta_mensaje']	='CLAVE ERRADA PARA EL USUARIO INGRESADO';
+			return $reg;						
+		}//end if
 	}//end function login
 
 
@@ -346,7 +410,7 @@ class UsuarioDAO extends Conexion {
 	 * @param int $usuario_id
 	 * @return array
 	 */
-	function consultarGrupoDispoCab($usuario_id)
+/*	function consultarGrupoDispoCab($usuario_id)
 	{
 		$sql = 	" SELECT usuario.grupo_dispo_cab_id, grupo_dispo_cab.inventario_id, grupo_precio_cab.calidad_id, calidad.clasifica_fox ".
 				" FROM usuario INNER JOIN grupo_dispo_cab ".
@@ -367,7 +431,7 @@ class UsuarioDAO extends Conexion {
 		$reg = $stmt->fetch();
 		return $reg;		
 	}//end function consultarGrupoDispoCab
-	
+*/	
 	
 	
 	/**
