@@ -52,8 +52,8 @@ class BuscadorController extends AbstractActionController
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
 	
-			$request 			= 	$this->    getRequest();
-			$cliente_factura_id	= 	$request-> getQuery('q');
+			$request 			= 	$this->getRequest();
+			$cliente_factura_id	= 	$request-> getQuery('term');
 				
 			//$term  = $request->getRequest('term');
 				
