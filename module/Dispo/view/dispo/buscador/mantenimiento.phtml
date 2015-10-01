@@ -1,67 +1,45 @@
 
-<script>
-
-$(document).ready(function () {
-
-
-	
-	});//$(document).ready
-    </script>
-
-
-
-<div class="title-admin-section">
-	<h1>BUSCADOR</h1>
-</div>
-
-<head>
-    <title>buscador typeahead</title>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <meta name="generator" content="Geany 1.23.1" />
-</head>
-
 
 <script>
 
 $(document).ready(function(){
-   $("#buscador").typeahead({
-		    	minLength: 3,
-		        name : 'buscador',
-		        remote: {
-		            url : '../../dispo/buscador/consultarclientefactura?q=%QUERY'
-		        }
-		    });
-
-
-
-   var bestPictures = new Bloodhound({
-	   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-	   queryTokenizer: Bloodhound.tokenizers.whitespace,
-	   prefetch: '../data/films/post_1960.json',
-	   remote: {
-	     url: '../../dispo/buscador/consultarclientefactura?q=%QUERY',
-	     wildcard: '%QUERY'
-	   }
-	 });
-
-	 $('#remote .typeahead').typeahead(null, {
-	   name: 'best-pictures',
-	   display: 'value',
-	   source: bestPictures
-	 });
 	
-
+			var dataClientes = new Bloodhound({
+			  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+			  queryTokenizer: Bloodhound.tokenizers.whitespace,
+			  /*prefetch: '../../dispo/buscador/consultarclientefactura',*/
+			  remote: {
+			 	url : '../../dispo/buscador/consultarclientefactura?term=%QUERY',
+				wildcard: '%QUERY'
+			  }
+			});	
+	
+			$('#buscador').typeahead(
+				{
+					highlight: true,
+					minLength: 3	
+				}, 
+				{
+				  name: 'data-clientes',
+				  display: 'value',
+				  source: dataClientes,
+				  limit: 1000
+				}
+			);
+			
+			/*  $('#buscador').typeahead({
+				highlight: true
+			  },
+			  {
+				source: dataClientes
+			  });*/			
+	
 		   
 		    $("#buscador").on("typeahead:selected", function(e,datum) { 
 			   // $codigo=datum.id;
 			    $("#codigo").val(datum.id); 
 			})
-
-
-
-
-
-
+	    
 
 });
 </script>
@@ -75,13 +53,11 @@ $(document).ready(function(){
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
     <div><br>
-      <center> 
-  
-
-  <input  type="text" placeholder="Oscar winners for Best Picture" name="buscador" id="buscador">
-
-      
-</center>
+      <center>
+      		<div class="scrollable-dropdown-menu">
+	      		<input type="text" name="buscador" id="buscador" class="form-control" >
+            </div>
+      </center>
       <br>
       <br>
       <center><input type="text" name="codigo" id="codigo" class="form-control" value=""></center>

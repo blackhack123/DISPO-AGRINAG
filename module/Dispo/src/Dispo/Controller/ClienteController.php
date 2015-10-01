@@ -456,7 +456,7 @@ class ClienteController extends AbstractActionController
 			$SesionUsuarioPlugin->isLoginAdmin();
 		
 			$request 			= 	$this->    getRequest();
-			$cliente_factura_id	= 	$request-> getQuery('q');
+			$cliente_factura_id	= 	$request-> getQuery('term');
 					
 			$condiciones = array(
 					"cliente_factura_id"	=> $cliente_factura_id,

@@ -30,21 +30,33 @@
 		/*--------------------- AUTOCOMPLETAR -------------------------*/
 		/*-------------------------------------------------------------*/
 		
-		$("#cliente_factura_nombre").typeahead({
-	    	minLength: 3,
-	        name : 		'cliente_factura',
-	        valueKey: 	'id',
-	        remote: {
-	            url : '../../dispo/cliente/consultarclientefactura?q=%QUERY'
-	        }
-	    });
-		
-
-	    $("#cliente_factura_nombre").on("typeahead:selected", function(e,datum) { 
-		   // $codigo=datum.id;
-		    $("#cliente_factura_id").val(datum.id); 
-		})
-		
+		var dataClientes = new Bloodhound({
+			  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+			  queryTokenizer: Bloodhound.tokenizers.whitespace,
+			  /*prefetch: '../../dispo/buscador/consultarclientefactura',*/
+			  remote: {
+			 	url : '../../dispo/cliente/consultarclientefactura?term=%QUERY',
+				wildcard: '%QUERY'
+			  }
+			});	
+	
+			$('#cliente_factura_nombre').typeahead(
+				{
+					highlight: true,
+					minLength: 3	
+				}, 
+				{
+				  name: 'data-clientes',
+				  display: 'value',
+				  source: dataClientes,
+				  limit: 1000
+				}
+			);
+			
+		 $("#cliente_factura_nombre").on("typeahead:selected", function(e,datum) { 
+			   // $codigo=datum.id;
+			    $("#cliente_factura_id").val(datum.id); 
+			})
 			
 		/*---------------------------------------------------------------*/
 		/*----------- Se configura los JQGRID de Cliente ----------------*/
