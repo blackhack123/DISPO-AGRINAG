@@ -27,7 +27,18 @@
 		/*-------------------------------------------------------------*/
 		/*--------------------- AUTOCOMPLETAR -------------------------*/
 		/*-------------------------------------------------------------*/
-
+		
+		var MIN_LENGTH = 3;
+		$("#cliente_factura_nombre").keyup(function() {
+			var term = $("#cliente_factura_nombre").val();
+			if (term.length >= MIN_LENGTH) {
+				$.get( "../../dispo/cliente/consultarclientefactura", { term: term } )
+				  .done(function( data ) {
+				   // console.log(data);
+				
+				  });
+			}
+		});
 		
 			
 		/*---------------------------------------------------------------*/
