@@ -19,80 +19,49 @@ $(document).ready(function () {
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta name="generator" content="Geany 1.23.1" />
 </head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<script src="http://cdn.jsdelivr.net/typeahead.js/0.9.3/typeahead.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
 
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-<style>
-.tt-query,
-.tt-hint {
-    width: 150%;
-    height: 34px;
-    padding: 6px 12px;
-    font-size: 14px;
-    line-height: 30px;
-    border: 2px solid #ccc;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
-    outline: none;
-}
 
-.tt-query {
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-
-.tt-hint {
-    color: #999
-}
-
-.tt-dropdown-menu {
-    width: 250px;
-    margin-top: 12px;
-    padding: 8px 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    box-shadow: 0 5px 10px rgba(0,0,0,.2);
-}
-
-.tt-suggestion {
-    padding: 3px 20px;
-    font-size: 18px;
-    line-height: 24px;
-}
-
-.tt-suggestion.tt-is-under-cursor {
-    color: #fff;
-    background-color: #0097cf;
-
-}
-</style>
 <script>
 
 $(document).ready(function(){
-		    $("#buscador").typeahead({
+   $("#buscador").typeahead({
 		    	minLength: 3,
 		        name : 'buscador',
 		        remote: {
 		            url : '../../dispo/buscador/consultarclientefactura?q=%QUERY'
 		        }
 		    });
+
+
+
+   var bestPictures = new Bloodhound({
+	   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+	   queryTokenizer: Bloodhound.tokenizers.whitespace,
+	   prefetch: '../data/films/post_1960.json',
+	   remote: {
+	     url: '../../dispo/buscador/consultarclientefactura?q=%QUERY',
+	     wildcard: '%QUERY'
+	   }
+	 });
+
+	 $('#remote .typeahead').typeahead(null, {
+	   name: 'best-pictures',
+	   display: 'value',
+	   source: bestPictures
+	 });
 	
+
 		   
 		    $("#buscador").on("typeahead:selected", function(e,datum) { 
 			   // $codigo=datum.id;
 			    $("#codigo").val(datum.id); 
 			})
-	    
+
+
+
+
+
+
 
 });
 </script>
@@ -106,7 +75,13 @@ $(document).ready(function(){
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
     <div><br>
-      <center><input type="text" name="buscador" id="buscador" class="" ></center>
+      <center> 
+  
+
+  <input  type="text" placeholder="Oscar winners for Best Picture" name="buscador" id="buscador">
+
+      
+</center>
       <br>
       <br>
       <center><input type="text" name="codigo" id="codigo" class="form-control" value=""></center>

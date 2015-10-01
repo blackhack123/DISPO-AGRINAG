@@ -3,7 +3,9 @@
  */
 
 	$(document).ready(function () {
-
+		
+		
+		
 		$("#frm_busqueda_cliente #btn_consultar").on('click', function(event){ 
 			$('#grid_cliente').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 			return false;
@@ -28,17 +30,20 @@
 		/*--------------------- AUTOCOMPLETAR -------------------------*/
 		/*-------------------------------------------------------------*/
 		
-		var MIN_LENGTH = 3;
-		$("#cliente_factura_nombre").keyup(function() {
-			var term = $("#cliente_factura_nombre").val();
-			if (term.length >= MIN_LENGTH) {
-				$.get( "../../dispo/cliente/consultarclientefactura", { term: term } )
-				  .done(function( data ) {
-				   // console.log(data);
-				
-				  });
-			}
-		});
+		$("#cliente_factura_nombre").typeahead({
+	    	minLength: 3,
+	        name : 		'cliente_factura',
+	        valueKey: 	'id',
+	        remote: {
+	            url : '../../dispo/cliente/consultarclientefactura?q=%QUERY'
+	        }
+	    });
+		
+
+	    $("#cliente_factura_nombre").on("typeahead:selected", function(e,datum) { 
+		   // $codigo=datum.id;
+		    $("#cliente_factura_id").val(datum.id); 
+		})
 		
 			
 		/*---------------------------------------------------------------*/

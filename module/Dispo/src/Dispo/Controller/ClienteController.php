@@ -456,10 +456,8 @@ class ClienteController extends AbstractActionController
 			$SesionUsuarioPlugin->isLoginAdmin();
 		
 			$request 			= 	$this->    getRequest();
-			$cliente_factura_id	= 	$request-> getQuery('term');
-			
-			//$term  = $request->getRequest('term');
-			
+			$cliente_factura_id	= 	$request-> getQuery('q');
+					
 			$condiciones = array(
 					"cliente_factura_id"	=> $cliente_factura_id,
 			);
@@ -470,8 +468,8 @@ class ClienteController extends AbstractActionController
 			foreach($result as $row){
 				//$row['variedad'] = trim($row['variedad']);
 				$row2['id'] 			= $row['id'];
-				$row2['label'] 			= trim($row['nombre']);
-				$row2['nombre'] 		= trim($row['nombre']);
+				$row2['value'] 			= trim($row['nombre']);
+				//$row2['nombre'] 		= trim($row['nombre']);
 				$result2[] 				= $row2;
 			}//end foreach
 			$data = new JsonModel($result2);
