@@ -67,7 +67,8 @@ class DispoBO extends Conexion
 				$grupo_precio_cab_id= $row_usuario['grupo_precio_cab_id']; //MORONITOR
 				$grupo_dispo_cab_id = $row_usuario['grupo_dispo_cab_id'];
 				$inventario_id 		= $row_usuario['inventario_id'];
-				$clasifica_fox		= $row_usuario['clasifica_fox'];;
+				$clasifica_fox		= $row_usuario['clasifica_fox'];
+				$calidad_id			= $row_usuario['calidad_id'];
 			}//end if
 			
 			
@@ -362,7 +363,7 @@ class DispoBO extends Conexion
 			 * Consulta todos los pedido del cliente en estado comprando
 			 * para poder homologar las cajas para poderlas restar del stock
 			 */			
-			$result = $PedidoDetDAO->consultarPedidosEstadoComprando($cliente_id, $inventario_id, $producto_id, $variedad_id, $grado_id,$tallos_x_bunch);
+			$result = $PedidoDetDAO->consultarPedidosEstadoComprando($cliente_id, $inventario_id, $producto_id, $variedad_id, $grado_id,$tallos_x_bunch, $calidad_id);
 			//Ajusta el porcentaje de acuerdo a la restriccion de GRUPO_DISPO
 			//var_dump($result_consolidado);
 			$nro_cajas = 0;
@@ -373,7 +374,9 @@ class DispoBO extends Conexion
 					
 				if ($rebajar_cajas_pedido == true)
 				{
-					$nro_cajas_homologada = $PedidoDetDAO->getCajasHomologadaPedido($inventario_id, $cliente_id, $marcacion_sec, $row['variedad_id'], $row['grado_id'], "C", $row_consolidado['tipo_caja_id'], $row['tallos_x_bunch']);
+					$nro_cajas_homologada = $PedidoDetDAO->getCajasHomologadaPedido($inventario_id, $cliente_id, $marcacion_sec, $row['variedad_id'], 
+																$row['grado_id'], "C", $row_consolidado['tipo_caja_id'], $row['tallos_x_bunch'],
+																$calidad_id);
 				}else{
 					$nro_cajas_homologada = 0;
 				}

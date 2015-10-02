@@ -234,19 +234,25 @@ class DispoDAO extends Conexion
 	 * 
 	 * @param string $proveedor_id
 	 * @param string $inventario_id
+	 * @param string $producto_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param int $tallos_x_bunch
+	 * @param string $clasifica_fox
 	 * @return array
 	 */
-	public function consultarInventarioPorProveedor($proveedor_id, $inventario_id, $variedad_id, $grado_id)
+	public function consultarInventarioPorProveedor($proveedor_id, $inventario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $clasifica_fox)
 	{
 		$sql = " SELECT cantidad_bunch_disponible, fecha, inventario_id, fecha_bunch,  ".
-				"        proveedor_id, variedad_id, grado_id ".
+				"        proveedor_id, producto, variedad_id, grado_id, tallos_x_bunch ".
 				" FROM dispo ".
 				" WHERE inventario_id 	= '".$inventario_id."'".
 				"   and proveedor_id  	= '".$proveedor_id."'".
+				"   and producto		= '".$producto_id."'".		//NUEVO
 				"   and variedad_id		= '".$variedad_id."'".
-				"   and grado_id		= '".$grado_id."'";
+				"   and grado_id		= '".$grado_id."'".
+				"   and tallos_x_bunch	= ".$tallos_x_bunch. 		//NUEVO
+				"   and clasifica		= '".$clasifica_fox."'".	//NUEVO
 				" ORDER BY fecha_bunch ";
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$result = $stmt->fetchAll();
@@ -273,9 +279,11 @@ class DispoDAO extends Conexion
 				"	and inventario_id 	= '".$DispoData->getInventarioId()."'".
 				"	and fecha_bunch 	= '".$DispoData->getFechaBunch()."'".
 				"   and proveedor_id  	= '".$DispoData->getProveedorId()."'".
+				"   and producto		= '".$DispoData->getProducto()."'".
 				"   and variedad_id		= '".$DispoData->getVariedadId()."'".
-				"   and grado_id		= '".$DispoData->getGradoId()."'";
-
+				"   and grado_id		= '".$DispoData->getGradoId()."'".
+			    "   and tallos_x_bunch  = ".$DispoData->getTallosxbunch().
+				"   and clasifica		= '".$DispoData->getClasifica()."'";
 		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
 		return $count;		
 	}//end function rebajar

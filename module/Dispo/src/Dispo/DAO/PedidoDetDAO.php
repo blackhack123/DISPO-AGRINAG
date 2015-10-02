@@ -294,9 +294,10 @@ class PedidoDetDAO extends Conexion
 	 * @param string $inventario_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
+	 * @param string $calidad_id
 	 * @return array
 	 */
-	public function consultarPedidosEstadoComprando($cliente_id, $inventario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch)
+	public function consultarPedidosEstadoComprando($cliente_id, $inventario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $calidad_id)
 	{
 		$sql =  " SELECT ".
 				'   variedad.producto_id,'.
@@ -306,7 +307,8 @@ class PedidoDetDAO extends Conexion
 				"	sum(pedido_det.cantidad_bunch) as pedido_tot_bunch".
 				" FROM pedido_cab INNER JOIN pedido_det".
 				"						ON pedido_det.pedido_cab_id = pedido_cab.id".
-				"					   AND pedido_det.inventario_id	= '".$inventario_id."'";
+				"					   AND pedido_det.inventario_id	= '".$inventario_id."'".
+			    "                      AND pedido_det.calidad_id	= ".$calidad_id;
 		if (!empty($variedad_id)){
 			$sql = $sql."			   AND pedido_det.variedad_id 	= '".$variedad_id."'";
 		}
@@ -346,7 +348,7 @@ class PedidoDetDAO extends Conexion
 	 * @param int $tallos_x_bunch
 	 * @return number
 	 */
-	public function getCajasHomologadaPedido($inventario_id, $cliente_id, $marcacion_sec, $variedad_id, $grado_id, $estado_pedido, $tipo_caja_id, $tallos_x_bunch)
+	public function getCajasHomologadaPedido($inventario_id, $cliente_id, $marcacion_sec, $variedad_id, $grado_id, $estado_pedido, $tipo_caja_id, $tallos_x_bunch, $calidad_id)
 	{
 		/**
 			* Se resta del stock los pedidos del cliente que se encuentra comprando
@@ -375,6 +377,7 @@ class PedidoDetDAO extends Conexion
 				"					   AND pedido_det.variedad_id	= '".$variedad_id."'".
 				"					   AND pedido_det.grado_id		= '".$grado_id."'".
 				"                      AND pedido_det.tallos_x_bunch= ".$tallos_x_bunch.
+				"					   AND pedido_det.calidad_id	= ".$calidad_id.
 				"					INNER JOIN tipo_caja_matriz".
 				"					    ON tipo_caja_matriz.inventario_id 	= pedido_det.inventario_id".
 				"		   			   AND tipo_caja_matriz.variedad_id 	= pedido_det.variedad_id".
