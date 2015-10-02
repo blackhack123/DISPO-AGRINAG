@@ -359,6 +359,20 @@ class UsuarioDAO extends Conexion {
 		//Validaciones extras si el usuario es un cliente
 		if ($reg['perfil_id']==\Application\Constants\Perfil::ID_CLIENTE)
 		{
+			if (empty($reg['inventario_id']))
+			{
+				$reg['respuesta_codigo']	='NO-EXISTS-INVENTARIO';
+				$reg['respuesta_mensaje']	='USUARIO NO TIENE INVENTARIO ASIGNADO';
+				return $reg;
+			}//end if		
+
+			if (empty($reg['calidad_id']))
+			{
+				$reg['respuesta_codigo']	='NO-EXISTS-CALIDAD';
+				$reg['respuesta_mensaje']	='USUARIO NO TIENE CALIDAD ASIGNADA';
+				return $reg;
+			}//end if
+						
 			if ($reg['inventario_id']!=$reg['grupo_precio_cab_inventario_id'])
 			{
 				$reg['respuesta_codigo']	='NO-CONFIG-INV-PRECIO';
