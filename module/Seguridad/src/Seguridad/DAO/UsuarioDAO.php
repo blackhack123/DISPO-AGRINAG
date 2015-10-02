@@ -313,8 +313,8 @@ class UsuarioDAO extends Conexion {
 				"		 usuario.grupo_dispo_cab_id, usuario.grupo_precio_cab_id,".
 				"        perfil.nombre as perfil_nombre, ".
 				"        cliente.nombre as cliente_nombre, ".
-				"        usuario.inventario_id as usuario_inventario_id,".
-				"		 usuario.calidad_id as usuario_calidad_id, ".
+				"        usuario.inventario_id as inventario_id,".
+				"		 usuario.calidad_id as calidad_id, ".
 				"		 usuario.grupo_dispo_cab_id as usuario_grupo_dispo_cab_id, ".
 				"		 usuario.grupo_precio_cab_id as usuario_grupo_precio_cab_id,".
 				"        grupo_precio_cab.inventario_id as grupo_precio_cab_inventario_id, grupo_precio_cab.calidad_id as grupo_precio_cab_calidad_id,".
