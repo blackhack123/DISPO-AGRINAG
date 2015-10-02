@@ -15,6 +15,7 @@ use Dispo\Data\DispoData;
 use Dispo\Data\GrupoDispoDetData;
 use Dispo\DAO\GrupoDispoDetDAO;
 use Dispo\Exception\PedidoException;
+use Seguridad\DAO\UsuarioDAO;
 
 
 class PedidoBO extends Conexion
@@ -489,6 +490,7 @@ class PedidoBO extends Conexion
 		$DispoDAO				= new DispoDAO();
 		$GrupoDispoDetDAO 		= new GrupoDispoDetDAO();
 		$DispoBO				= new DispoBO();
+		$UsuarioDAO				= new UsuarioDAO();
 		
 		$PedidoProveedorData	= new PedidoProveedorData();
 
@@ -511,7 +513,25 @@ class PedidoBO extends Conexion
 			$DispoDAO->setEntityManager($this->getEntityManager());
 			$GrupoDispoDetDAO->setEntityManager($this->getEntityManager());
 			$DispoBO->setEntityManager($this->getEntityManager());
-				
+			$UsuarioDAO->setEntityManager($this->getEntityManager());
+
+			/**
+			 * Consulta datos relacionados al usuario
+			 */
+			$row_usuario = $UsuarioDAO->consultar($usuario_cliente_id, \Application\Constants\ResultType::MATRIZ);
+			if (empty($row_usuario))
+			{
+				throw new PedidoException('Usuario no tiene asignado un grupo!!');
+			}else{
+/*				$grupo_precio_cab_id= $row_usuario['grupo_precio_cab_id']; //MORONITOR
+				$grupo_dispo_cab_id = $row_usuario['grupo_dispo_cab_id'];
+				$inventario_id 		= $row_usuario['inventario_id'];
+*/				$clasifica_fox		= $row_usuario['clasifica_fox'];
+				$calidad_id			= $row_usuario['calidad_id'];
+			}//end if
+					
+			
+			
 			$PedidoCabData = $PedidoCabDAO->consultar($pedido_cab_id);
 			if ($PedidoCabData->getEstado()==\Application\Constants\Pedido::ESTADO_ACTIVO){
 				throw new PedidoException('El pedido ya fue procesado anteriormente!!');
@@ -524,7 +544,7 @@ class PedidoBO extends Conexion
 			if(empty($GrupoDispoCabData)){
 				throw new PedidoException('Usuario no tiene asignado un grupo de dispo!!');
 			}//end foreach
-			
+
 			/**
 			 * Se obtiene los detalles de los pedidos, siempre y cuando el estado de la CABECERA DEL PEDIDO
 			 * este en estado COMPRANDO, por tema de seguridad se pregunta este estado en el QUERY
@@ -584,18 +604,13 @@ class PedidoBO extends Conexion
 					 * 2. Grabar el Pedido de las Fincas
 					 */
 					$pedido_nro_cajas = $reg_pedido['nro_cajas'];
-					//die('cajas:'.$pedido_nro_cajas);
-					//echo("<pre>");var_dump($dispo_actual[0]);echo("</pre>");
-					//exit;
 						
 					foreach($reg_dispo_actual['proveedores_dispo'] as $proveedor_dispo)
 					{
-						//var_dump($proveedor_dispo->nro_cajas); exit;
-
 						if ($pedido_nro_cajas > $proveedor_dispo['nro_cajas'])
 						{
 							$nro_cajas 			= $proveedor_dispo['nro_cajas'];
-							$pedido_nro_cajas 	=  $pedido_nro_cajas - $nro_cajas;
+							$pedido_nro_cajas 	= $pedido_nro_cajas - $nro_cajas;
 						}else{
 							$nro_cajas 			= $pedido_nro_cajas;
 							$pedido_nro_cajas 	=  0;
@@ -618,7 +633,7 @@ class PedidoBO extends Conexion
 						$PedidoProveedorData->setGradoId		($reg_pedido['grado_id']);
 						$PedidoProveedorData->setPrecio			($reg_pedido['precio']);
 						$PedidoProveedorData->setTotal			($total);
-						
+
 						//Equivalencias de Caja FB
 						$cajas_fb	= \Application\Classes\CajaConversion::equivalenciaFB($reg_pedido['tipo_caja_id'], $nro_cajas) ;
 						$PedidoProveedorData->setEqFb			($cajas_fb);
@@ -628,10 +643,15 @@ class PedidoBO extends Conexion
 						/*
 						 * 3. Rebaja de la DISPO GENERAL
 						 */
-						$result_dispo = $DispoDAO->consultarInventarioPorProveedor(	$proveedor_dispo['proveedor_id'], 
-																					$reg_dispo_actual['inventario_id'], 
+						$result_dispo = $DispoDAO->consultarInventarioPorProveedor(
+																					$proveedor_dispo['proveedor_id'], 
+																					$reg_dispo_actual['inventario_id'],
+																					$reg_dispo_actual['producto_id'],
 																					$reg_dispo_actual['variedad_id'], 
-																					$reg_dispo_actual['grado_id']);
+																					$reg_dispo_actual['grado_id'],
+																					$reg_dispo_actual['tallos_x_bunch'],
+																					$clasifica_fox
+																					);
 							
 						//$result_dispo = null;
 						if (empty($result_dispo))
@@ -658,16 +678,21 @@ class PedidoBO extends Conexion
 							$DispoData->setInventarioId		($row_dispo['inventario_id']);
 							$DispoData->setFechaBunch		($row_dispo['fecha_bunch']);
 							$DispoData->setProveedorId		($row_dispo['proveedor_id']);
+							$DispoData->setProducto			($row_dispo['producto']);
 							$DispoData->setVariedadId		($row_dispo['variedad_id']);
 							$DispoData->setGradoId			($row_dispo['grado_id']);
+							$DispoData->setTallosxBunch 	($row_dispo['tallos_x_bunch']);
+							$DispoData->setClasifica		($clasifica_fox); //NUEVO
 
 							$DispoDAO->rebajar($DispoData, $cantidad_descontar);
 							
 							//REBAJA DE LA DISPO POR GRUPO
 							$DispoGrupoDetData 	= new GrupoDispoDetData();
 							$DispoGrupoDetData->setGrupoDispoCabId		($GrupoDispoCabData->getId());
+							$DispoGrupoDetData->setProductoId 			($row_dispo['producto']);
 							$DispoGrupoDetData->setVariedadId			($row_dispo['variedad_id']);
 							$DispoGrupoDetData->setGradoId				($row_dispo['grado_id']);
+							$DispoGrupoDetData->setTallosXBunch 		($row_dispo['tallos_x_bunch']);
 							
 							$GrupoDispoDetDAO->rebajar($DispoGrupoDetData, $cantidad_descontar);
 							

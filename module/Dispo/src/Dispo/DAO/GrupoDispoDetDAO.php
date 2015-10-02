@@ -127,7 +127,7 @@ class GrupoDispoDetDAO extends Conexion
 	 * @param GrupoDispoDetData $DispoGrupoDetData
 	 * @param number $cantidad_descontar
 	 */
-	public function rebajar_MORONITOR(GrupoDispoDetData $DispoGrupoDetData, $cantidad_descontar)  /*MORONITOR*/
+	public function rebajar(GrupoDispoDetData $DispoGrupoDetData, $cantidad_descontar)  /*MORONITOR*/
 	{
 		if ($cantidad_descontar==0)
 		{
