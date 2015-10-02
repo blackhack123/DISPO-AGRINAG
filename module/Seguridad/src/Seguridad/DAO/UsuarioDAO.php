@@ -313,8 +313,8 @@ class UsuarioDAO extends Conexion {
 				"		 usuario.grupo_dispo_cab_id, usuario.grupo_precio_cab_id,".
 				"        perfil.nombre as perfil_nombre, ".
 				"        cliente.nombre as cliente_nombre, ".
-				"        usuario.inventario_id as inventario_id,".
-				"		 usuario.calidad_id as calidad_id, ".
+				"        usuario.inventario_id as usuario_inventario_id,".
+				"		 usuario.calidad_id as usuario_calidad_id, ".
 				"		 usuario.grupo_dispo_cab_id as usuario_grupo_dispo_cab_id, ".
 				"		 usuario.grupo_precio_cab_id as usuario_grupo_precio_cab_id,".
 				"        grupo_precio_cab.inventario_id as grupo_precio_cab_inventario_id, grupo_precio_cab.calidad_id as grupo_precio_cab_calidad_id,".
@@ -359,49 +359,49 @@ class UsuarioDAO extends Conexion {
 		//Validaciones extras si el usuario es un cliente
 		if ($reg['perfil_id']==\Application\Constants\Perfil::ID_CLIENTE)
 		{
-			if (empty($reg['inventario_id']))
+			if (empty($reg['usuario_inventario_id']))
 			{
 				$reg['respuesta_codigo']	='NO-EXISTS-INVENTARIO';
 				$reg['respuesta_mensaje']	='USUARIO NO TIENE INVENTARIO ASIGNADO';
 				return $reg;
 			}//end if		
 
-			if (empty($reg['calidad_id']))
+			if (empty($reg['usuario_calidad_id']))
 			{
 				$reg['respuesta_codigo']	='NO-EXISTS-CALIDAD';
 				$reg['respuesta_mensaje']	='USUARIO NO TIENE CALIDAD ASIGNADA';
 				return $reg;
 			}//end if
 						
-			if ($reg['inventario_id']!=$reg['grupo_precio_cab_inventario_id'])
+			if ($reg['usuario_inventario_id']!=$reg['grupo_precio_cab_inventario_id'])
 			{
 				$reg['respuesta_codigo']	='NO-CONFIG-INV-PRECIO';
 				$reg['respuesta_mensaje']	='INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO PRECIO)';					
 				return $reg;
 			}//end if
-	
-			if ($reg['inventario_id']!=$reg['grupo_dispo_cab_inventario_id'])
+
+			if ($reg['usuario_inventario_id']!=$reg['grupo_dispo_cab_inventario_id'])
 			{
 				$reg['respuesta_codigo']	='NO-CONFIG-INV-DISPO';
 				$reg['respuesta_mensaje']	='INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO DISPO)';
 				return $reg;
 			}//end if			
 	
-			if ($reg['calidad_id']!=$reg['grupo_precio_cab_calidad_id'])
+			if ($reg['usuario_calidad_id']!=$reg['grupo_precio_cab_calidad_id'])
 			{
 				$reg['respuesta_codigo']	='NO-CONFIG-CAL-PRECIO';
 				$reg['respuesta_mensaje']	='INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE PRECIO (GRUPO PRECIO)';
 				return $reg;
 			}//end if
 	
-			if ($reg['calidad_id']!=$reg['grupo_dispo_cab_calidad_id'])
+			if ($reg['usuario_calidad_id']!=$reg['grupo_dispo_cab_calidad_id'])
 			{
 				$reg['respuesta_codigo']	='NO-CONFIG-CAL-DISPO';
 				$reg['respuesta_mensaje']	='INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE PRECIO (GRUPO DISPO)';
 				return $reg;
 			}//end if
 			
-			if (empty($reg['punto_corte']))
+			if (empty($reg['usuario_punto_corte']))
 			{
 				$reg['respuesta_codigo']	='NO-PUNTO-CORTE';
 				$reg['respuesta_mensaje']	='NO TIENE PUNTO DE CORTE EL INVENTARIO ('.$reg['inventario_id'].') ';
