@@ -669,7 +669,7 @@ class PedidoBO extends Conexion
 							$DispoGrupoDetData->setVariedadId			($row_dispo['variedad_id']);
 							$DispoGrupoDetData->setGradoId				($row_dispo['grado_id']);
 							
-							$GrupoDispoDetDAO->rebajar($DispoGrupoDetData, $cantidad_descontar);
+							$GrupoDispoDetDAO->rebajar_MORONITOR($DispoGrupoDetData, $cantidad_descontar);
 							
 							if ($total_bunch_pedido==0)
 							{

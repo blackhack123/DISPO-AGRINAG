@@ -139,7 +139,7 @@ class GrupoDispoDetDAO extends Conexion
 				"   and producto_id			= '".$DispoGrupoDetData->getProductoId()."'".
 				"   and variedad_id			= '".$DispoGrupoDetData->getVariedadId()."'".
 				"   and grado_id			= '".$DispoGrupoDetData->getGradoId()."'".
-				"   and tallos_x_bunch		= ".$DispoGrupoDetData->getTallosXBunch();
+				"   and tallos_x_bunch		= '".$DispoGrupoDetData->getTallosXBunch()."'";
 
 		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
 		return $count;
