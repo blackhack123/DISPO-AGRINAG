@@ -547,23 +547,11 @@ class PedidoBO extends Conexion
 				 */				
 				$result_dispo_actual = $DispoBO->getDispo(	$reg_pedido['cliente_id'], $usuario_cliente_id, $reg_pedido['marcacion_sec'],
 															$reg_pedido['tipo_caja_id'], $reg_pedido['variedad_id'], $reg_pedido['grado_id'],
-															true, false, true);
+															true, false, true, $reg_pedido['variedad_producto_id'], $reg_pedido['tallos_x_bunch']);
 				if (empty($result_dispo_actual)){
 					throw new PedidoException('Dispo Vacia, no es posible confirmar el pedido');
 				}//end if
-/*				if ($result_dispo_actual['respuesta_code']!='OK')
-				{
-					$this->getEntityManager()->getConnection()->rollback();
-					$result = array(
-										'respuesta' => $result_dispo_actual['respuesta_code'],
-										'respuesta_descripcion' => $result_dispo_actual['respuesta_msg'],
-										'novedades_pedido_det'	=> null
-									);	
-					return $result;
-				}else{
-					$reg_dispo_actual	= $result_dispo_actual["result_dispo"][0];
-				}
-*/
+
 				switch($result_dispo_actual['respuesta_code'])
 				{
 					case 'OK':
@@ -613,7 +601,7 @@ class PedidoBO extends Conexion
 							$pedido_nro_cajas 	=  0;
 						}//end if
 
-						$cantidad_bunchs	= $nro_cajas * $reg_dispo_actual['cantidad_bunch'];  //HASTA AQUI ME QUEDE
+						$cantidad_bunchs	= $nro_cajas * $reg_dispo_actual['cantidad_bunch'];  
 						$tallos_total		= $cantidad_bunchs * $reg_dispo_actual['tallos_x_bunch'];
 						$total				= $tallos_total * $reg_dispo_actual['precio'];
 

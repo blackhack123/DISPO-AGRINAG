@@ -97,23 +97,23 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	//2015-09-29 Nuevos Campos
 	public function setUserInventarioId($valor){
 		$session = new Container('usuario');
-		$session->offsetSet('inventario_id', $valor);
+		$session->offsetSet('cliente_usuario_inventario_id', $valor);
 	}//end function
 	public function setUserCalidadId($valor){
 		$session = new Container('usuario');
-		$session->offsetSet('calidad_id', $valor);
+		$session->offsetSet('cliente_usuario_calidad_id', $valor);
 	}//end function
 	public function setUserGrupoPrecioCabId($valor){
 		$session = new Container('usuario');
-		$session->offsetSet('grupo_precio_cab_id', $valor);
+		$session->offsetSet('cliente_usuario_grupo_precio_cab_id', $valor);
 	}//end function
 	public function setUserGrupoDispoCabId($valor){
 		$session = new Container('usuario');
-		$session->offsetSet('grupo_dispo_cab_id', $valor);
+		$session->offsetSet('cliente_usuario_grupo_dispo_cab_id', $valor);
 	}//end function
 	public function setUserPuntoCorte($valor){
 		$session = new Container('usuario');
-		$session->offsetSet('punto_corte', $valor);
+		$session->offsetSet('cliente_usuario_punto_corte', $valor);
 	}//end function
 	public function setMarcacionTipoCajaDefaultId($valor){
 		$session = new Container('usuario');
@@ -150,11 +150,11 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 					'cliente_usuario_id'				=> $session->offsetGet('cliente_usuario_id'),
 					'cliente_usuario_nombre'			=> $session->offsetGet('cliente_usuario_nombre'),
 					'cliente_usuario_username'			=> $session->offsetGet('cliente_usuario_username'),
-					'cliente_usuario_inventario_id'		=> $session->offsetGet('inventario_id'),		//2015-09-29 NUEVO
-					'cliente_usuario_calidad_id'		=> $session->offsetGet('calidad_id'),			//2015-09-29 NUEVO
-					'cliente_usuario_grupo_precio_cab_id'=> $session->offsetGet('grupo_precio_cab_id'),	//2015-09-29 NUEVO
-					'cliente_usuario_grupo_dispo_cab_id'=> $session->offsetGet('grupo_dispo_cab_id'),	//2015-09-29 NUEVO
-					'cliente_usuario_punto_corte'		=> $session->offsetGet('punto_corte'),			//2015-09-29 NUEVO
+					'cliente_usuario_inventario_id'		=> $session->offsetGet('inventario_id'),				//2015-09-29 NUEVO
+					'cliente_usuario_calidad_id'		=> $session->offsetGet('cliente_usuario_calidad_id'),	//2015-09-29 NUEVO
+					'cliente_usuario_grupo_precio_cab_id'=> $session->offsetGet('grupo_precio_cab_id'),			//2015-09-29 NUEVO
+					'cliente_usuario_grupo_dispo_cab_id'=> $session->offsetGet('grupo_dispo_cab_id'),			//2015-09-29 NUEVO
+					'cliente_usuario_punto_corte'		=> $session->offsetGet('punto_corte'),					//2015-09-29 NUEVO
 					'marcacion_tipo_caja_default_id'	=> $session->offsetGet('marcacion_tipo_caja_default_id'),	//2015-09-29 NUEVO
 //					'cliente_calidad_id'				=> $session->offsetGet('cliente_calidad_id'),
 					];

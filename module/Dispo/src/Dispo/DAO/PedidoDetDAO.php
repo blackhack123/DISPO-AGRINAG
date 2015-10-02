@@ -473,7 +473,8 @@ class PedidoDetDAO extends Conexion
 	{
 /*		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
 				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id, '.
-*/		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, pedido_cab.cliente_id, pedido_cab.marcacion_sec, '.
+*/		$sql = 	' SELECT pedido_det.*, variedad.producto_id as variedad_producto_id, variedad.nombre as variedad_nombre, '.
+				'        pedido_cab.cliente_id, pedido_cab.marcacion_sec, '.
 				' 		 pedido_cab.agencia_carga_id, color_ventas.nombre as color_ventas_nombre, '.				
 				'		 CASE pedido_det.estado_reg_oferta '.
 				'			WHEN 1 THEN variedad_hueso.nombre '.
