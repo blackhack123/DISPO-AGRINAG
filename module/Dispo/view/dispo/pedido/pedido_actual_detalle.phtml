@@ -21,15 +21,15 @@
                      <?php echo($this->nro_pedido_formateado); ?>&nbsp;&nbsp;-&nbsp;&nbsp;
                 </p>
                <p class="subtitle-section pull-left">
-                    <b>Fecha: </b>
+                    <b>Date: </b>
                      <?php echo($this->pedido_fecha); ?>&nbsp;&nbsp;-&nbsp;&nbsp;
                 </p>               
                 <p class="subtitle-section pull-left">
-                    <b>Marcacion: </b>
+                    <b>Label / Mark: </b>
                      <?php echo($this->marcacion_nombre); ?>&nbsp;&nbsp;-&nbsp;&nbsp;
                 </p>
                 <p class="subtitle-section pull-left">
-                    <b>Agencia de Carga: </b>
+                    <b>Cargo Agency: </b>
                     <span class="agencia_carga_nombre"><?php echo($this->agencia_carga_nombre); ?></span>&nbsp;&nbsp;                      
                     <span data-toggle="modal" data-target="#CambiarAgenciaCarga">                                            
                         <img class="tool pull-right pointer btn_mostrar_dialog_agencia_carga" style="margin-right: 8px; cursor:pointer" title="edit" src="<?php echo($this->basePath()); ?>/images/edit-icon.png" pedido_det_sec="<?php echo(""/*$reg['pedido_det_sec']*/); ?>">                                           
@@ -43,14 +43,14 @@
 						<table class="table-dispo border" id="tbl_pedido_actual" width="100%">
                             <tr>
                                 <td class="th-inner"  width="60">ID Item</td>
-                                <td class="th-inner" width="100%">Variedad</td>
+                                <td class="th-inner" width="100%">Variety</td>
                                 <td class="th-inner"  width="90">Color</td>
-                                <td class="th-inner"  width="90">Grado(cm)</td>
-                                <td class="th-inner"  width="90">Und/Bunch</td>
-                                <td class="th-inner"  width="100">Tipo Caja</td>
-                                <td class="th-inner"  width="100">Bunch/Caja</td> 
-                                <td class="th-inner"  width="100">Unidades</td>                                  
-                                <td class="th-inner"  width="50">Cajas</td>
+                                <td class="th-inner"  width="90">Length(cm)</td>
+                                <td class="th-inner"  width="90">Unts/Bunch</td>
+                                <td class="th-inner"  width="100">Box Type</td>
+                                <td class="th-inner"  width="100">Bunch/Box</td> 
+                                <td class="th-inner"  width="100">Units</td>                                  
+                                <td class="th-inner"  width="50">Boxes</td>
                                 <td class="th-inner"  width="100">Price/Item</td>
                                 <td class="th-inner"  width="100">Total</td>                                                
                                 <!-- <td class="th-inner"  width="120">Marcacion</td> -->
@@ -60,7 +60,7 @@
                                         (*)
                                     </span>
                                 </td>
-                                <td class="th-inner"  width="70">Eliminar</td>
+                                <td class="th-inner"  width="70">Delete</td>
                             </tr>
         <?php 	
             if ($this->rs_pedido_det)
@@ -134,7 +134,7 @@
          
          <div style="margin-top:5px">
          	<div class="pull-left">
-	                <span class="btn btn-default" data-toggle="modal" data-target="#dialog_comentario">Agregar Comentario</span>
+	                <span class="btn btn-default" data-toggle="modal" data-target="#dialog_comentario">Add Comment</span>
             </div>
             <div class="pull-right">
 		<?php 		if ($this->rs_pedido_det){ ?>        

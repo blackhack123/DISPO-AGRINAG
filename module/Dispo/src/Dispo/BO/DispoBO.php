@@ -60,7 +60,7 @@ class DispoBO extends Conexion
 			if (empty($row_usuario))
 			{
 				$result = array('respuesta_code' 	=> '01',
-								'respuesta_msg'		=> 'Usuario no tiene asignado un grupo'
+								'respuesta_msg'		=> 'Availability Unassigned'
 				);
 				return $result;
 			}else{
@@ -87,7 +87,7 @@ class DispoBO extends Conexion
 			if (empty($clasifica_fox))
 			{
 				$result = array('respuesta_code' 	=> '02',
-						'respuesta_msg'		=> 'Calidad no tiene clasifica, comuniquese con su asesor'
+						'respuesta_msg'		=> 'Calidad no tiene clasifica_fox, comuniquese con su asesor'
 				);
 				return $result;
 			}//end if			

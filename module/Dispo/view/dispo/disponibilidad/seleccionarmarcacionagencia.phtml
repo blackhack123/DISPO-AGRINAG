@@ -20,8 +20,8 @@
 	function consultar_marcacion_y_agenciacarga()
 	{
 		var data = {
-						marcacion_texto_primer_elemento: "Marcación",
-						agenciacarga_texto_primer_elemento: "Ag. de Carga"
+						marcacion_texto_primer_elemento: "LABEL / MARK",
+						agenciacarga_texto_primer_elemento: "CARGO AGENCY"
 				  }
 		data = JSON.stringify(data);
 		
@@ -72,13 +72,13 @@
 	{
 		if ($('#marcacion_sec').val()=='')
 		{
-			alert('Debde de seleccionar una marcacion');
+			alert('Select Label / Mark');;
 			return false;
 		}
 
 		if ($('#agencia_carga_id').val()=='')
 		{
-			alert('Debde de seleccionar una agencia de carga');
+			alert('Select Cargo Agency');
 			return false;
 		}
 
@@ -89,7 +89,7 @@
 </script>
 		<form id="frm" name="frm" action="<?php echo($this->basePath()); ?>/dispo/disponibilidad/asignarMarcacionAgencia" method="post">	
 		    <div class="title-section">
-		        <h1>Disponibilidad</h1>
+		        <h1>Availability</h1>
 		    </div>
 		    	
 	        <div class="container-fluid pull-right">
