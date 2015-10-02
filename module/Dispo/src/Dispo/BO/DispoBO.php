@@ -282,7 +282,7 @@ class DispoBO extends Conexion
 					}//end if
 				}else{
 					$result = array('respuesta_code' 	=> '03',
-							'respuesta_msg'			=> 'Error, no tiene caja disponible - Variedad:'.$row_dispo['variedad_nombre'].' - Grado:'.$row_dispo['grado_id']
+							'respuesta_msg'			=> 'Error, no tiene caja '.$tipo_caja_id.' disponible - Variedad:'.$row_dispo['variedad_nombre'].' - Grado:'.$row_dispo['grado_id']
 					);
 					//throw new Exception('Error, no tiene caja disponible');
 					return $result;
