@@ -7,113 +7,97 @@
 
 			$("body").on('click', '#btn_confirmar', function(event){
 				$("#detalle_pedido_sin_stock").html('');
-	        	var xswal = swal({
-				  title: "You want confirm your order?",
-				  text: "Please check your order !",
-				  type: "warning",
-				  showCancelButton: true,
-				  confirmButtonColor: "#DD6B55",
-				  confirmButtonText: "Yes, confirm",
-				  closeOnConfirm: false,
-				  closeOnCancel: false
-				},
-				function(isConfirm){
-					if (isConfirm) {				
-						//Se actualiza la DISPO una vez confirmado el PEDIDO
-						var data = {
-									pedido_cab_id: '<?php echo($this->pedido_cab_id); ?>'
-				  				   };
-							    		
-			    		var parameters = {
-			    							'type': 'POST',
-			    							'url':'<?php echo($this->basePath()); ?>/dispo/pedido/confirmar',
-			    							'show_cargando':true,
-			    							'async': false,
-			    							'finish':function(response){
-				    								//console.log('response.respuesta_codex:',response.respuesta_codex);
-				    								switch (response.respuesta_codex){
-				    								case 'OK':
-				    									//console.log('paso01');
-			    										swal({  title: "Your order has been successfully confirmed!",   
-			    											text: "You want to continúe using the same mark / label ? To continue making orders",
-			    											//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
-			    											//html:true,
-			    											type: "success",
-			    											showCancelButton: true,
-			    											confirmButtonColor: "#DD6B55",
-			    											confirmButtonText: "Yes, the same mark / label!",
-			    											cancelButtonText: "Not, change for other Mark / Labe!",
-			    											closeOnConfirm: false,
-			    											closeOnCancel: false,
-			    											/*timer: 2000*/
-			    										},
-			    										function(isConfirm){
-			    											cargador_visibility('show');
-		
-			    											swal({  title: "Processing your request ...",   
-				    											text: "",  
-				    											type: "success",
-				    											showCancelButton: false,
-				    											showConfirmButton: false,
-				    										});
-			    											if (isConfirm) {
-																//Redirigir al listado de la disponibilidad y conservar las variables de marcacion y agencia de carga
-			    												window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/listado';
-			    											}else{
-			    												//Se enceran las variables de seccion de marcacion y agencia de carga, 
-				    											window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/liberarMarcacionAgencia';
-			    											}//end if
-			    										});
-			    										break;
-			    										
-				    								case 'NOVEDAD':
-			    										//console.log('paso02');
-				    									$("#detalle_pedido_sin_stock").html(response.html);
-				    									$(window).scrollTop(2000);
-				    									swal({  title: "Out stock for your order ...",   
-			    											text: "Please select other quantity of boxes",  
-			    											type: "error",
-			    											showCancelButton: false,
-			    											showConfirmButton: true,
-			    										});
-				    									/*function(isConfirm){
-				    										if (isConfirm) {
-				    											$(window).scrollTop(1000);
-				    										}//end if
-				    									});*/				    									
-				    									/*$(".sweet-alert").css('display','none');
-				    									$(".sweet-overlay").css('display','none');*/
-														//alert('entra aqui');
-														break;
-														
-			    									default:
-			    										//console.log('paso03');
-			    										//cargador_visibility('show');
-				    									//alert('hola'+ response.respuesta_msg);			
-			    										swal({  title: response.respuesta_msg,   
-			    											text: '',		    											
-			    											type: "error",
-			    											html: true,
-			    											showCancelButton: false,
-			    											confirmButtonColor: "#DD6B55",
-			    											//showConfirmButton: false,
-			    										});
-			    									}//end switch
-			    									
-			    							}//end finish
-			    		                 }//end parameters
-			    		ajax_call(parameters, data);
-						return;
-					}else{
-						$(".sweet-alert").css('display','none');
-						$(".sweet-overlay").css('display','none');
-						
-						//xswal.closeModal();
-					}//end if
-				});//end function
+
+				//Se actualiza la DISPO una vez confirmado el PEDIDO
+				var data = {
+							pedido_cab_id: '<?php echo($this->pedido_cab_id); ?>'
+						   };
+								
+				var parameters = {
+									'type': 'POST',
+									'url':'<?php echo($this->basePath()); ?>/dispo/pedido/confirmar',
+									'show_cargando':true,
+									'async': false,
+									'finish':function(response){
+											//console.log('response.respuesta_codex:',response.respuesta_codex);
+											switch (response.respuesta_codex){
+											case 'OK':
+												//console.log('paso01');
+												swal({  title: "Your order has been successfully confirmed!",   
+													text: "You want to continúe using the same mark / label ? To continue making orders",
+													//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
+													//html:true,
+													type: "success",
+													showCancelButton: true,
+													confirmButtonColor: "#DD6B55",
+													confirmButtonText: "Yes, the same mark / label!",
+													cancelButtonText: "Not, change for other Mark / Labe!",
+													closeOnConfirm: false,
+													closeOnCancel: false,
+													/*timer: 2000*/
+												},
+												function(isConfirm){
+													cargador_visibility('show');
+
+													swal({  title: "Processing your request ...",   
+														text: "",  
+														type: "success",
+														showCancelButton: false,
+														showConfirmButton: false,
+													});
+													if (isConfirm) {
+														//Redirigir al listado de la disponibilidad y conservar las variables de marcacion y agencia de carga
+														window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/listado';
+													}else{
+														//Se enceran las variables de seccion de marcacion y agencia de carga, 
+														window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/liberarMarcacionAgencia';
+													}//end if
+												});
+												break;
+												
+											case 'NOVEDAD':
+												//console.log('paso02');
+												$("#detalle_pedido_sin_stock").html(response.html);
+												$(window).scrollTop(2000);
+												swal({  title: "Out stock for your order ...",   
+													text: "Please select other quantity of boxes",  
+													type: "error",
+													showCancelButton: false,
+													showConfirmButton: true,
+												});
+												/*function(isConfirm){
+													if (isConfirm) {
+														$(window).scrollTop(1000);
+													}//end if
+												});*/				    									
+												/*$(".sweet-alert").css('display','none');
+												$(".sweet-overlay").css('display','none');*/
+												//alert('entra aqui');
+												break;
+												
+											default:
+												//console.log('paso03');
+												//cargador_visibility('show');
+												//alert('hola'+ response.respuesta_msg);			
+												swal({  title: response.respuesta_msg,   
+													text: '',		    											
+													type: "error",
+													html: true,
+													showCancelButton: false,
+													confirmButtonColor: "#DD6B55",
+													//showConfirmButton: false,
+												});
+											}//end switch
+											
+									}//end finish
+								 }//end parameters
+				ajax_call(parameters, data);
+				return;
+
+/*				});//end function
 					
 				event.preventDefault();
-				return false;
+				return false;*/
 			});
 	
 	
