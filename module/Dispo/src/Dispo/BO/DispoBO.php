@@ -59,8 +59,9 @@ class DispoBO extends Conexion
 			$row_usuario = $UsuarioDAO->consultar($usuario_id, \Application\Constants\ResultType::MATRIZ);
 			if (empty($row_usuario))
 			{
+				//'Usuario no tiene asignado un grupo'
 				$result = array('respuesta_code' 	=> '01',
-								'respuesta_msg'		=> 'Availability Unassigned'
+								'respuesta_msg'		=> '00 - Availability Unassigned'//
 				);
 				return $result;
 			}else{
@@ -79,32 +80,36 @@ class DispoBO extends Conexion
 			 */
 			if (empty($inventario_id))
 			{
-				$result = array('respuesta_code' 	=> '02',
-						'respuesta_msg'		=> 'Usuario no tiene inventario, comuniquese con su asesor'
+				//Usuario no tiene inventario, comuniquese con su asesor
+				$result = array('respuesta_code' 	=> '02',						
+						'respuesta_msg'		=> '01 - Inventario no cargado, comuniquese con su asesor'  
 				);
 				return $result;
 			}//end if
 
 			if (empty($clasifica_fox))
 			{
-				$result = array('respuesta_code' 	=> '02',
-						'respuesta_msg'		=> 'Calidad no tiene clasifica_fox, comuniquese con su asesor'
+				//'Calidad no tiene clasifica_fox, comuniquese con su asesor'
+				$result = array('respuesta_code' 	=> '02',						
+						'respuesta_msg'		=> '02 - Calidad no cargada, comuniquese con su asesor'  
 				);
 				return $result;
 			}//end if			
 
 			if (empty($grupo_precio_cab_id))
 			{
+				//'Usuario no tiene asignado GRUPO PRECIO, comuniquese con su asesor'
 				$result = array('respuesta_code' 	=> '02',
-						'respuesta_msg'				=> 'Usuario no tiene asignado GRUPO PRECIO, comuniquese con su asesor'
+						'respuesta_msg'				=> '03 - Precio no cargado, comuniquese con su asesor'
 				);
 				return $result;
 			}//end if
 
 			if (empty($grupo_dispo_cab_id))
 			{
+				//Usuario no tiene asignado GRUPO DISPO, comuniquese con su asesor
 				$result = array('respuesta_code' 	=> '02',
-						'respuesta_msg'				=> 'Usuario no tiene asignado GRUPO DISPO, comuniquese con su asesor'
+						'respuesta_msg'				=> '04 - Inventario no cargado, comuniquese con su asesor'
 				);
 				return $result;
 			}//end if
@@ -112,32 +117,36 @@ class DispoBO extends Conexion
 			
 			if ($row_usuario['inventario_id']!=$row_usuario['grupo_precio_cab_inventario_id'])
 			{
+				//INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO PRECIO)
 				$result = array('respuesta_code' 	=> 'NO-CONFIG-INV-PRECIO',
-						'respuesta_msg'				=> 'INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO PRECIO)'
+						'respuesta_msg'				=> '05 - Inventario no cargado, comuniquese con su asesor'
 				);
 				return $result;
 			}//end if			
 
 			if ($row_usuario['inventario_id']!=$row_usuario['grupo_dispo_cab_inventario_id'])
 			{
+				//INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO DISPO)
 				$result = array('respuesta_code' 	=> 'NO-CONFIG-INV-DISPO',
-						'respuesta_msg'				=> 'INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO DISPO)'
+						'respuesta_msg'				=> '06 - Inventario no cargado, comuniquese con su asesor'
 				);
 				return $result;
 			}//end if	
 
 			if ($row_usuario['calidad_id']!=$row_usuario['grupo_precio_cab_calidad_id'])
 			{
+				//INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE CALIDAD (GRUPO PRECIO)
 				$result = array('respuesta_code' 	=> 'NO-CONFIG-CAL-PRECIO',
-						'respuesta_msg'				=> 'INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE CALIDAD (GRUPO PRECIO)'
+						'respuesta_msg'				=> '07 - Calidad no cargada, comuniquese con su asesor'
 				);
 				return $result;
 			}//end if
 
 			if ($row_usuario['calidad_id']!=$row_usuario['grupo_dispo_cab_calidad_id'])
 			{
+				//INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE CALIDAD (GRUPO DISPO)
 				$result = array('respuesta_code' 	=> 'NO-CONFIG-CAL-DISPO',
-						'respuesta_msg'				=> 'INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE CALIDAD (GRUPO DISPO)'
+						'respuesta_msg'				=> '08 - Calidad no cargada, comuniquese con su asesor'
 				);
 				return $result;
 			}//end if			

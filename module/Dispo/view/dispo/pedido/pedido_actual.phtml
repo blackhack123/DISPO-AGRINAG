@@ -8,12 +8,12 @@
 			$("body").on('click', '#btn_confirmar', function(event){
 				$("#detalle_pedido_sin_stock").html('');
 	        	var xswal = swal({
-				  title: "Desea confirmar su pedido?",
-				  text: "Verifique que todo su pedido este en orden!",
+				  title: "You want confirm your order?",
+				  text: "Please check your order !",
 				  type: "warning",
 				  showCancelButton: true,
 				  confirmButtonColor: "#DD6B55",
-				  confirmButtonText: "Si, confirmar",
+				  confirmButtonText: "Yes, confirm",
 				  closeOnConfirm: false,
 				  closeOnCancel: false
 				},
@@ -34,15 +34,15 @@
 				    								switch (response.respuesta_codex){
 				    								case 'OK':
 				    									//console.log('paso01');
-			    										swal({  title: "El pedido se ha confirmado con exito!",   
-			    											text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",
+			    										swal({  title: "Your order has been successfully confirmed!",   
+			    											text: "You want to continúe using the same mark / label ? To continue making orders",
 			    											//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
 			    											//html:true,
 			    											type: "success",
 			    											showCancelButton: true,
 			    											confirmButtonColor: "#DD6B55",
-			    											confirmButtonText: "Si, la misma!",
-			    											cancelButtonText: "No, cambiar!",
+			    											confirmButtonText: "Yes, the same mark / label!",
+			    											cancelButtonText: "Not, change for other Mark / Labe!",
 			    											closeOnConfirm: false,
 			    											closeOnCancel: false,
 			    											/*timer: 2000*/
@@ -50,7 +50,7 @@
 			    										function(isConfirm){
 			    											cargador_visibility('show');
 		
-			    											swal({  title: "Procesando su peticion ...",   
+			    											swal({  title: "Processing your request ...",   
 				    											text: "",  
 				    											type: "success",
 				    											showCancelButton: false,
@@ -70,8 +70,8 @@
 			    										//console.log('paso02');
 				    									$("#detalle_pedido_sin_stock").html(response.html);
 				    									$(window).scrollTop(2000);
-				    									swal({  title: "No hay stock suficiente en su pedido ...",   
-			    											text: "POR FAVOR INDIQUE OTRA CANTIDAD de CAJAS",  
+				    									swal({  title: "Out stock for your order ...",   
+			    											text: "Please select other quantity of boxes",  
 			    											type: "error",
 			    											showCancelButton: false,
 			    											showConfirmButton: true,
@@ -128,7 +128,7 @@
 				if (agencia_carga_idx == '')
 				{
 					swal({
-						  title: "Seleccione la Agencia de Carga",
+						  title: "Select Cargo Agency",
 						  text: "",
 						  type: "warning",
 						  showCancelButton: false,
@@ -210,11 +210,11 @@
 
 				if ((oferta==1)||(pedido_cab_oferta_id!==''))
 				{
-					var swal_title = "La variedad "+variedad_nombre+" tiene una oferta vinculada ("+variedad_nombre_oferta_vinculada+")!! Está seguro de borrar el Item?";
-					var swal_text  = "Si va eliminar esta variedad tambien se borrará la oferta vinculada";
+					var swal_title = "The "+variedad_nombre+"  Variety has a linked offer ("+variedad_nombre_oferta_vinculada+")!! Are you sure of delete this item?";
+					var swal_text  = "If you delete this variety also remove the linked offer";
 				}else{
-					var swal_title = "Esta seguro de borrar el Item?";
-					var swal_text  = "La variedad será retirada de su pedido!";
+					var swal_title = "Are you sure of delete this item?";
+					var swal_text  = "The Variety will be remove from your order!";
 				}//end if
 
 	        	swal({
@@ -225,7 +225,7 @@
 	  			  type: "warning",
 	  			  showCancelButton: true,
 	  			  confirmButtonColor: "#DD6B55",
-	  			  confirmButtonText: "Si, borrarlo",
+	  			  confirmButtonText: "yes, remove",
 	  			  closeOnConfirm: false
 	  			},
 	  			function(){
@@ -259,13 +259,13 @@
 														}
 													}//end if
 	  	  											if (response.nro_reg_det>0){
-	  	  												swal("Borrado!", "El item ha sido borrado! ", "success");
+	  	  												swal("Removed!", "The item was removed! ", "success");
 	  													consultarNroItemsPedidoComprando(); 
 	  													//Se elimina el TR
 	  	  											}else{
 	  	  	  											swal({
-	  	  	  													title: "Borrado!",
-																text: 'Se eliminó por completo el pedido. Se consultará la disponibilidad!',
+	  	  	  													title: "Removed!",
+																text: 'Your order was removed.. !',
 																type: "success",
 																showConfirmButton: false,
 																timer: 2000								
@@ -341,15 +341,15 @@
         <div class="alert alert-success" role="alert" id="dialog_confirm_msn" style="display:none">
             <div class="clearfix">
                 <p class="flo-left">
-                    <b>Su pedido fue enviado con exito.</b> Desea continuar utilizando la misma marcacion?
+                    <b>Your order has been successfully confirmed!</b>You want to continúe using the same mark / label ? To continue making orders
                 </p>  
         
                 <div class="add-label flo-right pointer">
-                   No
+                   Not
                 </div>               
         
                 <div class="add-label flo-right pointer">
-                   Si
+                   Yes
                 </div>                            
             </div>
         </div>
@@ -365,7 +365,7 @@
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 	        <h4 class="modal-title" id="myModalLabel">
-	        	Cambiar Ag. de Carga <br><i><span id="dialog_nombre_agencia_carga" ></span></i>
+	        	Edit Cargo Agency<br><i><span id="dialog_nombre_agencia_carga" ></span></i>
 	        	<div style="display: none" id="dialog_pedido_det_sec"></div>
 	        </h4>
 	      </div>
