@@ -142,7 +142,10 @@ class DisponibilidadController extends AbstractActionController
 			$SesionUsuarioPlugin->isLoginClienteVendedor();
 			
 			$DispoBO				= new DispoBO();
+			$ColorVentasBO			= new ColorVentasBO();
+			
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 
 			//Se pregunta si se ha seleccionado una marcacion y una agencia, caso contrario lo rutea
 			//para obligarlo a seleccionar
@@ -168,6 +171,8 @@ class DisponibilidadController extends AbstractActionController
 			//$viewModel->result				= $result;	//MORONITOR
 			
 			$viewModel->marcacion_nombre 	= $SesionUsuarioPlugin->getClienteSeleccionMarcacionNombre();
+			
+			$viewModel->cbo_color = $ColorVentasBO->getCombo(null, "ALL");
 //			echo("<br>");var_dump($result);echo("<br>");
 //			exit;
 			
