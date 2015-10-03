@@ -4,7 +4,6 @@
 	}
 </style>
 
-
 <script>
 	$(document).ready(function () {
 	    $(".bnt_sin_stock_actualizar_nro_cajas").on('click', function(event){ 
@@ -127,20 +126,20 @@
     </div>
     <br><br>
     <div>
-		<p class="text-center" style="color:#9C0A0C"><b>REVISE LOS SIGUIENTES ITEMS QUE NO TIENEN STOCK SUFICIENTE</b></p>
+		<p class="text-center" style="color:#9C0A0C"><b>CHECK THE FOLLOWING ITEMS...OUT STOCK</b></p>
 	</div>
     <div>
         <table class="table-dispo border" id="tbl_sin_stock" align="center">
              <tr>
                  <td class="th-inner"  width="60">ID Item</td>
-                 <td class="th-inner"  width="110">Variedad</td>
-                 <td class="th-inner"  width="50">Grado(cm)</td>
-                 <td class="th-inner"  width="50">Tipo Caja</td>                                
-                 <td class="th-inner"  width="50">Cajas</td>
+                 <td class="th-inner"  width="110">Variety</td>
+                 <td class="th-inner"  width="50">Length(cm)</td>
+                 <td class="th-inner"  width="50">Box Type</td>                                
+                 <td class="th-inner"  width="50">Boxes</td>
                  <td class="th-inner"  width="50">Price/Item</td>
-                 <td class="th-inner"  width="130">Cajas en Stock</td>
-                 <td class="th-inner"  width="60">Aceptar</td>
-                 <td class="th-inner"  width="60">Eliminar</td>
+                 <td class="th-inner"  width="130">Boxes in Stock</td>
+                 <td class="th-inner"  width="60">Ok</td>
+                 <td class="th-inner"  width="60">Remove</td>
              </tr>
     <?php 	
             $ind = 0;
@@ -178,7 +177,7 @@
                      </td>
                      <td>
                             <?php if (empty($cbo_caja)){ ?>
-                                NO HAY CAJAS
+                                DON'T EXIST BOXES
                             <?php }else{ ?>
                                 <select class="form-control select-class" id="<?php echo($ind); ?>_cbo_nro_cajas_en_stock"><?php echo($cbo_caja); ?></select>	             			
                             <?php }//end if ?>
@@ -186,7 +185,7 @@
                      <td>
                             <?php if (!empty($cbo_caja)){ ?>
                                  <div class="btn btn-xs btn-success bnt_sin_stock_actualizar_nro_cajas" indice="<?php echo($ind); ?>" style="cursor:pointer">
-                                     <span class="glyphicon glyphicon-ok"></span> Aceptar
+                                     <span class="glyphicon glyphicon-ok"></span> Ok
                                  </div>
                             <?php }//end if ?>
                      </td>
