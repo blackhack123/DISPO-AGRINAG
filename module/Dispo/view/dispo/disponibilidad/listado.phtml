@@ -8,22 +8,59 @@
         $('#filter_text').keyup(function () 
         {
             $("#cbo_filter").val('');
+			$('#cbo_color').val('');
             var rex = new RegExp($(this).val(), 'i');
+			console.log(rex);
             $('.searchable tr').hide();
             $('.searchable tr').filter(function () {
                 return rex.test($.trim($(this).text()));
             }).show();
         })	       
         
+
+        $('#cbo_color').on('change', function(event)
+		{       
+			$('#filter_text').val('') 			
+            $("#cbo_filter").val('');
+			
+			var texto = $("#cbo_color option:selected").text();
+			if (texto=='ALL')
+			{				
+				var rex = new RegExp('[a-z][A-Z]');		
+			}else{
+	            var rex = new RegExp(texto, 'i');				
+			}//end if
+			
+            $('.searchable tr').hide();
+            $('.searchable tr').filter(function () {
+                return rex.test($.trim($(this).text()));
+            }).show();
+        })	  		
+		
+		
         $('#cbo_filter').change(function () 
         {
         	$('#filter_text').val('');
-			var regexp2 = new RegExp('^'+$("#cbo_filter").val(),'i');
+			$('#cbo_color').val('');
+			
+			var texto = $("#cbo_filter option:selected").text();
+			
+			if (texto=='ALL')
+			{				
+				var regexp2 = new RegExp('[a-z][A-Z]');		
+			}else{
+	            var regexp2 = new RegExp('^'+texto, 'i');				
+			}//end if			
+			//var texto = eval("/^"+$("#cbo_filter option:selected").text()+"/g");
+			
+			//var regexp2 =  eval("/^"+texto+"/g");  /*new RegExp('^'+texto,'i');*/
+			//var regexp2 = new RegExp(texto,'i');
+			//console.log('regexp2:',regexp2);
 			//console.log('regexp2:',regexp2);
             $('.searchable tr').hide();
-            $('.searchable tr .variedad').filter(function () {
+            $('.searchable tr').filter(function () {  //.variedad
                 return regexp2.test($.trim($(this).text()));
-            }).parent().show();
+            }).show();
         })
 
 
@@ -76,13 +113,23 @@
 		<div class="col-xd-offset-1 col-md-offset-1 col-lg-offset-1 col-xs-10 col-sm-10 col-md-10 col-lg-10">
             <div class="row container-fluid">
             	<div class="pull-right" style="margin-bottom:5px; line-height:35px">
-                     <div class="search pull-left">
+                
+                    <div class="search pull-left">
                         <div class="input-group" style="width:200px">                        
                             <input id="filter_text" type="text" class="form-control" placeholder="Search...">
 							<a href="#" class="input-group-addon btn glyphicon glyphicon-search" role="button"></a>
                         </div>                        
                     </div>
         			
+                    <div class="pull-left">
+                    	&nbsp;&nbsp;&nbsp;Color:&nbsp;
+                    </div>
+                    <div class="pull-left">
+                    	<select id="cbo_color" class="form-control pull-left">
+                        	<?php echo($this->cbo_color); ?>
+                        </select>
+                    </div>
+                    
                     <div class="pull-left">
                         &nbsp;&nbsp;&nbsp;Select a Letter:&nbsp;
                     </div>
