@@ -585,7 +585,7 @@ class PedidoController extends AbstractActionController
 			$config = $this->getServiceLocator()->get('Config');
 		
 			$PedidoBO				= new PedidoBO();
-		
+			
 			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 		
 			$body = $this->getRequest()->getContent();

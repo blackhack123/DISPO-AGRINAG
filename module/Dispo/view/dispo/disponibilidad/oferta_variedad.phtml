@@ -183,7 +183,7 @@
 	{
 		var radioValue 	=  $("input[name='oferta_hueso_seleccion']:checked").val();
 		if (!radioValue){
-			alert('seleccione una oferta');
+			alert('Select an Offer');
 			return false;
 		}//end if
 
@@ -274,11 +274,11 @@
          <input type="hidden" id="oferta_tallos_x_bunch" value="<?php echo($this->reg_dispo_precio_oferta['tallos_x_bunch']); ?>" />       
           <table class="table-dispo border" width="100%">
               <tr>
-                  <td class="th-inner"  width="90">Precio Normal</td>
-                  <td class="th-inner"  width="90">Precio Oferta</td>
-                  <td class="th-inner"  width="70">Grado</td>
-                  <td class="th-inner"  width="80">type box</td>
-                  <td class="th-inner"  width="60">Cantidad</td>
+                  <td class="th-inner"  width="90">Standart Price</td>
+                  <td class="th-inner"  width="90">Special Price</td>
+                  <td class="th-inner"  width="70">Length</td>
+                  <td class="th-inner"  width="80">Type Box</td>
+                  <td class="th-inner"  width="60">Quantity</td>
                   <td class="th-inner"  width="90">Order</td>                               
               </tr>
          
@@ -310,7 +310,7 @@
   	</div>  
 
   	<div class="space-around pull-left" style="margin-top:10px">
-      	Variedades para Seleccionar
+      	Varieties Availability
   	</div>
     
     <div class="clearfix"></div>
@@ -318,12 +318,12 @@
   	<div id="oferta_tbl_hueso" class="table-container">  
           <table class="table-dispo border">
               <tr>
-                  <td class="th-inner"  width="200">Variedad</td>
-                  <td class="th-inner"  width="70">Grado</td>
-                  <td class="th-inner"  width="70">Precio</td>
-                  <td class="th-inner"  width="90">type box</td>
-                  <td class="th-inner"  width="90">Cantidad</td>                               
-                  <td class="th-inner" width="150">order</th>
+                  <td class="th-inner"  width="200">Variety</td>
+                  <td class="th-inner"  width="70">Lenght</td>
+                  <td class="th-inner"  width="70">Price</td>
+                  <td class="th-inner"  width="90">Type Box</td>
+                  <td class="th-inner"  width="90">Quantity</td>                               
+                  <td class="th-inner" width="150">Order</th>
               </tr>
 
               <tr>                                
@@ -351,6 +351,6 @@
 
 	<div style="margin-top:10px">
         <button type="button" class="btn btn-md btn-success pull-right space-around" id="btn_aplicar_oferta">
-          <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> APLICAR OFERTA
+          <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Accept Offer
         </button>    
 	</div>
