@@ -503,7 +503,7 @@ class DisponibilidadController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 	
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->isLoginClienteVendedor();
+			$SesionUsuarioPlugin->isLoginAdmin(true);
 	
 			$DispoBO				= new DispoBO();
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
