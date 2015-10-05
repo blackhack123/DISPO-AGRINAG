@@ -90,7 +90,7 @@ class PedidoController extends AbstractActionController
 			if ($result['respuesta_code']=='OK'){
 				$response->pedido_cab_id		= $result['pedido_cab_id'];
 				$response->pedido_cab_sec		= $result['pedido_cab_sec'];				
-				$response->respuesta_mensaje 	= 'Se adiciono '.$cantidad_order.' cajas de '.$result['variedad_nombre'].' de '.$grado_id.' cms.';
+				$response->respuesta_mensaje 	= $cantidad_order.' Box '.$result['variedad_nombre'].' '.$grado_id.' cm was added.';
 				if (empty($pedido_cab_id))
 				{
 					$SesionUsuarioPlugin->setClientePedidoCabIdActual($result['pedido_cab_id']);
@@ -173,7 +173,7 @@ class PedidoController extends AbstractActionController
 				$viewModel->cbo_agencia_carga			= null;
 			}else{
 				$viewModel->pedido_cab_id				= $pedido_cab_actual_id;
-				$viewModel->cbo_agencia_carga			= $AgenciaCargaBO->getComboTodos("", '&lt;Agencia de Carga&gt;');
+				$viewModel->cbo_agencia_carga			= $AgenciaCargaBO->getComboTodos("", '&lt;Cargo Agency&gt;');
 			}//end if
 			//Se consulta la dispo, considerando los criterios de busqueda
 			$data = $SesionUsuarioPlugin->getRecord();

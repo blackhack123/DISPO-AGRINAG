@@ -61,7 +61,7 @@ class DispoBO extends Conexion
 			{
 				//'Usuario no tiene asignado un grupo'
 				$result = array('respuesta_code' 	=> '01',
-								'respuesta_msg'		=> '00 - Availability Unassigned'//
+								'respuesta_msg'		=> '00 - Availability Unassigned, please contact to your executive'//
 				);
 				return $result;
 			}else{
@@ -82,7 +82,7 @@ class DispoBO extends Conexion
 			{
 				//Usuario no tiene inventario, comuniquese con su asesor
 				$result = array('respuesta_code' 	=> '02',						
-						'respuesta_msg'		=> '01 - Inventario no cargado, comuniquese con su asesor'  
+						'respuesta_msg'		=> '01 - Stock unloaded, please contact to your executive'  
 				);
 				return $result;
 			}//end if
@@ -91,7 +91,7 @@ class DispoBO extends Conexion
 			{
 				//'Calidad no tiene clasifica_fox, comuniquese con su asesor'
 				$result = array('respuesta_code' 	=> '02',						
-						'respuesta_msg'		=> '02 - Calidad no cargada, comuniquese con su asesor'  
+						'respuesta_msg'		=> '02 - Settings unloaded, please contact to your executive'  
 				);
 				return $result;
 			}//end if			
@@ -100,7 +100,7 @@ class DispoBO extends Conexion
 			{
 				//'Usuario no tiene asignado GRUPO PRECIO, comuniquese con su asesor'
 				$result = array('respuesta_code' 	=> '02',
-						'respuesta_msg'				=> '03 - Precio no cargado, comuniquese con su asesor'
+						'respuesta_msg'				=> '03 - Price unloaded, please contact to your executive'
 				);
 				return $result;
 			}//end if
@@ -109,7 +109,7 @@ class DispoBO extends Conexion
 			{
 				//Usuario no tiene asignado GRUPO DISPO, comuniquese con su asesor
 				$result = array('respuesta_code' 	=> '02',
-						'respuesta_msg'				=> '04 - Inventario no cargado, comuniquese con su asesor'
+						'respuesta_msg'				=> '04 - Stock unloaded, please contact to your executive'
 				);
 				return $result;
 			}//end if
@@ -119,7 +119,7 @@ class DispoBO extends Conexion
 			{
 				//INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO PRECIO)
 				$result = array('respuesta_code' 	=> 'NO-CONFIG-INV-PRECIO',
-						'respuesta_msg'				=> '05 - Inventario no cargado, comuniquese con su asesor'
+						'respuesta_msg'				=> '05 - Stock unloaded, please contact to your executive'
 				);
 				return $result;
 			}//end if			
@@ -128,7 +128,7 @@ class DispoBO extends Conexion
 			{
 				//INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE INVENTARIO (GRUPO DISPO)
 				$result = array('respuesta_code' 	=> 'NO-CONFIG-INV-DISPO',
-						'respuesta_msg'				=> '06 - Inventario no cargado, comuniquese con su asesor'
+						'respuesta_msg'				=> '06 - Stock unloaded, please contact to your executive'
 				);
 				return $result;
 			}//end if	
@@ -137,7 +137,7 @@ class DispoBO extends Conexion
 			{
 				//INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE CALIDAD (GRUPO PRECIO)
 				$result = array('respuesta_code' 	=> 'NO-CONFIG-CAL-PRECIO',
-						'respuesta_msg'				=> '07 - Calidad no cargada, comuniquese con su asesor'
+						'respuesta_msg'				=> '07 - Settings unloaded, please contact to your executive'
 				);
 				return $result;
 			}//end if
@@ -146,7 +146,7 @@ class DispoBO extends Conexion
 			{
 				//INCOMPATIBILIDAD DE CONFIGURACION DE POLITICA DE CALIDAD (GRUPO DISPO)
 				$result = array('respuesta_code' 	=> 'NO-CONFIG-CAL-DISPO',
-						'respuesta_msg'				=> '08 - Calidad no cargada, comuniquese con su asesor'
+						'respuesta_msg'				=> '08 - Settings unloaded, please contact to your executive'
 				);
 				return $result;
 			}//end if			
@@ -170,7 +170,7 @@ class DispoBO extends Conexion
 				{
 					$VariedadData = $VariedadDAO->consultar($variedad_id);
 					$result = array('respuesta_code' 	=> '12',
-									'respuesta_msg'		=> 'No existen cajas '.$tipo_caja_id .' para la variedad '.$VariedadData->getNombre().' grado '.$grado_id
+									'respuesta_msg'		=> 'Do not exist any box of: '.$tipo_caja_id .' '.$VariedadData->getNombre().' '.$grado_id.' cm'
 									);
 					unset($VariedadData);
 					return $result;
@@ -191,8 +191,7 @@ class DispoBO extends Conexion
 						{						
 							//$VariedadData = $VariedadDAO->consultar($variedad_id);
 							$result = array('respuesta_code' 	=> '13',
-									'respuesta_msg'		=> '.No existen cajas '.$tipo_caja_id .' para la variedad '.$row['variedad_nombre'].' grado '.$grado_id
-							);
+									'respuesta_msg'		=> 'Do not exist any box of: '.$tipo_caja_id .' '.$row['variedad_nombre'].' '.$grado_id.' cm'							);
 							//unset($VariedadData);
 							return $result;
 						}//end if
@@ -292,7 +291,7 @@ class DispoBO extends Conexion
 					}//end if
 				}else{
 					$result = array('respuesta_code' 	=> '03',
-							'respuesta_msg'			=> 'Error, no tiene caja '.$tipo_caja_id.' disponible - Variedad:'.$row_dispo['variedad_nombre'].' - Grado:'.$row_dispo['grado_id']
+							'respuesta_msg'			=> $row_dispo['variedad_nombre']. ' '.$row_dispo['grado_id']. ' cm variety have not '. $tipo_caja_id.' box available'
 					);
 					//throw new Exception('Error, no tiene caja disponible');
 					return $result;
