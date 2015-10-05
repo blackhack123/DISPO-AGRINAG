@@ -56,7 +56,23 @@ class ComboGeneral {
 		return $opciones;
 	}//end function getComboEstado
 	
-
+	
+	
+	/**
+	 *
+	 * @param string $tipo
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	public static function getComboTipo($tipo, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$arrData = array('N'=>'NUMERICO','T'=>'TEXTO');
+	
+		$opciones = \Application\Classes\Combo::getComboDataArray($arrData, $tipo, $texto_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboEstado
 	
 	
 }//end class Combo

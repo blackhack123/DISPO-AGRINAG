@@ -30,6 +30,7 @@ return array(
         	'Dispo\Controller\Grado'				=> 'Dispo\Controller\GradoController',
         	'Dispo\Controller\Precio'				=> 'Dispo\Controller\PrecioController',
         	'Dispo\Controller\Buscador'				=> 'Dispo\Controller\BuscadorController',
+        	'Dispo\Controller\Parametrizar'			=> 'Dispo\Controller\ParametrizarController',
         ),
     ),
     // The following section is new and should be added to your file
@@ -317,7 +318,21 @@ return array(
         						),
         				),
         		),
-
+        		
+        		'dispo-parametrizar' => array(
+        				'type'    => 'segment',
+        				'options' => array(
+        						'route'    => '/dispo/parametrizar[/:action][/:id]',
+        						'constraints' => array(
+        								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        								'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        						),
+        						'defaults' => array(
+        								'controller' => 'Dispo\Controller\Parametrizar',
+        								'action'     => 'index',
+        						),
+        				),
+        		),
         ),
     ),
 		
