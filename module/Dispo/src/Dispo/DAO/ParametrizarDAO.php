@@ -114,6 +114,30 @@ class ParametrizarDAO extends Conexion
 				break;
 		}//end switch
 		
-	}
+	}//end consultar
+	
+	
+	/**
+	 * Modificar
+	 *
+	 * @param ParametrizarData $ParametrizarData
+	 * @return array Retorna un Array $key el cual contiene el id
+	 */
+	public function modificar(ParametrizarData $ParametrizarData)
+	{
+		$key    = array(
+				'id'						        => $ParametrizarData->getId()
+		);
+		$record = array(
+				'valor_texto'		                => $ParametrizarData->getValorTexto(),
+				'valor_numerico'		            => $ParametrizarData->getValorNumerico(),
+				'observacion'			            => $ParametrizarData->getObservacion(),
+				'fec_modifica'	                    => \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_mod_id'                    => $ParametrizarData->getUsuarioModId(),
+	
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $ParametrizarData->getId();
+	}//end function modificar
 	
 }//end class
