@@ -82,16 +82,16 @@ class ParametrizarDAO extends Conexion
 				$stmt->execute();
 				$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 				if($row){
-					$VariedadData->setId							($row['id']);
-					$VariedadData->setDescripcion 					($row['descripcion']);
-					$VariedadData->setTipo							($row['tipo']);
-					$VariedadData->setValorTexto					($row['valor_texto']);
-					$VariedadData->setValorNumerico					($row['valor_numerico']);
-					$VariedadData->setObservacion 					($row['observacion']);
-					$VariedadData->setFecIngreso 					($row['fec_ingreso']);
-					$VariedadData->setFecModifica 					($row['fec_modifica']);
-					$VariedadData->setUsuarioIngId 					($row['usuario_ing_id']);
-					$VariedadData->setUsuarioModId 					($row['usuario_mod_id']);
+					$ParametrizarData->setId							($row['id']);
+					$ParametrizarData->setDescripcion 					($row['descripcion']);
+					$ParametrizarData->setTipo							($row['tipo']);
+					$ParametrizarData->setValorTexto					($row['valor_texto']);
+					$ParametrizarData->setValorNumerico					($row['valor_numerico']);
+					$ParametrizarData->setObservacion 					($row['observacion']);
+					$ParametrizarData->setFecIngreso 					($row['fec_ingreso']);
+					$ParametrizarData->setFecModifica 					($row['fec_modifica']);
+					$ParametrizarData->setUsuarioIngId 					($row['usuario_ing_id']);
+					$ParametrizarData->setUsuarioModId 					($row['usuario_mod_id']);
 					return $ParametrizarData;
 				}else{
 					return null;

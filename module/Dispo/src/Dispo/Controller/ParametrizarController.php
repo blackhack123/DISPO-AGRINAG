@@ -7,6 +7,7 @@ use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\JsonModel;
 use Dispo\BO\ParametrizarBO;
+use Dispo\DATA\ParametrizarData;
 
 class ParametrizarController extends AbstractActionController
 {
@@ -132,9 +133,9 @@ class ParametrizarController extends AbstractActionController
 			$ParametrizarBO 		= new ParametrizarBO();
 				
 			$ParametrizarBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-				
+			
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
-				
+			
 			if ($respuesta==false) return false;
 	
 			$body 		= $this->getRequest()->getContent();

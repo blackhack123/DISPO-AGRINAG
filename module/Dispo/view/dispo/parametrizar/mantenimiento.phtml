@@ -11,7 +11,7 @@ $(document).ready(function () {
 		return false;
     }); 
 
-	$("#frm #btn_edit").on('click', function(event){ 
+	$(".btn_edit").on('click', function(event){ 
 		var tr 			= $(this).closest('tr');
 		var id 			= tr.attr('id');
 
@@ -27,7 +27,7 @@ $(document).ready(function () {
 		//$("#dialog_mantenimiento").modal('show') 
     });	
 
-   $("#frm #btn_grabar").on('click', function(event){ 
+   $(".btn_grabar").on('click', function(event){ 
     	grabar();
 		return false;
     });       
@@ -286,7 +286,7 @@ $(document).ready(function () {
 			      </div>
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
-                        <form id="frm">
+                        <form id="frm" name="frm">
 			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
 			        	      <tr>
 			        	        <td><label class="control-label">ID:</label></td>
@@ -328,7 +328,7 @@ $(document).ready(function () {
 		        	        </tr>
 	        	      </table>
                       <br>
-						<center><a id="btn_grabar" name="btn_grabar" class="btn btn-small btn-success" href="#" ><i class="glyphicon glyphicon-plus icon-save" ></i> Grabar</a></center>
+						<center><a id="btn_grabar" name="btn_grabar" class="btn btn-small btn-success" href="#"  ><i class="glyphicon glyphicon-plus icon-save" ></i> Grabar</a></center>
 				 	</form>
 		        	  <!--   div id="dialog_oferta_formulario"></div -->			
 			        </div>
