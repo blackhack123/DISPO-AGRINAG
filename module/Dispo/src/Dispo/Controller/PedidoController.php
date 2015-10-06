@@ -552,7 +552,8 @@ class PedidoController extends AbstractActionController
 			$condiciones = array('cliente_id' => $cliente_id);
 			$result	= $PedidoBO->listado($condiciones);
 			$viewModel->result				= $result;
-
+			$viewModel->mascara_pedido		= $config['mascara_pedido'];
+			
 /*			$data = $SesionUsuarioPlugin->getRecord();
 			$viewModel->identidad_usuario 	= $data;
 */

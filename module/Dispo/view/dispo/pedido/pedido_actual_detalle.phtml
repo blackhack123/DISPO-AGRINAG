@@ -2,6 +2,11 @@
 		#tbl_pedido_actual{
 			text-align: center;	
 		}
+		
+		.td_sin_border{
+		  border-bottom: 0px solid #ffffff;
+		  border-right: 0px solid #ffffff;
+		}
 	</style>
 
 	<script>
@@ -49,9 +54,10 @@
                                 <td class="th-inner"  width="90">Unts/Bunch</td>
                                 <td class="th-inner"  width="100">Box Type</td>
                                 <td class="th-inner"  width="100">Bunch/Box</td> 
-                                <td class="th-inner"  width="100">Units</td>                                  
                                 <td class="th-inner"  width="50">Boxes</td>
+                                <td class="th-inner"  width="100">Units</td>
                                 <td class="th-inner"  width="100">Price/Item</td>
+                                <td class="th-inner"  width="100">Total/Box</td>
                                 <td class="th-inner"  width="100">Total</td>                                                
                                 <!-- <td class="th-inner"  width="120">Marcacion</td> -->
                                 <td class="th-inner"  width="70">
@@ -65,8 +71,12 @@
         <?php 	
             if ($this->rs_pedido_det)
             {
+				$total_pedido = 0;
                 foreach ($this->rs_pedido_det as $reg)
                 {	
+					$total_pedido = $total_pedido + $reg['total'];
+					$total_x_caja = $reg['tallos_x_bunch'] * $reg['cantidad_bunch']/$reg['nro_cajas'] * $reg['precio'];
+				
 					$html_tallos_x_bunch = '';
 					if ($reg['tallos_x_bunch']!=25)
 					{
@@ -103,21 +113,22 @@
                                     <?php echo($reg['tipo_caja_id']); ?>
                                 </td>
                                 <td>
-                                    <?php echo($reg['cantidad_bunch']); ?>
-                                </td>
-                                <td>
-                                    <?php echo($reg['tallos_total']); ?>
+                                    <?php echo($reg['cantidad_bunch']/$reg['nro_cajas']); ?>
                                 </td>
                                 <td>
                                     <?php echo($reg['nro_cajas']); ?>
-                                </td>                                                
-                                <td>
-                                    <?php echo($reg['precio']); ?>                        
                                 </td>
                                 <td>
-                                    <?php echo($reg['total']); ?>                        
-                                </td>
+                                    <?php echo($reg['tallos_total']); ?>
+                                </td>                                
                                 <td>
+                                    $ <?php echo($reg['precio']); ?>                        
+                                </td>
+                                <td align="right">$ <?php echo(number_format($total_x_caja, 2)); ?></td>
+                                <td nowrap align="right">
+                                    $ <?php echo($reg['total']); ?>                        
+                                </td>                                
+                                <td nowrap>
                                     <img src="<?php echo($this->basePath()); ?>/images/status-<?php echo($this->pedido_cab_estado); ?>.png" alt="">
                                 </td>
                                 <td>
@@ -126,7 +137,24 @@
                             </tr>
         <?php 	} //end foreach 
             }//end if
-        ?>                    
+        ?>
+                            <tr style="border-top: #06A604 solid 2px">
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td align="left" style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px" align="right" nowrap><b>$ <?php echo(number_format($total_pedido, 2)); ?></b></td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            </tr>
+        
                   	</table>        
         </div>
     

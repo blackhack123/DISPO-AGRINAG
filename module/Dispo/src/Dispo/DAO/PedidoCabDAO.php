@@ -274,9 +274,14 @@ class PedidoCabDAO extends Conexion
 	 */
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT pedido_cab.*, cliente.nombre as cliente_nombre '.
+		$sql = 	' SELECT pedido_cab.*, cliente.nombre as cliente_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
+				'        marcacion.nombre as marcacion_nombre '.
 				' FROM pedido_cab INNER JOIN cliente '.
 				'                         ON cliente.id = pedido_cab.cliente_id '.
+				'				  INNER JOIN marcacion '.
+				'						  ON marcacion.marcacion_sec = pedido_cab.marcacion_sec '.
+				'				  INNER JOIN agencia_carga '.
+				'						  ON agencia_carga.id = pedido_cab.agencia_carga_id '.
 				' WHERE 1=1';
 		
 		if (!empty($condiciones['cliente_id']))
