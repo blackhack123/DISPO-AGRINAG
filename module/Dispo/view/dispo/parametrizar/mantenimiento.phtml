@@ -1,0 +1,175 @@
+
+<script>
+$(document).ready(function () {
+	InputData_TrimAll();
+	InputData_initNumberNoDecimal();
+	InputData_initNumberAndDecimal();
+
+	
+	$("#btn_nuevo").on('click', function(event){
+		nuevo(); 
+		return false;
+    }); 
+    
+
+
+	function nuevo()
+	{
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{}
+		//var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/parametrizar/nuevodata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									ValidateControlsInit();
+									$("#accion").val("I");
+									$("#dialog_mantenimiento_parametros_nombre").html("NUEVO REGISTRO");
+
+									$("#id").val('');
+									//$("#id").prop('readonly',false);
+									$("#descripcion").val('');
+									$("#tipo").html(response.cbo_tipo);
+									$("#valor").val('');
+									$("#observacion").val('');
+									$("#lbl_usuario_ing").html('');
+									$("#lbl_fec_ingreso").html('');
+									$("#lbl_usuario_mod").html('');
+									$("#lbl_fec_modifica").html('');
+									
+									$("#dialog_mantenimiento").modal('show')
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;				
+	}//end function nuevo
+	
+	
+	});//$(document).ready
+    </script>
+
+
+
+	<div class="title-admin-section">
+		<h1>PARAMETROS</h1>
+	</div>
+	
+	<div class="row">   
+	<section class="body-admin-section">    	
+    	<div class="accion-admin-section"> 	
+        	<div class="botonera-admin-section pull-left separator">
+            	<a id="btn_nuevo" class="btn btn-small btn-success" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
+            </div>
+        	<div class="busqueda-admin-section pull-left">	
+            	<div class="form-inline">
+          		<!-- AREA DE BUSQUEDA -->                 
+				</div>
+            </div>
+		</div>
+		<div class="clearfix"></div>
+    	  	<div>
+                <table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
+                <thead>
+                    <tr>
+                      <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
+                        <th  width="100" rowspan="2" class="th-inner">ID</th>				
+                        <th  width="200" rowspan="2" class="th-inner">DESCRIPCION</th>
+                        <th  width="100" rowspan="2" class="th-inner">VALOR</th>
+                        <th  width="200" rowspan="2" class="th-inner">OBSERVACION</th>
+                        <th  width="150" rowspan="2" class="th-inner">ULTIMA MOD.</th>
+                        <th  width="90" rowspan="2" class="th-inner">EDITAR</th>
+                    </tr>
+                </thead>
+                <tbody class="searchable" style="border: 1px solid #cdcdcd;">
+    <?php  
+            $i=0;
+            foreach($this->result as $reg)
+            {
+                $i++;
+                $class_row = '';
+                if ($reg['estado']=='I'){
+                    $class_row = 'row_estado_inactivo';
+                }
+    ?>            
+                    <tr variedad_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
+                      <td><?php echo($i); ?></td>
+                        <td align="center"><?php echo($reg['id']); ?></td>
+                        <td><?php echo($reg['descripcion']); ?></td>
+                        <td align="center"><?php echo($reg['valor']); ?></td>
+                        <td align="center"><?php echo($reg['observacion']); ?></td>
+                        <td><?php echo($reg['usuario_mod_id']. " - ". $reg['fec_modifica']); ?></td>
+                        <td align="center"><a href="#" class="btn_edit"><i class="glyphicon glyphicon-pencil icon-white" style="color:orange"></i></a></td>
+                    </tr>
+    <?php	}//end foreach ?>		
+                </tbody>
+            </table>   
+		</div>
+	</section>
+</div>				
+	
+	
+
+	<!--  DIALOG DE MANTENIMIENTO -->
+            <form id="frm">
+			<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			        <h4 class="modal-title" id="myModalLabel">Parametros (<span id="dialog_mantenimiento_parametros_nombre"></span>)</h4>
+			      </div>
+			      <div class="modal-body clearfix">
+			        <div class="clearfix">
+                        
+			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
+			        	      <tr>
+			        	        <td><label class="control-label">ID:</label></td>
+			        	        <td>
+                                <input id="id" name="id" type="text" class="form-control input-sm" style="width:350px" value="" maxlength="20" max-lenght="20" validate="required" validateMessage="Ingrese un codigo">
+                                <input type="hidden" name="accion" id="accion" value="" /></td>
+		        	          </tr>
+			        	      <tr>
+			        	        <td><label class="control-label">DESCRIPCION:</label></td>
+			        	        <td><input name="descripcion"" type="text" class="form-control input-sm" id="descripcion" style="width:350px" value="" maxlength="30" max-lenght="30" ></td>
+		        	          </tr>
+		        	          <tr>
+			        	        <td><label class="control-label">TIPO:</label></td>
+			        	        <td><select  name="tipo" class="select-class2" id="tipo" validate="required" validateMessage="Seleccione Tipo"></select></td>
+		        	          </tr>
+		        	             <tr>
+			        	        <td><label class="control-label">VALOR:</label></td>
+			        		    <td><input name="valor" type="text" class="form-control input-sm" id="valor" style="width:350px" value="" maxlength="30" max-lenght="30" validate="required" validateMessage="Ingrese un valor"></td>
+		        	          </tr>	
+		        	           <tr>
+			        	        <td><label class="control-label">OBSERVACION :</label></td>
+			        		    <td> <textarea class="form-control" id="observacion" name="observacion"></textarea></td>
+		        	          </tr>	
+			        	      <tr>
+			        	        <td>&nbsp;</td>
+			        	        <td>&nbsp;</td>
+		        	        </tr>
+			        	    <tr>
+			        	        <td><label class="control-label">Ingreso:</label></td>
+			        	        <td><b><span id="lbl_usuario_ing"></span></b> - <span id="lbl_fec_ingreso"></span></td>
+		        	        </tr>
+			        	    <tr>
+			        	        <td><label class="control-label">Modificación:</label></td>
+			        	        <td><b><span id="lbl_usuario_mod"></span></b> - <span id="lbl_fec_modifica"></span></td>
+		        	        </tr>
+	        	      </table>
+                      <br>
+						<center><a id="btn_grabar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a></center>
+		        	  <!--   div id="dialog_oferta_formulario"></div -->			
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			</form>
+	
+
+	
