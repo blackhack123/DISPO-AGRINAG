@@ -11,7 +11,7 @@ $(document).ready(function () {
 		return false;
     }); 
 
-	$(".btn_edit").on('click', function(event){ 
+	$("#frm #btn_edit").on('click', function(event){ 
 		var tr 			= $(this).closest('tr');
 		var id 			= tr.attr('id');
 
@@ -19,12 +19,20 @@ $(document).ready(function () {
 		//$("#dialog_mantenimiento").modal('show') 
     });
 
-	$(".btn_grabar").on('click', function(event){ 
-	   	grabar();
-		return false;
-	});       
-	    
+	$("#tbl_registros tbody tr").on('dblclick', function(event){ 
+		var tr 			= $(this).closest('tr');
+		var id 			= tr.attr('id');
 
+		consultar(id);
+		//$("#dialog_mantenimiento").modal('show') 
+    });	
+
+   $("#frm #btn_grabar").on('click', function(event){ 
+    	grabar();
+		return false;
+    });       
+	       
+	    
 
 	function nuevo()
 	{
@@ -207,7 +215,6 @@ $(document).ready(function () {
 	<section class="body-admin-section">    	
     	<div class="accion-admin-section"> 	
         	<div class="botonera-admin-section pull-left separator">
-            	<a id="btn_nuevo" class="btn btn-small btn-success" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
             </div>
         	<div class="busqueda-admin-section pull-left">	
             	<div class="form-inline">
@@ -269,7 +276,7 @@ $(document).ready(function () {
 	
 
 	<!--  DIALOG DE MANTENIMIENTO -->
-            <form id="frm">
+            
 			<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
@@ -279,7 +286,7 @@ $(document).ready(function () {
 			      </div>
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
-                        
+                        <form id="frm">
 			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
 			        	      <tr>
 			        	        <td><label class="control-label">ID:</label></td>
@@ -321,14 +328,15 @@ $(document).ready(function () {
 		        	        </tr>
 	        	      </table>
                       <br>
-						<center><a id="btn_grabar" name="btn_grabar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a></center>
+						<center><a id="btn_grabar" name="btn_grabar" class="btn btn-small btn-success" href="#" ><i class="glyphicon glyphicon-plus icon-save" ></i> Grabar</a></center>
+				 	</form>
 		        	  <!--   div id="dialog_oferta_formulario"></div -->			
 			        </div>
 			      </div>
 			    </div>
 			  </div>
 			</div>
-			</form>
+			
 	
 
 	
