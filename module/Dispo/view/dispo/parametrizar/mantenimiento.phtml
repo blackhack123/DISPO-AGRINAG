@@ -5,11 +5,6 @@ $(document).ready(function () {
 	InputData_initNumberNoDecimal();
 	InputData_initNumberAndDecimal();
 
-	
-	$("#btn_nuevo").on('click', function(event){
-		nuevo(); 
-		return false;
-    }); 
 
 	$(".btn_edit").on('click', function(event){ 
 		var tr 			= $(this).closest('tr');
@@ -27,7 +22,7 @@ $(document).ready(function () {
 		//$("#dialog_mantenimiento").modal('show') 
     });	
 
-   $(".btn_grabar").on('click', function(event){ 
+   $('#frm #btn_grabar').on('click', function(event){ 
     	grabar();
 		return false;
     });       
@@ -202,8 +197,8 @@ $(document).ready(function () {
 	}//end function grabar
 	
 	
-	});//$(document).ready
-    </script>
+});//$(document).ready
+</script>
 
 
 
@@ -286,12 +281,12 @@ $(document).ready(function () {
 			      </div>
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
-                        <form id="frm" name="frm">
+                        <form id="frm" name="frm" method="post" action="#">
 			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
 			        	      <tr>
 			        	        <td><label class="control-label">ID:</label></td>
 			        	        <td>
-                                <input id="id" name="id" type="text" class="form-control input-sm" style="width:350px" value="" maxlength="20" max-lenght="20" validate="required" validateMessage="Ingrese un codigo">
+                                <input id="id" name="id" type="text" class="form-control input-sm" style="width:350px" value="" maxlength="20" max-lenght="20">
                                 <input type="hidden" name="accion" id="accion" value="" /></td>
 		        	          </tr>
 			        	      <tr>
@@ -304,14 +299,14 @@ $(document).ready(function () {
 		        	          </tr>
 		        	          <tr>
 			        	        <td><label class="control-label" for="valor_texto">VALOR TEXTO:</label></td>
-			        		    <td><input name="valor_texto" type="text" class="form-control input-sm" id="valor_texto" style="width:350px" value="" maxlength="30" max-lenght="30" validate="required" validateMessage="Ingrese un valor"></td>
+			        		    <td><input name="valor_texto" type="text" class="form-control input-sm" id="valor_texto" style="width:350px" value="" maxlength="30" max-lenght="30" validate="validateLinkConditional" validateLinkConditional="($('#tipo').html()=='Texto')"  validateMessage="Ingrese un valor"></td>
 		        	          </tr>	
 		        	          <tr>
 			        	        <td><label class="control-label" for="valor_numerico">VALOR NUMERICO:</label></td>
-			        		    <td><input name="valor_numerico" type="text" class="form-control input-sm" id="valor_numerico" style="width:350px" value="" maxlength="30" max-lenght="30" validate="required" validateMessage="Ingrese un valor"></td>
+			        		    <td><input name="valor_numerico" type="text" class="form-control input-sm" id="valor_numerico" style="width:350px" value="" maxlength="30" max-lenght="30"  validate="validateLinkConditional" validateLinkConditional="($('#tipo').html()=='Numerico')"  validateMessage="Ingrese un valor"></td>
 		        	          </tr>	
 		        	          <tr>
-			        	        <td><label class="control-label">OBSERVACION :</label></td>
+			        	        <td valign="top"><label class="control-label">OBSERVACION :</label></td>
 			        		    <td> <textarea  rows="4" class="form-control" id="observacion" name="observacion"></textarea></td>
 		        	          </tr>	
 			        	      <tr>
@@ -328,7 +323,9 @@ $(document).ready(function () {
 		        	        </tr>
 	        	      </table>
                       <br>
-						<center><a id="btn_grabar" name="btn_grabar" class="btn btn-small btn-success" href="#"  ><i class="glyphicon glyphicon-plus icon-save" ></i> Grabar</a></center>
+						<center>
+                        	<button id="btn_grabar" type="button" class="btn btn-small btn-success"><i class="glyphicon glyphicon-plus icon-save" ></i> Grabar</button>
+</center>
 				 	</form>
 		        	  <!--   div id="dialog_oferta_formulario"></div -->			
 			        </div>

@@ -318,6 +318,42 @@ class PedidoCabDAO extends Conexion
 		return $key;
 	}//end function cambiarAgenciaCarga
 	
+	
+	
+	/**
+	 *
+	 * @param array $condiciones
+	 * @return array
+	 */
+	public function listadoVendedor($condiciones)
+	{
+		$sql = 	' SELECT pedido_cab.*, cliente.nombre as cliente_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
+				'        marcacion.nombre as marcacion_nombre '.
+				' FROM pedido_cab INNER JOIN pedido_det '.
+				'				  		  ON pedito_det.pedido_cab_id = pedido_cab '.
+				'                 INNER JOIN pedido_proveedor '.
+				'						  ON pedido_proveedor '.
+				'				  INNER JOIN cliente '.
+				'                         ON cliente.id = pedido_cab.cliente_id '.
+				'				  INNER JOIN marcacion '.
+				'						  ON marcacion.marcacion_sec = pedido_cab.marcacion_sec '.
+				'				  INNER JOIN agencia_carga '.
+				'						  ON agencia_carga.id = pedido_cab.agencia_carga_id '.
+				' WHERE 1=1';
+	
+		if (!empty($condiciones['cliente_id']))
+		{
+			$sql = $sql."  and pedido_cab.cliente_id 	= '".$condiciones['cliente_id']."'";
+		}
+		$sql = $sql.' ORDER BY id DESC';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+	
+		$result = $stmt->fetchAll();
+	
+		return $result;
+	}//end function listado	
 }//end class
 
 ?>

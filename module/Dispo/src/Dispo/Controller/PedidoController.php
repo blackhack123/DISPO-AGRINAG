@@ -621,7 +621,83 @@ class PedidoController extends AbstractActionController
 			$response->setStatusCode(500);
 			$response->setContent($excepcion_msg);
 			return $response;
-		}
-		
+		}		
 	}//end function listadoclientedetallehtml
+	
+	
+	
+	public function listadovendedorAction()
+	{
+		try
+		{
+			$viewModel 				= new ViewModel();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+	
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginVentas();
+				
+			$this->layout($SesionUsuarioPlugin->getUserLayout());
+	
+			$viewModel->setTemplate('dispo/pedido/pedido_listado_vendedor.phtml');
+			return $viewModel;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadovendedorAction
+
+
+	
+	public function listadovendedordataAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+		
+			$PedidoBO = new PedidoBO();
+			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			$cliente_nombre		= $json['cliente_nombre'];
+			$fecha_ini			= $json['fecha_ini'];
+			$fecha_fin			= $json['fecha_fin'];
+			$desglosar_fincas	= $json['desglosar_fincas'];
+			
+			$condiciones = array(
+					"cliente_nombre"	=> $cliente_nombre,
+					"fecha_ini"			=> $fecha_ini,
+					"fecha_fin"			=> $fecha_fin,
+					"desglosar_fincas"	=> $desglosar_fincas
+			);
+			$result = $PedidoBO->listadoVendedor($condiciones);
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				$row['variedad'] = trim($row['variedad']);
+				$response->rows[$i] = $row;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function listadovendedordataAction 
+	
+	
 }//end controller

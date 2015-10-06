@@ -847,4 +847,20 @@ class PedidoBO extends Conexion
 		return $result;		
 	}//end function consultarPedidoDetalle
 	
+	
+	/**
+	 *
+	 * @param array $condiciones
+	 * @return array
+	 */
+	public function listadoVendedor($condiciones)
+	{
+		$PedidoCabDAO 	= new PedidoCabDAO();
+	
+		$PedidoCabDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $PedidoCabDAO->listadoVendedor($condiciones);
+	
+		return $result;
+	}//end functino listado	
 }//end class PedidoBO
