@@ -1,57 +1,109 @@
-
-    <table class="table-dispo" style="margin-bottom:10px">
-    	<thead>
+	<style>
+		.tbl_pedido{
+			text-align: center;	
+		}
+		
+		.td_sin_border{
+		  border-bottom: 0px solid #ffffff;
+		  border-right: 0px solid #ffffff;
+		}
+	</style>
+    
+    <table class="table-dispo border tbl_pedido"  width="100%">
+		<thead>
             <tr>
-                <th class="th-inner"  width="70">ID</th>
-                <th class="th-inner"  width="150">Variety</th>                                           
-                <th class="th-inner"  width="70">Length</th>
-                <th class="th-inner"  width="70">Box Type</th>
-                <th class="th-inner"  width="70"># Boxes</th>
-                <th class="th-inner"  width="70">Bunches</th>
-                <th class="th-inner"  width="70">Price</th>
-                <th class="th-inner"  width="80">Total</th>
-                <th class="th-inner"  width="200">Label / Mark</th>
-                <th class="th-inner"  width="200">Cargo Agency</th>
+                <th class="th-inner"  width="60">ID Item</th>
+                <th class="th-inner"  width="200">Variety</th>
+                <th class="th-inner"  width="90">Color</th>                                           
+                <th class="th-inner"  width="90">Length(cm)</th>
+                <th class="th-inner"  width="90">Unts/Bunch</th>
+                <th class="th-inner"  width="100">Box Type</th>
+              	<th class="th-inner"  width="100">Bunch/Box</th>
+                <th class="th-inner"  width="50"> Boxes</th>
+                <th class="th-inner"  width="100">Units</th>
+                <th class="th-inner"  width="100">Price/Item</th>
+                <th class="th-inner"  width="100">Total/Box</th>
+                <th class="th-inner"  width="100">Total</th>
             </tr>
-    	</thead>
-        <tbody>
-<?php 	foreach($this->result as $reg) 
+ 		</thead>
+<?php 	
+		$total_pedido = 0;
+		foreach($this->result as $reg) 
 		{
+			$total_pedido = $total_pedido + $reg['total'];
+			$total_x_caja = $reg['tallos_x_bunch'] * $reg['cantidad_bunch']/$reg['nro_cajas'] * $reg['precio'];
+		
+			$html_tallos_x_bunch = '';
+			if ($reg['tallos_x_bunch']!=25)
+			{
+				$html_tallos_x_bunch = '&nbsp;<span class="tallos_buches_no_standar">('.$reg['tallos_x_bunch'].')</span>';
+			}//end if	
 ?>
+		<tbody>	
             <tr>                                
-                <td width="70">
+                <td>
                     <?php echo($reg['pedido_det_sec']); ?>
                 </td>
-                <td width="150">
-                    <?php echo($reg['variedad_nombre']); ?>
+                <td align="left">
+                    <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span><?php echo($html_tallos_x_bunch); ?>
+					<?php if ($reg['estado_reg_oferta']==1){ ?>
+                        <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange;">
+                                    <span class="glyphicon glyphicon-star pointer"
+                                    aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
+                        </div>
+                    <?php }//end if ?>
+                    <?php if (!empty($reg['pedido_cab_oferta_id'])){ ?>                                    
+                        <div class="pull-right btn_oferta" style="margin-right: 10%; color: gray;">
+                                    <span class="glyphicon glyphicon-star pointer"
+                                    aria-hidden="true" data-toggle="modal" data-target="#oferta"></span>
+                        </div>
+                    <?php }//end if ?>
                 </td>
-                <td width="70">
+                <td><h5><small><?php echo($reg['color_ventas_nombre']); ?></small></h5></td>
+                <td>
                     <?php echo($reg['grado_id']); ?>
                 </td>
-                <td width="70">
+                <td>
+					<?php echo($reg['tallos_x_bunch']); ?>
+                </td>
+                <td>
                     <?php echo($reg['tipo_caja_id']); ?>
                 </td>
-                <td width="70">
-                    <?php echo($reg['nro_cajas']); ?>
+                <td>
+					<?php echo($reg['cantidad_bunch']/$reg['nro_cajas']); ?>
                 </td>
-                <td width="70">
-                    <?php echo($reg['cantidad_bunch']); ?>
+                <td>
+					<?php echo($reg['nro_cajas']); ?>
                 </td>
-                <td width="70">
-                    <?php echo($reg['precio']); ?>
+              	<td>
+					<?php echo($reg['tallos_total']); ?>
                 </td>
-                <td width="80">
-                    <?php echo($reg['total']); ?>
+                <td nowrap>
+					$ <?php echo($reg['precio']); ?>
                 </td>
-                <td width="200">
-                    <?php echo($reg['marcacion_nombre']); ?>
+              	<td align="right" nowrap>
+					$  <?php echo(number_format($total_x_caja, 2)); ?>
                 </td>
-                <td width="200">
-                    <?php echo($reg['agencia_carga_nombre']); ?>
+                <td align="right" nowrap>
+					$  <?php echo($reg['total']); ?>
                 </td>
             </tr>
 <?php
 		}//end foreach
 ?>		
-        </tbody>
+            <tr style="border-top: #06A604 solid 2px">
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td align="left" style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px">&nbsp;</td>
+              <td style="border:#FFFFFF none 0px" align="right" nowrap><b>$ <?php echo(number_format($total_pedido, 2)); ?></b></td>
+            </tr>
+		</tbody>
     </table>

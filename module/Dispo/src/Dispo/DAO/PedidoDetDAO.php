@@ -567,11 +567,13 @@ class PedidoDetDAO extends Conexion
 	public function listado($condiciones)
 	{
 		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
-				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id '.
+				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id, color_ventas.nombre as  color_ventas_nombre '.
 				' FROM pedido_cab INNER JOIN pedido_det '.
 				'				     ON pedido_det.pedido_cab_id= pedido_cab.id '.
 				'				  INNER JOIN variedad '.
 				'                    ON variedad.id				= pedido_det.variedad_id '.
+				'				  LEFT JOIN color_ventas '.
+				'					 ON color_ventas.id 		= variedad.color_ventas_id '.
 				'				  LEFT JOIN agencia_carga '.
 				'                    ON agencia_carga.id 		= pedido_cab.agencia_carga_id '.
 				'				  LEFT JOIN marcacion '.

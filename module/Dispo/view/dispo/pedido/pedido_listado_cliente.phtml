@@ -41,21 +41,33 @@
         </h1>
     </div>
 
-	<div class="table-container col-lg-10 col-lg-offset-1  col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1">
+	<div class="container">
+		<div class="row clearfix style="margin-right:70px;">    
+        <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+        
+<!---div class="row-fluid"-->
         <div class="accordion" id="accordion2">   
 <?php 
 	  $ind = 0;
 	  foreach($this->result as $reg)
 	  {
+		  $nro_pedido_formateado =  \Application\Classes\Mascara::getNroPedidoFormateado($reg['id'], $this->mascara_pedido);
 		  $ind++;
+		  
+		  if ($ind % 2){
+				$color = '#F0F0F0';
+		  }else{
+				$color = '#FFFFFF';
+		  }//end if		  
 ?>
-          <div class="accordion-group" style="padding-bottom:5px; border-bottom:#000000 solid 1px;" pedido_cab_id = "<?php echo($reg['id']); ?>">
+          <div class="accordion-group" style="padding-bottom:5px; border-bottom:#000000 solid 1px; background-color:<?php echo($color); ?>" pedido_cab_id = "<?php echo($reg['id']); ?>">
                 <div class="accordion-heading">
                 	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse<?php echo($ind); ?>">
                         <div class="pull-left" style="padding-right:5px">
                             <img src="<?php echo($this->basePath()); ?>/images/status-<?php echo($reg['estado']); ?>.png" alt="">
                         </div>
-                        <h5>Costumer:<b><?php echo($reg['cliente_nombre']); ?></b>  -  Order  # <b><?php echo($reg['id']); ?></b>
+                        <h5><b>Order  # </b><?php echo($nro_pedido_formateado); ?> &nbsp;&nbsp; - &nbsp;&nbsp;<b>Date:</b> <?php echo($reg['fecha']); ?> &nbsp;&nbsp;- &nbsp;&nbsp;<b>Label / Mark:</b> <?php echo($reg['marcacion_nombre']); ?>&nbsp;&nbsp;  - &nbsp;&nbsp;<b>Cargo Agency:</b> <?php echo($reg['agencia_carga_nombre']); ?>
+                        
                         <div class="pull-right"><button type="button" class="btn btn-sm"><span class="glyphicon glyphicon-search"></span></button></div></h5> 
                     </a>
                 </div>
@@ -64,5 +76,7 @@
                 </div>
            </div>
 <?php }//end foreach ?>			
+        </div>
+        </div>
         </div>
     </div>
