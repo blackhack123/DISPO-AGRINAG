@@ -10,14 +10,26 @@ $(document).ready(function () {
 		nuevo(); 
 		return false;
     }); 
-    
+
+	$(".btn_edit").on('click', function(event){ 
+		var tr 			= $(this).closest('tr');
+		var id 			= tr.attr('id');
+
+		consultar(id);
+		//$("#dialog_mantenimiento").modal('show') 
+    });
+
+	$(".btn_grabar").on('click', function(event){ 
+	   	grabar();
+		return false;
+	});       
+	    
 
 
 	function nuevo()
 	{
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{}
-		//var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
 		data = JSON.stringify(data);
 		
 		var parameters = {	'type': 'POST',//'POST',
@@ -30,23 +42,156 @@ $(document).ready(function () {
 									$("#accion").val("I");
 									$("#dialog_mantenimiento_parametros_nombre").html("NUEVO REGISTRO");
 
-									$("#id").val('');
+									$("#frm #id").val('');
 									//$("#id").prop('readonly',false);
-									$("#descripcion").val('');
-									$("#tipo").html(response.cbo_tipo);
-									$("#valor").val('');
-									$("#observacion").val('');
-									$("#lbl_usuario_ing").html('');
-									$("#lbl_fec_ingreso").html('');
-									$("#lbl_usuario_mod").html('');
-									$("#lbl_fec_modifica").html('');
+									$("#frm #descripcion").val('');
+									$("#frm #tipo").html(response.cbo_tipo);
+									$("#frm #valor_texto").val('');
+									$("#frm #valor_numerico").val('');
+									$("#frm #observacion").val('');
+									$("#frm #lbl_usuario_ing").html('');
+									$("#frm #lbl_fec_ingreso").html('');
+									$("#frm #lbl_usuario_mod").html('');
+									$("#frm #lbl_fec_modifica").html('');
 									
-									$("#dialog_mantenimiento").modal('show')
+									$("#dialog_mantenimiento").modal('show');
 							}							
 		                 }
 		response = ajax_call(parameters, data);		
 		return false;				
 	}//end function nuevo
+
+
+
+
+
+	function consultar(id)
+	{
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{id: id}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/parametrizar/consultardata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									mostrar_registro(response)
+									cargador_visibility('hide');
+
+									$("#dialog_mantenimiento").modal('show');
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;		
+	}//end function consultar_variedad
+
+	
+	function mostrar_registro(response)
+	{
+		//var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
+		var row = response.row;
+		if (row!==null)
+		{
+			ValidateControlsInit();
+			$("#accion").val("M");			
+			$("#dialog_mantenimiento_parametros_nombre").html(row.id);
+			$("#frm #id").val(row.id);
+			$("#frm #id").prop('readonly',true);
+			$("#frm #descripcion").html(row.descripcion);
+			
+			if (row.tipo == "T")
+			{
+				 $("#frm #tipo").html('Texto');
+				 $("#valor_texto").show();
+				 $("#valor_numerico").hide();
+				 $("#frm #valor_texto").val(row.valor_texto);
+			}
+			else
+			{
+				$("#frm #tipo").html('Numerico');
+				$("#valor_texto").hide();
+				$("#valor_numerico").show();
+				$("#frm #valor_numerico").val(row.valor_numerico);
+			}//end if
+			
+			$("#frm #observacion").val(row.observacion);
+			$("#frm #lbl_fec_ingreso").html(row.fec_ingreso);
+			$("#frm #lbl_fec_modifica").html(row.fec_modifica);
+			$("#frm #lbl_usuario_ing").html(row.usuario_ing_user_name);
+			$("#frm #lbl_usuario_mod").html(row.usuario_mod_user_name);
+			
+		}//end if
+	}//end function mostrar_registro
+	
+
+	function grabar(){
+		if (!ValidateControls('frm')) {
+			return false;
+		}
+		if ($("#frm #tipo").html() == "TEXTO")
+		{
+			valor_texto = $("#frm #valor_texto").val();	
+			valor_numerico = '';
+		}
+		else
+		{
+			valor_numerico = $("#frm #valor_numerico").val();
+			valor_texto = '';
+		} 
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{	accion: $("#accion").val(),
+					 	id: $("#frm #id").val(),
+					  	observacion:$("#frm #observacion").val(),
+					  	valor_texto: valor_texto,
+					  	valor_numerico: valor_numerico
+					}
+		
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'<?php echo($this->basePath()); ?>/dispo/parametrizar/grabardata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+									if (response.validacion_code == 'OK')
+									{
+										mostrar_registro(response)
+										cargador_visibility('hide');
+										swal({  title: "Informacion grabada con exito!!",   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "success",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									}else{
+										swal({title: response.respuesta_mensaje,   
+											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+											//html:true,
+											type: "error",
+											showCancelButton: false,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "OK",
+											cancelButtonText: "",
+											closeOnConfirm: false,
+											closeOnCancel: false,
+											/*timer: 2000*/
+										});
+									
+									}									
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;		
+	}//end function grabar
 	
 	
 	});//$(document).ready
@@ -78,30 +223,40 @@ $(document).ready(function () {
                       <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
                         <th  width="100" rowspan="2" class="th-inner">ID</th>				
                         <th  width="200" rowspan="2" class="th-inner">DESCRIPCION</th>
-                        <th  width="100" rowspan="2" class="th-inner">VALOR</th>
+                        <th  width="100" rowspan="2" class="th-inner">TIPO</th>
+                        <th  width="100" rowspan="2" class="th-inner">VALOR TEXTO</th>
+                        <th  width="100" rowspan="2" class="th-inner">VALOR NUMERICO</th>
                         <th  width="200" rowspan="2" class="th-inner">OBSERVACION</th>
-                        <th  width="150" rowspan="2" class="th-inner">ULTIMA MOD.</th>
+                        <th  width="230" rowspan="2" class="th-inner">ULTIMA MOD.</th>
                         <th  width="90" rowspan="2" class="th-inner">EDITAR</th>
                     </tr>
                 </thead>
                 <tbody class="searchable" style="border: 1px solid #cdcdcd;">
     <?php  
             $i=0;
-            foreach($this->result as $reg)
+           foreach($this->result as $reg)
             {
                 $i++;
-                $class_row = '';
-                if ($reg['estado']=='I'){
-                    $class_row = 'row_estado_inactivo';
-                }
+                
     ?>            
-                    <tr variedad_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
-                      <td><?php echo($i); ?></td>
+                    <tr id="<?php echo($reg['id']); ?>">
+                      	<td><?php echo($i); ?></td>
                         <td align="center"><?php echo($reg['id']); ?></td>
                         <td><?php echo($reg['descripcion']); ?></td>
-                        <td align="center"><?php echo($reg['valor']); ?></td>
+                        <td><?php 
+                        if ( $reg['tipo'] == 'T')
+                        {
+                        	echo "TEXTO"; 	
+                        }
+                        else 
+                        {
+                        	 echo "NUMERICO"; 	
+                        }//end if
+                        ?></td>
+                        <td align="center"> <?php echo($reg['valor_texto']); ?></td>
+		               	<td align="center"> <?php echo($reg['valor_numerico']); ?></td>	
                         <td align="center"><?php echo($reg['observacion']); ?></td>
-                        <td><?php echo($reg['usuario_mod_id']. " - ". $reg['fec_modifica']); ?></td>
+                        <td><?php echo($reg['username']. " - ". $reg['fec_modifica']); ?></td>
                         <td align="center"><a href="#" class="btn_edit"><i class="glyphicon glyphicon-pencil icon-white" style="color:orange"></i></a></td>
                     </tr>
     <?php	}//end foreach ?>		
@@ -134,19 +289,23 @@ $(document).ready(function () {
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">DESCRIPCION:</label></td>
-			        	        <td><input name="descripcion"" type="text" class="form-control input-sm" id="descripcion" style="width:350px" value="" maxlength="30" max-lenght="30" ></td>
+			        	        <td><span id="descripcion"></span></td>
 		        	          </tr>
 		        	          <tr>
 			        	        <td><label class="control-label">TIPO:</label></td>
-			        	        <td><select  name="tipo" class="select-class2" id="tipo" validate="required" validateMessage="Seleccione Tipo"></select></td>
+			        	        <td><span id="tipo"></span></td>
 		        	          </tr>
-		        	             <tr>
-			        	        <td><label class="control-label">VALOR:</label></td>
-			        		    <td><input name="valor" type="text" class="form-control input-sm" id="valor" style="width:350px" value="" maxlength="30" max-lenght="30" validate="required" validateMessage="Ingrese un valor"></td>
+		        	          <tr>
+			        	        <td><label class="control-label" for="valor_texto">VALOR TEXTO:</label></td>
+			        		    <td><input name="valor_texto" type="text" class="form-control input-sm" id="valor_texto" style="width:350px" value="" maxlength="30" max-lenght="30" validate="required" validateMessage="Ingrese un valor"></td>
 		        	          </tr>	
-		        	           <tr>
+		        	          <tr>
+			        	        <td><label class="control-label" for="valor_numerico">VALOR NUMERICO:</label></td>
+			        		    <td><input name="valor_numerico" type="text" class="form-control input-sm" id="valor_numerico" style="width:350px" value="" maxlength="30" max-lenght="30" validate="required" validateMessage="Ingrese un valor"></td>
+		        	          </tr>	
+		        	          <tr>
 			        	        <td><label class="control-label">OBSERVACION :</label></td>
-			        		    <td> <textarea class="form-control" id="observacion" name="observacion"></textarea></td>
+			        		    <td> <textarea  rows="4" class="form-control" id="observacion" name="observacion"></textarea></td>
 		        	          </tr>	
 			        	      <tr>
 			        	        <td>&nbsp;</td>
@@ -162,7 +321,7 @@ $(document).ready(function () {
 		        	        </tr>
 	        	      </table>
                       <br>
-						<center><a id="btn_grabar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a></center>
+						<center><a id="btn_grabar" name="btn_grabar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-save"></i> Grabar</a></center>
 		        	  <!--   div id="dialog_oferta_formulario"></div -->			
 			        </div>
 			      </div>

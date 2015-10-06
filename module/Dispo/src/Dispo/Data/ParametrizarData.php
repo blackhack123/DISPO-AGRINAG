@@ -75,28 +75,13 @@ class ParametrizarData
 	public function setDescripcion($valor) 			{$this->descripcion				= $valor;}
 	public function setTipo($valor) 				{$this->tipo					= $valor;}
 	public function setValorTexto($valor) 			{$this->valor_texto				= $valor;}
-	public function setColor($valor) 				{$this->color					= $valor;}
-	public function setColor2($valor) 				{$this->color2					= $valor;}
-	public function setGrupoColorId($valor) 		{$this->grupo_color_id			= $valor;}
-	public function setColorBase($valor) 			{$this->colorbase				= $valor;}
-	public function setSolido($valor)		 		{$this->solido					= $valor;}
-	public function setEsReal($valor)			 	{$this->es_real					= $valor;}
-	public function setEstProductoEspecial($valor)	{$this->est_producto_especial	= $valor;}
-	public function setMensaje($valor)			 	{$this->mensaje					= $valor;}
-	public function setCultivada($valor)		 	{$this->cultivada				= $valor;}
-	public function setCicloProd($valor)		 	{$this->ciclo_prod				= $valor;}
-	public function setObtentorId($valor)		 	{$this->obtentor_id				= $valor;}
-	public function setTamanoBunchId($valor)		{$this->tamano_bunch_id			= $valor;}
-	public function setProductoId($valor)		 	{$this->producto_id				= $valor;}
-	public function setColorVentasId($valor)		{$this->color_ventas_id			= $valor;}
-	public function setUrlFicha($valor)				{$this->url_ficha				= $valor;}
-	public function setEstado($valor) 				{$this->estado					= $valor;}
+	public function setValorNumerico($valor) 		{$this->valor_numerico			= $valor;}
+	public function setObservacion($valor) 			{$this->observacion				= $valor;}
 	public function setFecIngreso($valor) 			{$this->fec_ingreso				= $valor;}
 	public function setFecModifica($valor) 			{$this->fec_modifica			= $valor;}
 	public function setUsuarioIngId($valor) 		{$this->usuario_ing_id			= $valor;}
 	public function setUsuarioModId($valor) 		{$this->usuario_mod_id			= $valor;}
-	public function setSincronizado($valor) 		{$this->sincronizado			= $valor;}
-	public function setFecSincronizado($valor) 		{$this->fec_sincronizado		= $valor;}
 
+	
 }//end class
 
