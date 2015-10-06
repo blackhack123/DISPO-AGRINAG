@@ -520,7 +520,7 @@ class DisponibilidadController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function listadodispoAction	
+	}//end function listadodispoAction
 	
 	
 
@@ -638,7 +638,7 @@ class DisponibilidadController extends AbstractActionController
 			$json = json_encode($data);
 				
 			//Instantiate a client object
-			$client = new Client($uri, array('timeout'      => 60));
+			$client = new Client($uri, array('timeout'      => 600));
 				
 			$requestHeaders = $client->getRequest()->getHeaders();
 			$client->setRawBody($json);
