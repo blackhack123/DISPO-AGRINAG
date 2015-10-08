@@ -7,7 +7,7 @@ use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\JsonModel;
 use Dispo\BO\ParametrizarBO;
-use Dispo\DATA\ParametrizarData;
+use Dispo\Data\ParametrizarData;
 
 class ParametrizarController extends AbstractActionController
 {
