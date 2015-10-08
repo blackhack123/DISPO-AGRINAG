@@ -224,22 +224,29 @@ class VariedadDAO extends Conexion
 	
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT * '.
+		$sql = 	' SELECT variedad.id, variedad.nombre, variedad.colorbase,variedad.solido, variedad.es_real, variedad.sincronizado, variedad.fec_sincronizado, color_ventas.nombre as color_venta, variedad.estado '.
 				' FROM variedad '.
-				' WHERE 1 = 1 ';
+				' LEFT JOIN color_ventas '.
+				' 		ON variedad.color_ventas_id = color_ventas.id';
 	
 		if (!empty($condiciones['criterio_busqueda']))
 		{
-			$sql = $sql." and (nombre like '%".$condiciones['criterio_busqueda']."%'".
-					"      or id like '%".$condiciones['criterio_busqueda']."%'".
-					"      or colorbase like '%".$condiciones['criterio_busqueda']."%')";
+			$sql = $sql." and (variedad.nombre like '%".$condiciones['criterio_busqueda']."%'".
+					"      or variedad.id like '%".$condiciones['criterio_busqueda']."%'".
+					"      or variedad.colorbase like '%".$condiciones['criterio_busqueda']."%')";
 					
 		}//end if
 	
 		if (!empty($condiciones['estado']))
 		{
-			$sql = $sql." and estado = '".$condiciones['estado']."'";
+			$sql = $sql." and variedad.estado = '".$condiciones['estado']."'";
 		}//end if 
+		
+		
+		if (!empty($condiciones['color_ventas_id']))
+		{
+			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."'";
+		}//end if
 
 		
 		if (isset($condiciones['sincronizado']))
@@ -249,7 +256,7 @@ class VariedadDAO extends Conexion
 				$sql = $sql." and sincronizado = ".$condiciones['sincronizado'];
 			}//end if
 		}//end if
-		$sql= $sql. " order by nombre";
+		$sql= $sql. " order by variedad.nombre";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro

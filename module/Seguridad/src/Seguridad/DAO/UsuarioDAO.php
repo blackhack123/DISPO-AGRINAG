@@ -258,7 +258,7 @@ class UsuarioDAO extends Conexion {
 	 */
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT usuario.*, perfil.nombre as perfil_nombre, grupo_dispo_cab.nombre AS grupo_dispo, grupo_precio_cab.nombre AS grupo_precio, calidad.nombre AS nombre_calidad'.
+		$sql = 	' SELECT usuario.*, perfil.nombre as perfil_nombre, grupo_dispo_cab.nombre AS grupo_dispo, grupo_precio_cab.nombre AS grupo_precio, calidad.nombre AS nombre_calidad, usuario.login_fox'.
 				' FROM usuario  LEFT JOIN perfil '.
 				'		               ON perfil.id      = usuario.perfil_id '.
 				'				LEFT JOIN grupo_dispo_cab '.

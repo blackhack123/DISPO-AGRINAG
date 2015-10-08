@@ -295,6 +295,11 @@ $(document).ready(function () {
 	    	                <?php echo($this->busqueda_estado); ?>
     	                </select>                                       
                     </div>
+                    <div class="input-group">
+						<select  name="busqueda_color" class="select-class2" style="width:130px">
+	    	                <?php echo($this->busqueda_color); ?>
+    	                </select>                                       
+                    </div>
  					<span class="input-group-btn">
                     	<button id="btn_consultar" class="btn btn-small btn-success" type="button"><i class="glyphicon glyphicon-search icon-white"></i></button>
                     </span>                        
@@ -312,6 +317,7 @@ $(document).ready(function () {
                         <th  width="100" rowspan="2" class="th-inner">ID</th>				
                         <th  width="0" rowspan="2" class="th-inner">NOMBRE</th>
                         <th  width="0" rowspan="2" class="th-inner">COLOR BASE</th>
+                        <th  width="0" rowspan="2" class="th-inner">COLOR VENTAS</th>
                         <th  width="0" rowspan="2" class="th-inner">SOLIDO</th>
                         <th  width="0" rowspan="2" class="th-inner">REAL</th>
                         <th  width="70" colspan="2" class="th-inner">SINCRONIZACION</th>					
@@ -339,6 +345,7 @@ $(document).ready(function () {
                         <td align="center"><?php echo($reg['id']); ?></td>
                         <td><?php echo($reg['nombre']); ?></td>
                         <td align="center"><?php echo($reg['colorbase']); ?></td>
+                        <td align="center"><?php echo($reg['color_venta']); ?></td>
                         <td align="center">
                         <?php if ($reg['solido']=="S"){ ?>
                             <span class="glyphicon glyphicon-ok" style="color:green"></span>
