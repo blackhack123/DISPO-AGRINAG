@@ -257,6 +257,8 @@ class DispoBO extends Conexion
 					$row_dispo['tot_bunch_disponible'] 	= $tot_bunch_disponibles;
 					$row_dispo['tallos_x_bunch']		= $row_dispo['tot_tallos_x_bunch'] / $row_dispo['veces_tallos_x_bunch'];
 					$row_dispo['color_nombre']			= $row_dispo['color_nombre'];
+					$row_dispo['url_ficha']				= $row_dispo['url_ficha'];
+					
 					//Los siguientes se llenaran más adelante
 					$row_dispo['tipo_caja_origen_estado'] 	= NULL;
 					$row_dispo['tipo_caja_origen_id']		= NULL;
@@ -347,6 +349,7 @@ class DispoBO extends Conexion
 				$row_new['tot_bunch_disponible']		= $row_new['tot_bunch_disponible'] + $row['tot_bunch_disponible'];
 				$row_new['tallos_x_bunch'] 				= $row['tallos_x_bunch'];
 				$row_new['color_nombre']				= $row['color_nombre'];
+				$row_new['url_ficha']					= $row['url_ficha'];
 				$row_new['precio'] 						= $row['precio'];
 				$row_new['precio_oferta']				= $row['precio_oferta'];				
 			
