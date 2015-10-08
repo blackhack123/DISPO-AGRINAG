@@ -341,12 +341,18 @@
 	                        <td>
 	                            <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span><?php echo($html_tallos_x_bunch); ?>
 
+								<?php if (!empty($reg['url_ficha'])){ ?>
+		                            <div class="pull-right btn_ficha" style="margin-right: 10%; color: green; cursor:pointer">
+                                    	<a onclick="window.open(this.href,this.target,'scrollbars=yes,resizable=yes,height=600,width=1000,left=100,top=100'); return false;" href="<?php echo($reg['url_ficha']); ?>"><span class="glyphicon glyphicon-camera pointer"></span></a>
+		                            </div>
+	                            <?php }//end if ?>                                
+
 								<?php if (!empty($reg['precio_oferta'])&&($reg['precio_oferta']>0)){ ?>
 		                            <div class="pull-right btn_oferta" style="margin-right: 10%; color: orange; cursor:pointer">
 		                                <span class="glyphicon glyphicon-star pointer"
 		                                aria-hidden="true" data-toggle="modal" data-target="#dialog_oferta"></span>
 		                            </div>
-	                            <?php }//end if ?>
+	                            <?php }//end if ?>                                
 	                        </td>
 	                        <td><h5><small><?php echo($reg['color_nombre']); ?><small></h5></td>
 	                        <td>

@@ -57,13 +57,16 @@ $(document).ready(function () {
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['tallos_x_bunch','variedad_nombre','Id','Variedad','Color','40','50','60','70','80','90', '100', '110'],
+		colNames:['tallos_x_bunch','variedad_nombre','Id','Variedad','','Color','40','50','60','70','80','90', '100', '110','Total'],
 		colModel:[
 /*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
 			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:50, align:"center", sorttype:"int", hidden:true},
 			{name:'variedad',index:'variedad_nombre', width:50, sorttype:"string", hidden:true},
 			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
 			{name:'variedad',index:'variedad', width:170, sorttype:"string", formatter: gridDispoGeneral_VariedadNombreFormatter},
+			{name:'btn_foto',index:'', width:30, align:"center", formatter:GridDispoGeneral_FotoFormatter,
+				   cellattr: function () { return ' title=" Modificar"'; }
+				},
 			{name:'color_ventas_nombre',index:'color_ventas_nombre', width:120, sorttype:"string"},
 			{name:'40',index:'40', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
 			{name:'50',index:'50', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
@@ -72,7 +75,8 @@ $(document).ready(function () {
 			{name:'80',index:'80', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
 			{name:'90',index:'90', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
 			{name:'100',index:'100', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
-			{name:'110',index:'110', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter}	
+			{name:'110',index:'110', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},
+			{name:'total',index:'total', width:50, align:"right", sorttype:"int"}
 		],
 		rowNum:999999,
 		pager: '#pager_dispo_general',
@@ -82,6 +86,8 @@ $(document).ready(function () {
 		rowList:false,
 		gridview:false,	
 		shrinkToFit: false,
+		footerrow : true,
+		userDataOnFooter : true,		
 		//loadComplete: grid_setAutoHeight,
 		loadComplete: function (data) {
 			autoHeight_JqGrid_Refresh("grid_dispo_general");
@@ -103,7 +109,7 @@ $(document).ready(function () {
 			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 		}
 	});
-	$("#grid_dispo_general").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});
+/*	$("#grid_dispo_general").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});*/
 
 
 
@@ -116,6 +122,22 @@ $(document).ready(function () {
 		}//end if
 		return new_format_value;
 	}//end function gridDispoGeneral_VariedadNombreFormatter
+
+
+	function GridDispoGeneral_FotoFormatter(cellvalue, options, rowObject){
+		var id = rowObject.id;	
+		var new_format_value = '';
+		console.log(rowObject.url_ficha);
+		if (rowObject.url_ficha === undefined || rowObject.url_ficha === null || rowObject.url_ficha=='')
+		{
+			new_format_value = '';
+		}else{
+			new_format_value = '<a href="javascript:void(0)" onclick="window.open(\''+rowObject.url_ficha+'\',this.target,\'scrollbars=yes,resizable=yes,height=600,width=1000,left=100,top=100\')"><i class="glyphicon glyphicon-camera" style="color:green"></i></a>'; 
+		}//end if
+		
+		return new_format_value;
+	}//end function ListadoCliente_FormatterEdit
+
 
 
 	function gridDispoGeneral_GradosFormatter(cellvalue, options, rowObject){
@@ -225,7 +247,7 @@ $(document).ready(function () {
 		
 		var data = 	{
 						opcion: 'panel-control-disponibilidad',
-						inventario_1er_elemento:	'',
+						inventario_1er_elemento:	'USA',
 						calidad_1er_elemento:		'',
 						proveedor_1er_elemento:		'&lt;TODAS LAS FINCAS&gt;',
 						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;'

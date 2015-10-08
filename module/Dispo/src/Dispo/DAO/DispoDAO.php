@@ -179,7 +179,7 @@ class DispoDAO extends Conexion
 				'		dispo.proveedor_id, '.				
 				'		grupo_dispo_det.cantidad_bunch_disponible as grupo_dispo_det_cantidad_bunch_disponible, '.
 				'       grupo_precio_det.precio, grupo_precio_det.precio_oferta, '.
-				'		color_ventas.nombre as color_nombre,'.
+				'		color_ventas.nombre as color_nombre, variedad.url_ficha,'.
 				'	sum(dispo.cantidad_bunch_disponible) as tot_bunch_disponible, '.
 				'	sum(dispo.tallos_x_bunch) as tot_tallos_x_bunch,'.
 				'	count(*) as veces_tallos_x_bunch'.
@@ -219,7 +219,9 @@ class DispoDAO extends Conexion
 				'                   AND grupo_dispo_det.tallos_x_bunch			= dispo.tallos_x_bunch'.
 				" WHERE usuario.id = ".$usuario_id.
 				//" AND dispo.clasifica = '1'".//PARA TOMAR CALIDAD DE FLOR (RECIEN ADICIONADO)
-				' GROUP BY dispo.producto, variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.tallos_x_bunch, dispo.proveedor_id, grupo_dispo_det.cantidad_bunch_disponible, grupo_precio_det.precio, grupo_precio_det.precio_oferta, color_ventas.nombre '.
+				' GROUP BY dispo.producto, variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.tallos_x_bunch, dispo.proveedor_id, '.
+				'          grupo_dispo_det.cantidad_bunch_disponible, grupo_precio_det.precio, grupo_precio_det.precio_oferta, '.
+				'          color_ventas.nombre, variedad.url_ficha '.
 				' ORDER BY dispo.producto, variedad.nombre, dispo.variedad_id, dispo.grado_id, dispo.tallos_x_bunch, tot_bunch_disponible DESC';
 
 		//die($sql);
@@ -299,7 +301,7 @@ class DispoDAO extends Conexion
 	public function listado($condiciones)
 	{
 		$sql = 	' SELECT dispo.producto as producto_id, variedad.nombre as variedad, dispo.variedad_id, dispo.tallos_x_bunch, '.
-				'        color_ventas.nombre as color_ventas_nombre, '.
+				'        color_ventas.nombre as color_ventas_nombre, variedad.url_ficha, '.
 				" 		 SUM(if(dispo.grado_id=40,  dispo.cantidad_bunch_disponible, 0)) as '40',".
 				" 		 SUM(if(dispo.grado_id=50,  dispo.cantidad_bunch_disponible, 0)) as '50',".
 				" 		 SUM(if(dispo.grado_id=60,  dispo.cantidad_bunch_disponible, 0)) as '60',".
@@ -334,7 +336,7 @@ class DispoDAO extends Conexion
 			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."'";
 		}//end if		
 
-		$sql=$sql.' GROUP BY variedad.nombre, dispo.variedad_id, tallos_x_bunch, color_ventas.nombre ';
+		$sql=$sql.' GROUP BY variedad.nombre, dispo.variedad_id, tallos_x_bunch, color_ventas.nombre, url_ficha ';
 		$sql=$sql." ORDER BY variedad.nombre ";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
