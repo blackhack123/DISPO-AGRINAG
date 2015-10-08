@@ -83,7 +83,11 @@ class PedidoDetData
 	 */	
 	protected $precio;
 
-
+	/**
+	 * @var float
+	 */
+	protected $total_x_caja;
+	
 	/**
 	 * @var float
 	 */	
@@ -200,6 +204,7 @@ class PedidoDetData
 	public function getNroCajas() 									{return $this->nro_cajas;}
 	public function getCantidadBunch() 								{return $this->cantidad_bunch;}
 	public function getTallosxBunch() 								{return $this->tallos_x_bunch;}
+	public function getTotalXCaja()									{return $this->total_x_caja;}
 	public function getTallosTotal()							 	{return $this->tallos_total;}
 	public function getPrecio() 									{return $this->precio;}
 	public function getTotal() 										{return $this->total;}
@@ -235,6 +240,7 @@ class PedidoDetData
 	public function setTallosxBunch($valor) 						{$this->tallos_x_bunch				= $valor;}
 	public function setTallosTotal($valor)						 	{$this->tallos_total 				= $valor;}
 	public function setPrecio($valor) 								{$this->precio 						= $valor;}
+	public function setTotalXCaja($valor)							{$this->total_x_caja				= $valor;}	
 	public function setTotal($valor) 								{$this->total 						= $valor;}
 //	public function setComentario($valor) 							{$this->comentario 					= $valor;}
 //	public function setSec($valor) 									{$this->sec 						= $valor;}

@@ -193,7 +193,15 @@ class PedidoBO extends Conexion
 			}else{
 				$precio 		= $reg_dispo['precio'];
 			}//end if
-			$precio_total	= $tallos_total *  $precio; //Se multiplica el precio del tallo						
+			$precio_total	= $tallos_total *  $precio; //Se multiplica el precio del tallo		
+
+			//Se define el total x caja
+			if (empty($precio))
+			{
+				$total_x_caja = 0;
+			}else{
+				$total_x_caja = $reg_dispo['tallos_x_bunch'] * $bunch_total/$nro_cajas_seleccionada * $precio;
+			}//end if
 
 			$PedidoDetData->setPedidoCabId			($pedido_cab_id);
 			$PedidoDetData->setPedidoDetSec 		($pedido_cab_sec);
@@ -209,6 +217,7 @@ class PedidoBO extends Conexion
 			$PedidoDetData->setTallosxBunch			($reg_dispo['tallos_x_bunch']);
 			$PedidoDetData->setTallosTotal			($tallos_total);
 			$PedidoDetData->setPrecio				($precio);
+			$PedidoDetData->setTotalXCaja 			($total_x_caja);
 			$PedidoDetData->setTotal				($precio_total);
 //			$PedidoDetData->setAgenciaCargaId		($agencia_carga_id);
 //			$PedidoDetData->setComentario			('');

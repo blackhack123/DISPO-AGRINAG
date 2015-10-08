@@ -37,6 +37,7 @@ class PedidoDetDAO extends Conexion
 				'tallos_x_bunch'	        					=> $PedidoDetData->getTallosxBunch(),
 				'tallos_total'    		    					=> $PedidoDetData->getTallosTotal(),
 				'precio'        								=> $PedidoDetData->getPrecio(),
+				'total_x_caja'									=> $PedidoDetData->getTotalXCaja(), 
 				'total'        									=> $PedidoDetData->getTotal(),
 				//'agencia_carga_id'        						=> $PedidoDetData->getAgenciaCargaId(),
 				//'comentario'        							=> $PedidoDetData->getComentario(),				
@@ -90,6 +91,7 @@ class PedidoDetDAO extends Conexion
 				'nro_cajas'        								=> $PedidoDetData->getNroCajas(),
 				'cantidad_bunch'   		     					=> $PedidoDetData->getCantidadBunch(),
 				'tallos_x_bunch'	        					=> $PedidoDetData->getTallosxBunch(),
+				'total_x_caja'									=> $PedidoDetData->getTotalXCaja(),				
 				'tallos_total'    		    					=> $PedidoDetData->getTallosTotal(),
 				'precio'        								=> $PedidoDetData->getPrecio(),
 				'total'        									=> $PedidoDetData->getTotal(),
@@ -119,7 +121,7 @@ class PedidoDetDAO extends Conexion
 	 * @param PedidoDetData $PedidoDetData
 	 * @return array $key
 	 */
-	public function actualizarNroCajas(PedidoDetData $PedidoDetData)
+	public function actualizarNroCajasxx(PedidoDetData $PedidoDetData)
 	{
 		$cajas_fb = \Application\Classes\CajaConversion::equivalenciaFB($PedidoDetData->getTipoCajaId(), $PedidoDetData->getNroCajas());
 				
@@ -134,6 +136,7 @@ class PedidoDetDAO extends Conexion
 				//'tallos_x_bunch'	        					=> $PedidoDetData->getTallosxBunch(),
 				'tallos_total'    		    					=> $PedidoDetData->getTallosTotal(),
 				//'precio'        								=> $PedidoDetData->getPrecio(),
+				'total_x_caja'									=> $PedidoDetData->getTotalXCaja(),				
 				'total'        									=> $PedidoDetData->getTotal(),
 				'usuario_mod_id'								=> $PedidoDetData->getUsuarioModId(),
 				'fec_modifica'									=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
