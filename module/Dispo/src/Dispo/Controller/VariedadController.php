@@ -37,15 +37,21 @@ class VariedadController extends AbstractActionController
 			$VariedadBO				= new VariedadBO();
 			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 			
+			$ColorVentasBO				= new ColorVentasBO();
+			$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
 			$condiciones['criterio_busqueda']		= $this->params()->fromPost('criterio_busqueda','');
 			$condiciones['estado']					= $this->params()->fromPost('busqueda_estado','');
+			$condiciones['color_ventas_id']			= $this->params()->fromPost('busqueda_color','');
 			$condiciones['sincronizado']			= $this->params()->fromPost('busqueda_sincronizado','');
 
-			$result 		= $VariedadBO->listado($condiciones);
+			$result 			= $VariedadBO->listado($condiciones);
+			$color_ventas_id 	= null;
 			
-			$viewModel->criterio_busqueda			= $condiciones['criterio_busqueda'];
+			$viewModel->criterio_busqueda			=  $condiciones['criterio_busqueda'];
 			$viewModel->busqueda_estado				=  \Application\Classes\ComboGeneral::getComboEstado($condiciones['estado'],"&lt;ESTADO&gt;");
-			$viewModel->busqueda_sincronizado		= \Application\Classes\ComboGeneral::getComboSincronizado($condiciones['sincronizado'],"&lt;SINCRONIZADO&gt;");
+			$viewModel->busqueda_color				=  $ColorVentasBO->getCombo($color_ventas_id, "&lt;Seleccione&gt;");
+			$viewModel->busqueda_sincronizado		=  \Application\Classes\ComboGeneral::getComboSincronizado($condiciones['sincronizado'],"&lt;SINCRONIZADO&gt;");
 			$viewModel->result				= $result;
 			$this->layout($SesionUsuarioPlugin->getUserLayout());
 			$viewModel->setTemplate('dispo/variedad/mantenimiento.phtml');
