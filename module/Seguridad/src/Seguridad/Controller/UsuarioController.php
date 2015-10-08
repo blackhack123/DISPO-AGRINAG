@@ -278,6 +278,7 @@ class UsuarioController extends AbstractActionController
 			$UsuarioData->setUsername			($json['username']);
 			$UsuarioData->setPassword			($json['password']);
 			$UsuarioData->setEmail				($json['email']);
+			$UsuarioData->setLoginFox			($json['login_fox']);
 			$UsuarioData->setPerfilId			($json['perfil_id']);
 			$UsuarioData->setEstado				($json['estado']);
 			$response = new \stdClass();

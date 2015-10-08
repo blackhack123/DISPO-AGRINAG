@@ -29,7 +29,6 @@ return array(
         	'Dispo\Controller\Inventario'			=> 'Dispo\Controller\InventarioController',
         	'Dispo\Controller\Grado'				=> 'Dispo\Controller\GradoController',
         	'Dispo\Controller\Precio'				=> 'Dispo\Controller\PrecioController',
-        	'Dispo\Controller\Buscador'				=> 'Dispo\Controller\BuscadorController',
         	'Dispo\Controller\Parametrizar'			=> 'Dispo\Controller\ParametrizarController',
         ),
     ),
@@ -304,20 +303,6 @@ return array(
        				),
        		),
         		
-        		'dispo-buscador' => array(
-        				'type'    => 'segment',
-        				'options' => array(
-        						'route'    => '/dispo/buscador[/:action][/:id]',
-        						'constraints' => array(
-        								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        								'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-        						),
-        						'defaults' => array(
-        								'controller' => 'Dispo\Controller\Buscador',
-        								'action'     => 'index',
-        						),
-        				),
-        		),
         		
         		'dispo-parametrizar' => array(
         				'type'    => 'segment',

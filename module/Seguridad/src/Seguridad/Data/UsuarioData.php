@@ -39,6 +39,11 @@ class UsuarioData
 	 * @var string
 	 */	
 	protected $cliente_id;
+	
+	/**
+	 * @var string
+	 */
+	protected $login_fox;
 
 	/**
 	 * @var string
@@ -93,6 +98,7 @@ class UsuarioData
 	public function getUsername() 							{return $this->username;}
 	public function getPassword() 							{return $this->password;}
 	public function getEmail() 								{return $this->email;}
+	public function getLoginFox() 							{return $this->login_fox;}
 	public function getPerfilId() 							{return $this->perfil_id;}
 	public function getClienteId() 							{return $this->cliente_id;}
 	public function getEstado() 							{return $this->estado;}
@@ -112,6 +118,7 @@ class UsuarioData
 	public function setUsername($valor) 					{$this->username				= $valor;}
 	public function setPassword($valor) 					{$this->password				= $valor;}
 	public function setEmail($valor) 						{$this->email					= $valor;}
+	public function setLoginFox($valor) 					{$this->login_fox				= $valor;}
 	public function setPerfilId($valor)						{$this->perfil_id				= $valor;}
 	public function setClienteId($valor) 					{$this->cliente_id				= $valor;}
 	public function setEstado($valor) 						{$this->estado					= $valor;}

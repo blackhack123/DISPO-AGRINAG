@@ -55,6 +55,7 @@ class UsuarioDAO extends Conexion {
 				'email'                				=> $UsuarioData->getEmail(),
 				'perfil_id'                			=> $UsuarioData->getPerfilId(),
 				'cliente_id'                		=> $UsuarioData->getClienteId(),
+				'login_fox'                			=> $UsuarioData->getLoginFox(),
 				'estado'                			=> $UsuarioData->getEstado(),
 				'grupo_dispo_cab_id'                => $UsuarioData->getGrupoDispoCabId(),
 				'grupo_precio_cab_id'               => $UsuarioData->getGrupoPrecioCabId(),
@@ -88,6 +89,7 @@ class UsuarioDAO extends Conexion {
 				'email'                				=> $UsuarioData->getEmail(),
 				'perfil_id'                			=> $UsuarioData->getPerfilId(),
 				'cliente_id'                		=> $UsuarioData->getClienteId(),
+				'login_fox'              	  		=> $UsuarioData->getLoginFox(),
 				'estado'                			=> $UsuarioData->getEstado(),
 				'grupo_dispo_cab_id'                => $UsuarioData->getGrupoDispoCabId(),
 				'grupo_precio_cab_id'               => $UsuarioData->getGrupoPrecioCabId(),
@@ -136,6 +138,7 @@ class UsuarioDAO extends Conexion {
 					$UsuarioData->setEmail   			 ($row['email']);
 					$UsuarioData->setPerfilId			 ($row['perfil_id']);
 					$UsuarioData->setClienteId			 ($row['cliente_id']);
+					$UsuarioData->setLoginFox			 ($row['login_fox']);
 					$UsuarioData->setEstado				 ($row['estado']);
 					$UsuarioData->setGrupoDispoCabId	 ($row['grupo_dispo_cab_id']);
 					$UsuarioData->setGrupoPrecioCabId	 ($row['grupo_precio_cab_id']);
