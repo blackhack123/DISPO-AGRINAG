@@ -270,7 +270,7 @@ class GrupodispoController extends AbstractActionController
 			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 		
-			$inventario_opciones  	= $InventarioBO->getCombo(null);
+			$inventario_opciones  	= $InventarioBO->getCombo('USA');
 			$calidad_opciones 	 	= $CalidadBO->getComboCalidad(null);
 				
 			$response = new \stdClass();

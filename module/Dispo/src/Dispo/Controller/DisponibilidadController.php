@@ -704,15 +704,48 @@ class DisponibilidadController extends AbstractActionController
 			$result = $DispoBO->listado($condiciones);
 			$response = new \stdClass();
 			$i=0;
+			$totales['40'] = 0; 
+			$totales['50'] = 0;
+			$totales['60'] = 0;
+			$totales['70'] = 0;
+			$totales['80'] = 0;
+			$totales['90'] = 0;
+			$totales['100'] = 0;
+			$totales['110'] = 0;
+			$totales['total'] = 0;
 			foreach($result as $row){	
-				$row['variedad'] = trim($row['variedad']);	
+				$row['variedad'] = trim($row['variedad']);
+				$row['total']	 = $row['40'] + $row['50'] + $row['60'] + $row['70'] + $row['80'] + $row['90'] + $row['100'] + $row['110'];
 				$response->rows[$i] = $row;
 				$i++;
+				
+				$totales['40'] 		= $totales['40'] + $row['40'];
+				$totales['50'] 		= $totales['50'] + $row['50'];
+				$totales['60'] 		= $totales['60'] + $row['60'];
+				$totales['70'] 		= $totales['70'] + $row['70'];
+				$totales['80'] 		= $totales['80'] + $row['80'];
+				$totales['90'] 		= $totales['90'] + $row['90'];
+				$totales['100'] 	= $totales['100'] + $row['100'];
+				$totales['110'] 	= $totales['110'] + $row['110'];
+				$totales['total'] 	= $totales['total'] + $row['total'];
 			}//end foreach
 			$tot_reg = $i;
 			$response->total 	= ceil($tot_reg/$limit);
 			$response->page 	= $page;
 			$response->records 	= $tot_reg;
+			
+			$response->userdata['variedad']='TOTALES DE BUNCHS'; 
+			$response->userdata['tallos_x_bunch']=25;
+			$response->userdata['40'] = $totales['40'];
+			$response->userdata['50'] = $totales['50'];
+			$response->userdata['60'] = $totales['60'];
+			$response->userdata['70'] = $totales['70'];
+			$response->userdata['80'] = $totales['80'];
+			$response->userdata['90'] = $totales['90'];
+			$response->userdata['100'] = $totales['100'];
+			$response->userdata['110'] = $totales['110'];
+			$response->userdata['total'] = $totales['total'];
+			
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
 		}catch (\Exception $e) {

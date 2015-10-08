@@ -508,7 +508,7 @@ $(document).ready(function () {
 	function DispoGrupo_Nuevo()
 	{
 		var data = 	{
-						inventario_1er_elemento:	'&lt;SELECCIONE&gt;',
+						inventario_1er_elemento:	'USA',
 						calidad_1er_elemento:		'&lt;SELECCIONE&gt;',
 					}		
 		data = JSON.stringify(data);

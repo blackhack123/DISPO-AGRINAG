@@ -57,7 +57,7 @@ $(document).ready(function () {
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['tallos_x_bunch','variedad_nombre','Id','Variedad','Color','40','50','60','70','80','90', '100', '110'],
+		colNames:['tallos_x_bunch','variedad_nombre','Id','Variedad','Color','40','50','60','70','80','90', '100', '110','Total'],
 		colModel:[
 /*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
 			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:50, align:"center", sorttype:"int", hidden:true},
@@ -72,7 +72,8 @@ $(document).ready(function () {
 			{name:'80',index:'80', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
 			{name:'90',index:'90', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
 			{name:'100',index:'100', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},	
-			{name:'110',index:'110', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter}	
+			{name:'110',index:'110', width:50, align:"center", sorttype:"int", formatter: gridDispoGeneral_GradosFormatter},
+			{name:'total',index:'total', width:50, align:"right", sorttype:"int"}
 		],
 		rowNum:999999,
 		pager: '#pager_dispo_general',
@@ -82,6 +83,8 @@ $(document).ready(function () {
 		rowList:false,
 		gridview:false,	
 		shrinkToFit: false,
+		footerrow : true,
+		userDataOnFooter : true,		
 		//loadComplete: grid_setAutoHeight,
 		loadComplete: function (data) {
 			autoHeight_JqGrid_Refresh("grid_dispo_general");
@@ -103,7 +106,7 @@ $(document).ready(function () {
 			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 		}
 	});
-	$("#grid_dispo_general").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});
+/*	$("#grid_dispo_general").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});*/
 
 
 
@@ -225,7 +228,7 @@ $(document).ready(function () {
 		
 		var data = 	{
 						opcion: 'panel-control-disponibilidad',
-						inventario_1er_elemento:	'',
+						inventario_1er_elemento:	'USA',
 						calidad_1er_elemento:		'',
 						proveedor_1er_elemento:		'&lt;TODAS LAS FINCAS&gt;',
 						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;'
