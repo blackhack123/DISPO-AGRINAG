@@ -245,7 +245,7 @@ class VariedadDAO extends Conexion
 		
 		if (!empty($condiciones['color_ventas_id']))
 		{
-			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."'";
+			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."' ";
 		}//end if
 
 		
