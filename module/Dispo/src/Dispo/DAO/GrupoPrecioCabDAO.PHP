@@ -264,7 +264,7 @@ class GrupoPrecioCabDAO extends Conexion
 		//$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$result = $stmt->fetchAll();
 		return $result;
-	}//end function function consultarPorCliente
+	}//end function function consultarPorInventario
 	
 }//end class
 
