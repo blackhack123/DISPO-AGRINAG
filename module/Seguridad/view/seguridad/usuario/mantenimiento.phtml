@@ -67,6 +67,7 @@
 									$("#username").val('');
 									$("#password").val('');
 									$("#email").val('');
+									$("#login_fox").val('');
 									$("#perfil_id").html(response.cbo_perfil_id);
 									$("#estado").html(response.cbo_estado);
 									$("#lbl_usuario_ing").html('');
@@ -172,6 +173,7 @@
 					 	username: $("#username").val(),					 	
 					 	password: $("#password").val(),
 					 	password2: $("#password2").val(),
+					 	login_fox: $("#login_fox").val(),
 					 	email: $("#email").val(),
 					 	perfil_id: $("#perfil_id").val(),
 					 	estado: $("#estado").val(),
@@ -237,6 +239,7 @@
 			$("#frm #username").val(row.username);
 			$("#frm #password").val('');
 			$("#frm #password2").val('');
+			$("#frm #login_fox").val(row.login_fox);
 			$("#frm #email").val(row.email);
 			$("#frm #perfil_id").html(response.cbo_perfil_id);
 			$("#frm #estado").html(response.cbo_estado);
@@ -350,9 +353,13 @@
 			        	        <td><label class="control-label">CONFIRMAR CLAVE:</label></td>
 			        	        <td><input type="password" name="password2"  class="form-control input-sm" id="password2" style="width:350px" value="" maxlength="15"></td>
 		        	          </tr>
-		        	           <tr>
+		        	          <tr>
 			        	        <td><label class="control-label">CORREO:</label></td>
-			        	        <td><input type="email" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="50" validate="required" max-lenght="3" ></td>
+			        	        <td><input type="email" name="email"  class="form-control input-sm" id="email" style="width:350px" value="" maxlength="50"  max-lenght="3" ></td>
+		        	          </tr>
+		        	          <tr>
+			        	        <td><label class="control-label">LOGIN FOX:</label></td>
+			        	        <td><input type="text" name="login_fox"  class="form-control input-sm" id="login_fox" style="width:350px" value="" maxlength="12" validate="required" max-lenght="12" ></td>
 		        	          </tr>
 			        	      <tr>
 			        	        <td><label class="control-label">TIPO:</label></td>
