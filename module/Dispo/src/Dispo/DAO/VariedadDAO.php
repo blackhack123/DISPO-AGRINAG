@@ -224,7 +224,8 @@ class VariedadDAO extends Conexion
 	
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT variedad.id, variedad.nombre, variedad.colorbase,variedad.solido, variedad.es_real, variedad.sincronizado, variedad.fec_sincronizado, color_ventas.nombre as color_venta, variedad.estado '.
+		$sql = 	' SELECT variedad.id, variedad.nombre, variedad.colorbase,variedad.solido, variedad.es_real, variedad.sincronizado, variedad.fec_sincronizado, color_ventas.nombre as color_venta, variedad.estado,
+	variedad.url_ficha '.
 				' FROM variedad '.
 				' LEFT JOIN color_ventas '.
 				' 		ON variedad.color_ventas_id = color_ventas.id';

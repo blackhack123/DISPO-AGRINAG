@@ -133,22 +133,22 @@ $(document).ready(function () {
 		if (!ValidateControls('frm')) {
 			return false;
 		}
-		if ($("#frm #tipo").html() == "TEXTO")
+		if ($('#tipo').text() == "TEXTO")
 		{
 			valor_texto = $("#frm #valor_texto").val();	
-			valor_numerico = '';
+			valor_numerico = null;
 		}
 		else
 		{
 			valor_numerico = $("#frm #valor_numerico").val();
-			valor_texto = '';
+			valor_texto = null ;
 		} 
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{	accion: $("#accion").val(),
 					 	id: $("#frm #id").val(),
 					  	observacion:$("#frm #observacion").val(),
-					  	valor_texto: valor_texto,
-					  	valor_numerico: valor_numerico
+					  	valor_texto: $("#frm #valor_texto").val(),
+					  	valor_numerico: $("#frm #valor_numerico").val(),
 					}
 		
 		data = JSON.stringify(data);
