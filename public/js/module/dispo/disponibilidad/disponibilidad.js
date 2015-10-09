@@ -127,7 +127,6 @@ $(document).ready(function () {
 	function GridDispoGeneral_FotoFormatter(cellvalue, options, rowObject){
 		var id = rowObject.id;	
 		var new_format_value = '';
-		console.log(rowObject.url_ficha);
 		if (rowObject.url_ficha === undefined || rowObject.url_ficha === null || rowObject.url_ficha=='')
 		{
 			new_format_value = '';
@@ -140,15 +139,15 @@ $(document).ready(function () {
 
 
 
-	function gridDispoGeneral_GradosFormatter(cellvalue, options, rowObject){
-
+	function gridDispoGeneral_GradosFormatter(cellvalue, options, rowObject)
+	{
 		if (primera_vez_DispoGeneralGrid == true)
 		{
 			col_grado_name 	= options.colModel.name;
 			stock			= number_val(cellvalue);	
 			variedad_id		= rowObject.variedad_id;
-			variedad		= rowObject.variedad_nombre; //Nombre
-			tallos_x_bunch	= rowObject.tallos_x_bunch;
+			variedad		= rowObject.variedad; //Nombre
+			tallos_x_bunch	= rowObject.tallos_x_bunch;			
 		}else{
 			pos_col_grado 			= options.pos;
 			pos_col_variedad_id 	= 3;
@@ -247,7 +246,8 @@ $(document).ready(function () {
 		
 		var data = 	{
 						opcion: 'panel-control-disponibilidad',
-						inventario_1er_elemento:	'USA',
+						inventario_id: 				'USA',
+						inventario_1er_elemento:	'',
 						calidad_1er_elemento:		'',
 						proveedor_1er_elemento:		'&lt;TODAS LAS FINCAS&gt;',
 						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;'

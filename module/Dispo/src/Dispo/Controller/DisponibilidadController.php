@@ -790,7 +790,7 @@ class DisponibilidadController extends AbstractActionController
 					$calidad_1er_elemento		= $json['calidad_1er_elemento'];
 					$proveedor_1er_elemento		= $json['proveedor_1er_elemento'];
 					$color_ventas_1er_elemento	= $json['color_ventas_1er_elemento'];
-					$inventario_id	= null;
+					$inventario_id				= $json['inventario_id'];
 					$clasifica_fox	= null;
 					$proveedor_id	= null;
 					$color_ventas_id= null;
