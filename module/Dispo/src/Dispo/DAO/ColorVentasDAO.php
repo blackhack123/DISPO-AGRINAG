@@ -64,7 +64,41 @@ class ColorVentasDAO extends Conexion
 		}//end foreach
 	
 		return $result;
-	}//end function consultarTodos	
+	}//end function consultarTodos
+
+	
+	/**
+	 *
+	 * En las condiciones se puede pasar los siguientes criterios de busqueda:
+	 *   1) criterio_busqueda,  utilizado para buscar en nombre, id, direccion, telefono
+	 *   2) estado
+	 *   3) sincronizado
+	 *
+	 * @param array $condiciones
+	 * @return array
+	 */
+	public function listado($condiciones)
+	{
+		
+		$sql = 	' SELECT color_ventas.* '.
+				' FROM color_ventas   '.
+				' WHERE 1 = 1 ';
+		
+		
+		if (!empty($condiciones['estado']))
+		{
+			$sql = $sql." and estado = '".$condiciones['estado']."'";
+		}//end if
+		
+		$sql=$sql." order by color_ventas.nombre";
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		
+		return $result;
+	}//end function listado
+	
+	
 }//end class
 
 ?>
