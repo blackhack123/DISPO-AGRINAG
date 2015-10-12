@@ -50,7 +50,7 @@ class ColorVentasController extends AbstractActionController
 				$i++;
 			}//end foreach
 			$tot_reg = $i;
-			$response->total 	= ceil($tot_reg/$limit);
+			//$response->total 	= ceil($tot_reg/$limit);
 			$response->page 	= $page;
 			$response->records 	= $tot_reg;
 			$json = new JsonModel(get_object_vars($response));
