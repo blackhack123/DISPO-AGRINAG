@@ -334,7 +334,12 @@ class DispoDAO extends Conexion
 		if (!empty($condiciones['color_ventas_id']))
 		{
 			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."'";
-		}//end if		
+		}//end if
+		
+		if (!empty($condiciones['calidad_variedad_id']))
+		{
+			$sql = $sql." and variedad.calidad_variedad_id = ".$condiciones['calidad_variedad_id'];
+		}//end if
 
 		$sql=$sql.' GROUP BY variedad.nombre, dispo.variedad_id, tallos_x_bunch, color_ventas.nombre, url_ficha ';
 		$sql=$sql." ORDER BY variedad.nombre ";

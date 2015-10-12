@@ -116,12 +116,7 @@ $(window).bind('resize', function() {
  * Incoporar la clase grid-autowidth, como en el siguiente ejemplo:
  *  	<table id="equipo_grid" class="grid grid-autowidth"></table> 
  */
-var grid_setAutoWidth = function() {
-/*	var grid = this;
-	console.log('paso01', this.id);
-	console.log('paso02', $(this).attr('id'));	
-	autoHeight_JqGrid_Refresh(grid.id);
-*/	
+/*var grid_setAutoWidth = function() {
 	$.each($('.grid-autowidth'), function() {
 		autoWidth_JqGrid(this.id)
 	});	
@@ -134,12 +129,12 @@ function executeAutoWidth_JqGrid()
 		autoWidth_JqGrid(this.id)
 	});	
 }
-
+*/
 
 /**
  * M�todo invocado de forma automatica por medio del redimensionamiento de la ventana 
  */
-function autoWidth_JqGrid(id)
+/*function autoWidth_JqGrid(id)   //Expand Width
 {
 	grid = eval('$("#'+id+'")');
 	var columnas = grid.jqGrid('getGridParam', 'colModel');
@@ -167,7 +162,23 @@ function autoWidth_JqGrid(id)
 	//anchoTotal += 50;
 	grid.jqGrid('setGridWidth', anchoTotal);	
 }
+*/
 
+
+var grid_setAutoWidthContainer = function() {
+	$.each($('.grid-autowidthcontainer'), function() {
+		autoWidthContainer_JqGrid(this.id)
+	});	
+};
+
+function autoWidthContainer_JqGrid(id)
+{
+	if (typeof id === "undefined") return false;
+	grid = eval('$("#'+id+'")');
+	
+	newWidth = grid.closest(".ui-jqgrid").parent().width();
+	grid.jqGrid("setGridWidth", newWidth, true);	
+}//end function autoWidthContainer_JqGrid
 
 
 

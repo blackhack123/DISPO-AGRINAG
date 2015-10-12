@@ -290,6 +290,11 @@ class GrupoDispoCabDAO extends Conexion
 			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."'";
 		}//end if
 						
+		if (!empty($condiciones['calidad_variedad_id']))
+		{
+			$sql = $sql." and variedad.calidad_variedad_id = ".$condiciones['calidad_variedad_id'];
+		}//end if		
+		
 		$sql = $sql.' GROUP BY grupo_dispo_det.producto_id, variedad.nombre, variedad.id, tallos_x_bunch, color_ventas.nombre '.
 				" ORDER BY variedad.nombre ";
 

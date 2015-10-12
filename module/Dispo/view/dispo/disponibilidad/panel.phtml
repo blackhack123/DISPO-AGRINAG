@@ -1,4 +1,10 @@
 <meta charset="UTF-8">
+	<style type="text/css">
+		/*#frm_dispo_grupo_sotckgrado .form-group {
+			text-align: right;
+		}	*/
+	</style>
+
 	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/disponibilidad.js')); ?>"></script>
    	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/dispo_x_grupo.js')); ?>"></script>
    	<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/disponibilidad/grupo_usuario.js')); ?>"></script>    
@@ -353,12 +359,12 @@
                             
                             <!-- Modal Dispo General por Proveedor -->
                             <form id="frm_dispo_proveedor" name="frm_dispo_proveedor" action="#" method="post" class="form-group" />
-                            	<input type="text" id="inventario_id" value="" />
-                            	<input type="text" id="calidad_id" value="" />
-                            	<input type="text" id="proveedor_id" value="" />
-                            	<input type="text" id="variedad_id" value="" />
-                                <input type="text" id="grado_id" value="" />
-                                <input type="text" id="tallos_x_bunch" value="" />
+                            	<input type="hidden" id="inventario_id" value="" />
+                            	<input type="hidden" id="calidad_id" value="" />
+                            	<input type="hidden" id="proveedor_id" value="" />
+                            	<input type="hidden" id="variedad_id" value="" />
+                                <input type="hidden" id="grado_id" value="" />
+                                <input type="hidden" id="tallos_x_bunch" value="" />
                                 <div class="modal fade" id="dialog_dispo_proveedores" tabindex="-1" role="dialog" aria-labelledby="Dialogo para Configurar el Stock de los Proveedores">
                                     <div class="modal-dialog modal-sm" role="document">
                                         <div class="modal-content">
@@ -516,6 +522,7 @@
                                             	 <select  id="grupo_dispo_cab_id" class="form-control input-sm"></select>
                                                  &nbsp;&nbsp;<a id="editar_dispo_grupo"><span id="info_grupo_dispo_cab" class="bg-info"></span></a>
                                                  <select  id="color_ventas_id" class="form-control input-sm"></select>
+                                                 <select  id="calidad_variedad_id" class="form-control input-sm"></select>
                                             </div>
                                         </div>
                                      </section>
@@ -577,8 +584,78 @@
                                     </div>
                                 </div>
                             </div>                              
-                       		
                              <!-- END Modal GRUPOS X DISPO ----------------------------------------------------------------------------------------->  
+                             
+                             
+    						<!-- Modal para cambiar masivamente el STOCK POR GRADO del la DISPO X GRUPO ------------------------------->
+                            <div class="modal fade" id="dialog_dispo_grupo_gradostock" tabindex="-1" role="dialog" aria-labelledby="Dialogo para cambiar masivamente el stock por grado">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel"><span id="dialog_dispo_grupo_stockgrado_titulo"></span></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                        
+                                            <form id="frm_dispo_grupo_sotckgrado" name="frm_dispo_grupo_sotckgrado" action="#" method="post" />
+                                                <input type="hidden" id="grupo_dispo_cab_id" value="" />
+												<input type="hidden" id="color_ventas_id" value="" />
+                                                <input type="hidden" id="grado_id" value="" />
+                                                <input type="hidden" id="calidad_variedad_id" value="" />
+                                            
+                                            	<div class="row">
+                                                	<div class="col-sm-4">
+                                                    
+                                                    	<div class="form-horizontal">
+                                                        	<div class="form-group">                                                
+                                                                <label for="porcentaje" class="col-sm-5 control-label">PORCENTAJE:</label>
+                                                                <div class="col-sm-7">
+                                                                	<div class="input-group">
+                                                                   		<input type="text" class="form-control" id="porcentaje" style="text-align:right">
+                                                                        <div class="input-group-addon">%</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="form-group">                                                
+                                                                <label for="valor" class="col-sm-5 control-label">VALOR:</label>
+                                                                <div class="col-sm-7">
+                                                                    <input type="text" class="form-control" id="valor" style="text-align:right">
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="form-group">
+                                                                <div class="col-sm-12">
+                                                                    <button id="btn_grabar" type="button" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok"></i> GRABAR</button>
+                                                                </div>
+															</div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </div>
+                                                	<div class="col-sm-4">      
+                                                        <label class="sr-only" for="grid_dispogrupo_color">GRID DE COLORES</label>
+                                                        <table id="grid_dispogrupo_color" class="grid"></table>   <!-- grid-autowidthcontainer -->
+                                                        <div id="pager_dispogrupo_color"></div>
+                                                    </div>
+                                                    
+                                                    <div class="col-sm-4">
+                                                        <label class="sr-only" for="grid_dispogrupo_categoria">GRID DE CATEGORIAS</label>
+                                                        <table id="grid_dispogrupo_categoria" class="grid"></table>   <!-- grid-autowidthcontainer -->
+                                                        <div id="pager_dispogrupo_categoria"></div>
+
+                                                    </div>
+                                                </div>
+                                            
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                              
+                             <!-- END Modal GRUPOS X DISPO ----------------------------------------------------------------------------------------->                           
+                             
+                             
                         </div>
                     </div>
  

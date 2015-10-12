@@ -82,10 +82,11 @@ class GrupoDispoCabBO extends Conexion
 		 * Se obtiene los registro de la DISPO GENERAL  (UNIVERSO)
 		 */
 		$condiciones2 = array(
-				"inventario_id"		=> $reg_grupoDispoCab['inventario_id'],
-				"proveedor_id"		=> null,
-				"clasifica"			=> $reg_grupoDispoCab['clasifica_fox'],
-				"color_ventas_id"	=> $condiciones['color_ventas_id']
+				"inventario_id"			=> $reg_grupoDispoCab['inventario_id'],
+				"proveedor_id"			=> null,
+				"clasifica"				=> $reg_grupoDispoCab['clasifica_fox'],
+				"color_ventas_id"		=> $condiciones['color_ventas_id'],
+				"calidad_variedad_id" 	=> $condiciones['calidad_variedad_id']
 		);
 		$result_dispo = $DispoDAO->listado($condiciones2);
 		
@@ -94,7 +95,8 @@ class GrupoDispoCabBO extends Conexion
 		 */
 		$condiciones2 = array(
 				"grupo_dispo_cab_id"	=> $condiciones['grupo_dispo_cab_id'],
-				"color_ventas_id"		=> $condiciones['color_ventas_id']
+				"color_ventas_id"		=> $condiciones['color_ventas_id'],
+				"calidad_variedad_id" 	=> $condiciones['calidad_variedad_id']
 		);		
 		$result_dispo_grupo = $GrupoDispoCabDAO->listado($condiciones2);
 		

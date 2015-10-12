@@ -421,7 +421,7 @@ $(document).ready(function () {
 	function disponibilidad_nueva_variedad()
 	{
 		$("#frm_variedad #fincas_stock").hide();
-		
+
 		titulo = $("#frm_dispo #inventario_id option:selected").text() + ' - ' + $("#frm_dispo #calidad_id option:selected").text();
 		$("#dialog_dispo_variedad_titulo").html(titulo);
 		$('#dialog_dispo_variedad').modal('show');

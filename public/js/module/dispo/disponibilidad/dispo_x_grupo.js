@@ -26,7 +26,7 @@ $(document).ready(function () {
 	});
 
 	
-	$("#frm_dispo_grupo #color_ventas_id").on('change', function(event){
+	$("#frm_dispo_grupo #color_ventas_id, #frm_dispo_grupo #calidad_variedad_id").on('change', function(event){
 		if ($('#frm_dispo_grupo #grupo_dispo_cab_id').val()=='') 
 		{
 			$("#grid_dispo_grupo").jqGrid('clearGridData');
@@ -65,6 +65,11 @@ $(document).ready(function () {
 		return false;
 	});	
 	
+
+	$( "body" ).on( "click", ".DispoGrupoCambiarValoresPorGrado", function() {
+		var grado_id = $(this).data('grado');
+		DispoGrupo_OpenDialog_GradosStock(grado_id);
+	});	
 	
 	/*---------------------------------------------------------------*/	
 	
@@ -76,7 +81,8 @@ $(document).ready(function () {
 		url:'../../dispo/grupodispo/listadodata',
 		postData: {
 			grupo_dispo_cab_id: 	function() {return $("#frm_dispo_grupo #grupo_dispo_cab_id").val();},
-			color_ventas_id:		function() {return $("#frm_dispo_grupo #color_ventas_id").val();}
+			color_ventas_id:		function() {return $("#frm_dispo_grupo #color_ventas_id").val();},
+			calidad_variedad_id:	function() {return $("#frm_dispo_grupo #calidad_variedad_id").val();}
 		},
 		datatype: "json",
 		loadonce: true,			
@@ -364,14 +370,14 @@ $(document).ready(function () {
 	jQuery("#grid_dispo_grupo").jqGrid('setGroupHeaders', {
 	  useColSpanStyle: true, 
 	  groupHeaders:[
-		{startColumnName: 'dgen_40', numberOfColumns: 2, titleText: '<em>40</em>'},
-		{startColumnName: 'dgen_50', numberOfColumns: 2, titleText: '<em>50</em>'},
-		{startColumnName: 'dgen_60', numberOfColumns: 2, titleText: '<em>60</em>'},
-		{startColumnName: 'dgen_70', numberOfColumns: 2, titleText: '<em>70</em>'},
-		{startColumnName: 'dgen_80', numberOfColumns: 2, titleText: '<em>80</em>'},
-		{startColumnName: 'dgen_90', numberOfColumns: 2, titleText: '<em>90</em>'},
-		{startColumnName: 'dgen_100', numberOfColumns: 2, titleText: '<em>100</em>'},
-		{startColumnName: 'dgen_110', numberOfColumns: 2, titleText: '<em>110</em>'},
+		{startColumnName: 'dgen_40', numberOfColumns: 2, titleText: '<a href="#" class="DispoGrupoCambiarValoresPorGrado" data-grado="40"><em>40</em></a>'},
+		{startColumnName: 'dgen_50', numberOfColumns: 2, titleText: '<a href="#" class="DispoGrupoCambiarValoresPorGrado" data-grado="50"><em>50</em></a>'},
+		{startColumnName: 'dgen_60', numberOfColumns: 2, titleText: '<a href="#" class="DispoGrupoCambiarValoresPorGrado" data-grado="60"><em>60</em></a>'},
+		{startColumnName: 'dgen_70', numberOfColumns: 2, titleText: '<a href="#" class="DispoGrupoCambiarValoresPorGrado" data-grado="70"><em>70</em></a>'},
+		{startColumnName: 'dgen_80', numberOfColumns: 2, titleText: '<a href="#" class="DispoGrupoCambiarValoresPorGrado" data-grado="80"><em>80</em></a>'},
+		{startColumnName: 'dgen_90', numberOfColumns: 2, titleText: '<a href="#" class="DispoGrupoCambiarValoresPorGrado" data-grado="90"><em>90</em></a>'},
+		{startColumnName: 'dgen_100', numberOfColumns: 2, titleText: '<a href="#" class="DispoGrupoCambiarValoresPorGrado" data-grado="100"><em>100</em></a>'},
+		{startColumnName: 'dgen_110', numberOfColumns: 2, titleText: '<a href="#" class="DispoGrupoCambiarValoresPorGrado" data-grado="110"><em>110</em></a>'},
 	  ]	
 	});	
 	
@@ -388,11 +394,118 @@ $(document).ready(function () {
 		}//end if
 		return new_format_value;
 	}//end function gridDispoGeneral_VariedadNombreFormatter
-
-
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/
-	});
+	
+	
+	
+	/*---------------------------------------------------------------*/
+	/*-----Se configura el JQGRID de COLOR de la DISPO X GRUPO-------*/
+	/*---------------------------------------------------------------*/		
+	jQuery("#grid_dispogrupo_color").jqGrid({
+		url:'../../dispo/colorventas/listadodata',
+		postData: {
+		},
+		datatype: "json",
+		loadonce: true,			
+		height:'200',
+		colNames:['id','Color'],
+		colModel:[
+			{name:'id',index:'id',  sorttype:"int", hidden:true},
+			{name:'nombre',index:'nombre'},
+		],
+		rowNum:999999,
+		pager: '#pager_dispogrupo_color',
+		toppager:false,
+		pgbuttons:false,
+		pginput:false,
+		rowList:false,
+		gridview:false,	
+		width: 280,
+//		autowidth: true,
+		shrinkToFit: true,
+//		forceFit: true,
+//		resizeStop: grid_setAutoHeight,
+		rownumbers: true,
+		cellEdit: true,
+		cellsubmit: 'clientArray',
+		editurl: 'clientArray',		
+		multiselect: true,
+		jsonReader: {
+			repeatitems : false,
+		},
+		loadComplete: function (data) {
+			//autoHeight_JqGrid_Refresh("grid_dispo_grupo");
+			//autoWidthContainer_JqGrid("grid_dispogrupo_color");
+		},
+		loadBeforeSend: function (xhr, settings) {
+			/*this.p.loadBeforeSend = null; //remove event handler
+			return false; // dont send load data request*/
+		},
+		loadError: function (jqXHR, textStatus, errorThrown) {
+			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+		},
+	});							
+	jQuery("#grid_dispogrupo_color").jqGrid('navGrid','#pager_dispogrupo_color',{edit:false,add:false,del:false});
+	/*---------------------------------------------------------------*/	
+	/*---------------------------------------------------------------*/
+	
+	
+	
+	/*---------------------------------------------------------------*/
+	/*---Se configura el JQGRID de CATEGORIAS de la DISPO X GRUPO----*/
+	/*---------------------------------------------------------------*/		
+	jQuery("#grid_dispogrupo_color").jqGrid({
+		url:'../../dispo/colorventas/listadodata',
+		postData: {
+		},
+		datatype: "json",
+		loadonce: true,			
+		height:'200',
+		colNames:['id','Color'],
+		colModel:[
+			{name:'id',index:'id',  sorttype:"int", hidden:true},
+			{name:'nombre',index:'nombre'},
+		],
+		rowNum:999999,
+		pager: '#pager_dispogrupo_color',
+		toppager:false,
+		pgbuttons:false,
+		pginput:false,
+		rowList:false,
+		gridview:false,	
+		width: 280,
+//		autowidth: true,
+		shrinkToFit: true,
+//		forceFit: true,
+//		resizeStop: grid_setAutoHeight,
+		rownumbers: true,
+		cellEdit: true,
+		cellsubmit: 'clientArray',
+		editurl: 'clientArray',		
+		multiselect: true,
+		jsonReader: {
+			repeatitems : false,
+		},
+		loadComplete: function (data) {
+			//autoHeight_JqGrid_Refresh("grid_dispo_grupo");
+			//autoWidthContainer_JqGrid("grid_dispogrupo_color");
+		},
+		loadBeforeSend: function (xhr, settings) {
+			/*this.p.loadBeforeSend = null; //remove event handler
+			return false; // dont send load data request*/
+		},
+		loadError: function (jqXHR, textStatus, errorThrown) {
+			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+		},
+	});							
+	jQuery("#grid_dispogrupo_color").jqGrid('navGrid','#pager_dispogrupo_color',{edit:false,add:false,del:false});
+	/*---------------------------------------------------------------*/	
+	/*---------------------------------------------------------------*/
+
+
+	
+});
 	
 	
 	function gridDispoGrupo_GradosFormatter(cellvalue, options, rowObject){
@@ -424,7 +537,8 @@ $(document).ready(function () {
 						opcion: 'panel-control-disponibilidad',
 						grupo_dispo_1er_elemento:	'&lt;SELECCIONE&gt;',
 						//grupo_dispo_cab_id:			grupo_dispo_cab_id;
-						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;'
+						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;',
+						calidad_variedad_1er_elemento:  '&lt;TODOS LOS CATEGORIAS&gt;'
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',
@@ -435,7 +549,8 @@ $(document).ready(function () {
 							'finish':function(response){										
 								$("body #frm_dispo_grupo #grupo_dispo_cab_id").html(response.grupo_dispo_opciones);
 								$("body #frm_dispo_grupo #color_ventas_id").html(response.color_ventas_opciones);
-								
+								$("body #frm_dispo_grupo #calidad_variedad_id").html(response.calidad_variedad_opciones);
+
 								//Habilita la botonera
 								$("#frm_dispo_grupo button").prop('disabled', false);
 							 }							
@@ -628,3 +743,36 @@ $(document).ready(function () {
 		response = ajax_call(parameters, data);		
 		return false;		
 	}//end function DispoGrupo_Consultar
+		
+		
+		
+		
+	function DispoGrupo_OpenDialog_GradosStock(grado_id)
+	{		
+		//Almacena las variables que son parameros para la modificacion masiva
+		var grupo_dispo_cab_id	= $("#frm_dispo_grupo #grupo_dispo_cab_id").val();
+		var color_ventas_id 	= $("#frm_dispo_grupo #color_ventas_id").val();
+		var grado_id			= $("#frm_dispo_grupo #grado_id").val();
+		var calidad_variedad_id	= $("#frm_dispo_grupo #calidad_variedad_id").val();
+		
+		$("#frm_dispo_grupo_sotckgrado #grupo_dispo_cab_id").val();
+		$("#frm_dispo_grupo_sotckgrado #color_ventas_id").val(color_ventas_id)
+		$("#frm_dispo_grupo_sotckgrado #grado_id").val($("#frm_dispo_grupo #grado_id").val())
+		$("#frm_dispo_grupo_sotckgrado #calidad_variedad_id").val($("#frm_dispo_grupo #calidad_variedad_id").val())
+
+		//Desmarca todos los colores
+		$('#grid_dispogrupo_color').jqGrid('resetSelection');
+		
+		//Marca el color que paso como parametros
+		var ids = $('#grid_dispogrupo_color').jqGrid('getDataIDs');		
+		var len = ids.length;
+		for (var i=0; i < len; i++) {
+			if ((color_ventas_id == ids[i])||(color_ventas_id == ''))
+			{
+				$('#grid_dispogrupo_color').jqGrid('setSelection', ids[i]);
+			}//end if
+		}//end for
+		
+		//Abre el dialogo
+		$('#dialog_dispo_grupo_gradostock').modal('show');
+	}//end function DispoGrupo_OpenDialog_GradosStock		
