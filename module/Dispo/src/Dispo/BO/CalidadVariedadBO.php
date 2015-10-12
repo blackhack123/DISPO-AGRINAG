@@ -31,6 +31,24 @@ class CalidadVariedadBO extends Conexion
 		return $opciones;
 	}//end function getComboCalidad
 
-
+	
+	
+	/**
+	 *
+	 * En las condiciones se puede pasar los siguientes criterios de busqueda:
+	 *   1) criterio_busqueda,  utilizado para buscar en nombre, id, direccion, telefono
+	 *   2) estado
+	 *   3) sincronizado
+	 *
+	 * @param array $condiciones
+	 * @return array
+	 */
+	function listado($condiciones)
+	{
+		$CalidadVariedadDAO = new CalidadVariedadDAO();
+		$CalidadVariedadDAO->setEntityManager($this->getEntityManager());
+		$result = $CalidadVariedadDAO->listado($condiciones);
+		return $result;
+	}//end function listado
 
 }//end class

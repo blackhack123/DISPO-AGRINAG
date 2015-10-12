@@ -63,6 +63,40 @@ class CalidadVariedadDAO extends Conexion
 		return $result;
 	}//end function consultarTodos
 	
+	
+	
+	/**
+	 *
+	 * En las condiciones se puede pasar los siguientes criterios de busqueda:
+	 *   1) criterio_busqueda,  utilizado para buscar en nombre, id, direccion, telefono
+	 *   2) estado
+	 *   3) sincronizado
+	 *
+	 * @param array $condiciones
+	 * @return array
+	 */
+	public function listado($condiciones)
+	{
+	
+		$sql = 	' SELECT calidad_variedad.* '.
+				' FROM calidad_variedad   '.
+				' WHERE 1 = 1 ';
+	
+	
+		if (!empty($condiciones['estado']))
+		{
+			$sql = $sql." and estado = '".$condiciones['estado']."'";
+		}//end if
+	
+		$sql=$sql." order by calidad_variedad.nombre";
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function listado
+	
+	
 }//end class
 
 ?>
