@@ -71,6 +71,25 @@ $(document).ready(function () {
 		DispoGrupo_OpenDialog_GradosStock(grado_id);
 	});	
 	
+	
+	
+	
+	$("#frm_dispo_grupo_stockgrado #porcentaje").on('change', function(event){ 
+		$("#frm_dispo_grupo_stockgrado #valor").val('');
+		return false;
+	});
+
+	$("#frm_dispo_grupo_stockgrado #valor").on('change', function(event){ 
+		$("#frm_dispo_grupo_stockgrado #porcentaje").val('');
+		return false;
+	});	
+
+	$("#frm_dispo_grupo_stockgrado #btn_grabar").on('click', function(event){ 
+		DispoGrupo_GrabarStockPorGrado();
+	});
+
+	
+		
 	/*---------------------------------------------------------------*/	
 	
 	
@@ -408,7 +427,7 @@ $(document).ready(function () {
 		},
 		datatype: "json",
 		loadonce: true,			
-		height:'200',
+		height:'160',
 		colNames:['id','Color'],
 		colModel:[
 			{name:'id',index:'id',  sorttype:"int", hidden:true},
@@ -427,10 +446,9 @@ $(document).ready(function () {
 //		forceFit: true,
 //		resizeStop: grid_setAutoHeight,
 		rownumbers: true,
-		cellEdit: true,
-		cellsubmit: 'clientArray',
+/*		cellsubmit: 'clientArray',
 		editurl: 'clientArray',		
-		multiselect: true,
+*/		multiselect: true,
 		jsonReader: {
 			repeatitems : false,
 		},
@@ -455,20 +473,20 @@ $(document).ready(function () {
 	/*---------------------------------------------------------------*/
 	/*---Se configura el JQGRID de CATEGORIAS de la DISPO X GRUPO----*/
 	/*---------------------------------------------------------------*/		
-	jQuery("#grid_dispogrupo_color").jqGrid({
-		url:'../../dispo/colorventas/listadodata',
+	jQuery("#grid_dispogrupo_categoria").jqGrid({
+		url:'../../dispo/calidadvariedad/listadodata',
 		postData: {
 		},
 		datatype: "json",
 		loadonce: true,			
-		height:'200',
-		colNames:['id','Color'],
+		height:'160',
+		colNames:['id','Categoria'],
 		colModel:[
 			{name:'id',index:'id',  sorttype:"int", hidden:true},
 			{name:'nombre',index:'nombre'},
 		],
 		rowNum:999999,
-		pager: '#pager_dispogrupo_color',
+		pager: '#pager_dispogrupo_categoria',
 		toppager:false,
 		pgbuttons:false,
 		pginput:false,
@@ -480,10 +498,10 @@ $(document).ready(function () {
 //		forceFit: true,
 //		resizeStop: grid_setAutoHeight,
 		rownumbers: true,
-		cellEdit: true,
+/*		cellEdit: true,
 		cellsubmit: 'clientArray',
 		editurl: 'clientArray',		
-		multiselect: true,
+*/		multiselect: true,
 		jsonReader: {
 			repeatitems : false,
 		},
@@ -499,7 +517,7 @@ $(document).ready(function () {
 			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 		},
 	});							
-	jQuery("#grid_dispogrupo_color").jqGrid('navGrid','#pager_dispogrupo_color',{edit:false,add:false,del:false});
+	jQuery("#grid_dispogrupo_categoria").jqGrid('navGrid','#pager_dispogrupo_categoria',{edit:false,add:false,del:false});
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/
 
@@ -538,7 +556,7 @@ $(document).ready(function () {
 						grupo_dispo_1er_elemento:	'&lt;SELECCIONE&gt;',
 						//grupo_dispo_cab_id:			grupo_dispo_cab_id;
 						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;',
-						calidad_variedad_1er_elemento:  '&lt;TODOS LOS CATEGORIAS&gt;'
+						calidad_variedad_1er_elemento:  '&lt;TODAS LAS CATEGORIAS&gt;'
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',
@@ -743,23 +761,28 @@ $(document).ready(function () {
 		response = ajax_call(parameters, data);		
 		return false;		
 	}//end function DispoGrupo_Consultar
-		
-		
-		
-		
-	function DispoGrupo_OpenDialog_GradosStock(grado_id)
-	{		
-		//Almacena las variables que son parameros para la modificacion masiva
-		var grupo_dispo_cab_id	= $("#frm_dispo_grupo #grupo_dispo_cab_id").val();
-		var color_ventas_id 	= $("#frm_dispo_grupo #color_ventas_id").val();
-		var grado_id			= $("#frm_dispo_grupo #grado_id").val();
-		var calidad_variedad_id	= $("#frm_dispo_grupo #calidad_variedad_id").val();
-		
-		$("#frm_dispo_grupo_sotckgrado #grupo_dispo_cab_id").val();
-		$("#frm_dispo_grupo_sotckgrado #color_ventas_id").val(color_ventas_id)
-		$("#frm_dispo_grupo_sotckgrado #grado_id").val($("#frm_dispo_grupo #grado_id").val())
-		$("#frm_dispo_grupo_sotckgrado #calidad_variedad_id").val($("#frm_dispo_grupo #calidad_variedad_id").val())
 
+
+
+
+	function DispoGrupo_OpenDialog_GradosStock(grado_id)
+	{
+		var grupo_dispo_cab_id	= $("#frm_dispo_grupo #grupo_dispo_cab_id").val();
+		var color_ventas_id		= $("#frm_dispo_grupo #color_ventas_id").val();
+		var calidad_variedad_id	= $("#frm_dispo_grupo #calidad_variedad_id").val();
+			
+		if (grupo_dispo_cab_id=='')
+		{
+			alert('Debe de Seleccionar un Grupo');
+			$("#frm_dispo_grupo #grupo_dispo_cab_id").focus();
+			return false;
+		}//end if
+
+		//Almacena las variables que son parameros para la modificacion masiva
+		$("#frm_dispo_grupo_stockgrado #grupo_dispo_cab_id").val(grupo_dispo_cab_id);
+		$("#frm_dispo_grupo_stockgrado #grado_id").val(grado_id);
+
+		//---------------------------------------------------------
 		//Desmarca todos los colores
 		$('#grid_dispogrupo_color').jqGrid('resetSelection');
 		
@@ -773,6 +796,66 @@ $(document).ready(function () {
 			}//end if
 		}//end for
 		
+		//-----------------------------------------------------------
+		//Desmarca todos los categorias
+		$('#grid_dispogrupo_categoria').jqGrid('resetSelection');
+		
+		//Marca las categorias que paso como parametros
+		var ids = $('#grid_dispogrupo_categoria').jqGrid('getDataIDs');		
+		var len = ids.length;
+		for (var i=0; i < len; i++) {
+			if ((calidad_variedad_id == ids[i])||(calidad_variedad_id == ''))
+			{
+				$('#grid_dispogrupo_categoria').jqGrid('setSelection', ids[i]);
+			}//end if
+		}//end for		
+		
+		//-------------------------------------------------------------
+		//Setea el titulo 
 		//Abre el dialogo
+		var titulo = "<b><em style='color:blue'>GRUPO:</em></b> "+$("#frm_dispo_grupo #grupo_dispo_cab_id option:selected").text()+" - <b><em style='color:blue'>GRADO:</em></b> "+grado_id;
+		$("#dialog_dispo_grupo_stockgrado_titulo").html(titulo);
 		$('#dialog_dispo_grupo_gradostock').modal('show');
 	}//end function DispoGrupo_OpenDialog_GradosStock		
+	
+	
+	
+	
+	function DispoGrupo_GrabarStockPorGrado()
+	{
+		var grupo_dispo_cab_id		= $("#frm_dispo_grupo_stockgrado #grupo_dispo_cab_id").val();
+		var grado_id				= $("#frm_dispo_grupo_stockgrado #grado_id").val();
+		var color_ventas_ids 	 	= $("#grid_dispogrupo_color").jqGrid('getGridParam','selarrrow');
+		var calidad_variedad_ids 	= $("#grid_dispogrupo_categoria").jqGrid('getGridParam','selarrrow');
+		var porcentaje				= $("#frm_dispo_grupo_stockgrado #porcentaje").val();
+		var valor					= $("#frm_dispo_grupo_stockgrado #valor").val();
+
+		var data = 	{
+						grupo_dispo_cab_id:		grupo_dispo_cab_id,
+						grado_id:				grado_id,
+						color_ventas_ids:		color_ventas_ids,
+						calidad_variedad_ids:	calidad_variedad_ids,
+						porcentaje:				porcentaje,
+						valor:					valor
+					}
+		data = JSON.stringify(data);
+		
+		
+		$("frm_dispo_grupo_stockgrado #btn_grabar").button('loading')
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/grupodispo/grabarporgrupoporgrado',
+							'control_process':true,
+							'show_cargando':false,
+							'async':true, 
+							'finish':function(response){
+									$("frm_dispo_grupo_stockgrado #btn_grabar").button('reset');
+									cargador_visibility('hide');
+									$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+									$('#dialog_dispo_grupo_gradostock').modal('hide');
+							}							
+						 }
+		response = ajax_call(parameters, data);		
+		return false;					
+	}//end function DispoGrupo_GrabarStockPorGrado

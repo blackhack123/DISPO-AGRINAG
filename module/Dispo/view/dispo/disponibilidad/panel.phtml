@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 	<style type="text/css">
-		/*#frm_dispo_grupo_sotckgrado .form-group {
+		/*#frm_dispo_grupo_stockgrado .form-group {
 			text-align: right;
 		}	*/
 	</style>
@@ -12,6 +12,8 @@
 	<script>
 		$(document).ready(function () {
 			InputData_TrimAll();
+			InputData_initNumberNoDecimal();
+			InputData_initNumberAndDecimal();
 
 			//$("#tbl_proveedor").stickyTableHeaders();
 			$('#tbl_proveedor').tablesorter(); //Columna de Sueldo
@@ -343,8 +345,10 @@
                                             	 <select  id="inventario_id" class="form-control input-sm"></select>
                                                  <select  id="calidad_id" class="form-control input-sm"></select>
                                                  <select  id="proveedor_id" class="form-control input-sm"></select>
-                                                 <select  id="color_ventas_id" class="form-control input-sm"></select>  
-                                                 <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
+                                          	     <select  id="color_ventas_id" class="form-control input-sm"></select>
+                                                 <select name="calidad_variedad_id" class="form-control input-sm"  id="calidad_variedad_id">
+                                                 </select>
+<button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
                                             </div>
                                         </div>
                                      </section>
@@ -502,6 +506,82 @@
                                     </div>
                                 </div>                              
                        		</form>
+                            
+                            
+    						<!-- Modal para cambiar masivamente el STOCK POR GRADO del la DISPO GENERAL ------------------------------->
+                            <div class="modal fade" id="dialog_dispo_general_gradostock" tabindex="-1" role="dialog" aria-labelledby="Dialogo para cambiar masivamente el stock por grado de la DISPO GENERAL">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel"><span id="dialog_dispo_general_stockgrado_titulo"></span></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                        
+                                            <form id="frm_dispo_general_stockgrado" name="frm_dispo_general_stockgrado" action="#" method="post" />
+                                            	MORONITOR
+                                                <input type="text" id="inventario_id" value="" />
+                                                <input type="text" id="calidad_id" value="" />
+                                                <input type="text" id="proveedor_id" value="" />
+                                                <input type="text" id="grado_id" value="" />
+                                            
+                                            	<div class="row">
+                                                	<div class="col-sm-4">
+                                                    	<label class="sr-only" for="grid_dispogeneral_proveedor">GRID DE PROVEEDORES</label>
+                                                        <table id="grid_dispogeneral_proveedor" class="grid"></table>   <!-- grid-autowidthcontainer -->
+                                                        <div id="pager_dispogeneral_proveedor"></div>
+                                                        
+                                                        
+                                                    	<div class="form-horizontal">
+                                                        	<div class="form-group">                                                
+                                                                <label for="porcentaje" class="col-sm-5 control-label">PORCENTAJE:</label>
+                                                                <div class="col-sm-7">
+                                                                	<div class="input-group">
+                                                                   		<input type="text" class="form-control inputdata-number-and-decimal" id="porcentaje" style="text-align:right">
+                                                                        <div class="input-group-addon">%</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="form-group">                                                
+                                                                <label for="valor" class="col-sm-5 control-label">VALOR:</label>
+                                                                <div class="col-sm-7">
+                                                                    <input type="text" class="form-control inputdata-number-no-decimal" id="valor" style="text-align:right">
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="form-group">
+                                                                <div class="col-sm-12">
+                                                                    <button id="btn_grabar" type="button" class="btn btn-primary btn-sm" data-loading-text="Procesando..."><i class="glyphicon glyphicon-ok"></i> GRABAR</button>
+                                                                </div>
+															</div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </div>
+                                                	<div class="col-sm-4">      
+                                                        <label class="sr-only" for="grid_dispogeneral_color">GRID DE COLORES</label>
+                                                        <table id="grid_dispogeneral_color" class="grid"></table>   <!-- grid-autowidthcontainer -->
+                                                        <div id="pager_dispogeneral_color"></div>
+                                                    </div>
+                                                    
+                                                    <div class="col-sm-4">
+                                                        <label class="sr-only" for="grid_dispogeneral_categoria">GRID DE CATEGORIAS</label>
+                                                        <table id="grid_dispogeneral_categoria" class="grid"></table>   <!-- grid-autowidthcontainer -->
+                                                        <div id="pager_dispogeneral_categoria"></div>
+
+                                                    </div>
+                                                </div>
+                                            
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                              
+                             <!-- END Modal GRUPOS GENERAL ----------------------------------------------------------------------------------------->           
+                                                         
+                            
                          </div>
                     </div>
                     
@@ -597,11 +677,9 @@
                                         </div>
                                         <div class="modal-body">
                                         
-                                            <form id="frm_dispo_grupo_sotckgrado" name="frm_dispo_grupo_sotckgrado" action="#" method="post" />
-                                                <input type="hidden" id="grupo_dispo_cab_id" value="" />
-												<input type="hidden" id="color_ventas_id" value="" />
-                                                <input type="hidden" id="grado_id" value="" />
-                                                <input type="hidden" id="calidad_variedad_id" value="" />
+                                            <form id="frm_dispo_grupo_stockgrado" name="frm_dispo_grupo_stockgrado" action="#" method="post" />
+                                                <input type="text" id="grupo_dispo_cab_id" value="" />
+                                                <input type="text" id="grado_id" value="" />
                                             
                                             	<div class="row">
                                                 	<div class="col-sm-4">
@@ -611,7 +689,7 @@
                                                                 <label for="porcentaje" class="col-sm-5 control-label">PORCENTAJE:</label>
                                                                 <div class="col-sm-7">
                                                                 	<div class="input-group">
-                                                                   		<input type="text" class="form-control" id="porcentaje" style="text-align:right">
+                                                                   		<input type="text" class="form-control inputdata-number-and-decimal" id="porcentaje" style="text-align:right">
                                                                         <div class="input-group-addon">%</div>
                                                                     </div>
                                                                 </div>
@@ -620,13 +698,13 @@
                                                             <div class="form-group">                                                
                                                                 <label for="valor" class="col-sm-5 control-label">VALOR:</label>
                                                                 <div class="col-sm-7">
-                                                                    <input type="text" class="form-control" id="valor" style="text-align:right">
+                                                                    <input type="text" class="form-control inputdata-number-no-decimal" id="valor" style="text-align:right">
                                                                 </div>
                                                             </div>
                                                             
                                                             <div class="form-group">
                                                                 <div class="col-sm-12">
-                                                                    <button id="btn_grabar" type="button" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok"></i> GRABAR</button>
+                                                                    <button id="btn_grabar" type="button" class="btn btn-primary btn-sm" data-loading-text="Procesando..."><i class="glyphicon glyphicon-ok"></i> GRABAR</button>
                                                                 </div>
 															</div>
                                                             

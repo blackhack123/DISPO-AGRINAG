@@ -8,6 +8,7 @@ use Dispo\DAO\GrupoDispoCabDAO;
 use Dispo\DAO\DispoDAO;
 use Dispo\DAO\GrupoDispoDetDAO;
 use Dispo\Data\GrupoDispoCabData;
+use Dispo\Data\GrupoDispoDetData;
 
 
 class GrupoDispoCabBO extends Conexion
@@ -57,7 +58,7 @@ class GrupoDispoCabBO extends Conexion
 	
 	/**
 	 * 
-	 * @param array $condiciones  (grupo_dispo_cab_id, color_ventas_id)
+	 * @param array $condiciones  (grupo_dispo_cab_id, color_ventas_id, calidad_variedad_id, cadena_color_ventas_ids, cadena_calidad_variedad_ids)
 	 * @return array
 	 */
 	public function listado($condiciones)
@@ -77,6 +78,9 @@ class GrupoDispoCabBO extends Conexion
 			return null;
 		}//end if
 		
+
+		if (!array_key_exists('cadena_color_ventas_ids', $condiciones))		{$condiciones['cadena_color_ventas_ids']='';}
+		if (!array_key_exists('cadena_calidad_variedad_ids', $condiciones))	{$condiciones['cadena_calidad_variedad_ids']='';}
 		
 		/**
 		 * Se obtiene los registro de la DISPO GENERAL  (UNIVERSO)
@@ -86,7 +90,9 @@ class GrupoDispoCabBO extends Conexion
 				"proveedor_id"			=> null,
 				"clasifica"				=> $reg_grupoDispoCab['clasifica_fox'],
 				"color_ventas_id"		=> $condiciones['color_ventas_id'],
-				"calidad_variedad_id" 	=> $condiciones['calidad_variedad_id']
+				"calidad_variedad_id" 	=> $condiciones['calidad_variedad_id'],
+				"cadena_color_ventas_ids"		=> $condiciones['cadena_color_ventas_ids'],
+				"cadena_calidad_variedad_ids"	=> $condiciones['cadena_calidad_variedad_ids']
 		);
 		$result_dispo = $DispoDAO->listado($condiciones2);
 		
@@ -96,7 +102,9 @@ class GrupoDispoCabBO extends Conexion
 		$condiciones2 = array(
 				"grupo_dispo_cab_id"	=> $condiciones['grupo_dispo_cab_id'],
 				"color_ventas_id"		=> $condiciones['color_ventas_id'],
-				"calidad_variedad_id" 	=> $condiciones['calidad_variedad_id']
+				"calidad_variedad_id" 	=> $condiciones['calidad_variedad_id'],
+				"cadena_color_ventas_ids"		=> $condiciones['cadena_color_ventas_ids'],
+				"cadena_calidad_variedad_ids"	=> $condiciones['cadena_calidad_variedad_ids']
 		);		
 		$result_dispo_grupo = $GrupoDispoCabDAO->listado($condiciones2);
 		
@@ -180,7 +188,6 @@ class GrupoDispoCabBO extends Conexion
 			$this->getEntityManager()->close();
 			throw $e;
 		}
-		
 	}//end function registrarStock
 
 	
@@ -261,7 +268,77 @@ class GrupoDispoCabBO extends Conexion
 	}//end function listadoAsignadas	
 
 	
-	
+
+	/**
+	 * 
+	 * @param int $grupo_dispo_cab_id
+	 * @param string $grado_id
+	 * @param string $cadena_color_ventas_ids
+	 * @param string $cadena_calidad_variedad_ids
+	 * @param float $porcentaje
+	 * @param int $valor
+	 * @param int $usuario_id
+	 * @throws Exception
+	 * @return array
+	 */
+	function grabarPorGrupoPorGrado($grupo_dispo_cab_id, $grado_id, $cadena_color_ventas_ids, 
+									$cadena_calidad_variedad_ids, $porcentaje, $valor, $usuario_id)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try
+		{
+			$GrupoDispoDetDAO 	= new GrupoDispoDetDAO();
+			$GrupoDispoDetData 	= new GrupoDispoDetData();
+			$GrupoDispoDetDAO->setEntityManager($this->getEntityManager());
+		
+			$condiciones['grupo_dispo_cab_id']			= $grupo_dispo_cab_id;
+			$condiciones['color_ventas_id']				= null;
+			$condiciones['calidad_variedad_id']			= null;
+			$condiciones['cadena_color_ventas_ids']		= $cadena_color_ventas_ids;
+			$condiciones['cadena_calidad_variedad_ids']	= $cadena_calidad_variedad_ids;
+			$result = $this->listado($condiciones);
+			$campo_grado_dispogen = "dgen_".$grado_id;
+			
+			
+			foreach($result as $reg)
+			{
+				$GrupoDispoDetData->setGrupoDispoCabId	($grupo_dispo_cab_id);
+				$GrupoDispoDetData->setProductoId		($reg['producto_id']);
+				$GrupoDispoDetData->setVariedadId		($reg['variedad_id']);
+				$GrupoDispoDetData->setGradoId			($grado_id);
+				$GrupoDispoDetData->setTallosXBunch		($reg['tallos_x_bunch']);
+				if ($porcentaje!=0)
+				{
+					$cantidad_bunch = floor($reg[$campo_grado_dispogen]*$porcentaje/100);
+				}else if ($valor != 0){
+					$cantidad_bunch = $valor;
+				}else{
+					$cantidad_bunch = 0;
+				}//end if
+				if ($cantidad_bunch > $reg[$campo_grado_dispogen])
+				{
+					$cantidad_bunch = $reg[$campo_grado_dispogen];
+				}//end if
+				$GrupoDispoDetData->setCantidadBunch($cantidad_bunch);
+				$GrupoDispoDetData->setCantidadBunchDisponible($cantidad_bunch);
+				$GrupoDispoDetData->setUsuarioModId($usuario_id);
+				$GrupoDispoDetData->setUsuarioIngId($usuario_id);
+				
+				$GrupoDispoDetDAO->registrar($GrupoDispoDetData);
+			}//end foreach
+
+			
+			$result['validacion_code'] 	= 'OK';
+			$result['respuesta_mensaje']= '';
+		
+			$this->getEntityManager()->getConnection()->commit();
+			return $result;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function grabarPorGrupoPorGrado
 	
 	
 }//end class
