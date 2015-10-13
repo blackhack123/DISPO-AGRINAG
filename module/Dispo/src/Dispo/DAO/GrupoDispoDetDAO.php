@@ -10,6 +10,32 @@ class GrupoDispoDetDAO extends Conexion
 {
 	private $table_name	= 'grupo_dispo_det';
 
+	
+	/**
+	 *
+	 * @param GrupoDispoDetData $GrupoDispoDetData
+	 * @return multitype:number Ambigous <multitype:, multitype:number string , number>
+	 */
+	public function registrar(GrupoDispoDetData $GrupoDispoDetData)
+	{
+		$GrupoDispoDetData2 = $this->consultar(	$GrupoDispoDetData->getGrupoDispoCabId(), $GrupoDispoDetData->getProductoId(),
+												$GrupoDispoDetData->getVariedadId(), $GrupoDispoDetData->getGradoId(),
+												$GrupoDispoDetData->getTallosXBunch());
+		if ($GrupoDispoDetData2)
+		{
+			$accion = \Application\Constants\Accion::MODIFICAR;
+			$count = $this->modificar($GrupoDispoDetData);
+			$result = $count;
+		}else{
+			$accion = \Application\Constants\Accion::INGRESAR;
+			$key = $this->ingresar($GrupoDispoDetData);
+			$result = $key;
+		}//end if
+	
+		return array($accion, $result);
+	}//end function registrar	
+	
+	
 	/**
 	 * Ingresar
 	 *
@@ -64,7 +90,7 @@ class GrupoDispoDetDAO extends Conexion
 				'cantidad_bunch'                	=> $GrupoDispoDetData->getCantidadBunch(),
 				'cantidad_bunch_disponible'         => $GrupoDispoDetData->getCantidadBunchDisponible(),
 				'usuario_mod_id'                	=> $GrupoDispoDetData->getUsuarioModId(),
-				'fecha_mod'                			=> $GrupoDispoDetData->getFecModifica(),
+				'fec_modifica'             			=> $GrupoDispoDetData->getFecModifica(),
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
 		return $key;
@@ -193,6 +219,8 @@ class GrupoDispoDetDAO extends Conexion
 		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
 		return $count;
 	}//end function actualizarStock
+
+
 	
 }//end class
 ?>

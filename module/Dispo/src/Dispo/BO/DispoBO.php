@@ -12,6 +12,7 @@ use Dispo\DAO\VariedadDAO;
 use Dispo\DAO\GrupoPrecioDetDAO;
 use Dispo\DAO\GrupoPrecioOfertaDAO;
 use Dispo\DAO\CalidadDAO;
+use Dispo\Data\DispoData;
 
 
 
@@ -550,7 +551,7 @@ class DispoBO extends Conexion
 	
 	/**
 	 * 
-	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id)
+	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id)
 	 * @return array:
 	 */
 	public function listado($condiciones)
@@ -764,5 +765,77 @@ class DispoBO extends Conexion
 			throw $e;
 		}		
 	}//end function 	
+
+	
+	
+	public function grabarMasivoStock($inventario_id, $clasifica, $proveedor_id, $grado_id, 
+									 $cadena_color_ventas_id, $cadena_calidad_variedad_ids, 
+									 $porcentaje, $valor, $usuario_id)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try
+		{
+			$DispoDAO			= new DispoDAO();
+			//$GrupoDispoDetDAO 	= new GrupoDispoDetDAO();
+			
+			$DispoData 			= new DispoData();
+			//$GrupoDispoDetData 	= new GrupoDispoDetData();
+
+			//$GrupoDispoDetDAO->setEntityManager($this->getEntityManager());
+			$DispoDAO->setEntityManager($this->getEntityManager());
+			
+			$condiciones = array(
+					"inventario_id"					=> $inventario_id,
+					"proveedor_id"					=> $proveedor_id,
+					"clasifica"						=> $clasifica,					
+					"cadena_color_ventas_ids"		=> $cadena_color_ventas_id,
+					"cadena_calidad_variedad_ids"	=> $cadena_calidad_variedad_ids
+			);
+			$result = $DispoDAO->consultarDetallado($condiciones);
+
+			$campo_grado_dispogen = $grado_id;
+			
+
+			foreach($result as $reg)
+			{
+				$DispoData->setId				($reg['id']);
+				$DispoData->setFecha			($reg['fecha']);
+				$DispoData->setInventarioId		($reg['inventario_id']);
+				$DispoData->setFechaBunch		($reg['fecha_bunch']);
+				$DispoData->setProveedorId		($reg['proveedor_id']);
+				$DispoData->setProducto			($reg['producto']);
+				$DispoData->setVariedadId		($reg['variedad_id']);
+				$DispoData->setGradoId			($reg[$campo_grado_dispogen]);
+				$DispoData->setTallosxBunch		($reg['tallos_x_bunch']);
+				$DispoData->setClasifica		($reg['clasifica']);
+				if ($porcentaje!=0)
+				{
+					$cantidad_bunch = floor($reg['cantidad_bunch_disponible']*$porcentaje/100);
+				}else if ($valor != 0){
+					$cantidad_bunch = $valor;
+				}else{
+					$cantidad_bunch = 0;
+				}//end if
+				/*if ($cantidad_bunch > $reg['cantidad_bunch_disponible'])
+				{
+					$cantidad_bunch = $reg['cantidad_bunch_disponible'];
+				}//end if	*/			
+				$DispoData->setCantidadBunch			($cantidad_bunch);
+				$DispoData->setCantidadBunchDisponible	($cantidad_bunch);
+
+				list($accion, $key) = $DispoDAO->registrarBunchDisponibles($DispoData);
+			}//end foreach
+
+			$result['validacion_code'] 	= 'OK';
+			$result['respuesta_mensaje']= '';
+		
+			$this->getEntityManager()->getConnection()->commit();
+			return $result;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function grabarMasivoStock
 	
 }//end class DispoBO

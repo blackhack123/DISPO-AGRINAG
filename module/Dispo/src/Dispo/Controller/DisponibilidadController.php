@@ -19,6 +19,7 @@ use Dispo\BO\ProveedorBO;
 use Dispo\BO\ColorVentasBO;
 use Dispo\BO\ClienteAgenciaCargaBO;
 use Dispo\BO\TipoCajaBO;
+use Dispo\BO\CalidadVariedadBO;
 
 class DisponibilidadController extends AbstractActionController
 {
@@ -687,6 +688,7 @@ class DisponibilidadController extends AbstractActionController
 			$proveedor_id  	= $request->getQuery('proveedor_id', "");
 			$clasifica  	= $request->getQuery('clasifica', "");
 			$color_ventas_id= $request->getQuery('color_ventas_id', "");
+			$calidad_variedad_id= $request->getQuery('calidad_variedad_id', "");
 			$page 			= $request->getQuery('page');
 			$limit 			= $request->getQuery('rows');
 			$sidx			= $request->getQuery('sidx',1);
@@ -699,7 +701,8 @@ class DisponibilidadController extends AbstractActionController
 					"inventario_id"		=> $inventario_id,
 					"proveedor_id"		=> $proveedor_id,
 					"clasifica"			=> $clasifica,
-					"color_ventas_id"	=> $color_ventas_id
+					"color_ventas_id"	=> $color_ventas_id,
+					"calidad_variedad_id"=> $calidad_variedad_id
 			);
 			$result = $DispoBO->listado($condiciones);
 			$response = new \stdClass();
@@ -780,31 +783,37 @@ class DisponibilidadController extends AbstractActionController
 					$CalidadBO		= new CalidadBO();
 					$ProveedorBO	= new ProveedorBO();
 					$ColorVentasBO  = new ColorVentasBO();
+					$CalidadVariedadBO = new CalidadVariedadBO();
 					
 					$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 					$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 					$ProveedorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 					$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+					$CalidadVariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 										
 					$inventario_1er_elemento	= $json['inventario_1er_elemento'];
 					$calidad_1er_elemento		= $json['calidad_1er_elemento'];
 					$proveedor_1er_elemento		= $json['proveedor_1er_elemento'];
 					$color_ventas_1er_elemento	= $json['color_ventas_1er_elemento'];
 					$inventario_id				= $json['inventario_id'];
+					$calidad_variedad_1er_elemento	= $json['calidad_variedad_1er_elemento'];
 					$clasifica_fox	= null;
 					$proveedor_id	= null;
 					$color_ventas_id= null;
+					$calidad_variedad_id		= null;
 					
 					$inventario_opciones 	= $InventarioBO->getCombo($inventario_id, $inventario_1er_elemento);
 					$calidad_opciones 		= $CalidadBO->getComboCalidadFox($clasifica_fox, $calidad_1er_elemento);
 					$proveedor_opciones 	= $ProveedorBO->getCombo($proveedor_id, $proveedor_1er_elemento);
 					$color_ventas_opciones 	= $ColorVentasBO->getCombo($color_ventas_id, $color_ventas_1er_elemento);
-					
+					$calidad_variedad_opciones= $CalidadVariedadBO->getComboCalidadVariedad($calidad_variedad_id, $calidad_variedad_1er_elemento);
+
 					$response = new \stdClass();
 					$response->inventario_opciones		= $inventario_opciones;
 					$response->calidad_opciones			= $calidad_opciones;
 					$response->proveedor_opciones		= $proveedor_opciones;
 					$response->color_ventas_opciones	= $color_ventas_opciones;
+					$response->calidad_variedad_opciones= $calidad_variedad_opciones;
 					$response->respuesta_code 			= 'OK';
 					break;
 			}//end switch
@@ -1100,6 +1109,85 @@ class DisponibilidadController extends AbstractActionController
 			return $response;
 		}
 	}//end function grabarstocknuevoAction	
+	
+
+	
+	
+	function grabarmasivostockAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$DispoBO 				= new DispoBO();
+			$CalidaBO				= new CalidadBO();
+	
+			//$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$CalidaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+	
+			$inventario_id 			= $json['inventario_id'];
+			$clasifica 				= $json['clasifica'];
+			$proveedor_id 			= $json['proveedor_id'];
+			$grado_id				= $json['grado_id'];
+			$color_ventas_ids		= $json['color_ventas_ids'];
+			$calidad_variedad_ids	= $json['calidad_variedad_ids'];
+			$porcentaje				= $json['porcentaje'];
+			$valor					= $json['valor'];
+
+			//Convierte en cadena el array de color de ventas
+			$cadena_color_ventas_id = '';
+			$flag_1era_vez = true;
+			foreach($color_ventas_ids as $clave => $valor2)
+			{
+				if ($flag_1era_vez == false)
+				{
+					$cadena_color_ventas_id = $cadena_color_ventas_id.",";
+				}//end if
+				$cadena_color_ventas_id = $cadena_color_ventas_id.$valor2;
+				$flag_1era_vez = false;
+			}//end if
+				
+			//Convierte en cadena el array de color de ventas
+			$cadena_calidad_variedad_ids = '';
+			$flag_1era_vez = true;
+			foreach($calidad_variedad_ids as $clave => $valor2)
+			{
+				if ($flag_1era_vez == false)
+				{
+					$cadena_calidad_variedad_ids = $cadena_calidad_variedad_ids.",";
+				}//end if
+				$cadena_calidad_variedad_ids = $cadena_calidad_variedad_ids.$valor2;
+				$flag_1era_vez = false;
+			}//end if
+				
+			$result = $DispoBO->grabarMasivoStock($inventario_id, $clasifica, $proveedor_id, $grado_id, 
+												 $cadena_color_ventas_id, $cadena_calidad_variedad_ids, 
+												 $porcentaje, $valor, $usuario_id);
+
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function grabarmasivostockAction	
 	
 	
 }

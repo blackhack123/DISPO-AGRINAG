@@ -12,13 +12,13 @@ $(document).ready(function () {
 	/*----------------------Se cargan los controles -----------------*/
 	disponibilidad_init();
 	
-	$("#frm_dispo #inventario_id, #frm_dispo #calidad_id, #frm_dispo #proveedor_id, #frm_dispo #color_ventas_id").on('change', function(event){
+	$("#frm_dispo #inventario_id, #frm_dispo #calidad_id, #frm_dispo #proveedor_id, #frm_dispo #color_ventas_id, #frm_dispo #calidad_variedad_id").on('change', function(event){
 //		$("#grid_dispo_general").jqGrid('clearGridData');
 		$('#grid_dispo_general').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;		
 	});
-	
-	
+
+
 	$("#frm_dispo #btn_consultar").on('click', function(event){ 
 		$('#grid_dispo_general').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;
@@ -39,7 +39,15 @@ $(document).ready(function () {
 		return false;
 	});	
 
+	$( "body" ).on( "click", ".DispoGeneralCambiarValoresPorGrado", function() {
+		var grado_id = $(this).data('grado');
+		DispoGeneral_OpenDialog_GradosStock(grado_id);
+	});	
 	
+	
+	$("#frm_dispo_general_stockgrado #btn_grabar").on('click', function(event){ 
+		DispoGeneral_GrabarStockPorGrado();
+	});	
 	/*---------------------------------------------------------------*/	
 	
 	
@@ -52,7 +60,8 @@ $(document).ready(function () {
 			inventario_id: 	function() {return $("#frm_dispo #inventario_id").val();},
 			proveedor_id: 	function() {return $("#frm_dispo #proveedor_id").val();},
 			clasifica: 		function() {return $("#frm_dispo #calidad_id").val();},
-			color_ventas_id:function() {return $("#frm_dispo #color_ventas_id").val();}
+			color_ventas_id:function() {return $("#frm_dispo #color_ventas_id").val();},
+			calidad_variedad_id: function() {return $("#frm_dispo #calidad_variedad_id").val();}
 		},
 		datatype: "json",
 		loadonce: true,			
@@ -109,6 +118,20 @@ $(document).ready(function () {
 			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 		}
 	});
+	
+	jQuery("#grid_dispo_general").jqGrid('setGroupHeaders', {
+	  useColSpanStyle: true, 
+	  groupHeaders:[
+		{startColumnName: '40', numberOfColumns: 1, titleText: '<a href="#" class="DispoGeneralCambiarValoresPorGrado" data-grado="40"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:orange"></span></a>'},
+		{startColumnName: '50', numberOfColumns: 1, titleText: '<a href="#" class="DispoGeneralCambiarValoresPorGrado" data-grado="50"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:orange"></span></a>'},
+		{startColumnName: '60', numberOfColumns: 1, titleText: '<a href="#" class="DispoGeneralCambiarValoresPorGrado" data-grado="60"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:orange"></span></a>'},
+		{startColumnName: '70', numberOfColumns: 1, titleText: '<a href="#" class="DispoGeneralCambiarValoresPorGrado" data-grado="70"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:orange"></span></a>'},
+		{startColumnName: '80', numberOfColumns: 1, titleText: '<a href="#" class="DispoGeneralCambiarValoresPorGrado" data-grado="80"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:orange"></span></a>'},
+		{startColumnName: '90', numberOfColumns: 1, titleText: '<a href="#" class="DispoGeneralCambiarValoresPorGrado" data-grado="90"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:orange"></span></a>'},
+		{startColumnName: '100', numberOfColumns: 1, titleText: '<a href="#" class="DispoGeneralCambiarValoresPorGrado" data-grado="100"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:orange"></span></a>'},
+		{startColumnName: '110', numberOfColumns: 1, titleText: '<a href="#" class="DispoGeneralCambiarValoresPorGrado" data-grado="110"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color:orange"></span></a>'},
+	  ]	
+	});		
 /*	$("#grid_dispo_general").jqGrid('filterToolbar',{stringResult:true, defaultSearch : "cn", searchOnEnter : false});*/
 
 
@@ -224,17 +247,170 @@ $(document).ready(function () {
 		},
 	});
 		
-		
+
 	function gridDispoVariedad_GradosFormatter(cellvalue, options, rowObject){
 		new_format_value = '<a href="javascript:void(0)" onclick="disponibilidad_nuevo_variedad_carga_finca(\''+options.rowId+'\',\''+options.colModel.name+'\')">'+cellvalue+ '</a>';		
 		return new_format_value;
 	}
-		
-	jQuery("#grid_dispo_variedad").jqGrid('navGrid','#pager_dispo_variedad',{edit:false,add:false,del:false});
 
+	jQuery("#grid_dispo_variedad").jqGrid('navGrid','#pager_dispo_variedad',{edit:false,add:false,del:false});
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/
 	
+	
+	/*---------------------------------------------------------------*/
+	/*-----Se configura el JQGRID de COLOR de la DISPO X GRUPO-------*/
+	/*---------------------------------------------------------------*/		
+	jQuery("#grid_dispogeneral_color").jqGrid({
+		url:'../../dispo/colorventas/listadodata',
+		postData: {
+		},
+		datatype: "json",
+		loadonce: true,			
+		height:'160',
+		colNames:['id','Color'],
+		colModel:[
+			{name:'id',index:'id',  sorttype:"int", hidden:true},
+			{name:'nombre',index:'nombre'},
+		],
+		rowNum:999999,
+		pager: '#pager_dispogeneral_color',
+		toppager:false,
+		pgbuttons:false,
+		pginput:false,
+		rowList:false,
+		gridview:false,	
+		width: 280,
+//		autowidth: true,
+		shrinkToFit: true,
+//		forceFit: true,
+//		resizeStop: grid_setAutoHeight,
+		rownumbers: true,
+/*		cellsubmit: 'clientArray',
+		editurl: 'clientArray',		
+*/		multiselect: true,
+		jsonReader: {
+			repeatitems : false,
+		},
+		loadComplete: function (data) {
+			//autoHeight_JqGrid_Refresh("grid_dispo_grupo");
+			//autoWidthContainer_JqGrid("grid_dispogrupo_color");
+		},
+		loadBeforeSend: function (xhr, settings) {
+			/*this.p.loadBeforeSend = null; //remove event handler
+			return false; // dont send load data request*/
+		},
+		loadError: function (jqXHR, textStatus, errorThrown) {
+			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+		},
+	});							
+	jQuery("#grid_dispogeneral_color").jqGrid('navGrid','#pager_dispogeneral_color',{edit:false,add:false,del:false});
+	/*---------------------------------------------------------------*/	
+	/*---------------------------------------------------------------*/
+	
+	
+	
+	/*---------------------------------------------------------------*/
+	/*---Se configura el JQGRID de CATEGORIAS de la DISPO X GRUPO----*/
+	/*---------------------------------------------------------------*/		
+	jQuery("#grid_dispogeneral_categoria").jqGrid({
+		url:'../../dispo/calidadvariedad/listadodata',
+		postData: {
+		},
+		datatype: "json",
+		loadonce: true,			
+		height:'160',
+		colNames:['id','Categoria'],
+		colModel:[
+			{name:'id',index:'id',  sorttype:"int", hidden:true},
+			{name:'nombre',index:'nombre'},
+		],
+		rowNum:999999,
+		pager: '#pager_dispogeneral_categoria',
+		toppager:false,
+		pgbuttons:false,
+		pginput:false,
+		rowList:false,
+		gridview:false,	
+		width: 280,
+//		autowidth: true,
+		shrinkToFit: true,
+//		forceFit: true,
+//		resizeStop: grid_setAutoHeight,
+		rownumbers: true,
+/*		cellEdit: true,
+		cellsubmit: 'clientArray',
+		editurl: 'clientArray',		
+*/		multiselect: true,
+		jsonReader: {
+			repeatitems : false,
+		},
+		loadComplete: function (data) {
+			//autoHeight_JqGrid_Refresh("grid_dispo_grupo");
+			//autoWidthContainer_JqGrid("grid_dispogrupo_color");
+		},
+		loadBeforeSend: function (xhr, settings) {
+			/*this.p.loadBeforeSend = null; //remove event handler
+			return false; // dont send load data request*/
+		},
+		loadError: function (jqXHR, textStatus, errorThrown) {
+			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+		},
+	});
+	jQuery("#grid_dispogeneral_categoria").jqGrid('navGrid','#pager_dispogeneral_categoria',{edit:false,add:false,del:false});
+	/*---------------------------------------------------------------*/	
+	/*---------------------------------------------------------------*/	
+	
+	/*---------------------------------------------------------------*/
+	/*---Se configura el JQGRID de PROVEEDORES de la DISPO X GRUPO----*/
+	/*---------------------------------------------------------------*/		
+	jQuery("#grid_dispogeneral_proveedor").jqGrid({
+		url:'../../dispo/proveedor/listadodata',
+		postData: {
+		},
+		datatype: "json",
+		loadonce: true,			
+		height:'160',
+		colNames:['id','Proveedor'],
+		colModel:[
+			{name:'id',index:'id',  sorttype:"int", hidden:true},
+			{name:'nombre',index:'nombre'},
+		],
+		rowNum:999999,
+		pager: '#pager_dispogeneral_proveedor',
+		toppager:false,
+		pgbuttons:false,
+		pginput:false,
+		rowList:false,
+		gridview:false,	
+		width: 280,
+//		autowidth: true,
+		shrinkToFit: true,
+//		forceFit: true,
+//		resizeStop: grid_setAutoHeight,
+		rownumbers: true,
+/*		cellEdit: true,
+		cellsubmit: 'clientArray',
+		editurl: 'clientArray',		
+*/		multiselect: true,
+		jsonReader: {
+			repeatitems : false,
+		},
+		loadComplete: function (data) {
+			//autoHeight_JqGrid_Refresh("grid_dispo_grupo");
+			//autoWidthContainer_JqGrid("grid_dispogrupo_color");
+		},
+		loadBeforeSend: function (xhr, settings) {
+			/*this.p.loadBeforeSend = null; //remove event handler
+			return false; // dont send load data request*/
+		},
+		loadError: function (jqXHR, textStatus, errorThrown) {
+			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+		},
+	});
+	jQuery("#grid_dispogeneral_proveedor").jqGrid('navGrid','#pager_dispogeneral_proveedor',{edit:false,add:false,del:false});
+	/*---------------------------------------------------------------*/	
+	/*---------------------------------------------------------------*/		
 	});
 	
 	
@@ -243,14 +419,15 @@ $(document).ready(function () {
 	{
 		//Deshabilita los botones del formulario
 		$("#frm_dispo button").prop('disabled', true);
-		
+
 		var data = 	{
 						opcion: 'panel-control-disponibilidad',
 						inventario_id: 				'USA',
 						inventario_1er_elemento:	'',
 						calidad_1er_elemento:		'',
 						proveedor_1er_elemento:		'&lt;TODAS LAS FINCAS&gt;',
-						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;'
+						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;',
+						calidad_variedad_1er_elemento:  '&lt;TODAS LAS CATEGORIAS&gt;'
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',
@@ -263,7 +440,8 @@ $(document).ready(function () {
 								$("body #frm_dispo #calidad_id").html(response.calidad_opciones);
 								$("body #frm_dispo #proveedor_id").html(response.proveedor_opciones);
 								$("body #frm_dispo #color_ventas_id").html(response.color_ventas_opciones);
-								
+								$("body #frm_dispo #calidad_variedad_id").html(response.calidad_variedad_opciones);
+
 								//Habilita los botones del formulario
 								$("#frm_dispo button").prop('disabled', false);
 							 }							
@@ -538,3 +716,128 @@ $(document).ready(function () {
 		response = ajax_call(parameters, data);		
 		return false;		
 	}//end function grabar_disponibilidad_nueva
+	
+	
+	
+	function DispoGeneral_OpenDialog_GradosStock(grado_id)
+	{
+		var inventario_id		= $("#frm_dispo #inventario_id").val();
+		var calidad_id			= $("#frm_dispo #calidad_id").val();
+		var proveedor_id		= $("#frm_dispo #proveedor_id").val();
+		var color_ventas_id		= $("#frm_dispo #color_ventas_id").val();
+		var calidad_variedad_id	= $("#frm_dispo #calidad_variedad_id").val();				
+
+		console.log('proveedor_id:',proveedor_id);
+		if (inventario_id=='')
+		{
+			alert('Debe de Seleccionar un Inventario');
+			$("#frm_dispo #inventario_id").focus();
+			return false;
+		}//end if
+
+		//Almacena las variables que son parameros para la modificacion masiva
+		$("#frm_dispo_general_stockgrado #inventario_id").val(inventario_id);
+		$("#frm_dispo_general_stockgrado #calidad_id").val(calidad_id);
+		$("#frm_dispo_general_stockgrado #proveedor_id").val(proveedor_id);				
+		$("#frm_dispo_general_stockgrado #grado_id").val(grado_id);
+
+		//---------------------------------------------------------
+		//Desmarca todos los colores
+		$('#grid_dispogeneral_color').jqGrid('resetSelection');
+		
+		//Marca el color que paso como parametros
+		var ids = $('#grid_dispogeneral_color').jqGrid('getDataIDs');		
+		var len = ids.length;
+		for (var i=0; i < len; i++) {
+			if ((color_ventas_id == ids[i])||(color_ventas_id == ''))
+			{
+				$('#grid_dispogeneral_color').jqGrid('setSelection', ids[i]);
+			}//end if
+		}//end for
+		
+		//-----------------------------------------------------------
+		//Desmarca todos los categorias
+		$('#grid_dispogeneral_categoria').jqGrid('resetSelection');
+		
+		//Marca las categorias que paso como parametros
+		var ids = $('#grid_dispogeneral_categoria').jqGrid('getDataIDs');		
+		var len = ids.length;
+		for (var i=0; i < len; i++) {
+			if ((calidad_variedad_id == ids[i])||(calidad_variedad_id == ''))
+			{
+				$('#grid_dispogeneral_categoria').jqGrid('setSelection', ids[i]);
+			}//end if
+		}//end for		
+		
+		//-------------------------------------------------------------
+		
+		//-----------------------------------------------------------
+		//Desmarca todos los proveedores
+		$('#grid_dispogeneral_categoria').jqGrid('resetSelection');
+		
+		//Marca los proveedores que paso como parametros
+		var ids = $('#grid_dispogeneral_proveedor').jqGrid('getDataIDs');		
+		var len = ids.length;
+		for (var i=0; i < len; i++) {
+			if ((proveedor_id == ids[i])||(proveedor_id == ''))
+			{
+				$('#grid_dispogeneral_proveedor').jqGrid('setSelection', ids[i]);
+			}//end if
+		}//end for		
+		
+		//-------------------------------------------------------------		
+		
+		//Setea el titulo 
+		//Abre el dialogo
+		var proveedor_nombre = $("#frm_dispo #proveedor_id option:selected").text();
+		proveedor_nombre = proveedor_nombre.replace('<','');
+		proveedor_nombre = proveedor_nombre.replace('>','');		
+		//if (proveedor_id!='') {proveedor_nombre = $("#frm_dispo #proveedor_id option:selected").text();}
+		var titulo = "<b><em style='color:blue'>INVENTARIO:</em></b> "+$("#frm_dispo #inventario_id option:selected").text()+" - <b><em style='color:blue'>FINCA:</em></b> "+proveedor_nombre+" - <b><em style='color:blue'>GRADO:</em></b> "+grado_id;
+		$("#dialog_dispo_general_stockgrado_titulo").html(titulo);
+		$('#dialog_dispo_general_gradostock').modal('show');
+	}//end function DispoGeneral_OpenDialog_GradosStock		
+	
+	
+	function DispoGeneral_GrabarStockPorGrado()
+	{
+		var inventario_id			= $("#frm_dispo_general_stockgrado #inventario_id").val();
+		var clasifica				= $("#frm_dispo_general_stockgrado #calidad_id").val();
+		var proveedor_id			= $("#frm_dispo_general_stockgrado #proveedor_id").val();
+		var grado_id				= $("#frm_dispo_general_stockgrado #grado_id").val();		
+		var color_ventas_ids 	 	= $("#grid_dispogeneral_color").jqGrid('getGridParam','selarrrow');
+		var calidad_variedad_ids 	= $("#grid_dispogeneral_categoria").jqGrid('getGridParam','selarrrow');
+		var porcentaje				= $("#frm_dispo_general_stockgrado #porcentaje").val();
+		var valor					= $("#frm_dispo_general_stockgrado #valor").val();
+
+		var data = 	{
+						inventario_id:			inventario_id,
+						clasifica:				clasifica,
+						proveedor_id:			proveedor_id,
+						grado_id:				grado_id,
+						color_ventas_ids:		color_ventas_ids,
+						calidad_variedad_ids:	calidad_variedad_ids,
+						porcentaje:				porcentaje,
+						valor:					valor
+					}
+		data = JSON.stringify(data);
+		
+		
+		$("frm_dispo_general_stockgrado #btn_grabar").button('loading')
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/disponibilidad/grabarmasivostock',
+							'control_process':true,
+							'show_cargando':false,
+							'async':true, 
+							'finish':function(response){
+									$("frm_dispo_general_stockgrado #btn_grabar").button('reset');
+									cargador_visibility('hide');
+									$('#grid_dispo_general').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+									$('#dialog_dispo_general_gradostock').modal('hide');
+							}							
+						 }
+		response = ajax_call(parameters, data);		
+		return false;					
+	}//end function DispoGeneral_GrabarStockPorGrado	

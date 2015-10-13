@@ -575,5 +575,77 @@ class GrupodispoController extends AbstractActionController
 		
 	}//end function getcomboAction
 	
+
+	function grabarporgrupoporgradoAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$GrupoDispoCabBO 		= new GrupoDispoCabBO();
+		
+			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+		
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+				
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+		
+			$grupo_dispo_cab_id 	= $json['grupo_dispo_cab_id'];
+			$grado_id				= $json['grado_id'];
+			$color_ventas_ids		= $json['color_ventas_ids'];
+			$calidad_variedad_ids	= $json['calidad_variedad_ids'];
+			$porcentaje				= $json['porcentaje'];
+			$valor					= $json['valor'];
+
+			//Convierte en cadena el array de color de ventas
+			$cadena_color_ventas_id = '';
+			$flag_1era_vez = true;
+			foreach($color_ventas_ids as $clave => $valor2)
+			{
+				if ($flag_1era_vez == false)
+				{
+					$cadena_color_ventas_id = $cadena_color_ventas_id.",";
+				}//end if
+				$cadena_color_ventas_id = $cadena_color_ventas_id.$valor2;
+				$flag_1era_vez = false;
+			}//end if
+			
+			//Convierte en cadena el array de color de ventas
+			$cadena_calidad_variedad_ids = '';
+			$flag_1era_vez = true;
+			foreach($calidad_variedad_ids as $clave => $valor2)
+			{
+				if ($flag_1era_vez == false)
+				{
+					$cadena_calidad_variedad_ids = $cadena_calidad_variedad_ids.",";
+				}//end if
+				$cadena_calidad_variedad_ids = $cadena_calidad_variedad_ids.$valor2;
+				$flag_1era_vez = false;
+			}//end if
+					
+			
+			
+			$result = $GrupoDispoCabBO->grabarPorGrupoPorGrado($grupo_dispo_cab_id, $grado_id, $cadena_color_ventas_id, 
+																$cadena_calidad_variedad_ids, $porcentaje, $valor, $usuario_id);			
+
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+		
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}		
+	}//end function grabarporgrupoporgradoAction
 	
 }
