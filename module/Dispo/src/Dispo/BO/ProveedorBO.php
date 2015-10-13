@@ -7,7 +7,6 @@ use Application\Classes\Conexion;
 use Dispo\DAO\ProveedorDAO;
 
 
-
 class ProveedorBO extends Conexion
 {
 
@@ -31,5 +30,25 @@ class ProveedorBO extends Conexion
 		return $opciones;
 	}//end function getCombo
 
-
+	
+	
+	
+	/**
+	 *
+	 * En las condiciones se puede pasar los siguientes criterios de busqueda:
+	 *   1) criterio_busqueda,  utilizado para buscar en nombre, id, direccion, telefono
+	 *   2) estado
+	 *   3) sincronizado
+	 *
+	 * @param array $condiciones
+	 * @return array
+	 */
+	function listado($condiciones)
+	{
+		$ProveedorDAO = new ProveedorDAO();
+		$ProveedorDAO->setEntityManager($this->getEntityManager());
+		$result = $ProveedorDAO->listado($condiciones);
+		return $result;
+	}//end function listado
+	
 }//end class

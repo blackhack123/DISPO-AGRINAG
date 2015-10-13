@@ -1,0 +1,71 @@
+
+	<script>
+		$(document).ready(function () {
+	
+			/*---------------------------------------------------------------*/
+			/*-----------------Se configura los JQGRID's---------------------*/
+			/*---------------------------------------------------------------*/		
+			jQuery("#grid_color_ventas").jqGrid({
+				url:'../../dispo/prueba/listadodata',
+				postData: {
+				},
+				datatype: "json",
+				loadonce: true,		
+				gridview:false,	
+				/*height:'400',*/
+				colNames:['Código','Nombre'],
+				colModel:[
+					//{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
+					{name:'id',index:'id', width:50, align:"center", sorttype:"int"},
+					{name:'nombre',index:'nombre', width:230, sorttype:"string"}
+				],
+				rowNum:999999999,
+				pager: "#pager",
+				toppager:false,
+				pgbuttons:false,
+				pginput:false,
+				rowList:false,
+				gridview: false,
+				shrinkToFit: false,
+				loadComplete:  grid_setAutoHeight, 
+				resizeStop: grid_setAutoHeight, 
+				rownumbers: true,
+				jsonReader: {
+					repeatitems : false,
+				},		
+				
+				//jQuery("#grid_color_ventas").jqGrid('navGrid',"#pager_color_ventas",{edit:false,add:false,del:false}),
+				
+				loadError: function (jqXHR, textStatus, errorThrown) {
+					message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+				},
+			
+			});
+			
+			
+			
+			/*---------------------------------------------------------------*/	
+			/*---------------------------------------------------------------*/
+			
+	
+	
+		
+		});//$(document).ready
+    </script>
+
+
+
+	<div class="title-admin-section">
+		<h1>PRUEBA EXCEL</h1>
+	</div>
+
+
+<div class="row">
+<br>
+	<div class="clearfix">
+    	<table id="grid_color_ventas" class="grid grid-autoheight" ></table>
+    	<div id="pager_colorventas"></div>
+    </div>
+</div>   
+	
+	

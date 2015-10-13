@@ -32,6 +32,8 @@ return array(
         	'Dispo\Controller\Parametrizar'			=> 'Dispo\Controller\ParametrizarController',
         	'Dispo\Controller\Colorventas'			=> 'Dispo\Controller\ColorventasController',
         	'Dispo\Controller\Calidadvariedad'		=> 'Dispo\Controller\CalidadvariedadController',
+        	'Dispo\Controller\Prueba'				=> 'Dispo\Controller\PruebaController',
+        	'Dispo\Controller\Proveedor'			=> 'Dispo\Controller\ProveedorController',
         ),
     ),
     // The following section is new and should be added to your file
@@ -344,6 +346,34 @@ return array(
         						),
         						'defaults' => array(
         								'controller' => 'Dispo\Controller\Calidadvariedad',
+        								'action'     => 'index',
+        						),
+        				),
+        		),
+        		'dispo-prueba' => array(
+        				'type'    => 'segment',
+        				'options' => array(
+        						'route'    => '/dispo/prueba[/:action][/:id]',
+        						'constraints' => array(
+        								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        								'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        						),
+        						'defaults' => array(
+        								'controller' => 'Dispo\Controller\Prueba',
+        								'action'     => 'index',
+        						),
+        				),
+        		),
+        		'dispo-proveedor' => array(
+        				'type'    => 'segment',
+        				'options' => array(
+        						'route'    => '/dispo/proveedor[/:action][/:id]',
+        						'constraints' => array(
+        								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+        								'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+        						),
+        						'defaults' => array(
+        								'controller' => 'Dispo\Controller\Proveedor',
         								'action'     => 'index',
         						),
         				),
