@@ -50,5 +50,25 @@ class CalidadVariedadBO extends Conexion
 		$result = $CalidadVariedadDAO->listado($condiciones);
 		return $result;
 	}//end function listado
+	
+	
+	
+
+	/**
+	 * Consultar
+	 *
+	 * @param string $id
+	 * @param int $resultType
+	 * @return Ambigous <\Dispo\Data\CalidadVariedadData, NULL, array>
+	 */
+	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$CalidadVariedadDAO = new CalidadVariedadDAO();
+		$CalidadVariedadDAO->setEntityManager($this->getEntityManager());
+		$reg = $CalidadVariedadDAO->consultar($id);
+		return $reg;
+	}//end function consultar
+	
+	
 
 }//end class

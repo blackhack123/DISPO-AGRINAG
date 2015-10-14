@@ -1,7 +1,11 @@
-
-	<script>
+<script type="text/javascript" src="C:\Users\Profeta\Desktop\PRUEBA WEB\js\jqgrid/grid.locale-es.js" ></script>
+<script type="text/javascript" src="C:\Users\Profeta\Desktop\PRUEBA WEB\js\jqgridExcelExportClientSide.js" ></script>
+<script type="text/javascript" src="C:\Users\Profeta\Desktop\PRUEBA WEB\js\jqgridExcelExportClientSide-libs.js" ></script>
+<script>
 		$(document).ready(function () {
-	
+
+			 $.jgrid.no_legacy_api = true; 
+			   $.jgrid.useJSON = true; 
 			/*---------------------------------------------------------------*/
 			/*-----------------Se configura los JQGRID's---------------------*/
 			/*---------------------------------------------------------------*/		
@@ -20,7 +24,7 @@
 					{name:'nombre',index:'nombre', width:230, sorttype:"string"}
 				],
 				rowNum:999999999,
-				pager: "#pager",
+				pager: '#pager_colorventas',
 				toppager:false,
 				pgbuttons:false,
 				pginput:false,
@@ -34,23 +38,41 @@
 					repeatitems : false,
 				},		
 				
-				//jQuery("#grid_color_ventas").jqGrid('navGrid',"#pager_color_ventas",{edit:false,add:false,del:false}),
-				
+				loadBeforeSend: function (xhr, settings) {
+					this.p.loadBeforeSend = null; //remove event handler
+					return true; // dont send load data request
+				},				
 				loadError: function (jqXHR, textStatus, errorThrown) {
 					message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
-				},
-			
+				}
 			});
+			jQuery("#grid_color_ventas").jqGrid('navGrid','#pager_colorventas',{edit:false,add:false,del:false});
 			
 			
-			
+			//Se configura el grid para que pueda navegar procesar la fila con el ENTER
+			jQuery("#grid_color_ventas").jqGrid('bindKeys', {
+				   "onEnter" : function( rowid ) { 
+						//marcacion_consultar_listado(rowid);
+						var data = $('#grid_color_ventas').getRowData(rowid);
+						marcacion_consultar_listado("+data.marcacion_sec+");
+				   }
+			});
+
+			// add custom button to export the data to excel
+			jQuery("#grid_color_ventas").jqGrid('navButtonAdd','#pager_colorventas',{
+			       caption:"", 
+			       onClickButton : function () { 
+			           //jQuery("#grid_color_ventas").jqGrid('excelExport',{"url":"../../dispo/prueba/listadodata"});
+			            $("#grid_color_ventas").jqGrid('exportarExcelCliente',{nombre:"HOJATEST",formato:"excel"});
+			       } 
+			});
+
 			/*---------------------------------------------------------------*/	
 			/*---------------------------------------------------------------*/
-			
-	
-	
 		
 		});//$(document).ready
+
+
     </script>
 
 
@@ -62,7 +84,7 @@
 
 <div class="row">
 <br>
-	<div class="clearfix">
+	<div class="clearfix" id="grid_color">
     	<table id="grid_color_ventas" class="grid grid-autoheight" ></table>
     	<div id="pager_colorventas"></div>
     </div>

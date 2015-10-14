@@ -77,7 +77,6 @@ class PruebaController extends AbstractActionController
 				//$row['variedad'] = trim($row['variedad']);
 				$row2['id'] 				= $row['id'];
 				$row2['nombre'] 			= trim($row['nombre']);
-				$row2['estado'] 			= trim($row['estado']);
 				$response->rows[$i] = $row2;
 				$i++;
 			}//end foreach

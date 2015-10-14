@@ -31,8 +31,6 @@ class ProveedorBO extends Conexion
 	}//end function getCombo
 
 	
-	
-	
 	/**
 	 *
 	 * En las condiciones se puede pasar los siguientes criterios de busqueda:
@@ -50,5 +48,22 @@ class ProveedorBO extends Conexion
 		$result = $ProveedorDAO->listado($condiciones);
 		return $result;
 	}//end function listado
+	
+	
+	
+	/**
+	 * Consultar
+	 *
+	 * @param string $id
+	 * @param int $resultType
+	 * @return Ambigous <\Dispo\Data\ProveedorData, NULL, array>
+	 */
+	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$ProveedorDAO = new ProveedorDAO();
+		$ProveedorDAO->setEntityManager($this->getEntityManager());
+		$reg = $ProveedorDAO->consultar($id);
+		return $reg;
+	}//end function consultar
 	
 }//end class

@@ -59,7 +59,7 @@ class InventarioDAO extends Conexion
 	 */	
 	public function consultar($id)
 	{
-		$AgenciaCargaData 		    = new InventarioData();
+		$InventarioData 		    = new InventarioData();
 
 		$sql = 	' SELECT inventario.* '.
 				' FROM inventario '.

@@ -5,6 +5,7 @@ namespace Dispo\BO;
 use Doctrine\ORM\EntityManager;
 use Application\Classes\Conexion;
 use Dispo\DAO\InventarioDAO;
+use Dispo\DAO\Dispo\DAO;
 
 
 
@@ -48,6 +49,22 @@ class InventarioBO extends Conexion
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'id', null, null, null, \Application\Classes\Combo::$tipo_combo_datagrid);
 		return $opciones;
 	}//end function getComboDataGrid
-
+	
+	
+	/**
+	 * Consultar 
+	 * 
+	 * @param string $id
+	 * @param int $resultType
+	 * @return Ambigous <\Dispo\Data\InventarioData, NULL, array>
+	 */
+	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$InventarioDAO = new InventarioDAO();
+		$InventarioDAO->setEntityManager($this->getEntityManager());
+		$reg = $InventarioDAO->consultar($id);
+		return $reg;		
+	}//end function consultar
+	
 	
 }//end class

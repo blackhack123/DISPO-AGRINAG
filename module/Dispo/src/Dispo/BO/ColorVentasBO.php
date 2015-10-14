@@ -48,6 +48,23 @@ class ColorVentasBO extends Conexion
 		$result = $ColorVentasDAO->listado($condiciones);
 		return $result;
 	}//end function listado
+	
+	
+	
 
+	/**
+	 * Consultar
+	 *
+	 * @param string $id
+	 * @param int $resultType
+	 * @return Ambigous <\Dispo\Data\ColorVentasData, NULL, array>
+	 */
+	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$ColorVentasDAO = new ColorVentasDAO();
+		$ColorVentasDAO->setEntityManager($this->getEntityManager());
+		$reg = $ColorVentasDAO->consultar($id);
+		return $reg;
+	}//end function consultar
 
 }//end class

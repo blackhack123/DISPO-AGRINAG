@@ -51,5 +51,41 @@ class CalidadBO extends Conexion
 			
 		return $opciones;
 	}//end function getComboCalidadFox	
+	
+	
+	
+	/**
+	 * Consultar
+	 *
+	 * @param string $id
+	 * @param int $resultType
+	 * @return Ambigous <\Dispo\Data\CalidadData, NULL, array>
+	 */
+	function consultar($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$CalidadDAO = new CalidadDAO();
+		$CalidadDAO->setEntityManager($this->getEntityManager());
+		$reg = $CalidadDAO->consultar($id);
+		return $reg;
+	}//end function consultar
+	
+	
+	
+	/**
+	 * Consultar
+	 *
+	 * @param string $id
+	 * @param int $resultType
+	 * @return Ambigous <\Dispo\Data\CalidadData, NULL, array>
+	 */
+	function consultarPorClasificaFox($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$CalidadDAO = new CalidadDAO();
+		$CalidadDAO->setEntityManager($this->getEntityManager());
+		$reg = $CalidadDAO->consultarPorClasificaFox($id);
+		return $reg;
+	}//end function consultarPorClasificaFox
+	
+	
 
 }//end class

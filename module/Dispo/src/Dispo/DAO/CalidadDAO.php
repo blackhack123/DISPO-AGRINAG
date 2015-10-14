@@ -103,6 +103,40 @@ class CalidadDAO extends Conexion
 		return $result;
 	}//end function consultarTodos
 	
+	
+	
+	
+	/**
+	 * Consultar
+	 *
+	 * @param string $id
+	 * @return CalidadData|null
+	 */
+	public function consultarPorClasificaFox($id)
+	{
+		$CalidadData 		    = new CalidadData();
+	
+		$sql = 	' SELECT calidad.* '.
+				' FROM calidad '.
+				' WHERE calidad.clasifica_fox = :id ';
+	
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':id',$id);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		if($row){
+			$CalidadData->setId				    ($row['id']);
+			$CalidadData->setNombre		   		($row['nombre']);
+			$CalidadData->setClasificaFox		($row['clasifica_fox']);
+			return $CalidadData;
+		}else{
+			return null;
+		}//end if
+	
+	}//end function consultarPorClasificaFox
+	
+	
 }//end class
 
 ?>

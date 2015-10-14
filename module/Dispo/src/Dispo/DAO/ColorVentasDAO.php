@@ -32,7 +32,7 @@ class ColorVentasDAO extends Conexion
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		if($row)
 		{
-			$ColoresData->getId		($row['id']);				
+			$ColoresData->getId			($row['id']);				
 			$ColoresData->getNombre 	($row['nombre']);
 			return $ColoresData;
 		}else{
