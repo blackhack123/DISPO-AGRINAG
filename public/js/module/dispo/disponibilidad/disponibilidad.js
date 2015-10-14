@@ -23,11 +23,24 @@ $(document).ready(function () {
 		$('#grid_dispo_general').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;
 	});	
+
+	$("#frm_dispo #btn_excel").on('click', function(event){ 
+		DispoGeneral_ExportarExcel();
+		return false;
+	});	
+
 	
 	$("#frm_dispo #btn_nuevo").on('click', function(event){ 
 		disponibilidad_nueva_variedad();
 		return false;
-	});		
+	});
+	
+	$("#frm_dispo #btn_mover").on('click', function(event){ 
+		//disponibilidad_mover();
+		DispoGeneral_OpenDialog_MoverStock();
+		return false;
+	});	
+	
 	
 	$("#frm_dispo_proveedor #btn_grabar").on('click', function(event){ 
 		grabar_dispo_proveedor();
@@ -36,6 +49,16 @@ $(document).ready(function () {
 
 	$("#frm_variedad #btn_grabar").on('click', function(event){ 
 		grabar_disponibilidad_nueva();
+		return false;
+	});	
+
+	$("#frm_dispo_general_stockgrado #porcentaje").on('change', function(event){ 
+		$("#frm_dispo_general_stockgrado #valor").val('');
+		return false;
+	});
+
+	$("#frm_dispo_general_stockgrado #valor").on('change', function(event){ 
+		$("#frm_dispo_general_stockgrado #porcentaje").val('');
 		return false;
 	});	
 
@@ -361,57 +384,84 @@ $(document).ready(function () {
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/	
 	
-	/*---------------------------------------------------------------*/
-	/*---Se configura el JQGRID de PROVEEDORES de la DISPO X GRUPO----*/
-	/*---------------------------------------------------------------*/		
-	jQuery("#grid_dispogeneral_proveedor").jqGrid({
-		url:'../../dispo/proveedor/listadodata',
+	
+	
+	jQuery("#grid_dispogeneral_moverstock").jqGrid({
+		url:'../../dispo/disponibilidad/disponibilidaddata',
 		postData: {
+			inventario_id: 	function() {return $("#frm_dispo_general_moverstock #inventario_id").val();},
+			proveedor_id: 	function() {return $("#frm_dispo_general_moverstock #proveedor_id").val();},
+			clasifica: 		function() {return $("#frm_dispo_general_moverstock #calidad_id").val();},
+			color_ventas_id:function() {return $("#frm_dispo_general_moverstock #color_ventas_id").val();},
+			calidad_variedad_id: function() {return $("#frm_dispo_general_moverstock #calidad_variedad_id").val();}
 		},
 		datatype: "json",
 		loadonce: true,			
-		height:'160',
-		colNames:['id','Proveedor'],
+		/*height:'400',*/
+		colNames:['tallos_x_bunch','variedad_nombre','Id','Variedad','Color','40','50','60','70','80','90', '100', '110','Total'],
 		colModel:[
-			{name:'id',index:'id',  sorttype:"int", hidden:true},
-			{name:'nombre',index:'nombre'},
+/*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
+			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:50, align:"center", sorttype:"int", hidden:true},
+			{name:'variedad',index:'variedad_nombre', width:50, sorttype:"string", hidden:true},
+			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
+			{name:'variedad',index:'variedad', width:150, sorttype:"string", formatter: gridDispoGeneral_VariedadNombreFormatter},
+			{name:'color_ventas_nombre',index:'color_ventas_nombre', width:90, sorttype:"string"},
+			{name:'40',index:'40', width:50, align:"center", sorttype:"int"},	
+			{name:'50',index:'50', width:50, align:"center", sorttype:"int"},	
+			{name:'60',index:'60', width:50, align:"center", sorttype:"int"},	
+			{name:'70',index:'70', width:50, align:"center", sorttype:"int"},	
+			{name:'80',index:'80', width:50, align:"center", sorttype:"int"},	
+			{name:'90',index:'90', width:50, align:"center", sorttype:"int"},	
+			{name:'100',index:'100', width:50, align:"center", sorttype:"int"},	
+			{name:'110',index:'110', width:50, align:"center", sorttype:"int"},
+			{name:'total',index:'total', width:50, align:"right", sorttype:"int"}
 		],
 		rowNum:999999,
-		pager: '#pager_dispogeneral_proveedor',
+		pager: '#pager_dispogeneral_moverstock',
+		multiselect: true,
 		toppager:false,
 		pgbuttons:false,
 		pginput:false,
 		rowList:false,
 		gridview:false,	
-		width: 280,
-//		autowidth: true,
-		shrinkToFit: true,
-//		forceFit: true,
-//		resizeStop: grid_setAutoHeight,
+		shrinkToFit: false,
+		footerrow : true,
+		userDataOnFooter : true,		
+		//loadComplete: grid_setAutoHeight,
+		loadComplete: function (data) {
+			autoHeight_JqGrid_Refresh("grid_dispogeneral_moverstock");
+		},		
+		resizeStop: grid_setAutoHeight, 
 		rownumbers: true,
-/*		cellEdit: true,
-		cellsubmit: 'clientArray',
-		editurl: 'clientArray',		
-*/		multiselect: true,
 		jsonReader: {
 			repeatitems : false,
-		},
-		loadComplete: function (data) {
-			//autoHeight_JqGrid_Refresh("grid_dispo_grupo");
-			//autoWidthContainer_JqGrid("grid_dispogrupo_color");
-		},
+		},		
 		loadBeforeSend: function (xhr, settings) {
-			/*this.p.loadBeforeSend = null; //remove event handler
-			return false; // dont send load data request*/
-		},
+			this.p.loadBeforeSend = null; //remove event handler
+			return false; // dont send load data request
+		},				
 		loadError: function (jqXHR, textStatus, errorThrown) {
 			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
-		},
+		}
 	});
-	jQuery("#grid_dispogeneral_proveedor").jqGrid('navGrid','#pager_dispogeneral_proveedor',{edit:false,add:false,del:false});
+	
+	jQuery("#grid_dispogeneral_moverstock").jqGrid('setGroupHeaders', {
+	  	useColSpanStyle: true, 
+	  	groupHeaders:[
+			{startColumnName: '40', numberOfColumns: 1, titleText: '<input type="checkbox" id="chk_select_40">'},
+			{startColumnName: '50', numberOfColumns: 1, titleText: '<input type="checkbox" id="chk_select_50">'},
+			{startColumnName: '60', numberOfColumns: 1, titleText: '<input type="checkbox" id="chk_select_60">'},
+			{startColumnName: '70', numberOfColumns: 1, titleText: '<input type="checkbox" id="chk_select_70">'},
+			{startColumnName: '80', numberOfColumns: 1, titleText: '<input type="checkbox" id="chk_select_80">'},
+			{startColumnName: '90', numberOfColumns: 1, titleText: '<input type="checkbox" id="chk_select_90">'},
+			{startColumnName: '100', numberOfColumns: 1, titleText: '<input type="checkbox" id="chk_select_100">'},
+			{startColumnName: '110', numberOfColumns: 1, titleText: '<input type="checkbox" id="chk_select_110">'},
+		  ]	
+	});		
 	/*---------------------------------------------------------------*/	
-	/*---------------------------------------------------------------*/		
-	});
+	/*---------------------------------------------------------------*/	
+
+});
 	
 	
 
@@ -727,13 +777,19 @@ $(document).ready(function () {
 		var color_ventas_id		= $("#frm_dispo #color_ventas_id").val();
 		var calidad_variedad_id	= $("#frm_dispo #calidad_variedad_id").val();				
 
-		console.log('proveedor_id:',proveedor_id);
 		if (inventario_id=='')
 		{
 			alert('Debe de Seleccionar un Inventario');
 			$("#frm_dispo #inventario_id").focus();
 			return false;
 		}//end if
+		
+		if (proveedor_id=='')
+		{
+			alert('Debe de Seleccionar una Finca');
+			$("#frm_dispo #proveedor_id").focus();
+			return false;
+		}//end if		
 
 		//Almacena las variables que son parameros para la modificacion masiva
 		$("#frm_dispo_general_stockgrado #inventario_id").val(inventario_id);
@@ -767,26 +823,10 @@ $(document).ready(function () {
 			{
 				$('#grid_dispogeneral_categoria').jqGrid('setSelection', ids[i]);
 			}//end if
-		}//end for		
-		
+		}//end for				
 		//-------------------------------------------------------------
 		
-		//-----------------------------------------------------------
-		//Desmarca todos los proveedores
-		$('#grid_dispogeneral_categoria').jqGrid('resetSelection');
-		
-		//Marca los proveedores que paso como parametros
-		var ids = $('#grid_dispogeneral_proveedor').jqGrid('getDataIDs');		
-		var len = ids.length;
-		for (var i=0; i < len; i++) {
-			if ((proveedor_id == ids[i])||(proveedor_id == ''))
-			{
-				$('#grid_dispogeneral_proveedor').jqGrid('setSelection', ids[i]);
-			}//end if
-		}//end for		
-		
-		//-------------------------------------------------------------		
-		
+	
 		//Setea el titulo 
 		//Abre el dialogo
 		var proveedor_nombre = $("#frm_dispo #proveedor_id option:selected").text();
@@ -807,6 +847,7 @@ $(document).ready(function () {
 		var grado_id				= $("#frm_dispo_general_stockgrado #grado_id").val();		
 		var color_ventas_ids 	 	= $("#grid_dispogeneral_color").jqGrid('getGridParam','selarrrow');
 		var calidad_variedad_ids 	= $("#grid_dispogeneral_categoria").jqGrid('getGridParam','selarrrow');
+		
 		var porcentaje				= $("#frm_dispo_general_stockgrado #porcentaje").val();
 		var valor					= $("#frm_dispo_general_stockgrado #valor").val();
 
@@ -828,8 +869,8 @@ $(document).ready(function () {
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
 							'url':'../../dispo/disponibilidad/grabarmasivostock',
-							'control_process':true,
-							'show_cargando':false,
+							'control_process':false,
+							'show_cargando':true,
 							'async':true, 
 							'finish':function(response){
 									$("frm_dispo_general_stockgrado #btn_grabar").button('reset');
@@ -840,4 +881,69 @@ $(document).ready(function () {
 						 }
 		response = ajax_call(parameters, data);		
 		return false;					
-	}//end function DispoGeneral_GrabarStockPorGrado	
+	}//end function DispoGeneral_GrabarStockPorGrado
+	
+	
+	
+	function DispoGeneral_OpenDialog_MoverStock()
+	{
+		var inventario_id		= $("#frm_dispo #inventario_id").val();
+		var calidad_id			= $("#frm_dispo #calidad_id").val();
+		var proveedor_id		= $("#frm_dispo #proveedor_id").val();
+		var color_ventas_id		= $("#frm_dispo #color_ventas_id").val();
+		var calidad_variedad_id	= $("#frm_dispo #calidad_variedad_id").val();				
+
+		if (inventario_id=='')
+		{
+			alert('Debe de Seleccionar un Inventario');
+			$("#frm_dispo #inventario_id").focus();
+			return false;
+		}//end if
+		
+		
+		if (calidad_id=='')
+		{
+			alert('Debe de Seleccionar la calidad');
+			$("#frm_dispo #calidad_id").focus();
+			return false;
+		}//endf if
+		
+		if (proveedor_id=='')
+		{
+			alert('Debe de Seleccionar una Finca');
+			$("#frm_dispo #proveedor_id").focus();
+			return false;
+		}//end if		
+
+		//Almacena las variables que son parameros para el movimiento del inventario
+		$("#frm_dispo_general_moverstock #inventario_id").val(inventario_id);
+		$("#frm_dispo_general_moverstock #calidad_id").val(calidad_id);
+		$("#frm_dispo_general_moverstock #proveedor_id").val(proveedor_id);
+		$("#frm_dispo_general_moverstock #color_ventas_id").val(color_ventas_id);
+		$("#frm_dispo_general_moverstock #calidad_variedad_id").val(calidad_variedad_id);				
+
+		//Carga el grid para mover el stock
+		$('#grid_dispogeneral_moverstock').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+
+		//Setea el titulo 
+		//Abre el dialogo
+		var proveedor_nombre = $("#frm_dispo #proveedor_id option:selected").text();
+		proveedor_nombre = proveedor_nombre.replace('<','');
+		proveedor_nombre = proveedor_nombre.replace('>','');		
+		//if (proveedor_id!='') {proveedor_nombre = $("#frm_dispo #proveedor_id option:selected").text();}
+		var titulo = "<b><em style='color:blue'>INVENTARIO:</em></b> "+$("#frm_dispo #inventario_id option:selected").text()+" - <b><em style='color:blue'>CALIDAD:</em></b> "+$("#frm_dispo #calidad_id option:selected").text()+" - <b><em style='color:blue'>FINCA:</em></b> "+proveedor_nombre+" - <b><em style='color:blue'>COLOR:</em></b> "+$("#frm_dispo #color_ventas_id option:selected").text()+" - <b><em style='color:blue'>CATEGORIA:</em></b> "+$("#frm_dispo #calidad_variedad_id option:selected").text();
+		$("#dialog_dispo_general_moverstock_titulo").html(titulo);
+		$('#dialog_dispo_general_moverstock').modal('show');
+	}//end function DispoGeneral_OpenDialog_MoverStock
+	
+	
+	function DispoGeneral_ExportarExcel()
+	{
+		var inventario_id		= $("#frm_dispo #inventario_id").val();
+		var proveedor_id		= $("#frm_dispo #proveedor_id").val();
+		var clasifica			= $("#frm_dispo #calidad_id").val();
+		var color_ventas_id		= $("#frm_dispo #color_ventas_id").val();
+		var calidad_variedad_id	= $("#frm_dispo #calidad_variedad_id").val();
+		var url = '../../dispo/disponibilidad/exportarexcel?inventario_id='+inventario_id+'&proveedor_id='+proveedor_id+'&clasifica='+clasifica+'&color_ventas_id='+color_ventas_id+'&calidad_variedad_id='+calidad_variedad_id;
+		var win = window.open(url, '_blank', 'toolbar=0,location=0,menubar=0');
+	}//end function DispoGeneral_ExportarExcel

@@ -1,0 +1,123 @@
+<?php
+header("Pragma: public");
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: pre-check=0, post-check=0, max-age=0");
+header("Pragma: no-cache");
+header("Expires: 0");
+header("Content-Transfer-Encoding: none");
+header("Content-Type: application/vnd.ms-excel;");
+header("Content-type: application/x-msexcel");
+header("Content-Disposition: attachment; filename=dispogeneral_".date('Ymd').".xlsx");
+?>
+
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+
+<body>
+<table border="0" cellspacing="1" cellpadding="0">
+	<tbody>
+        <tr>
+            <td colspan="14" align="left"><b>Inventario:</b> <u>USA</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Calidad:</b> <u>AGRINAG</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Finca:</b> <u>AGRINAG</u> </td>
+        </tr>  
+        <tr>
+          <td colspan="14" align="left"><b>Color:</b> <u>Todos los Colores</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Categoria:</b> <u>Todos las Categorias</u></td>
+      </tr>
+        <tr>
+            <th colspan="14">&nbsp;</th>
+        </tr>             
+    </tbody>
+</table>
+<table border="1" cellspacing="1" cellpadding="0">
+	<thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th align="center">Id</th>
+            <th align="center">Variedad</th>
+            <th align="center">&nbsp;</th>
+            <th align="center">Color</th>
+            <th width="45" align="center">40</th>
+            <th width="45" align="center">50</th>
+            <th width="45" align="center">60</th>
+            <th width="45" align="center">70</th>
+            <th width="45" align="center">80</th>
+            <th width="45" align="center">90</th>
+            <th width="45" align="center">100</th>
+            <th width="45" align="center">110</th>
+            <th width="45" align="center">Total</th>
+        </tr>    
+    </thead>
+    <tbody>
+<?php
+	$i = 0; 
+	foreach($this->result as $reg)
+	{
+		$i++;
+		$grado_40 	= (empty($reg['40'])?'':number_format($reg['40']));
+		$grado_50 	= (empty($reg['50'])?'':number_format($reg['50']));
+		$grado_60 	= (empty($reg['60'])?'':number_format($reg['60']));
+		$grado_70 	= (empty($reg['70'])?'':number_format($reg['70']));
+		$grado_80 	= (empty($reg['80'])?'':number_format($reg['80']));
+		$grado_90 	= (empty($reg['90'])?'':number_format($reg['90']));
+		$grado_100 	= (empty($reg['100'])?'':number_format($reg['100']));
+		$grado_110 	= (empty($reg['110'])?'':number_format($reg['110']));
+		$total 		= (empty($reg['total'])?'':number_format($reg['total']));																
+		
+?>
+        <tr>
+            <td><?php echo($i); ?></td>
+            <td><?php echo($reg['variedad_id']); ?></td>
+            <td><?php echo($reg['variedad']); ?></td>
+            <td><a href="<?php echo($reg['url_ficha']); ?>">Foto</a> </td>
+            <td><?php echo($reg['color_ventas_nombre']); ?></td>
+            <td align="right"><?php echo($grado_40); ?></td>
+            <td align="right"><?php echo($grado_50); ?></td>
+            <td align="right"><?php echo($grado_60); ?></td>
+            <td align="right"><?php echo($grado_70); ?></td>
+            <td align="right"><?php echo($grado_80); ?></td>
+            <td align="right"><?php echo($grado_90); ?></td>
+            <td align="right"><?php echo($grado_100); ?></td>
+            <td align="right"><?php echo($grado_110); ?></td>
+            <td align="right"><?php echo($total); ?></td>
+        </tr>
+<?php
+	  }//end foreach
+?>
+    </tbody>
+    <tfoot>
+<?php
+
+	$tot_grado_40 	= (empty($totales['40'])?'':number_format($totales['40']));
+	$tot_grado_50 	= (empty($totales['50'])?'':number_format($totales['50']));
+	$tot_grado_60 	= (empty($totales['60'])?'':number_format($totales['60']));
+	$tot_grado_70 	= (empty($totales['70'])?'':number_format($totales['70']));
+	$tot_grado_80 	= (empty($totales['80'])?'':number_format($totales['80']));
+	$tot_grado_90 	= (empty($totales['90'])?'':number_format($totales['90']));
+	$tot_grado_100 	= (empty($totales['100'])?'':number_format($totales['100']));
+	$tot_grado_110 	= (empty($totales['110'])?'':number_format($totales['110']));
+	$tot_general	= (empty($totales['total'])?'':number_format($totales['total']));																
+		
+?>    
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td><b>TOTALES DE BUNCH<b></td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="right"><b><?php echo($tot_grado_40); ?></b></td>
+          <td align="right"><b><?php echo($tot_grado_50); ?></b></td>
+          <td align="right"><b><?php echo($tot_grado_60); ?></b></td>
+          <td align="right"><b><?php echo($tot_grado_70); ?></b></td>
+          <td align="right"><b><?php echo($tot_grado_80); ?></b></td>
+          <td align="right"><b><?php echo($tot_grado_90); ?></b></td>
+          <td align="right"><b><?php echo($tot_grado_100); ?></b></td>
+          <td align="right"><b><?php echo($tot_grado_110); ?></b></td>
+          <td align="right"><b><?php echo($tot_general); ?></b></td>
+        </tr>    
+    </tfoot>
+</table>
+</body>
+</html>

@@ -769,7 +769,7 @@ class DispoBO extends Conexion
 	
 	
 	public function grabarMasivoStock($inventario_id, $clasifica, $proveedor_id, $grado_id, 
-									 $cadena_color_ventas_id, $cadena_calidad_variedad_ids, 
+									 $cadena_color_ventas_ids, $cadena_calidad_variedad_ids, 
 									 $porcentaje, $valor, $usuario_id)
 	{
 		$this->getEntityManager()->getConnection()->beginTransaction();
@@ -784,18 +784,140 @@ class DispoBO extends Conexion
 			//$GrupoDispoDetDAO->setEntityManager($this->getEntityManager());
 			$DispoDAO->setEntityManager($this->getEntityManager());
 			
-			$condiciones = array(
-					"inventario_id"					=> $inventario_id,
-					"proveedor_id"					=> $proveedor_id,
-					"clasifica"						=> $clasifica,					
-					"cadena_color_ventas_ids"		=> $cadena_color_ventas_id,
-					"cadena_calidad_variedad_ids"	=> $cadena_calidad_variedad_ids
-			);
-			$result = $DispoDAO->consultarDetallado($condiciones);
 
 			$campo_grado_dispogen = $grado_id;
 			
+			if ($porcentaje!=0)
+			{
+				$condiciones = array(
+						"sin_fecha"						=> false,
+						'sin_fecha_bunch'				=> false,
+						"inventario_id"					=> $inventario_id,
+						"proveedor_id"					=> $proveedor_id,
+						"clasifica"						=> $clasifica,
+						"cadena_color_ventas_ids"		=> $cadena_color_ventas_ids,
+						"cadena_calidad_variedad_ids"	=> $cadena_calidad_variedad_ids
+				);
+				$result = $DispoDAO->consultarDetallado($condiciones);
+				
+				foreach($result as $reg)
+				{
+					/*$DispoData->setId				($reg['id']);*/
+					$DispoData->setFecha			($reg['fecha']);
+					$DispoData->setInventarioId		($reg['inventario_id']);
+					$DispoData->setFechaBunch		($reg['fecha_bunch']);
+					$DispoData->setProveedorId		($reg['proveedor_id']);
+					$DispoData->setProducto			($reg['producto']);
+					$DispoData->setVariedadId		($reg['variedad_id']);
+					$DispoData->setGradoId			($campo_grado_dispogen);
+					$DispoData->setTallosxBunch		($reg['tallos_x_bunch']);
+					$DispoData->setClasifica		($reg['clasifica']);
 
+					$cantidad_bunch = floor($reg[$campo_grado_dispogen]*$porcentaje/100);
+					$DispoData->setCantidadBunch			($cantidad_bunch);
+					$DispoData->setCantidadBunchDisponible	($cantidad_bunch);
+
+					list($accion, $key) = $DispoDAO->registrarBunchDisponibles($DispoData);
+
+				}//end foreach
+			}
+			else  //CASO CONTRARIO ES POR VALOR
+			{
+				/**
+				 * Debemos de realizar la consulta de manera agrupada sin la fecha y fecha_bunch,
+				 * para saber si disminuimos o aumentamos el stock de acuerdo al valor
+				 */
+				$condiciones = array(
+						"sin_fecha"						=> true,
+						'sin_fecha_bunch'				=> true,
+						"inventario_id"					=> $inventario_id,
+						"proveedor_id"					=> $proveedor_id,
+						"clasifica"						=> $clasifica,
+						"cadena_color_ventas_ids"		=> $cadena_color_ventas_ids,
+						"cadena_calidad_variedad_ids"	=> $cadena_calidad_variedad_ids
+				);
+				$result = $DispoDAO->consultarDetallado($condiciones);
+
+				foreach($result as $reg)
+				{					
+					$saldo_valor = $valor;
+					
+					$condiciones = array(
+						'sin_fecha'					=> false,
+						'sin_fecha_bunch'			=> false,
+						'inventario_id'				=> $reg['inventario_id'],
+						'proveedor_id'				=> $reg['proveedor_id'],
+						'producto'					=> $reg['producto'],
+						'variedad_id'				=> $reg['variedad_id'],
+						/*'grado_id'				=> $reg[$campo_grado_dispogen],*/
+						'tallos_x_bunch'			=> $reg['tallos_x_bunch'],
+						'clasifica'					=> $clasifica,
+					);
+					$result_detalle = $DispoDAO->consultarDetallado($condiciones);
+					foreach($result_detalle as $reg_detalle)
+					{
+						if ($reg[$campo_grado_dispogen]<$valor)  //SUMAR
+						{
+							$DispoData->setFecha			($reg_detalle['fecha']);
+							$DispoData->setInventarioId		($reg_detalle['inventario_id']);
+							$DispoData->setFechaBunch		($reg_detalle['fecha_bunch']);
+							$DispoData->setProveedorId		($reg_detalle['proveedor_id']);
+							$DispoData->setProducto			($reg_detalle['producto']);
+							$DispoData->setVariedadId		($reg_detalle['variedad_id']);
+							$DispoData->setGradoId			($campo_grado_dispogen);
+							$DispoData->setTallosxBunch		($reg_detalle['tallos_x_bunch']);
+							$DispoData->setClasifica		($reg_detalle['clasifica']);
+							
+							$diferencia		= $saldo_valor - $reg[$campo_grado_dispogen];
+							$cantidad_bunch = $reg_detalle[$campo_grado_dispogen]+$diferencia;
+							$DispoData->setCantidadBunch			($cantidad_bunch);
+							$DispoData->setCantidadBunchDisponible	($cantidad_bunch);
+							
+							list($accion, $key) = $DispoDAO->registrarBunchDisponibles($DispoData);
+							
+							break;  //SALE DEL FOR, ya que lo incremento
+						}
+						else if ($reg[$campo_grado_dispogen]>$valor) //RESTAR
+						{  
+							$DispoData->setFecha			($reg_detalle['fecha']);
+							$DispoData->setInventarioId		($reg_detalle['inventario_id']);
+							$DispoData->setFechaBunch		($reg_detalle['fecha_bunch']);
+							$DispoData->setProveedorId		($reg_detalle['proveedor_id']);
+							$DispoData->setProducto			($reg_detalle['producto']);
+							$DispoData->setVariedadId		($reg_detalle['variedad_id']);
+							$DispoData->setGradoId			($campo_grado_dispogen);
+							$DispoData->setTallosxBunch		($reg_detalle['tallos_x_bunch']);
+							$DispoData->setClasifica		($reg_detalle['clasifica']);
+							
+							if ($reg_detalle[$campo_grado_dispogen] > $saldo_valor)
+							{
+								$cantidad_bunch = $saldo_valor;
+								$saldo_valor 	= 0;
+							}else{
+								$cantidad_bunch = 0;
+								$saldo_valor 	= $saldo_valor - $reg_detalle[$campo_grado_dispogen];
+							}//end if
+							
+							$DispoData->setCantidadBunch			($cantidad_bunch);
+							$DispoData->setCantidadBunchDisponible	($cantidad_bunch);
+							
+							list($accion, $key) = $DispoDAO->registrarBunchDisponibles($DispoData);
+							
+							/*if ($saldo_valor == 0)
+							{
+								break;  //SALE DEL FOR, porque ya no se tiene saldo para disminuir
+							}//end if*/
+						}else{
+							//NO HACE NADA EN ESTE CASO
+						}
+					}//end foreach
+					
+				}//end foreach
+			}//end if
+			
+			
+			
+/*			
 			foreach($result as $reg)
 			{
 				$DispoData->setId				($reg['id']);
@@ -805,27 +927,30 @@ class DispoBO extends Conexion
 				$DispoData->setProveedorId		($reg['proveedor_id']);
 				$DispoData->setProducto			($reg['producto']);
 				$DispoData->setVariedadId		($reg['variedad_id']);
-				$DispoData->setGradoId			($reg[$campo_grado_dispogen]);
+				$DispoData->setGradoId			($campo_grado_dispogen);
 				$DispoData->setTallosxBunch		($reg['tallos_x_bunch']);
 				$DispoData->setClasifica		($reg['clasifica']);
 				if ($porcentaje!=0)
 				{
 					$cantidad_bunch = floor($reg['cantidad_bunch_disponible']*$porcentaje/100);
+					$DispoData->setCantidadBunch			($cantidad_bunch);
+					$DispoData->setCantidadBunchDisponible	($cantidad_bunch);
+					
+					list($accion, $key) = $DispoDAO->registrarBunchDisponiblesPorcentaje($DispoData);
+						
 				}else if ($valor != 0){
 					$cantidad_bunch = $valor;
+					
+					
 				}else{
 					$cantidad_bunch = 0;
 				}//end if
-				/*if ($cantidad_bunch > $reg['cantidad_bunch_disponible'])
-				{
-					$cantidad_bunch = $reg['cantidad_bunch_disponible'];
-				}//end if	*/			
-				$DispoData->setCantidadBunch			($cantidad_bunch);
-				$DispoData->setCantidadBunchDisponible	($cantidad_bunch);
-
-				list($accion, $key) = $DispoDAO->registrarBunchDisponibles($DispoData);
+				//if ($cantidad_bunch > $reg['cantidad_bunch_disponible'])
+				//{
+				//	$cantidad_bunch = $reg['cantidad_bunch_disponible'];
+				//}//end if			
 			}//end foreach
-
+*/
 			$result['validacion_code'] 	= 'OK';
 			$result['respuesta_mensaje']= '';
 		

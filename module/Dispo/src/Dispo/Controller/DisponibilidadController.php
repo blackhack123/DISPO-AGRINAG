@@ -20,6 +20,7 @@ use Dispo\BO\ColorVentasBO;
 use Dispo\BO\ClienteAgenciaCargaBO;
 use Dispo\BO\TipoCajaBO;
 use Dispo\BO\CalidadVariedadBO;
+use Dispo\BO\Dispo\BO;
 
 class DisponibilidadController extends AbstractActionController
 {
@@ -1143,6 +1144,7 @@ class DisponibilidadController extends AbstractActionController
 			$porcentaje				= $json['porcentaje'];
 			$valor					= $json['valor'];
 
+			
 			//Convierte en cadena el array de color de ventas
 			$cadena_color_ventas_id = '';
 			$flag_1era_vez = true;
@@ -1189,5 +1191,96 @@ class DisponibilidadController extends AbstractActionController
 		}
 	}//end function grabarmasivostockAction	
 	
+
+	
+	function exportarexcelAction()
+	{
+		try
+		{
+			$viewModel 			= new ViewModel();
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+
+			$DispoBO 			= new DispoBO();
+			$InventarioBO 		= new InventarioBO();
+			$CalidadBO			= new CalidadBO();
+			$ProveedorBO		= new ProveedorBO();
+			$ColorVentasBO		= new ColorVentasBO();
+			$CalidadVariedadBO	= new CalidadVariedadBO();
+			
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$CalidadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ProveedorBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$ColorVentasBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			$CalidadVariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+
+			$request 			= $this->getRequest();
+			$inventario_id 	 	= $request->getQuery('inventario_id', "");
+			$proveedor_id  		= $request->getQuery('proveedor_id', "");
+			$clasifica  		= $request->getQuery('clasifica', "");
+			$color_ventas_id	= $request->getQuery('color_ventas_id', "");
+			$calidad_variedad_id= $request->getQuery('calidad_variedad_id', "");
+
+			$InventarioData 		= $InventarioBO->consultar($inventario_id, Application\Constants\ResultType::OBJETO);
+			$CalidadData			= $CalidadBO->consultarPorClasificaFox($clasifica, Application\Constants\ResultType::OBJETO);
+			$ProveedorData			= $ProveedorBO->consultar($proveedor_id, Application\Constants\ResultType::OBJETO);
+			$ColorVentasData 		= $ColorVentasBO->consultar($color_ventas_id, Application\Constants\ResultType::OBJETO);			
+			$CalidadVariedadData 	= $CalidadVariedadBO->consultar($calidad_variedad_id, Application\Constants\ResultType::OBJETO);
+
+			$condiciones = array(
+					"inventario_id"		=> $inventario_id,
+					"proveedor_id"		=> $proveedor_id,
+					"clasifica"			=> $clasifica,
+					"color_ventas_id"	=> $color_ventas_id,
+					"calidad_variedad_id"=> $calidad_variedad_id
+			);
+			$result = $DispoBO->listado($condiciones);
+
+			$totales['40'] = 0; 
+			$totales['50'] = 0;
+			$totales['60'] = 0;
+			$totales['70'] = 0;
+			$totales['80'] = 0;
+			$totales['90'] = 0;
+			$totales['100'] = 0;
+			$totales['110'] = 0;
+			$totales['total'] = 0;
+			foreach($result as &$row){	
+				$row['variedad'] = trim($row['variedad']);
+				$row['total']	 = $row['40'] + $row['50'] + $row['60'] + $row['70'] + $row['80'] + $row['90'] + $row['100'] + $row['110'];
+
+				//Array de Totales
+				$totales['40'] 		= $totales['40'] + $row['40'];
+				$totales['50'] 		= $totales['50'] + $row['50'];
+				$totales['60'] 		= $totales['60'] + $row['60'];
+				$totales['70'] 		= $totales['70'] + $row['70'];
+				$totales['80'] 		= $totales['80'] + $row['80'];
+				$totales['90'] 		= $totales['90'] + $row['90'];
+				$totales['100'] 	= $totales['100'] + $row['100'];
+				$totales['110'] 	= $totales['110'] + $row['110'];
+				$totales['total'] 	= $totales['total'] + $row['total'];
+			}//end foreach
+
+			$viewModel->result 	= $result;
+			$viewModel->totales = $totales;
+			$viewModel->inventario_nombre 	= $InventarioData->getNombre();
+			$viewModel->calidad_nombre		= $CalidadData->getNombre();
+			
+			//echo("<pre>");var_dump($result);echo("</pre>");exit;
+			$viewModel->setTerminal(true);			
+			//$this->layout('layout/mobile');
+			$viewModel->setTemplate('dispo/disponibilidad/exportalexcel.phtml');
+			return $viewModel;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function exportarexcelAction 
 	
 }

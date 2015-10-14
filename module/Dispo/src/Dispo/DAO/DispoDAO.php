@@ -10,10 +10,14 @@ class DispoDAO extends Conexion
 {
 	private $table_name	= 'dispo';
 
-	
+	/**
+	 * 
+	 * @param DispoData $DispoData
+	 * @return array
+	 */
 	public function registrarBunchDisponibles(DispoData $DispoData)
 	{
-		$DispoData2 = $this->consultar($DispoData->getId());
+		$DispoData2 = $this->consultarPorKey($DispoData);
 		
 		if (empty($DispoData2))
 		{
@@ -21,7 +25,7 @@ class DispoDAO extends Conexion
 			$key = $this->ingresar($DispoData);
 		}else{
 			$accion = 'M';
-			$key = $this->modificarStockBunchDisponibles($DispoData->getId(), $DispoData);
+			$key = $this->modificarStockBunchDisponibles($DispoData);
 		}//end if
 		
 		return array($accion, $key);
@@ -113,21 +117,28 @@ class DispoDAO extends Conexion
 	
 	/**
 	 *
-	 * @param int $id
 	 * @param DispoData $DispoData
-	 * @return int
+	 * @return array
 	 */
-	public function modificarStockBunchDisponibles($id, $DispoData)
+	public function modificarStockBunchDisponibles($DispoData)
 	{
 		$key    = array(
-				'id'						        => $id,
+				'fecha'		                  		=> $DispoData->getFecha(),
+				'inventario_id'		            	=> $DispoData->getInventarioId(),
+				'fecha_bunch'		            	=> $DispoData->getFechaBunch(),
+				'proveedor_id'		            	=> $DispoData->getProveedorId(),
+				'producto'		            		=> $DispoData->getProducto(),
+				'variedad_id'		            	=> $DispoData->getVariedadId(),
+				'grado_id'		            		=> $DispoData->getGradoId(),
+				'tallos_x_bunch'	         		=> $DispoData->getTallosxBunch(),
+				'clasifica'		            		=> $DispoData->getClasifica(),				
 		);
 		$record = array(
 				'cantidad_bunch'		    		=> $DispoData->getCantidad_bunch(),
 				'cantidad_bunch_disponible'		    => $DispoData->getCantidadBunchDisponible()
 		);
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $id;
+		return $key;
 	}///end function modificarStockBunchDisponibles	
 	
 	
@@ -704,13 +715,28 @@ class DispoDAO extends Conexion
 	
 	
 	/**
-	 * 
-	 * @param array $condiciones ($inventario_id, $clasifica, $proveedor_id, $variedad_id, $grado_id)
+	 *
+	 * @param array $condiciones ($sin_fecha, $inventario_id, $clasifica, $proveedor_id, $variedad_id, $grado_id)
 	 * @return array
 	 */
 	public function consultarDetallado($condiciones)
 	{
-		$sql = 	' SELECT dispo.id, dispo.fecha, dispo.inventario_id, dispo.fecha_bunch, dispo.proveedor_id, '.
+		if ($condiciones['sin_fecha']==true)
+		{
+			$sql_fecha = '';
+		}else{
+			$sql_fecha = 'dispo.fecha, ';
+		}//end if
+		
+		if ($condiciones['sin_fecha_bunch']==true)
+		{
+			$sql_fecha_bunch = '';			
+		}else{
+			$sql_fecha_bunch = 'dispo.fecha_bunch, ';
+		}
+		
+		
+		$sql = 	' SELECT '.$sql_fecha.' dispo.inventario_id, '.$sql_fecha_bunch.' dispo.proveedor_id, '.
 				'        dispo.producto, dispo.variedad_id, dispo.tallos_x_bunch, dispo.clasifica, '.
 				" 		 SUM(if(dispo.grado_id=40,  dispo.cantidad_bunch_disponible, 0)) as '40',".
 				" 		 SUM(if(dispo.grado_id=50,  dispo.cantidad_bunch_disponible, 0)) as '50',".
@@ -725,53 +751,128 @@ class DispoDAO extends Conexion
 				'            LEFT JOIN color_ventas '.
 				'                       ON color_ventas.id	= variedad.color_ventas_id '.
 				' WHERE 1 = 1 ';
-
+	
 		if (!empty($condiciones['inventario_id']))
 		{
 			$sql = $sql."	and dispo.inventario_id = '".$condiciones['inventario_id']."'";
 		}//end if
-		
-		if (!empty($condiciones['clasifica']))
-		{		
-			$sql = $sql."   and dispo.clasifica		= '".$condiciones['clasifica']."'";
-		}//end if
-		
+	
 		if (!empty($condiciones['proveedor_id']))
 		{
 			$sql = $sql."  and dispo.proveedor_id 	= '".$condiciones['proveedor_id']."'";
+		}//end if
+
+		if (!empty($condiciones['producto']))
+		{
+			$sql = $sql."   and dispo.producto		= '".$condiciones['producto']."'";
 		}//end if
 		
 		if (!empty($condiciones['variedad_id']))
 		{
 			$sql = $sql."   and dispo.variedad_id	= '".$condiciones['variedad_id']."'";
 		}//end if
-		
-/*		if (!empty($condiciones['grado_id']))
-		{				
-			$sql = $sql."   and dispo.grado_id		= '".$condiciones['grado_id']."'";
+
+		if (!empty($condiciones['tallos_x_bunch']))
+		{
+			$sql = $sql."   and dispo.tallos_x_bunch	= ".$condiciones['tallos_x_bunch'];
 		}//end if
-*/		
+		
+		if (!empty($condiciones['clasifica']))
+		{
+			$sql = $sql."   and dispo.clasifica		= '".$condiciones['clasifica']."'";
+		}//end if
+
+		/*	if (!empty($condiciones['grado_id']))
+			{
+			$sql = $sql."   and dispo.grado_id		= '".$condiciones['grado_id']."'";
+			}//end if
+		*/
+
 		if (!empty($condiciones['cadena_color_ventas_ids']))
 		{
 			$sql = $sql." and variedad.color_ventas_id in (".$condiciones['cadena_color_ventas_ids'].")";
 		}//end if
-		
+	
 		if (!empty($condiciones['cadena_calidad_variedad_ids']))
 		{
 			$sql = $sql." and variedad.calidad_variedad_id in (".$condiciones['cadena_calidad_variedad_ids'].")";
 		}//end if
-
-		$sql = $sql.' GROUP BY dispo.id, dispo.fecha, dispo.inventario_id, dispo.fecha_bunch, dispo.proveedor_id, '.
-				    '        dispo.producto, dispo.variedad_id, dispo.tallos_x_bunch, dispo.clasifica ';
+	
+		$sql = $sql.' GROUP BY '.$sql_fecha.' dispo.inventario_id, '.$sql_fecha_bunch.' dispo.proveedor_id, '.
+				    '          dispo.producto, dispo.variedad_id, dispo.tallos_x_bunch, dispo.clasifica ';
+	
 		
+		if (!empty($sql_fecha))			{$order_fecha 		= 'dispo.fecha DESC,';}			else{$order_fecha 		= '';}
+		if (!empty($sql_fecha_bunch))	{$order_fecha_bunch = 'dispo.fecha_bunch DESC,';}	else{$order_fecha_bunch = '';}
+		
+		$sql = $sql.' ORDER BY '.$order_fecha.' dispo.inventario_id, '.$order_fecha_bunch.' dispo.proveedor_id, '.
+					'          dispo.producto, dispo.variedad_id, dispo.tallos_x_bunch, dispo.clasifica ';
+
+
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
-
+	
 		return $result;
 	}//end function consultarDetallado
-		
 	
+	
+	
+	/**
+	 * Consultar
+	 *
+	 * @param DispoData $DispoData
+	 * @return DispoData|null
+	 */
+	public function consultarPorKey($DispoData)
+	{
+		$DispoData2 		    = new DispoData();
+	
+		$sql = 	' SELECT dispo.* '.
+				' FROM dispo '.
+				' WHERE dispo.fecha 		= :fecha '.
+				'   and dispo.inventario_id = :inventario_id'.
+				'   and dispo.fecha_bunch 	= :fecha_bunch'.
+				'   and dispo.proveedor_id 	= :proveedor_id'.
+				'   and dispo.producto 		= :producto'.
+				'   and dispo.variedad_id	= :variedad_id'.
+				'   and dispo.grado_id		= :grado_id'.
+				'   and dispo.tallos_x_bunch= :tallos_x_bunch'.
+				'   and dispo.clasifica		= :clasifica';
+
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':fecha',$DispoData->getFecha());
+		$stmt->bindValue(':inventario_id',$DispoData->getInventarioId());
+		$stmt->bindValue(':fecha_bunch',$DispoData->getFechaBunch());
+		$stmt->bindValue(':proveedor_id',$DispoData->getProveedorId());
+		$stmt->bindValue(':producto',$DispoData->getProducto());
+		$stmt->bindValue(':variedad_id',$DispoData->getVariedadId());
+		$stmt->bindValue(':grado_id',$DispoData->getGradoId());
+		$stmt->bindValue(':tallos_x_bunch',$DispoData->getTallosxbunch());
+		$stmt->bindValue(':clasifica',$DispoData->getClasifica());
+
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		if($row){	
+			$DispoData2->setId						($row['id']);
+			$DispoData2->setFecha 					($row['fecha']);
+			$DispoData2->setInventarioId			($row['inventario_id']);
+			$DispoData2->setFechaBunch				($row['fecha_bunch']);
+			$DispoData2->setProveedorId				($row['proveedor_id']);
+			$DispoData2->setProducto				($row['producto']);
+			$DispoData2->setVariedadId				($row['variedad_id']);
+			$DispoData2->setGradoId					($row['grado_id']);
+			$DispoData2->setTallosxBunch			($row['tallos_x_bunch']);
+			$DispoData2->setClasifica				($row['clasifica']);
+			$DispoData2->setCantidadBunch			($row['cantidad_bunch']);
+			$DispoData2->setCantidadBunchDisponible	($row['cantidad_bunch_disponible']);
+	
+			return $DispoData2;
+		}else{
+			return null;
+		}//end if
+	
+	}//end function consultar	
 }//end class
 
 

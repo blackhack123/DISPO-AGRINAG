@@ -340,6 +340,7 @@
                                      	<div class="accion-admin-section">
                                         	<div class="botonera-admin-section pull-left separator">
                                         		<button id="btn_nuevo" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</button>
+                                                <button id="btn_mover" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> MOVER</button>
                                         	</div>
                                             <div class="busqueda-admin-section pull-left">
                                             	 <select  id="inventario_id" class="form-control input-sm"></select>
@@ -348,7 +349,9 @@
                                           	     <select  id="color_ventas_id" class="form-control input-sm"></select>
                                                  <select name="calidad_variedad_id" class="form-control input-sm"  id="calidad_variedad_id">
                                                  </select>
-<button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
+                                                 
+												<button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
+												<button id="btn_excel" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-download-alt"></i></button>
                                             </div>
                                         </div>
                                      </section>
@@ -517,22 +520,17 @@
                                             <h4 class="modal-title" id="myModalLabel"><span id="dialog_dispo_general_stockgrado_titulo"></span></h4>
                                         </div>
                                         <div class="modal-body">
-                                        
+
+											<label class="sr-only" for="grid_dispogrupo_color">POPUP DISPO-GENERAL PARA CONFIGURAR EL STOCK MASIVO</label>
                                             <form id="frm_dispo_general_stockgrado" name="frm_dispo_general_stockgrado" action="#" method="post" />
-                                            	MORONITOR
-                                                <input type="text" id="inventario_id" value="" />
-                                                <input type="text" id="calidad_id" value="" />
-                                                <input type="text" id="proveedor_id" value="" />
-                                                <input type="text" id="grado_id" value="" />
+                                            <input type="hidden" id="inventario_id" value="" />
+                                                <input type="hidden" id="calidad_id" value="" />
+                                                <input type="hidden" id="proveedor_id" value="" />
+                                                <input type="hidden" id="grado_id" value="" />
                                             
                                             	<div class="row">
                                                 	<div class="col-sm-4">
-                                                    	<label class="sr-only" for="grid_dispogeneral_proveedor">GRID DE PROVEEDORES</label>
-                                                        <table id="grid_dispogeneral_proveedor" class="grid"></table>   <!-- grid-autowidthcontainer -->
-                                                        <div id="pager_dispogeneral_proveedor"></div>
-                                                        
-                                                        
-                                                    	<div class="form-horizontal">
+                                                   	  <div class="form-horizontal">
                                                         	<div class="form-group">                                                
                                                                 <label for="porcentaje" class="col-sm-5 control-label">PORCENTAJE:</label>
                                                                 <div class="col-sm-7">
@@ -579,7 +577,52 @@
                                     </div>
                                 </div>
                             </div>                              
-                             <!-- END Modal GRUPOS GENERAL ----------------------------------------------------------------------------------------->           
+                             <!-- END para cambiar masivamente el STOCK POR GRADO del la DISPO GENERAL-------------------->           
+
+
+    						<!-- Modal para MOVER STOCK en la DISPO GENERAL ------------------------------->
+                            <div class="modal fade" id="dialog_dispo_general_moverstock" tabindex="-1" role="dialog" aria-labelledby="Dialogo para mover en la DISPO GENERAL">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel"><span id="dialog_dispo_general_moverstock_titulo"></span></h4>
+                                        </div>
+                                        <div class="modal-body">
+
+											<label class="sr-only" for="grid_dispogrupo_color">POPUP DISPO-GENERAL PARA MOVER EL STOCK</label>
+                                            <form id="frm_dispo_general_moverstock" name="frm_dispo_general_moverstock" action="#" method="post" />
+                                            	<input type="hidden" id="inventario_id" value="" />
+                                                <input type="hidden" id="calidad_id" value="" />
+                                                <input type="hidden" id="proveedor_id" value="" />
+                                                <input type="hidden" id="color_ventas_id" value="" />
+                                                <input type="hidden" id="calidad_variedad_id" value="" />
+
+                         
+                                                <div class="form-inline">
+                                                        <div class="form-group">                                                
+                                                            <label for="calidad_id">Destino Calidad:</label>
+                                                            <select  id="calidad_id" class="form-control input-sm"></select>
+                                                        </div>
+    
+                                                        <button id="btn_mover" type="button" class="btn btn-primary btn-sm" data-loading-text="Procesando..."><i class="glyphicon glyphicon-ok"></i> MOVER</button>
+                                                </div>
+
+                                            	<div class="row">
+                                                	<div class="col-sm-12">      
+                                                        <label class="sr-only" for="grid_dispogeneral_color">GRID DE DISPO - MOVER</label>
+                                                        <table id="grid_dispogeneral_moverstock" class="grid grid-autoheight"></table>   <!-- grid-autowidthcontainer -->
+                                                        <div id="pager_dispogeneral_moverstock"></div>
+                                                    </div>
+                                                </div>
+                                            
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                              
+                             <!-- END Modal para MOVER STOCK en la DISPO GENERAL-------------------->           
                                                          
                             
                          </div>
@@ -650,7 +693,8 @@
                                                 <div class="form-group">                                                
                                                     <label for="calidad_id" class="col-md-3 control-label">Calidad:</label>
                                                     <div class="col-md-9">
-                                                    	<select  id="calidad_id" class="form-control" validate="required" validateMessage="Seleccione la calidad"></select>                                                    </div>
+                                                    	<select  id="calidad_id" class="form-control" validate="required" validateMessage="Seleccione la calidad"></select>                                                    
+                                                    </div>
                                                 </div>
 
                                                 <div class="form-group">                                                                                                   
@@ -676,10 +720,10 @@
                                             <h4 class="modal-title" id="myModalLabel"><span id="dialog_dispo_grupo_stockgrado_titulo"></span></h4>
                                         </div>
                                         <div class="modal-body">
-                                        
+                                        	<label class="sr-only" for="grid_dispogrupo_color">POPUP DISPO-POR-GRUPO PARA CONFIGURAR EL STOCK MASIVO</label>
                                             <form id="frm_dispo_grupo_stockgrado" name="frm_dispo_grupo_stockgrado" action="#" method="post" />
-                                                <input type="text" id="grupo_dispo_cab_id" value="" />
-                                                <input type="text" id="grado_id" value="" />
+                                                <input type="hidden" id="grupo_dispo_cab_id" value="" />
+                                                <input type="hidden" id="grado_id" value="" />
                                             
                                             	<div class="row">
                                                 	<div class="col-sm-4">

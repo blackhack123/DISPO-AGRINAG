@@ -846,8 +846,8 @@ $(document).ready(function () {
 		var parameters = {	'type': 'POST',//'POST',
 							'contentType': 'application/json',
 							'url':'../../dispo/grupodispo/grabarporgrupoporgrado',
-							'control_process':true,
-							'show_cargando':false,
+							'control_process':false,
+							'show_cargando':true,
 							'async':true, 
 							'finish':function(response){
 									$("frm_dispo_grupo_stockgrado #btn_grabar").button('reset');
