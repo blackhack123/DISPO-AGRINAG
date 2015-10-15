@@ -12,7 +12,6 @@ use Dispo\BO\MarcacionBO;
 use Dispo\BO\AgenciaCargaBO;
 use Zend\Http\Client;
 use Zend\Http\Request;
-use Dispo\BO\Dispo\BO;
 use Dispo\BO\CalidadBO;
 use Dispo\BO\InventarioBO;
 use Dispo\BO\ProveedorBO;
@@ -1224,12 +1223,12 @@ class DisponibilidadController extends AbstractActionController
 			$color_ventas_id	= $request->getQuery('color_ventas_id', "");
 			$calidad_variedad_id= $request->getQuery('calidad_variedad_id', "");
 
-			$InventarioData 		= $InventarioBO->consultar($inventario_id, Application\Constants\ResultType::OBJETO);
+/*			$InventarioData 		= $InventarioBO->consultar($inventario_id, Application\Constants\ResultType::OBJETO);
 			$CalidadData			= $CalidadBO->consultarPorClasificaFox($clasifica, Application\Constants\ResultType::OBJETO);
 			$ProveedorData			= $ProveedorBO->consultar($proveedor_id, Application\Constants\ResultType::OBJETO);
 			$ColorVentasData 		= $ColorVentasBO->consultar($color_ventas_id, Application\Constants\ResultType::OBJETO);			
 			$CalidadVariedadData 	= $CalidadVariedadBO->consultar($calidad_variedad_id, Application\Constants\ResultType::OBJETO);
-
+*/
 			$condiciones = array(
 					"inventario_id"		=> $inventario_id,
 					"proveedor_id"		=> $proveedor_id,
@@ -1266,9 +1265,9 @@ class DisponibilidadController extends AbstractActionController
 
 			$viewModel->result 	= $result;
 			$viewModel->totales = $totales;
-			$viewModel->inventario_nombre 	= $InventarioData->getNombre();
+/*			$viewModel->inventario_nombre 	= $InventarioData->getNombre();
 			$viewModel->calidad_nombre		= $CalidadData->getNombre();
-			
+*/			
 			//echo("<pre>");var_dump($result);echo("</pre>");exit;
 			$viewModel->setTerminal(true);			
 			//$this->layout('layout/mobile');

@@ -8,6 +8,7 @@ use Dispo\DAO\GrupoPrecioCabDAO;
 use Dispo\DAO\GrupoPrecioDetDAO;
 use Dispo\DAO\DispoDAO;
 use Dispo\Data\GrupoPrecioCabData;
+use Dispo\DAO\VariedadDAO;
 
 class GrupoPrecioCabBO extends Conexion
 {
@@ -65,10 +66,12 @@ class GrupoPrecioCabBO extends Conexion
 		$GrupoPrecioCabDAO 	= new GrupoPrecioCabDAO();
 		$GrupoDispoDetDAO	= new GrupoPrecioDetDAO();
 		$DispoDAO 			= new DispoDAO();
+		$VariedadDAO		= new VariedadDAO();
 		
 		$GrupoPrecioCabDAO->setEntityManager($this->getEntityManager());
 		$GrupoDispoDetDAO->setEntityManager($this->getEntityManager());
 		$DispoDAO->setEntityManager($this->getEntityManager());
+		$VariedadDAO->setEntityManager($this->getEntityManager());
 		
 		/**
 		 * Se obtiene el registro CABECERA de la DISPO X GRUPO
@@ -91,6 +94,13 @@ class GrupoPrecioCabBO extends Conexion
 		);
 		$result_dispo = $DispoDAO->listado($condiciones2);
 		
+		
+/*		$condiciones2 = array(
+				"clasifica"			=> $reg_grupoPrecioCab['clasifica_fox'],
+				"color_ventas_id"	=> $condiciones['color_ventas_id']
+		);
+		$result_dispo = $VariedadDAO->listado($condiciones);
+*/		
 		/**
 		 * Se obtiene los registros de el PRECIO POR GRUPO
 		 */

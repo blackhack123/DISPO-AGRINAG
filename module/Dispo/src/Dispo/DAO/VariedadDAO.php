@@ -266,5 +266,14 @@ class VariedadDAO extends Conexion
 	}//end function listado
 	
 
+	
+	public function listadoDispo($condiciones)
+	{
+		$sql = 	' SELECT * '.
+				' FROM variedad '.
+				' WHERE 1 = 1';
+	
+	}//end function listadoDispo
+	
 }//end class
 

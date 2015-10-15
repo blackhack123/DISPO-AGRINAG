@@ -248,7 +248,7 @@ class DispoDAO extends Conexion
 		}//end if
 		if (!empty($tallos_x_bunch)){
 			$sql = $sql."           AND grupo_precio_det.tallos_x_bunch = ".$tallos_x_bunch;
-		}//end if			
+		}//end if
 		$sql = $sql.'		 INNER JOIN dispo '.
 				"					 ON dispo.inventario_id	= usuario.inventario_id ".  /*INVENTARIO*/
 				'                   AND dispo.producto      = grupo_precio_det.producto_id'.

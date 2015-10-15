@@ -13,6 +13,7 @@ use Dispo\DAO\GrupoPrecioDetDAO;
 use Dispo\DAO\GrupoPrecioOfertaDAO;
 use Dispo\DAO\CalidadDAO;
 use Dispo\Data\DispoData;
+use Application\Classes\PHPExcelApp;
 
 
 
@@ -180,6 +181,11 @@ class DispoBO extends Conexion
 			
 			foreach($result as $row)
 			{
+				if (($row['variedad_id']=='BLU')&&($row['grado_id']=='60'))
+				{
+					$debug = 1;
+				}//end if
+				
 				//$porcentaje = 100/100;
 				if (empty($row['grupo_dispo_det_cantidad_bunch_disponible']))
 				{
@@ -210,7 +216,7 @@ class DispoBO extends Conexion
 				
 				if ($row['precio']==0) //Si el precio viene con CERO se salta directamente al FOR
 				{
-					break;
+					continue; //MORONITOR
 				}
 			
 				//Si varia la variedad_id y el grado_id se indica la cantidad de bunch disponibles del GRUPO DISPO
@@ -281,7 +287,12 @@ class DispoBO extends Conexion
 					$row_dispo['tipo_caja_origen_id']		= $row['tipo_caja_origen_id'];
 					$row_dispo['tipo_caja_unds_bunch']		= $row['tipo_caja_unds_bunch'];
 					$row_dispo['tallos_x_bunch']			= $row_dispo['tallos_x_bunch']; //MEJORA POR LOS BUNCHS 
-					$row_dispo['nro_cajas']					= floor($row_dispo['tot_bunch_disponible']/$row['tipo_caja_unds_bunch']);
+					if (empty($row['tipo_caja_unds_bunch']))
+					{
+						$row_dispo['nro_cajas']				= 0;
+					}else{
+						$row_dispo['nro_cajas']				= floor($row_dispo['tot_bunch_disponible']/$row['tipo_caja_unds_bunch']);
+					}//end if
 				
 					//obtiene la dispo por proveedores
 					if ($get_fincas == true)
@@ -962,5 +973,12 @@ class DispoBO extends Conexion
 			throw $e;
 		}
 	}//end function grabarMasivoStock
+
+	
+	public function generarExcel()
+	{
+		$PHPExcelApp 	= new PHPExcelApp();
+	}//end function generarExcel
+	
 	
 }//end class DispoBO
