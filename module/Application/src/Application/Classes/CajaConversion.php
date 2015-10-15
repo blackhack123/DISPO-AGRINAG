@@ -5,7 +5,6 @@ namespace Application\Classes;
 class CajaConversion {
 	
 	
-	
 	/**
 	 * 
 	 * @param string $tipo_caja
@@ -28,6 +27,10 @@ class CajaConversion {
 			case 'HJ':
 				$factor = 0.5;  //Confirmado por Jorge
 				break; 
+				
+			case 'HE': //HB Extra Jumbo
+				$factor = 0.5;
+				break;				
 				
 			case 'OB':
 				$factor = 0.125;

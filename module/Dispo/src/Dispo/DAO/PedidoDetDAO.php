@@ -481,7 +481,8 @@ class PedidoDetDAO extends Conexion
 				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id, '.
 */		$sql = 	' SELECT pedido_det.*, variedad.producto_id as variedad_producto_id, variedad.nombre as variedad_nombre, '.
 				'        pedido_cab.cliente_id, pedido_cab.marcacion_sec, '.
-				' 		 pedido_cab.agencia_carga_id, color_ventas.nombre as color_ventas_nombre, '.				
+				' 		 pedido_cab.agencia_carga_id, color_ventas.nombre as color_ventas_nombre, '.	
+				'        tipo_caja.nombre as tipo_caja_nombre, '.			
 				'		 CASE pedido_det.estado_reg_oferta '.
 				'			WHEN 1 THEN variedad_hueso.nombre '.
 				'			WHEN 0 THEN variedad_carne.nombre '.
@@ -499,7 +500,9 @@ class PedidoDetDAO extends Conexion
 		$sql .=	'				  INNER JOIN variedad '.
 				'                    ON variedad.id				= pedido_det.variedad_id '.
 				'				  INNER JOIN color_ventas '.
-				' 					 ON color_ventas.id			= variedad.color_ventas_id '.				
+				' 					 ON color_ventas.id			= variedad.color_ventas_id '.
+				'				  INNER JOIN tipo_caja '.
+				'                    ON tipo_caja.id            = pedido_det.tipo_caja_id '.				
 				'                 LEFT JOIN pedido_det as pedido_det_vinculado_carne '.
 				'					 ON pedido_det_vinculado_carne.pedido_cab_id	= pedido_det.pedido_cab_oferta_id '.
 				'				    AND pedido_det_vinculado_carne.pedido_det_sec	= pedido_det.pedido_det_oferta_sec '.
@@ -570,11 +573,14 @@ class PedidoDetDAO extends Conexion
 	public function listado($condiciones)
 	{
 		$sql = 	' SELECT pedido_det.*, variedad.nombre as variedad_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
+				'		 tipo_caja.nombre as tipo_caja_nombre, '.
 				'        marcacion.nombre as marcacion_nombre, pedido_cab.cliente_id, color_ventas.nombre as  color_ventas_nombre '.
 				' FROM pedido_cab INNER JOIN pedido_det '.
 				'				     ON pedido_det.pedido_cab_id= pedido_cab.id '.
 				'				  INNER JOIN variedad '.
 				'                    ON variedad.id				= pedido_det.variedad_id '.
+				'				  INNER JOIN tipo_caja'.
+				'					 ON tipo_caja.id			= pedido_det.tipo_caja_id '.
 				'				  LEFT JOIN color_ventas '.
 				'					 ON color_ventas.id 		= variedad.color_ventas_id '.
 				'				  LEFT JOIN agencia_carga '.

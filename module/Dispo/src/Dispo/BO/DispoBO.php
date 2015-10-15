@@ -181,7 +181,7 @@ class DispoBO extends Conexion
 			
 			foreach($result as $row)
 			{
-				if (($row['variedad_id']=='BLU')&&($row['grado_id']=='60'))
+				if (($row['variedad_id']=='ALB')&&($row['grado_id']=='60'))
 				{
 					$debug = 1;
 				}//end if

@@ -224,7 +224,7 @@ class DispoDAO extends Conexion
 		$sql = 	' SELECT dispo.producto as producto_id, '.
 				'       variedad.nombre as variedad_nombre,'.
 				'		dispo.variedad_id, '.
-				'		dispo.grado_id,'.
+				'		dispo.grado_id as grado_id,'.
 				'       dispo.tallos_x_bunch,'.
 				'		dispo.proveedor_id, '.				
 				'		grupo_dispo_det.cantidad_bunch_disponible as grupo_dispo_det_cantidad_bunch_disponible, '.
