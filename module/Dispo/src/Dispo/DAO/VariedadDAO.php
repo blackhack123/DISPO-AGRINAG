@@ -225,10 +225,10 @@ class VariedadDAO extends Conexion
 	public function listado($condiciones)
 	{
 		$sql = 	' SELECT variedad.id, variedad.nombre, variedad.colorbase,variedad.solido, variedad.es_real, variedad.sincronizado, variedad.fec_sincronizado, color_ventas.nombre as color_venta, variedad.estado,
-	variedad.url_ficha '.
+						 variedad.url_ficha '.
 				' FROM variedad '.
-				' LEFT JOIN color_ventas '.
-				' 		ON variedad.color_ventas_id = color_ventas.id';
+				' 			LEFT JOIN color_ventas '.
+				' 					ON variedad.color_ventas_id = color_ventas.id';
 	
 		if (!empty($condiciones['criterio_busqueda']))
 		{
@@ -265,6 +265,85 @@ class VariedadDAO extends Conexion
 		return $result;
 	}//end function listado
 	
+	
+	public function listadoExcel($condiciones)
+	{
+		$sql = ' SELECT 	variedad.id, variedad.nombre, variedad.url_ficha, calidad_variedad.nombre as calidad, obtentor.nombre as nombre_obtentor,
+						tamano_bunch.nombre as nombre_bunch, colores.nombre AS color_base, color_ventas.nombre AS color_venta, 	variedad.solido,
+						variedad.es_real, variedad.estado '.
+				' FROM 	variedad'.
+				'				LEFT JOIN color_ventas '.
+				' 						ON variedad.color_ventas_id = color_ventas.id '.
+				' 				LEFT JOIN tamano_bunch '.
+				' 						ON variedad.tamano_bunch_id = tamano_bunch.id '.
+				'				LEFT JOIN calidad_variedad '.
+				' 						ON	variedad.calidad_variedad_id = calidad_variedad.id '.
+				'				LEFT JOIN obtentor '.
+				' 						ON variedad.obtentor_id = obtentor.id '.
+				' 				LEFT JOIN colores '.
+				'						ON variedad.colorbase = colores.color ';
+				
+		
+		
+		
+		if (!empty($condiciones['criterio_busqueda']))
+		{
+			$sql = $sql." and (variedad.nombre like '%".$condiciones['criterio_busqueda']."%'".
+					"      or variedad.id like '%".$condiciones['criterio_busqueda']."%'".
+					"      or variedad.colorbase like '%".$condiciones['criterio_busqueda']."%')";
+				
+		}//end if
+		
+		if (!empty($condiciones['estado']))
+		{
+			$sql = $sql." and variedad.estado = '".$condiciones['estado']."'";
+		}//end if
+		
+		
+		if (!empty($condiciones['color_ventas_id']))
+		{
+			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."' ";
+		}//end if
+		
+		
+		$sql= $sql. " order by variedad.nombre";
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+		
+		return $result;
+		
+	}
+	
+	/**
+	 * Consultar
+	 *
+	 * @param string $id
+	 * @return ProveedorData|null
+	 */
+	public function consultarVariedad($id)
+	{
+		$VariedadData 		    = new $VariedadData();
+	
+		$sql = 	' SELECT variedad.* '.
+				' FROM variedad '.
+				' WHERE variedad.id = :id ';
+	
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':id',$id);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		if($row){
+	
+			$VariedadData->setId						($row['id']);
+			$VariedadData->setNombre 					($row['nombre']);
+			return $VariedadData;
+		}else{
+			return null;
+		}//end if
+	
+	}//end function consultar
 
 	
 	public function listadoDispo($condiciones)
