@@ -19,7 +19,7 @@ class ColorVentasDAO extends Conexion
 	 */	
 	public function consultar($id)
 	{
-		$AgenciaCargaData 		    = new ColoresData();
+		$ColorVentasData 		    = new ColorVentasData();
 
 		$sql = 	' SELECT color_ventas.* '.
 				' FROM color_ventas '.
@@ -32,9 +32,9 @@ class ColorVentasDAO extends Conexion
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		if($row)
 		{
-			$ColoresData->getId			($row['id']);				
-			$ColoresData->getNombre 	($row['nombre']);
-			return $ColoresData;
+			$ColorVentasData->setId			($row['id']);				
+			$ColorVentasData->setNombre 	($row['nombre']);
+			return $ColorVentasData;
 		}else{
 			return null;
 		}//end if

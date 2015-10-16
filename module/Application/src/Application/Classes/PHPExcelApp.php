@@ -26,6 +26,10 @@ class PHPExcelApp {
 	const FORMAT_EXCEL_2007					= 'EXCEL_2007';
 	const FORMAT_EXCEL_95					= 'EXCEL_95';
 	const FORMAT_EXCEL_2007_TO_DISK			= 'EXCEL_2007_TO_DISK';
+	
+
+	const COLOR_ORANGE						= 'FFFFA500';
+
 
 	/**
 	 * Obtiene el estilo
@@ -231,12 +235,12 @@ class PHPExcelApp {
 		}
 
 		$objPHPExcel->getProperties()->setCreator($this->user_name)
-		->setLastModifiedBy("ERP")
-		->setTitle("Office 2007 XLSX ERP")
-		->setSubject("Office 2007 XLSX ERP")
-		->setDescription("ERP")
+		->setLastModifiedBy("Disponibilidad Agrinag")
+		->setTitle("Office 2007 XLSX Disponibilidad")
+		->setSubject("Office 2007 XLSX Disponibilidad")
+		->setDescription("Dispo Agrinag")
 		->setKeywords("office 2007 openxml php")
-		->setCategory("Document ERP");
+		->setCategory("Document Disponibilidad");
 	}//end function setMetaDataDocument
 
 

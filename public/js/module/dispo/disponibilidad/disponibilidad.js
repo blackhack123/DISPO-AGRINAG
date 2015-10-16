@@ -939,11 +939,16 @@ $(document).ready(function () {
 	
 	function DispoGeneral_ExportarExcel()
 	{
-		var inventario_id		= $("#frm_dispo #inventario_id").val();
-		var proveedor_id		= $("#frm_dispo #proveedor_id").val();
-		var clasifica			= $("#frm_dispo #calidad_id").val();
-		var color_ventas_id		= $("#frm_dispo #color_ventas_id").val();
-		var calidad_variedad_id	= $("#frm_dispo #calidad_variedad_id").val();
-		var url = '../../dispo/disponibilidad/exportarexcel?inventario_id='+inventario_id+'&proveedor_id='+proveedor_id+'&clasifica='+clasifica+'&color_ventas_id='+color_ventas_id+'&calidad_variedad_id='+calidad_variedad_id;
-		var win = window.open(url, '_blank', 'toolbar=0,location=0,menubar=0');
+		cargador_visibility('show');
+
+		var url = '../../dispo/disponibilidad/exportarexcel';
+		var params = '?inventario_id='+$("#frm_dispo #inventario_id").val()+
+					 '&proveedor_id='+$("#frm_dispo #proveedor_id").val()+
+				 	 '&clasifica='+$("#frm_dispo #calidad_id").val()+
+					 '&color_ventas_id='+$("#frm_dispo #color_ventas_id").val()+
+					 '&calidad_variedad_id='+$("#frm_dispo #calidad_variedad_id").val();
+		url = url + params;
+		var win = window.open(url);
+		
+		cargador_visibility('hide');
 	}//end function DispoGeneral_ExportarExcel

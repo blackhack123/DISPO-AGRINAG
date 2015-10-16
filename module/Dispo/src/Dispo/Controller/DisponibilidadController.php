@@ -1192,7 +1192,7 @@ class DisponibilidadController extends AbstractActionController
 	
 
 	
-	function exportarexcelAction()
+	function exportarexcelOLDAction()
 	{
 		try
 		{
@@ -1281,5 +1281,49 @@ class DisponibilidadController extends AbstractActionController
 			return $response;
 		}
 	}//end function exportarexcelAction 
+
+	
+	
+	function exportarexcelAction()
+	{
+		try
+		{
+			$viewModel 			= new ViewModel();
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$DispoBO 			= new DispoBO();
+
+				
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 			= $this->getRequest();
+			$inventario_id 	 	= $request->getQuery('inventario_id', "");
+			$proveedor_id  		= $request->getQuery('proveedor_id', "");
+			$clasifica  		= $request->getQuery('clasifica', "");
+			$color_ventas_id	= $request->getQuery('color_ventas_id', "");
+			$calidad_variedad_id= $request->getQuery('calidad_variedad_id', "");
+	
+			$condiciones = array(
+					"inventario_id"		=> $inventario_id,
+					"proveedor_id"		=> $proveedor_id,
+					"clasifica"			=> $clasifica,
+					"color_ventas_id"	=> $color_ventas_id,
+					"calidad_variedad_id"=> $calidad_variedad_id
+			);
+			$result = $DispoBO->generarExcel($condiciones);
+		
+			exit;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function exportarexcel2Action
+	
 	
 }
