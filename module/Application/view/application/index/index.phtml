@@ -33,7 +33,7 @@
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
 			<div class="login-cont-header clearfix">
-                <img class="flo-left" src="images/login-agr-logo.png" alt="Logo Agrinag">
+                <img class="flo-left" src="<?php echo($this->basePath()); ?>/images/login-agr-logo.png" alt="Logo Agrinag">
                 <h2 class="pull-right">
                     AVAILABILITY - <b>AGRINAG</b>
                 </h2>
@@ -41,28 +41,32 @@
 
 			<div class="row" id="fondo-login" >
 				<div class="col-md-12 clearfix visible-sm-block visible-md-block visible-lg-block" id="espacio-fondo-login">
-						<br><br><br><br><br><br><br><br><br><br><br><br><br>
+						<br><br><br><br><br><br><br><br>
 				</div>
 
 				<div id="contenedor-controles-login" class="col-md-12">
 					<br><br>
 		            <form method="post" id="frm" name="frm" action="<?php echo($this->basePath()); ?>/seguridad/login/autenticar" class="form-inline bootstrap-centered">
 		            	<input id="btnEnviar" type="submit" style="visibility:hidden" />
+                        <center>
 						<div class="form-group">
 									<div class="input-group">
 									  	<span id="user-img" name="user-img" class="glyphicon glyphicon-user input-group-addon btn btn-lg"></span>
-									  	<input type="text" class="form-control input-lg" name="username" placeholder="User Name" aria-describedby="user-img">
+									  	<input type="text" class="form-control input-lg" name="username" placeholder="User Name" aria-describedby="user-img" style="margin-top:2px">
 									</div>               
 						</div>
 						<div class="form-group">
 									<div class="input-group">
 									  	<span id="password-img" name="password-img" class="glyphicon glyphicon-lock input-group-addon btn btn-lg"></span>	
-									  	<input type="password" class="form-control input-lg"  name="password" id="password" placeholder="Password">
-									  	<a href="#" id="btnlogin" name="btnlogin" class="input-group-addon btn btn-lg" role="button" style="background-color: orange; color:white">
-										    <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
-										 </a>
+									  	<input type="password" class="form-control input-lg"  name="password" id="password" placeholder="Password" style="margin-top:2px">
+
+									  	
 									</div>
 						</div>
+                        <div class="clearfix visible-sm-block visible-xs-block"><div style="margin-top:5px"></div></div>
+						<button type="submit" class="btn btn-lg" style="background-color: orange; color:white;  margin-top:2px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>                        
+                        </center>
+                        
 		                <p style="color:#FFFFFF">
 							<?php		
 							$mensaje = '';
@@ -85,13 +89,13 @@
 			
 			<div class="col-md-12">
                 <div class="pull-right bootstrap-circle social-icon">
-                    <a href="http://www.facebook.com/agrinagrose" target="_blank"><img src="images/facebook-icon.png" alt=""></a>
+                    <a href="http://www.facebook.com/agrinagrose" target="_blank"><img src="<?php echo($this->basePath()); ?>/images/facebook-icon.png" alt=""></a>
                 </div>
                 <div class="pull-right bootstrap-circle social-icon">
-                    <a href="http://instagram.com/agrinagrose" target="_blank"><img src="images/instag-icon.png" alt=""></a>
+                    <a href="http://instagram.com/agrinagrose" target="_blank"><img src="<?php echo($this->basePath()); ?>/images/instag-icon.png" alt=""></a>
                 </div>
                 <div class="pull-right bootstrap-circle social-icon">
-                    <a href="http://www.pinterest.com/agrinagroses/" target="_blank"><img src="images/pint-icon.png" alt=""></a>
+                    <a href="http://www.pinterest.com/agrinagroses/" target="_blank"><img src="<?php echo($this->basePath()); ?>/images/pint-icon.png" alt=""></a>
                 </div>				
 			</div>
 			

@@ -461,7 +461,7 @@ $(document).ready(function () {
 			return false; // dont send load data request*/
 		},
 		loadError: function (jqXHR, textStatus, errorThrown) {
-			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+//			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 		},
 	});							
 	jQuery("#grid_dispogrupo_color").jqGrid('navGrid','#pager_dispogrupo_color',{edit:false,add:false,del:false});
@@ -514,7 +514,7 @@ $(document).ready(function () {
 			return false; // dont send load data request*/
 		},
 		loadError: function (jqXHR, textStatus, errorThrown) {
-			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+			//message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
 		},
 	});							
 	jQuery("#grid_dispogrupo_categoria").jqGrid('navGrid','#pager_dispogrupo_categoria',{edit:false,add:false,del:false});

@@ -57,11 +57,16 @@ function ajax_call(parameters, obj_data){
 			if (parameters.show_cargando==true){
 				cargador_visibility('hide');
 			}//end if
-		}).error(function(request, status, error) {
-			message_error('ERROR2', request.responseText, true);
-			console.log(request);
-			console.log(status);								
-			console.log(error);
+		}).error(function(request, status, error) {		
+			//console.log('paso01:*',error,"*");
+			if (error.length != 0)
+			{	
+				//console.log('paso02');
+				message_error('ERROR2', request.responseText, true);
+				console.log('request:',request);
+				console.log('status:',status);								
+				console.log('error:',error);
+			}//end if
 			if (parameters.show_cargando==true){
 				cargador_visibility('hide');
 			}//end if
