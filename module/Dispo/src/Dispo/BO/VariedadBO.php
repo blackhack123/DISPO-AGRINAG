@@ -366,17 +366,18 @@ class VariedadBO extends Conexion
 		//------------------------------Registra la cabecera--------------------------------
 		$row				= 1;
 		$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
-		$col_fin 			= $PHPExcelApp->getNameFromNumber(13);
+		$col_fin 			= $PHPExcelApp->getNameFromNumber(11);
 		
 		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, "LISTADO DE VARIEDADES");
 		$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
 		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
+		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 		
 		
 		//------------------------------Registra criterios linea 1--------------------------
 		$row				= 2;
 		$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
-		$col_fin 			= $PHPExcelApp->getNameFromNumber(13);
+		$col_fin 			= $PHPExcelApp->getNameFromNumber(11);
 		
 		$objRichText = new \PHPExcel_RichText();
 		$objRichText->createText('');
@@ -396,7 +397,8 @@ class VariedadBO extends Conexion
 		$objProveedor->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
 		$objRichText->createText($busqueda_estado);
 		
-		
+		$objPHPExcel->getActiveSheet()->getCell($col_ini.$row)->setValue($objRichText);
+		$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
 		//------------------------------ Registro de Fecha de Generacion --------------------------------
 		$row				= 3;
 		$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
@@ -404,12 +406,11 @@ class VariedadBO extends Conexion
 		
 		//$etiqueta = "";
 		
-		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, "Reporte al: ".\Application\Classes\Fecha::getFechaHoraActualServidor());
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, "Generado: ".\Application\Classes\Fecha::getFechaHoraActualServidor());
 		
 		$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
 		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
 		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-		
 		
 		//-------------------------ESTABLECE TITULO DE COLUMNAS----------------------------
 		$row = $row + 1;
@@ -487,7 +488,7 @@ class VariedadBO extends Conexion
 		
 		//Margenes
 		$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
-		$col_fin 			= $PHPExcelApp->getNameFromNumber(13);
+		$col_fin 			= $PHPExcelApp->getNameFromNumber(11);
 		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row_detalle_ini.":".$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_BORDE_TODO));
 		
 		// Rename worksheet
