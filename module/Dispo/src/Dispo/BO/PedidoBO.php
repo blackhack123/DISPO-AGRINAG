@@ -76,6 +76,11 @@ class PedidoBO extends Conexion
 				return $result_oferta;
 			}//end if
 			
+			if (empty($pedido_cab_id))
+			{
+				$pedido_cab_id = $result_oferta['pedido_cab_id'];
+			}//end if
+			
 			//Se registra el hueso
 			$result_hueso 	= $this->addItem($pedido_cab_id, $cliente_id, $usuario_cliente_id, $usuario_vendedor_id, $marcacion_sec, $agencia_carga_id, 
 										 $hueso_producto_id, $hueso_variedad_id, $hueso_grado_id, $hueso_tallos_x_bunch, $hueso_tipo_caja_id, $hueso_nro_cajas_seleccionada,
