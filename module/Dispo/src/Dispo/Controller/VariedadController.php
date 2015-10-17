@@ -309,6 +309,43 @@ class VariedadController extends AbstractActionController
 			return $response;
 		}
 	}//end function consultarAction	
-
+	
+	
+	function exportarexcelAction()
+	{
+		try
+		{
+			$viewModel 			= new ViewModel();
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$VariedadBO 		= new VariedadBO();
+	
+			
+			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 				= $this->getRequest();
+			$criterio_busqueda 	 	= $request->getQuery('criterio_busqueda', "");
+			$busqueda_estado  		= $request->getQuery('busqueda_estado', "");
+			$busqueda_color  		= $request->getQuery('busqueda_color', "");
+	
+			$condiciones = array(
+					"criterio_busqueda"		=> $criterio_busqueda,
+					"busqueda_estado"		=> $busqueda_estado,
+					"busqueda_color"		=> $busqueda_color
+			);
+			$result = $VariedadBO->generarExcel($condiciones);
+	
+			exit;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function exportarexcel2Action
 	
 }//end controller

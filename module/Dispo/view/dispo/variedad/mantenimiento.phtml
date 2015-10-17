@@ -56,6 +56,11 @@ $(document).ready(function () {
 		return false;
     });       
 
+    $("#frm #btn_excel").on('click', function(event){ 
+		Variedad_ExportarExcel();
+		return false;
+	});	
+	
 	        
 	function nuevo()
 	{
@@ -265,6 +270,19 @@ $(document).ready(function () {
 	}//end function mostrar_registro
 
 
+	function Variedad_ExportarExcel()
+	{
+		cargador_visibility('show');
+
+		var url = '../../dispo/variedad/exportarexcel';
+		var params = '?criterio_busqueda='+$("#frm #criterio_busqueda").val()+
+					 '&busqueda_estado='+$("#frm #busqueda_estado").val()+
+				 	 '&busqueda_color='+$("#frm #busqueda_color").val();
+		url = url + params;
+		var win = window.open(url);
+		
+		cargador_visibility('hide');
+	}//end function Variedad_ExportarExcel
 
 	
 	});//$(document).ready
@@ -300,8 +318,13 @@ $(document).ready(function () {
     	                </select>                                       
                     </div>
  					<span class="input-group-btn">
-                    	<button id="btn_consultar" class="btn btn-small btn-success" type="button"><i class="glyphicon glyphicon-search icon-white"></i></button>
-                    </span>                        
+                    	<button id="btn_consultar" class="btn  btn-success" type="button"><i class="glyphicon glyphicon-search icon-white"></i></button>
+                    	
+                    </span>    
+                    <span>&nbsp;&nbsp;</span>
+                    <span class="input-group">
+                    <button id="btn_excel" type="button" class="btn btn-success "> <i class="glyphicon glyphicon-download-alt"></i></button>
+                    </span>                    
                 </div>                
                 </form>                  
 				</div>
