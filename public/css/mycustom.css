@@ -238,4 +238,12 @@ background-color:#DFEFFF;
 /*Esconde la X para incializar las cajas de busqueda*/
 .ui-search-clear {
 			 display: none;
-		}
+}
+		
+
+
+.link_mark{
+    color: gray;
+    text-decoration:underline;
+	font-size: 12px;
+}

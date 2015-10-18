@@ -876,5 +876,20 @@ class PedidoBO extends Conexion
 		$result = $PedidoCabDAO->listadoVendedor($condiciones);
 	
 		return $result;
-	}//end functino listado	
+	}//end functino listado
+
+	
+	/**
+	 *
+	 * @param PedidoDetData $PedidoDetData
+	 * @return boolean
+	 */
+	public function grabarMarca(PedidoDetData $PedidoDetData)
+	{
+		$PedidoDetDAO	= new PedidoDetDAO();
+	
+		$PedidoDetDAO->setEntityManager($this->getEntityManager());
+		$PedidoDetDAO->actualizarMarca($PedidoDetData);
+		return true;
+	}//end function grabarComentario	
 }//end class PedidoBO

@@ -605,6 +605,30 @@ class PedidoDetDAO extends Conexion
 		$result = $stmt->fetchAll();
 		
 		return $result;		
-	}
+	}//end function listado
+	
+	
+	
+	/**
+	 * Actualiza el numero de cajas
+	 *
+	 * @param PedidoDetData $PedidoDetData
+	 * @return array $key
+	 */
+	public function actualizarMarca(PedidoDetData $PedidoDetData)
+	{
+		$key    = array(
+				'pedido_cab_id'			      		  		  => $PedidoDetData->getPedidoCabId(),
+				'pedido_det_sec'						      => $PedidoDetData->getPedidoDetSec()
+		);
+		$record = array(
+				'marca'											=> $PedidoDetData->getMarca(),
+				'usuario_mod_id'								=> $PedidoDetData->getUsuarioModId(),
+				'fec_modifica'									=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $key;
+	}//end function actualizarMarca
+		
 }//end class
 ?>

@@ -700,4 +700,51 @@ class PedidoController extends AbstractActionController
 	}//end function listadovendedordataAction 
 	
 	
+	public function grabarmarcaAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$PedidoBO 				= new PedidoBO();
+			$PedidoDetData			= new PedidoDetData();
+	
+			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin->isLoginClienteVendedor();
+
+			$usuario_id			= $SesionUsuarioPlugin->getUsuarioId();
+			$pedido_cab_id		= intval($this->params()->fromPost('pedido_cab_id',''));
+			$pedido_det_sec		= intval($this->params()->fromPost('pedido_det_sec',''));
+			$marca			= $this->params()->fromPost('marca','');
+				
+			$PedidoDetData->setPedidoCabId($pedido_cab_id);
+			$PedidoDetData->setPedidoDetSec($pedido_det_sec);			
+			$PedidoDetData->setMarca($marca);
+			$PedidoDetData->setUsuarioModId	($usuario_id);
+	
+			//Consulta la marcacion para obtener el nombre
+			$result		= $PedidoBO->grabarMarca($PedidoDetData);
+			//$nro_reg_det = $PedidoBO->eliminarPorPedidoCabIdPorPedidoDetSec($pedido_cab_id, $pedido_det_sec);
+	
+			//En caso de ser CERO los detalles de los registros, la variable de session de PedidoCabIdActual debe de encerarse
+			$response = new \stdClass();
+			$response->respuesta_code 			= 'OK';
+			$response->respuesta_mensaje		= '';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end public grabarcomentarioAction
+	
+	
+	
 }//end controller

@@ -45,26 +45,21 @@
         <div class="clearfix"></div>
 
 		<div>
-						<table class="table-dispo border" id="tbl_pedido_actual" width="100%">
+						<table class="table-dispo border" id="tbl_pedido_actual" width="90%" align="left">
                             <tr>
-                                <td class="th-inner"  width="60">ID Item</td>
                                 <td class="th-inner" width="100%">Variety</td>
-                                <td class="th-inner"  width="90">Color</td>
-                                <td class="th-inner"  width="90">Length(cm)</td>
-                                <td class="th-inner"  width="90">Unts/Bunch</td>
+                                <td class="th-inner"  width="90">Length (cm)</td>
+                                <td class="th-inner"  width="90">Unts /Bunch</td>
                                 <td class="th-inner"  width="100">Box Type</td>
-                                <td class="th-inner"  width="100">Bunch/Box</td> 
+                                <td class="th-inner"  width="100">Bunch /Box</td> 
                                 <td class="th-inner"  width="50">Boxes</td>
                                 <td class="th-inner"  width="100">Units</td>
-                                <td class="th-inner"  width="100">Price/Item</td>
-                                <td class="th-inner"  width="100">Total/Box</td>
+                                <td class="th-inner"  width="100">Price</td>
+                                <td class="th-inner"  width="100">Total Box</td>
                                 <td class="th-inner"  width="100">Total</td>                                                
                                 <!-- <td class="th-inner"  width="120">Marcacion</td> -->
                                 <td class="th-inner"  width="70">
-                                    Status
-                                    <span class="pointer yellow" data-toggle="popover" data-placement="top">
-                                        (*)
-                                    </span>
+                                    Mark/PO                                    
                                 </td>
                                 <td class="th-inner"  width="70">Delete</td>
                             </tr>
@@ -81,12 +76,15 @@
 					if ($reg['tallos_x_bunch']!=25)
 					{
 						$html_tallos_x_bunch = '&nbsp;<span class="tallos_buches_no_standar">('.$reg['tallos_x_bunch'].')</span>';
-					}//end if				
+					}//end if		
+
+					$html_marca = 'Write your mark box';
+					if (!empty($reg['marca']))
+					{
+						$html_marca = $reg['marca'];
+					}//end if	
         ?>
-                            <tr class="tr_det_<?php echo($reg['pedido_det_sec']); ?>" oferta="<?php echo($reg['estado_reg_oferta']); ?>" pedido_cab_oferta_id="<?php echo($reg['pedido_cab_oferta_id']); ?>" pedido_det_oferta_sec="<?php echo($reg['pedido_det_oferta_sec']); ?>" variedad_nombre_oferta_vinculada="<?php echo($reg['variedad_nombre_oferta_vinculada']); ?>">    
-                                <td>                                        
-                                    <?php echo($reg['pedido_det_sec']); ?>
-                                </td>                          
+                            <tr class="tr_det_<?php echo($reg['pedido_det_sec']); ?>" oferta="<?php echo($reg['estado_reg_oferta']); ?>" pedido_cab_oferta_id="<?php echo($reg['pedido_cab_oferta_id']); ?>" pedido_det_oferta_sec="<?php echo($reg['pedido_det_oferta_sec']); ?>" variedad_nombre_oferta_vinculada="<?php echo($reg['variedad_nombre_oferta_vinculada']); ?>" pedido_det_sec="<?php echo($reg['pedido_det_sec']); ?>">    
                                 <td align="left">
                                     <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span><?php echo($html_tallos_x_bunch); ?>
                                     <?php if ($reg['estado_reg_oferta']==1){ ?>
@@ -102,7 +100,6 @@
                                         </div>
                                     <?php }//end if ?>
                                 </td>
-                                <td><h5><small><?php echo($reg['color_ventas_nombre']); ?></small></h5></td>
                                 <td>
                                     <?php echo($reg['grado_id']); ?>
                                 </td>
@@ -124,12 +121,12 @@
                                 <td>
                                     $ <?php echo($reg['precio']); ?>                        
                                 </td>
-                                <td align="right">$ <?php echo(number_format($total_x_caja, 2)); ?></td>
+                                <td align="right" nowrap>$ <?php echo(number_format($total_x_caja, 2)); ?></td>
                                 <td nowrap align="right">
                                     $ <?php echo($reg['total']); ?>                        
-                                </td>                                
-                                <td nowrap>
-                                    <img src="<?php echo($this->basePath()); ?>/images/status-<?php echo($this->pedido_cab_estado); ?>.png" alt="">
+                                </td>
+                                <td>
+                                    <a href="#" id="btn_cambiar_marca_<?php echo($reg['pedido_det_sec']); ?>" class="link_mark btn_cambiar_marca"><?php echo($html_marca); ?></a>
                                 </td>
                                 <td>
                                     <img pedido_det_sec="<?php echo($reg['pedido_det_sec']); ?>" class="btn_eliminar_detalle"  src="<?php echo($this->basePath()); ?>/images/delete-icon.png" alt="" style="cursor:pointer">
@@ -139,9 +136,7 @@
             }//end if
         ?>
                             <tr style="border-top: #06A604 solid 2px">
-                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
                               <td align="left" style="border:#FFFFFF none 0px">&nbsp;</td>
-                              <td style="border:#FFFFFF none 0px">&nbsp;</td>
                               <td style="border:#FFFFFF none 0px">&nbsp;</td>
                               <td style="border:#FFFFFF none 0px">&nbsp;</td>
                               <td style="border:#FFFFFF none 0px">&nbsp;</td>
@@ -159,20 +154,39 @@
         </div>
     
     	 <div class="clearfix"></div>
-         
-         <div style="margin-top:5px">
-         	<div class="pull-left">
-	                <span class="btn btn-default" data-toggle="modal" data-target="#dialog_comentario">Add Comment</span>
+
+         <div style="margin-top:5px; width:90%">
+            <div class="pull-left">
+                    <span class="btn btn-default" data-toggle="modal" data-target="#dialog_comentario">Add Comment</span>
             </div>
+            
             <div class="pull-right">
-		<?php 		if ($this->rs_pedido_det){ ?>        
+        <?php 		if ($this->rs_pedido_det){ ?>        
                         <input id="btn_confirmar" type="button" class="btn btn-success pull-right" value="Confirm your order" />
         <?php 		}//end if ?>   
              </div>
-    	 </div>
-
-        </form>
+         </div>
+       </form>
         
 
 
         
+	<!-- Modal -->
+    <div class="modal fade" id="dialog_marca" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">WRITE YOUR  BOX MARK</h4>
+          </div>
+          <div class="modal-body">
+                <form id="frm_marca" method="post" action="#" class="form-inline" onSubmit="return false;">
+                	<input type="hidden" id="control_id" value="" />
+                    <input type="hidden" id="pedido_det_sec" value="" />
+                    <input type="text" id="pedido_det_marca" class="form-control" placeholder="Mark/PO" style="width:85%" />                        
+                    <button id="btn_grabar_marca" type="submit" class="btn btn-primary" data-dismiss="modal">Save</button>
+                </form>             
+          </div>
+        </div>
+      </div>
+    </div>
