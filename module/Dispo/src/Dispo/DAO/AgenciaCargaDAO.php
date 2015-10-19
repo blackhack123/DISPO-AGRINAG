@@ -234,8 +234,58 @@ class AgenciaCargaDAO extends Conexion
 	}//end function listado
 	
 	
-
-
+	/***
+	 * 
+	 * @param string $id
+	 * @param int $resultType
+	 * @return \Dispo\Data\AgenciaCargaData|NULL
+	 */
+	public function consultarExcel($id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$AgenciaCargaData 		    = new AgenciaCargaData();
+	
+		$sql = 	' SELECT agencia_carga.* '.
+				' FROM agencia_carga '.
+				' WHERE agencia_carga.id = :id ';
+	
+		
+		if (!empty($condiciones['criterio_busqueda']))
+		{
+			$sql = $sql." and (nombre like '%".$condiciones['criterio_busqueda']."%'".
+					"      or id like '%".$condiciones['criterio_busqueda']."%'".
+					"      or direccion like '%".$condiciones['criterio_busqueda']."%'".
+					"      or telefono like '%".$condiciones['criterio_busqueda']."%')";
+		}//end if
+		
+		if (!empty($condiciones['estado']))
+		{
+			$sql = $sql." and estado = '".$condiciones['estado']."'";
+		}//end if
+		
+		
+		if (isset($condiciones['sincronizado']))
+		{
+			if ($condiciones['sincronizado']!='')
+			{
+				$sql = $sql." and sincronizado = ".$condiciones['sincronizado'];
+			}//end if
+		}//end if
+		
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':id',$id);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		if($row){
+			$AgenciaCargaData->setId				    ($row['id']);
+			$AgenciaCargaData->setNombre		   		($row['nombre']);
+			$AgenciaCargaData->setEstado		   		($row['estado']);
+			$AgenciaCargaData->setSinronizado			($row['sincronizado']);
+			return $AgenciaCargaData;
+		}else{
+			return null;
+		}//end if
+	
+	}//end function consultar
 	
 }//end class
 

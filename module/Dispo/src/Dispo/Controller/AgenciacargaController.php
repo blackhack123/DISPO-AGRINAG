@@ -319,24 +319,27 @@ class AgenciacargaController extends AbstractActionController
 			$EntityManagerPlugin = $this->EntityManagerPlugin();
 	
 			$AgenciaCargaBO 		= new AgenciaCargaBO();
-	
-				
 			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
-	
-			$request 				= $this->getRequest();
-			$criterio_busqueda 	 	= $request->getQuery('criterio_busqueda', "");
-			$busqueda_estado  		= $request->getQuery('busqueda_estado', "");
-			$busqueda_sincronizado	= $request->getQuery('busqueda_sincronizado', "");
-	
+			
+			
+			$request 			= $this->getRequest();
+			$criterio_busqueda 	= $request->getQuery('criterio_busqueda', '');
+			$estado		 		= $request->getQuery('estado', '');
+			$sincronizado  		= $request->getQuery('sincronizado', '');
+			
 			$condiciones = array(
-						
-					"criterio_busqueda"			=> $criterio_busqueda,
-					"busqueda_estado"			=> $busqueda_estado,
-					"busqueda_sincronizado"		=> $busqueda_sincronizado
+					"criterio_busqueda"		=> $criterio_busqueda,
+					"estado"				=> $estado,
+					"sincronizado"			=> $sincronizado
 			);
+			/*
+			$condiciones['criterio_busqueda']		= $this->params()->fromPost('criterio_busqueda','');
+			$condiciones['estado']					= $this->params()->fromPost('busqueda_estado','');
+			$condiciones['sincronizado']			= $this->params()->fromPost('busqueda_sincronizado','');
+			*/
 			$result = $AgenciaCargaBO->generarExcel($condiciones);
 	
 			exit;

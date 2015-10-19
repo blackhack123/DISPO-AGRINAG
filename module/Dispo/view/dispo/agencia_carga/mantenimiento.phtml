@@ -213,8 +213,8 @@
 
 		var url = '../../dispo/agenciacarga/exportarexcel';
 		var params = '?criterio_busqueda='+$("#frm_busqueda #criterio_busqueda").val()+
-					 '&busqueda_estado='+$("#frm_busqueda #busqueda_estado").val()+
-				 	 '&busqueda_sincronizado='+$("#frm_busqueda #busqueda_sincronizado").val();
+					 '&estado='+$("#frm_busqueda #busqueda_estado").val()+
+				 	 '&sincronizado='+$("#frm_busqueda #busqueda_sincronizado").val();
 		url = url + params;
 		var win = window.open(url);
 		
