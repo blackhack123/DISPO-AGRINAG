@@ -95,8 +95,11 @@
 								cargador_visibility('hide');
 
 							}).error(function(request, status, error) {
-								console.log('paso99', status, error );
-								message_error('ERROR', request.responseText);
+								if (error.length != 0)
+								{								
+									console.log('paso99', status, error );
+									message_error('ERROR', request.responseText);
+								}//end if
 								cargador_visibility('hide');
 							});	
 		return false;		

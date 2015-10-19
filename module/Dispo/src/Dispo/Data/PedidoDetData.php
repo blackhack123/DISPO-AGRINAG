@@ -169,6 +169,13 @@ class PedidoDetData
 	protected $eq_fb;
 
 	/**
+	 * 
+	 * @var string
+	 */
+	protected $marca;
+	
+	
+	/**
 	 * @var string
 	 */
 	protected $fec_ingreso;
@@ -220,6 +227,7 @@ class PedidoDetData
 	public function getCalidadId()									{return $this->calidad_id;}
 	public function getPuntoCorte()									{return $this->punto_corte;}
 	public function getEqFb()										{return $this->eq_fb;}
+	public function getMarca()										{return $this->marca;}
 	public function getFecIngreso() 								{return $this->fec_ingreso;}
 	public function getFecModifica() 								{return $this->fec_modifica;}
 	public function getUsuarioIngId() 								{return $this->usuario_ing_id;}
@@ -253,7 +261,8 @@ class PedidoDetData
 	public function setEstadoRegOferta($valor) 						{$this->estado_reg_oferta 			= $valor;}
 	public function setCalidadId($valor)							{$this->calidad_id					= $valor;}
 	public function setPuntoCorte($valor)							{$this->punto_corte 				= $valor;}
-	public function setEqFb($valor)									{$this->eq_fb						= $valor;}	
+	public function setEqFb($valor)									{$this->eq_fb						= $valor;}
+	public function setMarca($valor)								{$this->marca						= $valor;}	
 	public function setFecIngreso($valor) 							{$this->fec_ingreso 				= $valor;}
 	public function setFecModifica($valor) 							{$this->fec_modifica 				= $valor;}
 	public function setUsuarioIngId($valor) 						{$this->usuario_ing_id 				= $valor;}

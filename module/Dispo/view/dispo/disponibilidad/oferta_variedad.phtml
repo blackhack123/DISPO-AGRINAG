@@ -150,13 +150,13 @@
 											for (var i = 0; i < response.result.length; i++) {											
 												row = response.result[i];
 												ind = i + 1;
-												row_html		= '<tr id="row_hueso_'+ind+'" producto_id="'+row.producto_id+'" variedad_id="'+row.variedad_id+'" grado_id="'+row.grado_id+'" tallos_x_bunch="'+row.tallos_x_bunch+'" tipo_caja_id="'+row.tipo_caja_id+'" nro_cajas_requeridas="'+row.nro_cajas_requeridas+'" >'
+												row_html		= '<tr id="row_hueso_'+ind+'">'
 																  +'<td>'+row.variedad_nombre+'</td>'
 																  +'<td>'+row.grado_id+'</td>'
 																  +'<td>'+row.precio+'</td>'
 																  +'<td>'+row.tipo_caja_id+'</td>'
 																  +'<td>'+row.nro_cajas_requeridas+'</td>'
-																  +'<td><input type="radio" class="form-control" name="oferta_hueso_seleccion"  value="'+ind+'" /></td>'
+																  +'<td><input type="radio" class="form-control" name="oferta_hueso_seleccion"  value="'+ind+'" data-producto-id="'+row.producto_id+'" data-variedad-id="'+row.variedad_id+'" data-grado-id = "'+row.grado_id+'" data-tallos-x-bunch="'+row.tallos_x_bunch+'" data-tipo-caja-id="'+row.tipo_caja_id+'" data-nro-cajas-requeridas="'+row.nro_cajas_requeridas+'" /></td>'
 																  +'</tr>';
 												$('#oferta_tbl_hueso tr:last').after(row_html);
 											}//end for
@@ -188,21 +188,15 @@
 		}//end if
 
 //		cargador_visibility('show');		
-		console.log('paso01');
-		var tr 							= $('#row_hueso_'+radioValue);
-		console.log('tr:',tr);
-		var hueso_producto_id			= tr.attr('producto_id');
-		console.log('hueso_producto_id:',hueso_producto_id)
-		var hueso_variedad_id 			= tr.attr('variedad_id');
-		console.log('hueso_variedad_id:',hueso_variedad_id);
-		var hueso_grado_id 				= tr.attr('grado_id');
-		console.log('hueso_grado_id:',hueso_grado_id);
-		var hueso_tallos_x_bunch		= tr.attr('tallos_x_bunch');
-		console.log('tallos_x_bunch:',hueso_tallos_x_bunch);
-		var hueso_tipo_caja_id 			= tr.attr('tipo_caja_id');
-		console.log('tipo_caja_id:',hueso_tipo_caja_id);
-		var hueso_nro_cajas_requeridas	= tr.attr('nro_cajas_requeridas');
-		console.log('nro_cajas_requeridas:',hueso_nro_cajas_requeridas);
+		
+		var radioHueso 	=  $("input[name='oferta_hueso_seleccion']:checked");
+		var hueso_producto_id			= radioHueso.data('producto-id');
+		var hueso_variedad_id 			= radioHueso.data('variedad-id');
+		var hueso_grado_id 				= radioHueso.data('grado-id');
+		var hueso_tallos_x_bunch		= radioHueso.data('tallos-x-bunch');
+		var hueso_tipo_caja_id 			= radioHueso.data('tipo-caja-id');
+		var hueso_nro_cajas_requeridas	= radioHueso.data('nro-cajas-requeridas');
+		
 		
 		//console.log('hueso_variedad_id:',hueso_variedad_id, '*hueso_grado_id:',hueso_grado_id,'*hueso_tipo_caja_id:',hueso_tipo_caja_id,'*hueso_nro_cajas_requeridas:',hueso_nro_cajas_requeridas);
 		
@@ -278,7 +272,7 @@
                   <td class="th-inner"  width="90">Special Price</td>
                   <td class="th-inner"  width="70">Length</td>
                   <td class="th-inner"  width="80">Type Box</td>
-                  <td class="th-inner"  width="60">Quantity</td>
+                  <td class="th-inner"  width="60">Stock</td>
                   <td class="th-inner"  width="90">Order</td>                               
               </tr>
          

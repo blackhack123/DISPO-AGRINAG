@@ -183,6 +183,61 @@
 				return true;			
 	    	});
 	
+			//---------------------------MARCA----------------------------------
+	        $("body").on('click', '.btn_cambiar_marca', function(event){	
+	            var tr =  $(this).closest('tr');
+				var pedido_det_sec 	=  tr.attr('pedido_det_sec');				
+				var pedido_det_marca = $(this).html();
+				var boton_id = $(this).attr('id');
+
+				if (pedido_det_marca=='Write your mark box')
+				{
+					pedido_det_marca = '';
+				}//end if
+							
+				$("#frm_marca #control_id").val(boton_id);												
+				$("#frm_marca #pedido_det_sec").val(pedido_det_sec);				
+				$("#frm_marca #pedido_det_marca").val(pedido_det_marca);
+
+				$('#dialog_marca').modal('show');
+				return true;
+			});
+
+			$('#dialog_marca').on('show.bs.modal', function () {
+			  $("#frm_marca #pedido_det_marca").focus();
+			  return true;
+			})
+
+
+	        $("body").on('click', '#frm_marca #btn_grabar_marca', function(event){
+				var data = {pedido_cab_id: '<?php echo($this->pedido_cab_id); ?>',
+							pedido_det_sec: $("#frm_marca #pedido_det_sec").val(),
+							marca: $.trim($("#frm_marca #pedido_det_marca").val())
+		  					}
+				//console.log('data', data);
+	    		var parameters = {
+	    							'type': 'POST',
+	    							'url':'<?php echo($this->basePath()); ?>/dispo/pedido/grabarmarca',
+	    							'show_cargando':true,
+	    							'async': false,
+	    							'finish':function(response){
+	    									if (response.respuesta_code=='OK'){
+	    										$("#dialog_marca").modal('hide');
+												var control_id = $("#frm_marca #control_id").val();
+												var marca = $.trim($("#frm_marca #pedido_det_marca").val());
+												if (marca==''){
+													marca = 'Write your mark box';
+												}//end if
+												$("#"+control_id).html(marca);
+	    									}//end if									
+	    							}
+	    		                 }
+	    		ajax_call(parameters, data);
+	    		return false;			
+	        });
+			//---------------------------------------------------------------------
+
+
 
 	        $("body").on('click', '.btn_eliminar_detalle', function(event){
 	            var pedido_det_secx = $(this).attr('pedido_det_sec');
@@ -311,14 +366,13 @@
         </h1>
     </div>
 
-	<div class="container">
         <div class="row clearfix">
-            <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+            <div class="col-md-offset-1 col-lg-offset-1 col-xs-11 col-sm-10 col-md-10 col-lg-10">
                 <div id="detalle_pedido"></div>
                 <div id="detalle_pedido_sin_stock"></div>
             </div>
         </div>
-	</div>
+
 
 
     
@@ -391,6 +445,9 @@
             </div>
         </div>
 	</div>
+
+
+
 	
 
 
