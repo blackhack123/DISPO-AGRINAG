@@ -286,6 +286,26 @@ class AgenciaCargaDAO extends Conexion
 		}//end if
 	
 	}//end function consultar
+
+	
+	
+	/**
+	 * 
+	 * @param string $cliente_id
+	 * @return array
+	 */
+	public function consultarPorCliente($cliente_id)
+	{
+		$sql = 	' SELECT agencia_carga.* '.
+				' FROM  cliente_agencia_carga INNER JOIN agencia_carga  '.
+				'									  ON agencia_carga.id = cliente_agencia_carga.agencia_carga_id '.
+				' WHERE cliente_agencia_carga.cliente_id = :cliente_id ';
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':cliente_id',$cliente_id);
+		$stmt->execute();
+		$result = $stmt->fetchAll(); 
+		return $result;
+	}//end function consultarPorUsuario
 	
 }//end class
 
