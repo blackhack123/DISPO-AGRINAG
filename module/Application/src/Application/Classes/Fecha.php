@@ -322,5 +322,23 @@ class Fecha {
 		}//end if
 		return $formato_fecha;
 	}//end public function getAutoFormatoFechaDatabase()
+
+	
+	
+	/**
+	 * Obtiene de la fecha la parte de la hora
+	 *
+	 * @return String|Date
+	 */
+	public static function convertirFechaToHora($fecha)
+	
+	{
+		//$formato = self::getFormato()['corta']['servidor'];
+		$formato = 'H:i:s';
+	
+		$fecha_new = self::getFechaFormato($fecha, $formato);
+		return $fecha_new;
+	}//end function convertirFechaToHora	
+	
 	
 }//end class Fecha

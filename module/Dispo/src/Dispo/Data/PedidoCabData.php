@@ -50,6 +50,11 @@ class PedidoCabData
 	 * @var string
 	 */
 	protected $estado;
+		
+	/**
+	 * @var string
+	 */
+	protected $fec_confirmado;
 	
 	/**
 	 * @var string
@@ -76,6 +81,11 @@ class PedidoCabData
 	 */
 	protected $usuario_cliente_id;
 
+	/**
+	 * @var int
+	 */
+	protected $usuario_confirmado_id;
+	
 	/**
 	 * @var int
 	 */
@@ -120,12 +130,14 @@ class PedidoCabData
 	public function getTotal() 						{return $this->total;}
 	public function getComentario() 				{return $this->comentario;}
 	public function getEstado() 					{return $this->estado;}
+	public function getFecConfirmado()				{return $this->fec_confirmado;}
 	public function getFecAprobado()				{return $this->fec_aprobado;}	
 	public function getFecExportado() 				{return $this->fec_exportado;}
 	public function getFecAnulado()					{return $this->fec_anulado;}
 	public function getFecIngreso()					{return $this->fec_ingreso;}
 	public function getFecModifica()				{return $this->fec_modifica;}	
 	public function getUsuarioClienteId() 			{return $this->usuario_cliente_id;}
+	public function getUsuarioConfirmadoId()		{return $this->usuario_confirmado_id;}
 	public function getUsuarioAprobadoId() 			{return $this->usuario_aprobado_id;}
 	public function getUsuarioExportadoId() 		{return $this->usuario_exportado_id;}
 	public function getUsuarioAnuladoId() 			{return $this->usuario_anulado_id;}
@@ -146,6 +158,7 @@ class PedidoCabData
 	public function setTotal($valor) 				{$this->total					= $valor;}
 	public function setComentario($valor) 			{$this->comentario				= $valor;}
 	public function setEstado($valor) 				{$this->estado					= $valor;}
+	public function setFecConfirmado($valor)		{$this->fec_confirmado			= $valor;}	
 	public function setFecAprobado($valor)			{$this->fec_aprobado			= $valor;}	
 	public function setFecExportado($valor) 		{$this->fec_exportado			= $valor;}
 	public function setFecAnulado($valor)			{$this->fec_anulado				= $valor;}
@@ -153,6 +166,7 @@ class PedidoCabData
 	public function setFecModifica($valor)			{$this->fec_modifica			= $valor;}	
 	public function setUsuarioClienteId($valor) 	{$this->usuario_cliente_id		= $valor;}
 	public function setUsuarioAprobadoId($valor) 	{$this->usuario_aprobado_id		= $valor;}
+	public function setUsuarioConfirmadoId($valor)	{$this->usuario_confirmado_id	= $valor;}
 	public function setUsuarioExportadoId($valor) 	{$this->usuario_exportado_id	= $valor;}
 	public function setUsuarioAnuladoId($valor) 	{$this->usuario_anulado_id		= $valor;}
 	public function setUsuarioIngId($valor) 		{$this->usuario_ing_id			= $valor;}
