@@ -9,7 +9,6 @@ use Dispo\DAO\ProductoDAO;
 use Dispo\DAO\ObtentorDAO;
 use Dispo\BO\ColorVentasBO;
 use Dispo\Data\VariedadData;
-use Dispo\DAO\Dispo\DAO;
 
 
 class VariedadBO extends Conexion
@@ -305,35 +304,38 @@ class VariedadBO extends Conexion
 		ini_set('memory_limit','-1');
 		
 		$ColorVentasBO				= new ColorVentasBO();
+		$VariedadDAO				= new VariedadDAO();
 		$ColorVentasBO->setEntityManager($this->getEntityManager());
+		$VariedadDAO->setEntityManager($this->getEntityManager());
 		
 		//----------------Se configura las Etiquetas de Seleccion-----------------
 		$criterio_busqueda 		= 'TODOS';
 		$busqueda_color 		= 'TODOS';
 		$busqueda_estado		= 'TODOS';
-		/*
+		
+	/*
 		if (!empty($condiciones['criterio_busqueda'])){
-			$VariedadData 		= $this->consultarVariedad($condiciones['criterio_busqueda']);
-			$busqueda_color		= $VariedadData->getNombre();
-		}//end i
+			$VariedadData 		= $VariedadDAO->consultarVariedad($condiciones['criterio_busqueda']);
+			$criterio_busqueda 	= $VariedadData->getNombre();
+		}//end if
 		
 		
 		if (!empty($condiciones['busqueda_color'])){
-			$ColorVentasData 		= $ColorVentasBO->consultar($condiciones['busqueda_color ']);
+			$ColorVentasData 		= $ColorVentasBO->consultar($condiciones['busqueda_color']);
 			$busqueda_color			= $ColorVentasData->getNombre();
-		}//end i
+		}//end if
 		
 		if (empty($condiciones['busqueda_estado'])){
 			$busqueda_estado		= 'TODOS';
 			
 		}else
 	    {
-			$busqueda_estado = $condiciones['busqueda_estado '];
+			$busqueda_estado = $condiciones['busqueda_estado'];
 			
 		}//end if
 		
-		
-*/
+	
+		*/
 		//----------------Se inicia la configuracion del PHPExcel-----------------
 		
 		$PHPExcelApp 	= new PHPExcelApp();

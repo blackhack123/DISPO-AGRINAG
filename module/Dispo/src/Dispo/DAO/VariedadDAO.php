@@ -294,15 +294,15 @@ class VariedadDAO extends Conexion
 				
 		}//end if
 		
-		if (!empty($condiciones['estado']))
+		if (!empty($condiciones['busqueda_estado']))
 		{
-			$sql = $sql." and variedad.estado = '".$condiciones['estado']."'";
+			$sql = $sql." and variedad.estado = '".$condiciones['busqueda_estado']."'";
 		}//end if
 		
 		
-		if (!empty($condiciones['color_ventas_id']))
+		if (!empty($condiciones['busqueda_color']))
 		{
-			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."' ";
+			$sql = $sql." and variedad.color_ventas_id = '".$condiciones['busqueda_color']."' ";
 		}//end if
 		
 		
@@ -319,11 +319,11 @@ class VariedadDAO extends Conexion
 	 * Consultar
 	 *
 	 * @param string $id
-	 * @return ProveedorData|null
+	 * @return VariedadData|null
 	 */
 	public function consultarVariedad($id)
 	{
-		$VariedadData 		    = new $VariedadData();
+		$VariedadData 		    = new VariedadData();
 	
 		$sql = 	' SELECT variedad.* '.
 				' FROM variedad '.
@@ -336,8 +336,8 @@ class VariedadDAO extends Conexion
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		if($row){
 	
-			$VariedadData->setId						($row['id']);
-			$VariedadData->setNombre 					($row['nombre']);
+			$VariedadData->setId					($row['id']);
+			$VariedadData->setNombre 				($row['nombre']);
 			return $VariedadData;
 		}else{
 			return null;
