@@ -85,6 +85,27 @@ class UsuarioBO extends Conexion{
 	}//end function getComboTodosVendedores
 	
 	
+	/**
+	 *
+	 * @param string $usuario_vendedor_id
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	function getComboVendedoresAdmin($usuario_vendedor_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$UsuarioDAO = new UsuarioDAO();
+	
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+	
+		$result = $UsuarioDAO->consultarVendedoresAdmin();
+	
+		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre', $usuario_vendedor_id, $texto_1er_elemento, $color_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboTodosVendedores
+	
+	
 	
 	/**
 	 * 

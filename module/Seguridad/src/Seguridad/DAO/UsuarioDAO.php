@@ -500,6 +500,26 @@ class UsuarioDAO extends Conexion {
 	}//end function consultarTodosVendedores
 	
 	
+	/***
+	 * 
+	 * @return array
+	 */
+	public function consultarVendedoresAdmin()
+	{
+		$sql = 	' SELECT usuario.* '.
+				' FROM usuario '.
+				' WHERE perfil_id = '.\Application\Constants\Perfil::ID_ADMIN.
+				' OR perfil_id = '. \Application\Constants\Perfil::ID_VENTAS.
+				' order by nombre';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function consultarTodosVendedores
+	
+	
 	/**
 	 * 
 	 * @param string $username

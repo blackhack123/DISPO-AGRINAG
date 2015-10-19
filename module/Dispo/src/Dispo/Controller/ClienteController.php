@@ -132,7 +132,7 @@ class ClienteController extends AbstractActionController
 			$usuario_vendedor_id	=null;
 			$response->cbo_tipo						= $ClienteBO->getCombo("", " ");
 			$response->cbo_pais_id					= $PaisBO->getComboPais($pais, "&lt;Seleccione&gt;");
-			$response->cbo_usuario_vendedor_id		= $UsuarioBO->getComboTodosVendedores($usuario_vendedor_id, "&lt;Seleccione&gt;");
+			$response->cbo_usuario_vendedor_id		= $UsuarioBO->getComboVendedoresAdmin($usuario_vendedor_id, "&lt;Seleccione&gt;");
 			$response->cbo_estado_id				= $EstadosBO->getComboEstados($estados, "&lt;Seleccione&gt;");
 			//$response->cbo_grupo_dispo				= $GrupoDispoCabBO->getComboGrupoDispo($grupodispo, "&lt;Seleccione&gt;");
 			$response->cbo_estado					= \Application\Classes\ComboGeneral::getComboEstado("","");
