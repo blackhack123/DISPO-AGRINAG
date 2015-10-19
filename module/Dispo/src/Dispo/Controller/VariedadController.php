@@ -332,6 +332,7 @@ class VariedadController extends AbstractActionController
 			$busqueda_color  		= $request->getQuery('busqueda_color', "");
 	
 			$condiciones = array(
+					
 					"criterio_busqueda"		=> $criterio_busqueda,
 					"busqueda_estado"		=> $busqueda_estado,
 					"busqueda_color"		=> $busqueda_color
