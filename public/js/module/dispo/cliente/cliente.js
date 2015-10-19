@@ -5,7 +5,6 @@
 	$(document).ready(function () {
 		
 		
-		
 		$("#frm_busqueda_cliente #btn_consultar").on('click', function(event){ 
 			$('#grid_cliente').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 			return false;
@@ -23,8 +22,8 @@
 		
 		$('#dialog_nueva_marcacion').on('hide.bs.modal', function () {
 		    $("#dialog_mantenimiento").css("overflow-y", "auto"); // 'auto' or 'scroll'
-		});			
-
+		});		
+		
 		
 		/*-------------------------------------------------------------*/
 		/*--------------------- AUTOCOMPLETAR -------------------------*/

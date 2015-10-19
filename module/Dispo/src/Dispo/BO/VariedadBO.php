@@ -296,7 +296,7 @@ class VariedadBO extends Conexion
 	
 	/**
 	 *
-	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id)
+	 * @param array $condiciones (criterio_busqueda, busqueda_color , busqueda_estado)
 	 */
 	public function generarExcel($condiciones)
 	{

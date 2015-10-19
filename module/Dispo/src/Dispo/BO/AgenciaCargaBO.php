@@ -176,5 +176,33 @@ class AgenciaCargaBO extends Conexion
 	}//end function ingresar
 	
 	
+	/**
+	 *
+	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id)
+	 */
+	public function generarExcel($condiciones)
+	{
+		set_time_limit ( 0 );
+		ini_set('memory_limit','-1');
+	
+	
+		
+		$AgenciaCargaDAO			= new AgenciaCargaDAO();
+	
+		$AgenciaCargaDAO->setEntityManager($this->getEntityManager());
+		
+		//----------------Se configura las Etiquetas de Seleccion-----------------
+		$criterio_busqueda		= 'TODOS';
+		$busqueda_estado 		= 'TODOS';
+		$busqueda_sincronizado	= 'TODAS';
+		
+		
+		if (!empty($condiciones['inventario_id'])){
+			$AgenciaCargaData 		= $AgenciaCargaDAO->consultar($condiciones['criterio_busqueda']);
+			$criterio_busqueda		= $AgenciaCargaData->getNombre();
+		}//end if
+		
+		
+	}
 	
 }//end class

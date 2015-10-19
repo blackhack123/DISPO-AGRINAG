@@ -12,7 +12,7 @@
 
 
         $("#btn_consultar").on('click', function(event){ 
-            $("#frm").submit();
+            $("#frm_busqueda").submit();
 			return false;
         });
 
@@ -42,6 +42,11 @@
         	grabar();
 			return false;
         });       
+
+        $("#frm_busqueda #btn_excel").on('click', function(event){ 
+        	AgenciaCarga_ExportarExcel();
+    		return false;
+    	});	
 
 	});//$(document).ready
 	
@@ -199,6 +204,23 @@
 			}//end if
 		}//end if
 	}//end function mostrar_registro
+
+
+
+	function AgenciaCarga_ExportarExcel()
+	{
+		cargador_visibility('show');
+
+		var url = '../../dispo/agenciacarga/exportarexcel';
+		var params = '?criterio_busqueda='+$("#frm_busqueda #criterio_busqueda").val()+
+					 '&busqueda_estado='+$("#frm_busqueda #busqueda_estado").val()+
+				 	 '&busqueda_sincronizado='+$("#frm_busqueda #busqueda_sincronizado").val();
+		url = url + params;
+		var win = window.open(url);
+		
+		cargador_visibility('hide');
+	}//end function DispoGeneral_ExportarExcel
+	
 	
 </script>
 
@@ -213,7 +235,7 @@
             </div>
         	<div class="busqueda-admin-section pull-left">
             	<div class="form-inline">
-                	<form id="frm" action="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento" method="post" >
+                	<form id="frm_busqueda" action="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento" method="post" >
                     <input name="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
                     <select  name="busqueda_estado" class="select-class2">
                         <?php echo($this->busqueda_estado); ?>
@@ -222,6 +244,10 @@
                     	<?php echo($this->busqueda_sincronizado); ?>
                     </select>
                     <a id="btn_consultar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-search icon-white"></i></a>
+                    <span>&nbsp;&nbsp;</span>
+                    <span class="input-group">
+                    <button id="btn_excel" type="button" class="btn btn-success "> <i class="glyphicon glyphicon-download-alt"></i></button>
+                    </span>  
                     </form>
 				</div>
             </div>
