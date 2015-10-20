@@ -16,7 +16,7 @@
                 <th class="th-inner"  width="200">Variety</th>
                 <th class="th-inner"  width="90">Color</th>                                           
                 <th class="th-inner"  width="90">Length(cm)</th>
-                <th class="th-inner"  width="90">Unts/Bunch</th>
+                <th class="th-inner"  width="90">UNITS /BUNCH</th>
                 <th class="th-inner"  width="100">Box Type</th>
               	<th class="th-inner"  width="100">Bunch/Box</th>
                 <th class="th-inner"  width="50"> Boxes</th>
@@ -24,6 +24,7 @@
                 <th class="th-inner"  width="100">Price/Item</th>
                 <th class="th-inner"  width="100">Total/Box</th>
                 <th class="th-inner"  width="100">Total</th>
+                <th class="th-inner"  width="100">MARK/PO</th>
             </tr>
  		</thead>
 <?php 	
@@ -87,6 +88,7 @@
                 <td align="right" nowrap>
 					$  <?php echo($reg['total']); ?>
                 </td>
+                <td align="left" nowrap><h5><small><?php echo($reg['marca']); ?></small></h5></td>
             </tr>
 <?php
 		}//end foreach
@@ -104,6 +106,7 @@
               <td style="border:#FFFFFF none 0px">&nbsp;</td>
               <td style="border:#FFFFFF none 0px">&nbsp;</td>
               <td style="border:#FFFFFF none 0px" align="right" nowrap><b>$ <?php echo(number_format($total_pedido, 2)); ?></b></td>
+              <td style="border:#FFFFFF none 0px" align="right" nowrap>&nbsp;</td>
             </tr>
 		</tbody>
     </table>
