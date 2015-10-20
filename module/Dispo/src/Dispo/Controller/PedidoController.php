@@ -166,6 +166,8 @@ class PedidoController extends AbstractActionController
 			$AgenciaCargaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 
 			$pedido_cab_actual_id		= $SesionUsuarioPlugin->getClientePedidoCabIdActual();
+			$cliente_id					= $SesionUsuarioPlugin->getUserClienteId();
+			
 			
 			if (empty($pedido_cab_actual_id))
 			{
@@ -173,7 +175,8 @@ class PedidoController extends AbstractActionController
 				$viewModel->cbo_agencia_carga			= null;
 			}else{
 				$viewModel->pedido_cab_id				= $pedido_cab_actual_id;
-				$viewModel->cbo_agencia_carga			= $AgenciaCargaBO->getComboTodos("", '&lt;Cargo Agency&gt;');
+				$viewModel->cbo_agencia_carga_all		= $AgenciaCargaBO->getComboTodos("", '&lt;Cargo Agency&gt;');
+				$viewModel->cbo_agencia_carga_asignada	= $AgenciaCargaBO->getComboPorCliente($cliente_id, "", '&lt;Cargo Agency&gt;');
 			}//end if
 			//Se consulta la dispo, considerando los criterios de busqueda
 			$data = $SesionUsuarioPlugin->getRecord();

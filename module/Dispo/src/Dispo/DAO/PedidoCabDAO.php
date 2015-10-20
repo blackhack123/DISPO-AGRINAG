@@ -115,6 +115,7 @@ class PedidoCabDAO extends Conexion
 		{
 			$fecha_hora_confirmado				    = \Application\Classes\Fecha::getFechaHoraActualServidor();
 			$record['fec_confirmado']				= $fecha_hora_confirmado;
+			$record['usuario_confirmado_id']		= $usuario_id;
 		}//end if
 
 		

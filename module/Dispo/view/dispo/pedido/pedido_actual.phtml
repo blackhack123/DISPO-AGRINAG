@@ -124,7 +124,12 @@
 	
 			
 	        $("#btn_cambiar_agencia_carga").on('click', function(event){
-				var agencia_carga_idx 	= $("#dialog_cbo_agencia_carga").val();
+				if($('#chk_all_agencia').is(":checked")) {
+					var agencia_carga_idx 	= $("#dialog_cbo_agencia_carga_all").val();
+				}else{
+					var agencia_carga_idx 	= $("#dialog_cbo_agencia_carga_asignada").val();
+				}//end if
+				
 				var pedido_det_secx   	= $("#dialog_pedido_det_sec").html();
 	
 				var tr				  	= $(".tr_det_"+pedido_det_secx);
@@ -348,6 +353,20 @@
 	  			            
 				return false;
 	        });
+			
+			
+			
+			$('#chk_all_agencia').change(function() {
+				if($(this).is(":checked")) {
+					$("#dialog_cbo_agencia_carga_all").val('');
+					$("#dialog_cbo_agencia_carga_asignada").hide();
+					$("#dialog_cbo_agencia_carga_all").show();
+				}else{
+					$("#dialog_cbo_agencia_carga_asignada").val('');
+					$("#dialog_cbo_agencia_carga_asignada").show();
+					$("#dialog_cbo_agencia_carga_all").hide();
+				}//end if
+			});			
 
 
 			cargar_detalle_pedido('<?php echo($this->pedido_cab_id); ?>');	        
@@ -432,14 +451,22 @@
 	        <div class="bootstrap-marco clearfix">
 	                    <div class="carga-info">
 	                        <img class="pull-left" src="<?php echo($this->basePath()); ?>/images/carga-icon.png" alt="">
-	                        <select class="form-control pull-left" id="dialog_cbo_agencia_carga" style="width: 210px; margin-left:10px; margin-right:10px">
-	                            <?php echo($this->cbo_agencia_carga); ?>
+                            <select class="form-control pull-left" id="dialog_cbo_agencia_carga_asignada" style="width: 210px; margin-left:10px; margin-right:10px">
+	                            <?php echo($this->cbo_agencia_carga_asignada); ?>
+	                        </select>
+	                        <select class="form-control pull-left" id="dialog_cbo_agencia_carga_all" style="width: 210px; margin-left:10px; margin-right:10px; display:none">
+	                            <?php echo($this->cbo_agencia_carga_all); ?>
 	                        </select>
                             <span id="btn_cambiar_agencia_carga" class="btn btn-default pull-right" data-dismiss="modal">
 	                            Save
 		                    </span>
-	                    </div>
+	                    </div>                     
 	         </div>
+                             <div class="checkbox">
+                                <label>
+                                  <input type="checkbox" id="chk_all_agencia"><i>All cargo agency?</i>
+                                </label>
+                              </div>                
 	      </div>
 	    </div>
 	  </div>
