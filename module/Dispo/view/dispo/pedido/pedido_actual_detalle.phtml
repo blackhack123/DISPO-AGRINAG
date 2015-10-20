@@ -63,10 +63,10 @@
                                 </td>
                                 <td class="th-inner"  width="70">Delete</td>
                             </tr>
-        <?php 	
+        <?php
+			$total_pedido = 0; 	
             if ($this->rs_pedido_det)
             {
-				$total_pedido = 0;
                 foreach ($this->rs_pedido_det as $reg)
                 {	
 					$total_pedido = $total_pedido + $reg['total'];
