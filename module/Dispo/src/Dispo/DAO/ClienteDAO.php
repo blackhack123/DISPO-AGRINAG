@@ -344,9 +344,11 @@ class ClienteDAO extends Conexion
 	public function listado($condiciones)
 	{
 		
-			$sql = 	' SELECT cliente.*, pais.nombre as pais_nombre '.
+			$sql = 	' SELECT cliente.*, pais.nombre as pais_nombre, estados.nombre as nombre_estados '.
 							' FROM cliente  LEFT JOIN pais '.
 							'		               ON pais.id      = cliente.pais_id '.	
+							'				LEFT JOIN estados '.
+							'						ON cliente.estados_id = estados.id '.
 							' WHERE 1 = 1 ';
 		
 		if (!empty($condiciones['criterio_busqueda']))

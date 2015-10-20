@@ -340,8 +340,8 @@ class ClienteBO extends Conexion
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $reg['id'] );
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['nombre'] );
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $reg['direccion'] );
-			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['pais_id'] );
-			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['estados_id'] );
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['pais_nombre'] );
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['nombre_estados'] );
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $row, $reg['codigo_postal'] );
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(7, $row, $reg['telefono1'] );
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(8, $row, $reg['fax1'] );
