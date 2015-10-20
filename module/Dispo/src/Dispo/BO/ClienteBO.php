@@ -180,5 +180,43 @@ class ClienteBO extends Conexion
 		return $result;
 	}//end function listado
 	
+	
+	
+	/**
+	 *
+	 * @param array $condiciones (criterio_busqueda, busqueda_color , busqueda_estado)
+	 */
+	public function generarExcel($condiciones)
+	{
+		set_time_limit ( 0 );
+		ini_set('memory_limit','-1');
 		
-}//end class MarcacionBO
+		$ClienteDAO				= new ClienteDAO();
+		$ClienteDAO->setEntityManager($this->getEntityManager());
+		
+		//----------------Se configura las Etiquetas de Seleccion-----------------
+		$texto_criterio_busqueda 		= 'TODOS';
+		$texto_estado					= 'TODOS';
+		
+		if (!empty($condiciones['criterio_busqueda'])){
+			$texto_criterio_busqueda	= $condiciones['criterio_busqueda'];
+		}//end if
+		
+		switch ($condiciones['busqueda_estado'])
+		{
+			case 'A':
+				$texto_estado		=  'ACTIVO';
+				break;
+		
+			case 'I':
+				$texto_estado		=  'INACTIVO';
+				break;
+		
+		}//end switch
+		
+		
+		
+		
+	}
+	
+}//end class ClienteBO

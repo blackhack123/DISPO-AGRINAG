@@ -335,11 +335,7 @@ class AgenciacargaController extends AbstractActionController
 					"estado"				=> $estado,
 					"sincronizado"			=> $sincronizado
 			);
-			/*
-			$condiciones['criterio_busqueda']		= $this->params()->fromPost('criterio_busqueda','');
-			$condiciones['estado']					= $this->params()->fromPost('busqueda_estado','');
-			$condiciones['sincronizado']			= $this->params()->fromPost('busqueda_sincronizado','');
-			*/
+			
 			$result = $AgenciaCargaBO->generarExcel($condiciones);
 	
 			exit;

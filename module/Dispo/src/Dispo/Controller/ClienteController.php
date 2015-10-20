@@ -487,4 +487,43 @@ class ClienteController extends AbstractActionController
 	}//end function consultarClienteFacturaAction 
 	
 	
+	function exportarexcelAction()
+	{
+		try
+		{
+			$viewModel 			= new ViewModel();
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$ClienteBO 		= new ClienteBO();
+	
+				
+			$ClienteBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 				= $this->getRequest();
+			$criterio_busqueda 	 	= $request->getQuery('criterio_busqueda', "");
+			$busqueda_estado  		= $request->getQuery('busqueda_estado', "");
+	
+			$condiciones = array(
+						
+					"criterio_busqueda"		=> $criterio_busqueda,
+					"busqueda_estado"		=> $busqueda_estado
+					
+			);
+			$result = $ClienteBO->generarExcel($condiciones);
+	
+			exit;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function exportarexcel2Action
+	
+	
+	
 }//end controller

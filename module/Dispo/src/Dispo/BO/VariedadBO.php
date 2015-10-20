@@ -309,33 +309,34 @@ class VariedadBO extends Conexion
 		$VariedadDAO->setEntityManager($this->getEntityManager());
 		
 		//----------------Se configura las Etiquetas de Seleccion-----------------
-		$criterio_busqueda 		= 'TODOS';
-		$busqueda_color 		= 'TODOS';
-		$busqueda_estado		= 'TODOS';
+		$texto_criterio_busqueda 		= 'TODOS';
+		$texto_color 					= 'TODOS';
+		$texto_estado					= 'TODOS';
 		
-	/*
+	
 		if (!empty($condiciones['criterio_busqueda'])){
-			$VariedadData 		= $VariedadDAO->consultarVariedad($condiciones['criterio_busqueda']);
-			$criterio_busqueda 	= $VariedadData->getNombre();
+			$texto_criterio_busqueda	= $condiciones['criterio_busqueda'];
 		}//end if
+		
+		switch ($condiciones['busqueda_estado'])
+		{
+			case 'A':
+				$texto_estado		=  'ACTIVO';
+				break;
+				
+			case 'I':
+				$texto_estado		=  'INACTIVO';
+				break;
+				
+		}//end switch
 		
 		
 		if (!empty($condiciones['busqueda_color'])){
-			$ColorVentasData 		= $ColorVentasBO->consultar($condiciones['busqueda_color']);
-			$busqueda_color			= $ColorVentasData->getNombre();
-		}//end if
-		
-		if (empty($condiciones['busqueda_estado'])){
-			$busqueda_estado		= 'TODOS';
-			
-		}else
-	    {
-			$busqueda_estado = $condiciones['busqueda_estado'];
-			
+			//$ColorVentasData 		= $ColorVentasBO->consultar($condiciones['busqueda_color']);
+			$texto_color			= $condiciones['busqueda_color'];
 		}//end if
 		
 	
-		*/
 		//----------------Se inicia la configuracion del PHPExcel-----------------
 		
 		$PHPExcelApp 	= new PHPExcelApp();
@@ -384,20 +385,20 @@ class VariedadBO extends Conexion
 		$objRichText = new \PHPExcel_RichText();
 		$objRichText->createText('');
 		
-		$objInventario = $objRichText->createTextRun('  Variedad: ');
+		$objInventario = $objRichText->createTextRun('  Criterio: ');
 		$objInventario->getFont()->setBold(true);
 		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
-		$objRichText->createText($criterio_busqueda);
+		$objRichText->createText($texto_criterio_busqueda);
 		
 		$objCalidad = $objRichText->createTextRun('    Color Ventas: ');
 		$objCalidad->getFont()->setBold(true);
 		$objCalidad->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
-		$objRichText->createText($busqueda_color);
+		$objRichText->createText($texto_color);
 		
 		$objProveedor = $objRichText->createTextRun('   Estado: ');
 		$objProveedor->getFont()->setBold(true);
 		$objProveedor->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
-		$objRichText->createText($busqueda_estado);
+		$objRichText->createText($texto_estado);
 		
 		$objPHPExcel->getActiveSheet()->getCell($col_ini.$row)->setValue($objRichText);
 		$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);

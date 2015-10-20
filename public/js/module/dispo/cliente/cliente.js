@@ -24,6 +24,10 @@
 		    $("#dialog_mantenimiento").css("overflow-y", "auto"); // 'auto' or 'scroll'
 		});		
 		
+		$("#frm_busqueda_cliente #btn_excel").on('click', function(event){ 
+			Cliente_ExportarExcel();
+			return false;
+		});	
 		
 		/*-------------------------------------------------------------*/
 		/*--------------------- AUTOCOMPLETAR -------------------------*/
@@ -672,4 +676,17 @@
 			return false;		
 		}//end function cliente_consultar
 		
+		
+		function Cliente_ExportarExcel()
+		{
+			cargador_visibility('show');
+
+			var url = '../../dispo/cliente/exportarexcel';
+			var params = '?criterio_busqueda='+$("#frm_busqueda_cliente #criterio_busqueda").val()+
+						 '&busqueda_estado='+$("#frm_busqueda_cliente #busqueda_estado").val();
+			url = url + params;
+			var win = window.open(url);
+			
+			cargador_visibility('hide');
+		}//end function Variedad_ExportarExcel
 		

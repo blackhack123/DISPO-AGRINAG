@@ -236,11 +236,11 @@
         	<div class="busqueda-admin-section pull-left">
             	<div class="form-inline">
                 	<form id="frm_busqueda" action="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento" method="post" >
-                    <input name="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
-                    <select  name="busqueda_estado" class="select-class2">
+                    <input name="criterio_busqueda"  id="criterio_busqueda"  type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+                    <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
                         <?php echo($this->busqueda_estado); ?>
                     </select>
-                    <select name="busqueda_sincronizado" class="select-class2">
+                    <select name="busqueda_sincronizado" id="busqueda_sincronizado" class="select-class2">
                     	<?php echo($this->busqueda_sincronizado); ?>
                     </select>
                     <a id="btn_consultar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-search icon-white"></i></a>

@@ -306,14 +306,14 @@ $(document).ready(function () {
                 	
                 <form id="frm_busqueda" action="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento" method="post" >
                 <div class="input-group" style="display:inline-flex">    
-                	<input name="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+                	<input name="criterio_busqueda" id="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
                      <div class="input-group">
-						<select  name="busqueda_estado" class="select-class2" style="width:130px">
+						<select  name="busqueda_estado" id="busqueda_estado" class="select-class2" style="width:130px">
 	    	                <?php echo($this->busqueda_estado); ?>
     	                </select>                                       
                     </div>
                     <div class="input-group">
-						<select  name="busqueda_color" class="select-class2" style="width:130px">
+						<select  name="busqueda_color" id="busqueda_color" class="select-class2" style="width:130px">
 	    	                <?php echo($this->busqueda_color); ?>
     	                </select>                                       
                     </div>

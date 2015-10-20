@@ -8,6 +8,7 @@ use Application\Classes\PHPExcelApp;
 use Zend\View\Model\JsonModel;
 use Dispo\DAO\AgenciaCargaDAO;
 use Dispo\Data\AgenciaCargaData;
+use Dispo\Data\Dispo\Data;
 
 
 class AgenciaCargaBO extends Conexion
@@ -87,18 +88,6 @@ class AgenciaCargaBO extends Conexion
 	}//end function listado
 	
 	
-	/***
-	 * 
-	 * @param array $condiciones
-	 * @return Ambigous <\Dispo\Data\AgenciaCargaData, NULL>
-	 */
-	public function listadoExcel($condiciones)
-	{
-		$AgenciaCargaDAO = new AgenciaCargaDAO();
-		$AgenciaCargaDAO->setEntityManager($this->getEntityManager());
-		$result = $AgenciaCargaDAO->consultarExcel($condiciones);
-		return $result;
-	}//end function listado
 	
 	/**
 	 * Consultar 
@@ -200,33 +189,46 @@ class AgenciaCargaBO extends Conexion
 		ini_set('memory_limit','-1');
 	
 	
-		
 		$AgenciaCargaDAO			= new AgenciaCargaDAO();
 	
 		$AgenciaCargaDAO->setEntityManager($this->getEntityManager());
 		
 		//----------------Se configura las Etiquetas de Seleccion-----------------
-		$criterio_busqueda		= 'TODOS';
-		$estado 				= 'TODOS';
-		$sincronizado			= 'TODAS';
-		
+		$texto_criterio_busqueda	= '';
+		$texto_estado 				= 'TODOS';
+		$texto_sincronizado			= 'TODOS';
 		
 		if (!empty($condiciones['criterio_busqueda'])){
-			$AgenciaCargaData 		= $AgenciaCargaDAO->consultarExcel($condiciones['criterio_busqueda']);
-			$criterio_busqueda		= $AgenciaCargaData->getNombre();
+			$texto_criterio_busqueda	= $condiciones['criterio_busqueda'];
 		}//end if
 		
-		if (!empty($condiciones['estado'])){
-			$AgenciaCargaData 		= $AgenciaCargaDAO->consultarExcel($condiciones['estado']);
-			$criterio_busqueda		= $AgenciaCargaData->getEstado();
-		}//end if
+		switch ($condiciones['estado'])
+		{
+			case 'A':
+				$texto_estado		=  'ACTIVO';
+				break;
+				
+			case 'I':
+				$texto_estado		=  'INACTIVO';
+				break;
+				
+		}//end switch
 		
-		if (!empty($condiciones['sincronizado'])){
-			$AgenciaCargaData 		= $AgenciaCargaDAO->consultarExcel($condiciones['sincronizado']);
-			$criterio_busqueda		= $AgenciaCargaData->getSincronizado();
-		}//end if
 		
+		switch ($condiciones['sincronizado'])
 		
+		{
+			case 'SINCRONIZADO':
+				$texto_sincronizado		= 'SINCRONIZADO';
+				break;
+				
+			case 'PENDIENTE':
+				$texto_sincronizado		= 'PENDIENTE';
+				break;
+				
+		}//end switch
+		
+	
 		//----------------Se inicia la configuracion del PHPExcel-----------------
 		
 		$PHPExcelApp 	= new PHPExcelApp();
@@ -264,6 +266,7 @@ class AgenciaCargaBO extends Conexion
 		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, "Agencia Carga");
 		$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
 		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
+		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 		
 		
 		//------------------------------Registra criterios linea 1--------------------------
@@ -277,19 +280,19 @@ class AgenciaCargaBO extends Conexion
 		$objInventario = $objRichText->createTextRun('     Criterio: ');
 		$objInventario->getFont()->setBold(true);
 		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
-		$objRichText->createText($criterio_busqueda);
+		$objRichText->createText($texto_criterio_busqueda);
 		
 		
 		$objInventario = $objRichText->createTextRun('     Estado: ');
 		$objInventario->getFont()->setBold(true);
 		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
-		$objRichText->createText($estado);
+		$objRichText->createText($texto_estado);
 		
 		
 		$objInventario = $objRichText->createTextRun('     Sincronizado: ');
 		$objInventario->getFont()->setBold(true);
 		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
-		$objRichText->createText($sincronizado);
+		$objRichText->createText($texto_sincronizado);
 		
 		$objPHPExcel->getActiveSheet()->getCell($col_ini.$row)->setValue($objRichText);
 		$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
@@ -333,7 +336,7 @@ class AgenciaCargaBO extends Conexion
 		$objPHPExcel_getActiveSheet=$objPHPExcel->getActiveSheet();
 		
 		//----------------------CONSULTA LOS REGISTROS A EXPORTAR---------------
-		$result = $this->listadoExcel($condiciones);
+		$result = $this->listado($condiciones);
 		
 		
 		$cont_linea = 0;
