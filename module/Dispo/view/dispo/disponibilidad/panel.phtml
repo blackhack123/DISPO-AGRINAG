@@ -35,6 +35,11 @@
 				e.preventDefault()
 				$(this).tab('show')
 			})
+			
+			$("#frm_dispo_grupo #btn_excel").on('click', function(event){ 
+	        	DispoGrupo_ExportarExcel();
+	    		return false;
+	    	});	
 		});//$(document).ready
 		
 		
@@ -247,6 +252,22 @@
 			response = ajax_call(parameters, data);		
 			return false;				
 		}//end function sincronizarDispoRemote
+
+
+		function DispoGrupo_ExportarExcel()
+		{
+			cargador_visibility('show');
+
+			var url = '../../dispo/grupodispo/exportarExcelDispoGrupo';
+			var params = '?grupo_dispo_cab_id='+$("#frm_dispo_grupo #grupo_dispo_cab_id").val()+
+						 '&color_ventas_id='+$("#frm_dispo_grupo #color_ventas_id").val()+
+					 	 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val();
+			url = url + params;
+			var win = window.open(url);
+			
+			cargador_visibility('hide');
+		}//end function DispoGeneral_ExportarExcel
+		
 	</script>
 
 
@@ -647,6 +668,10 @@
                                                  <select  id="color_ventas_id" class="form-control input-sm"></select>
                                                  <select  id="calidad_variedad_id" class="form-control input-sm"></select>
                                             </div>
+                                            <span>&nbsp;&nbsp;&nbsp;</span>
+                                            <span class="input-group">
+                    							<button id="btn_excel" type="button" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-download-alt"></i></button>
+                    						</span>  
                                         </div>
                                      </section>
                                 	 
