@@ -36,6 +36,9 @@ class Fecha {
     );
     
     
+    const IMPRESION_FECHA_LARGA = 1;
+    const IMPRESION_FECHA_CORTA = 2;
+    
     public static function getArrMesCorto()
     {
     	return self::$arr_mes_corto;
@@ -340,5 +343,43 @@ class Fecha {
 		return $fecha_new;
 	}//end function convertirFechaToHora	
 	
+
+	/**
+	 * 
+	 * @param string $fecha
+	 * @param number $tipo_salida_fecha
+	 * @return string
+	 */
+	public static function getFechaImpresion($fecha, $tipo_salida_fecha = IMPRESION_FECHA_LARGA)
+	{
+		if (empty($fecha))
+		{
+			return '';
+		}//end if
+		
+		$fecha_new = new \DateTime($fecha);
+		
+		$mes 		= $fecha_new->format("M");
+		$dia_numero = $fecha_new->format("j");
+		$dia_texto  = $fecha_new->format("l");
+		$anio 		= $fecha_new->format("Y");
+		$hora 		= $fecha_new->format("H");
+		$minuto 	= $fecha_new->format("i");
+		
+		switch($tipo_salida_fecha)
+		{
+			case 1: //Fecha Larga
+				$texto = $mes.', '.$dia_numero.' '.$anio.', '.$dia_texto.', '.$hora.':'.$minuto;
+				break;
+			
+			case 2:
+				$texto = null; //Por implementar
+				break;
+				
+			case 3:  //USO FUTURO
+				break;
+		}//end switch
+		return $texto;
+	}//end function getFechaLargaImpresion
 	
 }//end class Fecha

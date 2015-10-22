@@ -155,8 +155,16 @@ class PedidoCabDAO extends Conexion
 		$PedidoCabData 		    = new PedidoCabData();
 
 		$sql = 	' SELECT pedido_cab.*, agencia_carga.nombre as agencia_carga_nombre, '.
-				'        marcacion.nombre as marcacion_nombre '.
-				' FROM pedido_cab LEFT JOIN agencia_carga '.
+				'		 cliente.nombre as cliente_nombre, '.
+				'		 cliente.direccion as cliente_direccion, '.
+				'		 cliente.telefono1 as cliente_telefono1, '.
+				'		 cliente.fax1 as cliente_fax1, '.
+				'        marcacion.nombre as marcacion_nombre, '.
+				'        marcacion.direccion as marcacion_direccion, '.
+				'        marcacion.telefono as marcacion_telefono '.
+				' FROM pedido_cab INNER JOIN cliente '.
+				'                    ON cliente.id = pedido_cab.cliente_id '.
+				'				  LEFT JOIN agencia_carga '.
 				'                    ON agencia_carga.id 		= pedido_cab.agencia_carga_id '.
 				'				  LEFT JOIN marcacion '.
 				'					 ON marcacion.marcacion_sec	= pedido_cab.marcacion_sec '.

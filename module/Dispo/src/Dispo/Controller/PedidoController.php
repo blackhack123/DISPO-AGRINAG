@@ -752,4 +752,32 @@ class PedidoController extends AbstractActionController
 	
 	
 	
+	public function pruebaAction()
+	{
+		try
+		{		
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+	
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$PedidoBO 				= new PedidoBO();
+		
+			$PedidoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			$pedido_cab_id			= $this->params()->fromQuery('pedido_cab_id', 47); //27  //75 //47
+
+			$config = $this->getServiceLocator()->get('Config');
+ 
+			$archivo_pdf = $config['rutaArchivo']['tmp']."pedido".$pedido_cab_id.".pdf";
+			//$PedidoBO->generarPDF($pedido_cab_id, null, $archivo_pdf, $config);
+			$PedidoBO->enviarEmailAdjuntoPDF($pedido_cab_id, null, $archivo_pdf, $config);
+		exit;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}			
+	}//end function pruebaAction
+	
 }//end controller

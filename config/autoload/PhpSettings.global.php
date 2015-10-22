@@ -34,5 +34,6 @@ return array(
 			),
 	),
 
-	'url_server_integrador' => 'http://181.198.42.202:8159/sincronizador/public'		
+	'url_server_integrador' => 'http://181.198.42.202:8159/sincronizador/public',
+		
 );

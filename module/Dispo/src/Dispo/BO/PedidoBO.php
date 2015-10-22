@@ -17,6 +17,9 @@ use Dispo\DAO\GrupoDispoDetDAO;
 use Dispo\Exception\PedidoException;
 use Seguridad\DAO\UsuarioDAO;
 use Dispo\DAO\ParametrizarDAO;
+use Application\Classes\Imagen;
+use Application\Classes\MPDFApp;
+use Application\Classes\CorreoElectronico;
 
 
 class PedidoBO extends Conexion
@@ -904,5 +907,327 @@ class PedidoBO extends Conexion
 		$PedidoDetDAO->setEntityManager($this->getEntityManager());
 		$PedidoDetDAO->actualizarMarca($PedidoDetData);
 		return true;
-	}//end function grabarComentario	
+	}//end function grabarComentario
+
+	
+	
+	public function generarPDF($pedido_cab_id, $cliente_id, $salida_archivo_pdf, $config)
+	{
+		$MPDFApp					= new MPDFApp();
+		$PedidoCabDAO 				= new PedidoCabDAO();
+		$PedidoDetDAO				= new PedidoDetDAO();
+		
+		$plantilla_pdf	= $config['plantilla_pdf']['dispo']['ruta'] . "pdf_pedido.html";
+		$plantilla_html	= utf8_decode(file_get_contents($plantilla_pdf));
+		
+		$PedidoCabDAO->setEntityManager($this->getEntityManager());
+		$PedidoDetDAO->setEntityManager($this->getEntityManager());
+		
+		//Consulta la cabecera del pedido
+		$reg_pedido_cab = $PedidoCabDAO->consultar($pedido_cab_id, \Application\Constants\ResultType::MATRIZ);
+
+		//Consulta el detalle del pedido
+		$condiciones = array(
+				'pedido_cab_id'  => $pedido_cab_id,
+				'cliente_id'	 => $cliente_id
+		);
+		$result_det = $PedidoDetDAO->listado($condiciones);
+		
+		//Inicializa la configuracion
+		//set_time_limit ( 0 );
+		ini_set('memory_limit','-1');
+		
+		//$mpdf=new \mPDF('c', array(210, 297),10,'serif',2,2,30,13,9,9,'L');
+		$mpdf=new \mPDF('c', array(210, 297),10,'serif',10,10,40,13,9,9,'P');
+		
+		$mpdf->useSubstitutions=false;
+		$mpdf->simpleTables = true;
+		$mpdf->SetDisplayMode('fullpage');
+		
+		$html = $plantilla_html;
+		
+		//Fecha Impresion
+		$fec_impresion = \Application\Classes\Fecha::getFechaImpresion(\Application\Classes\Fecha::getFechaHoraActualServidor(),  \Application\Classes\Fecha::IMPRESION_FECHA_LARGA);
+		$html = str_replace('$$fec_impresion$$', $fec_impresion, $html);
+		//Numero de Pedido
+		$html = str_replace('$$pedido_cab_id$$', \Application\Classes\Mascara::getNroPedidoFormateado($pedido_cab_id, $config['mascara_pedido']), $html);
+		//Nombre del Cliente
+		$html = str_replace('$$nombre_cliente$$', $reg_pedido_cab['cliente_nombre'], $html);
+		//Direccion
+		$html = str_replace('$$direccion_cliente$$', $reg_pedido_cab['cliente_direccion'], $html);
+		//Telefono 1
+		$html = str_replace('$$telefono1_cliente$$', $reg_pedido_cab['cliente_telefono1'], $html);
+		//Fax 1
+		$html = str_replace('$$fax1_cliente$$', $reg_pedido_cab['cliente_fax1'], $html);
+		//Nombre Marcacion
+		$html = str_replace('$$nombre_marcacion$$', $reg_pedido_cab['marcacion_nombre'], $html);
+		//Nombre Marcacion
+		$html = str_replace('$$direccion_marcacion$$', $reg_pedido_cab['marcacion_direccion'], $html);
+		//Telefono Marcacion
+		$html = str_replace('$$telefono_marcacion$$', $reg_pedido_cab['marcacion_telefono'], $html);
+		//Fecha Confirmado		
+		$fec_ingreso = \Application\Classes\Fecha::getFechaImpresion($reg_pedido_cab['fec_ingreso'],  \Application\Classes\Fecha::IMPRESION_FECHA_LARGA);
+		$html = str_replace('$$fec_creado$$', $fec_ingreso, $html);
+		//Fecha Confirmado
+		$fec_confirmado = \Application\Classes\Fecha::getFechaImpresion($reg_pedido_cab['fec_confirmado'],  \Application\Classes\Fecha::IMPRESION_FECHA_LARGA);
+		$html = str_replace('$$fec_confirmado$$', $fec_confirmado, $html);
+		
+		$html_det 	= '';
+		$total    	= 0;
+		$tot_eq_fb	= 0;
+		
+		foreach($result_det as $reg)
+		{
+			$format_price_item 	= '$'.number_format($reg['precio'], 2);
+			$format_total_box  	= '$'.number_format($reg['total_x_caja'], 2);
+			$format_total		= '$'.number_format($reg['total'], 2);			
+			$html_det = $html_det.'
+				<tr>
+				<td>'.$reg['variedad_nombre'].'</td>
+				<td align="center">'.$reg['grado_id'].'</td>
+				<td align="center">'.$reg['tallos_x_bunch'].'</td>
+				<td align="center">'.$reg['tipo_caja_nombre'].'</td>
+				<td align="center">'.$reg['cantidad_bunch']/$reg['nro_cajas'].'</td>
+				<td align="center">'.$reg['nro_cajas'].'</td>
+				<td align="center">'.$reg['tallos_total'].'</td>
+				<td align="right">'.$format_price_item.'</td>
+				<td align="right">'.$format_total_box.'</td>
+				<td align="right" >'.$format_total.'</td>
+				<td>'.$reg['marca'].'</td>
+				</tr>
+			';
+			
+			$total= $total + $reg['total'];
+			$tot_eq_fb = $tot_eq_fb + $reg['eq_fb'];
+		}//end foreach
+		
+		//Detalles del Pedido
+		$html = str_replace('$$detalle_factura$$', $html_det, $html);
+		//Total Eq FB
+		$html = str_replace('$$eq_fb$$', $tot_eq_fb, $html);
+		//Total del Pedido
+		$html = str_replace('$$total$$', $total, $html);
+		
+		$mpdf->WriteHTML($html);
+
+		if (empty($salida_archivo_pdf))
+		{
+			$mpdf->Output();
+		}else{
+			$mpdf->Output($salida_archivo_pdf,'F');
+		}//end if
+		
+		return true;
+	}//end function generarPDF
+	
+	
+	function enviarEmailAdjuntoPDF($pedido_cab_id, $cliente_id, $salida_archivo_pdf, $config)
+	{
+		$this->generarPDF($pedido_cab_id, $cliente_id, $salida_archivo_pdf, $config);
+		
+		$CorreoElectronico = new CorreoElectronico();
+		//$resultadoEnvio = $CorreoElectronico->setEmail('moroni@agrinag.com','Pedido de AGRINAG', 'HOLA',array($salida_archivo_pdf));
+		//$resultadoEnvio = $CorreoElectronico->setEmailOld('moroni@agrinag.com','Pedido de AGRINAG', 'HOLA');
+		$resultadoEnvio = $CorreoElectronico->SendMail('moroni@agrinag.com','david.salazar1977@gmail.com','Pedido de AGRINAG', 'HOLA', $salida_archivo_pdf);
+	}//end function enviarEmailAdjuntoPDF
+	
+	
+	
+	
+	public function generarPDF2($pedido_cab_id, $cliente_id)
+	{
+		$MPDFApp					= new MPDFApp();
+		$PedidoCabDAO 				= new PedidoCabDAO();
+		$PedidoDetDAO				= new PedidoDetDAO();
+		
+		$PedidoCabDAO->setEntityManager($this->getEntityManager());
+		$PedidoDetDAO->setEntityManager($this->getEntityManager());
+		
+		//Consulta el detalle del pedido
+		$condiciones = array(
+								'pedido_cab_id'  => $pedido_cab_id,
+								'cliente_id'	 => $cliente_id
+							);
+		$result_det = $PedidoDetDAO->listado($condiciones);
+		
+		//echo("<pre>"); var_dump($result_det);echo("</pre>");exit;
+		
+		//Inicializa la configuracion
+		set_time_limit ( 0 );
+		ini_set('memory_limit','-1');
+		
+		//$mpdf=new \mPDF('c', array(210, 297),10,'serif',2,2,30,13,9,9,'L');
+		$mpdf=new \mPDF('c', array(210, 297),10,'serif',10,10,40,13,9,9,'P');
+		
+		$mpdf->useSubstitutions=false;
+		$mpdf->simpleTables = true;
+		$mpdf->SetDisplayMode('fullpage');
+
+		$html = '<html>
+					<head>
+						<style>
+							table  	{
+								font-family: DejaVuSansCondensed;font-size: 8pt; 
+								line-height: 1.5;
+								margin-top: 2pt; 
+								margin-bottom: 5pt;
+								border-collapse: collapse;  
+							}
+							table thead td { 
+								background-color: #EEEEEE;
+							    text-align: center;
+							    border: 0.1mm solid #000000;
+								font-weight: bold; 
+								vertical-align: middle; 
+							}				
+							table tfoot td {
+								font-weight: bold; 
+							}
+							table thead td, table thead th, table tfoot td, tabled tfoot th {
+								font-variant: small-caps;
+							}
+							th {
+								font-weight: bold;
+								vertical-align: top;
+								text-align:left;
+								padding-left: 2mm;
+								padding-right: 2mm;
+								padding-top: 0.5mm;
+								padding-bottom: 0.5mm;
+							}
+							td {
+								padding-left: 2mm;
+								vertical-align: top;
+								text-align:left;
+								padding-right: 2mm;
+								padding-top: 0.5mm;
+								padding-bottom: 0.5mm;
+							}				
+						</style>
+					</head>
+				<body>
+					<table border=1>
+						<thead>
+			    			<tr>
+								<td>VARIETY</td>
+								<td>LENGTH (CM)</td>
+								<td>UNITS /BUNCH</td>
+								<td>BOY TYPE</td>
+								<td>BUNCH /BOX</td>
+								<td>BOXES</td>
+								<td>UNITS</td>
+								<td>PRICE /ITEM</td>
+								<td>TOTAL /BOX</td>
+								<td>TOTAL</td>
+								<td>MARK/PO</td>
+							</tr>				
+						</thead>
+						<tbody>';
+		
+		foreach($result_det as $reg)
+		{
+			$format_price_item 	= '$'.number_format($reg['precio'], 2);
+			$format_total_box  	= '$'.number_format($reg['total_x_caja'], 2);
+			$format_total		= '$'.number_format($reg['total'], 2);
+			$html=$html.'	<tr>
+								<td>'.$reg['variedad_nombre'].'</td>
+								<td align="center">'.$reg['grado_id'].'</td>
+								<td align="center">'.$reg['tallos_x_bunch'].' standard</td>
+								<td align="center">'.$reg['tipo_caja_nombre'].'</td>
+								<td align="center">'.$reg['cantidad_bunch'].'</td>
+								<td align="center">'.$reg['nro_cajas'].'</td>
+								<td align="center">'.UNITS.'</td>										
+								<td align="right">'.$format_price_item.'</td>
+								<td align="right">'.$format_total_box.'</td>
+								<td align="right" >'.$format_total.'</td>
+								<td nowrap="nowrap">'.$reg['marca'].'</td>
+							</tr>';
+		}//end foreach
+		
+		
+		$html = $html.' </tbody>
+					</table>
+				</body>
+				</html>';
+		
+		//CABECERA
+		$fecha_generacion=date("Y-m-d H:i:s");
+		/*$url_image = 'public/images/logo/'.$empresa_id.'.jpg';
+		$Imagen = new Imagen();
+		list($ancho,$altura) =  $Imagen->getDimensionForResizeImage($url_image, 50, 50);
+		*/
+		$header = '	<table border=0 width="100%">
+						<tbody>
+							<tr>
+								<td><img src="public/images/logo/small.png" alt=""></td>
+								<td>
+									AGRINAG S.A.<br>
+									P. Jose Guango Bajo, Latacunga<br>
+									Latacunga, Ecuador<br><br>
+				
+									PHONE: 593 3 2710241<br>
+										   593 3 271 0242<br>
+									FAX:   593 3 2380639<br>
+				                    EMAIL: sales@agrinag.net<br>   
+								</td>
+								<td align="rigth">
+									<table align="right">
+										<tr>
+											<td>Printer Date: 2015/10/29</td>
+										</tr>
+										<tr>
+											<td>
+												<table border=1>
+													<tr>
+														<td>Order</td>
+														<td>132241</td>
+													</tr>
+													<tr>
+														<td>Create Date</td>
+														<td> Oct, 20 2015, Tuesday,<br>20:31</td>
+													</tr>
+													<tr>
+														<td>Full Boxes Eqv:</td>
+														<td> 1.000</td>
+													</tr>
+												</table>
+											</td>
+										<tr>
+									</table>
+								</td>
+							</tr>
+						</tbody>
+					</table>';
+		
+		/*$header = '<table  style="font-family: serif; font-size: 9pt; width:100% ">
+						<tr>
+							<td width="33.33%" align="left" > <span style="font-weight: bold;">'.$titulo_reporte.'</span></td>
+									<td width="33.33%" align="center"><span style="font-weight: bold;">$nombre_empresa</span></td>
+									<td width="33.33%" align="right" rowspan="3" ><img src="$url_image" width="$ancho px"  height="$altura px" /></td>
+									</tr>
+									<tr>
+									<td width="33.33%" align="left"> <span style="font-weight: bold;">OBRA : $nombre_sucursal</span></td>
+									<td width="33.33%" align="center"><span style="font-weight: bold;">  $periodo </span></td>
+									</tr>
+									<tr>
+									<td width="33.33%" align="left" colspan="2" ><span style="font-weight: bold;">  $cargo $nombre_empleado </span></td>
+									</tr>
+									</table>';
+		*/
+		//$header='<div>holaa mundo</div>';
+		$mpdf->SetHTMLHeader($header);
+		/*$mpdf->SetFooter('| Usuario: '."{$user_name}        Fecha: $fecha_generacion   |".'pag. {PAGENO} ');
+		*/
+		
+		//MARCA DE AGUA
+		/*$mpdf->SetWatermarkText("PROYECCION DE MANO DE OBRA",0.1);
+		$mpdf->watermark_font = 'DejaVuSansCondensed';
+		$mpdf->showWatermarkText = true;
+		list($ancho,$altura) =  $Imagen->getDimensionForResizeImage($url_image, 50, 50);
+		$mpdf->SetWatermarkImage($url_image,0.05,array($ancho,$altura), array(10,150));
+		$mpdf->showWatermarkImage = true;
+		*/
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();		
+	}//end function generarPDF
 }//end class PedidoBO
