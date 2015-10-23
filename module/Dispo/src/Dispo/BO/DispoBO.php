@@ -157,7 +157,7 @@ class DispoBO extends Conexion
 				return $result;
 			}//end if			
 
-			$result = $DispoDAO->consultarInventarioPorUsuario($usuario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $clasifica_fox);			
+			$result = $DispoDAO->consultarInventarioPorUsuario($usuario_id, $producto_id, $variedad_id, $grado_id, $clasifica_fox);			
 			
 			/**
 			 *Ajusta el stock de los bunch de las fincas para mostrar la dispo de acuerdo al GRUPO_DISPO_DET
@@ -280,6 +280,15 @@ class DispoBO extends Conexion
 					$result_dispo[] = $row_dispo;
 				}//end if
 			}//end foreach
+			
+			
+			if (empty($result_dispo))
+			{	
+				$result = array('respuesta_code' 	=> '08',
+					'respuesta_msg'			=> 'Dispo unavailable'
+				);
+				return $result; //NO HAY DISPO
+			}
 			
 			foreach($result_dispo as &$row_dispo)
 			{

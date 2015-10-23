@@ -219,7 +219,7 @@ class DispoDAO extends Conexion
 	 * @return array
 	 */
 	/*public function consultarInventarioPorCliente($cliente_id, $inventario_id, $grupo_dispo_cab_id, $variedad_id, $grado_id, $clasifica_fox)*/
-	public function consultarInventarioPorUsuario($usuario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch, $clasifica_fox)
+	public function consultarInventarioPorUsuario($usuario_id, $producto_id, $variedad_id, $grado_id, $clasifica_fox)
 	{
 		$sql = 	' SELECT dispo.producto as producto_id, '.
 				'       variedad.nombre as variedad_nombre,'.
@@ -246,15 +246,11 @@ class DispoDAO extends Conexion
 		if (!empty($grado_id)){
 			$sql = $sql."		    AND grupo_precio_det.grado_id		= '".$grado_id."'";
 		}//end if
-		if (!empty($tallos_x_bunch)){
-			$sql = $sql."           AND grupo_precio_det.tallos_x_bunch = ".$tallos_x_bunch;
-		}//end if
 		$sql = $sql.'		 INNER JOIN dispo '.
 				"					 ON dispo.inventario_id	= usuario.inventario_id ".  /*INVENTARIO*/
 				'                   AND dispo.producto      = grupo_precio_det.producto_id'.
 				'					AND dispo.variedad_id	= grupo_precio_det.variedad_id'.
 				'					AND dispo.grado_id		= grupo_precio_det.grado_id'.
-				'					AND dispo.tallos_x_bunch= grupo_precio_det.tallos_x_bunch'.
 				"					AND dispo.clasifica		= '".$clasifica_fox."'".
 				'					AND dispo.cantidad_bunch_disponible > 0'.
 				'		 	 INNER JOIN variedad'.

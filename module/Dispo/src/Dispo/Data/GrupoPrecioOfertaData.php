@@ -24,10 +24,6 @@ class GrupoPrecioOfertaData
 	 */	
 	protected $grado_id;
 
-	/**
-	 * @var int
-	 */
-	protected $tallos_x_bunch;
 
 	/**
 	 * @var string
@@ -44,10 +40,6 @@ class GrupoPrecioOfertaData
 	 */
 	protected $grado_combo_id;
 
-	/**
-	 * @var int
-	 */
-	protected $tallos_x_bunch_combo;
 	
 	/**
 	 * @var float

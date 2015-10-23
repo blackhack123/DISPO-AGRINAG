@@ -23,14 +23,12 @@ class GrupoPrecioDetDAO extends Conexion
 				'producto_id'						=> $GrupoPrecioDetData->getProductoId(),
 				'variedad_id'						=> $GrupoPrecioDetData->getVariedadId(),
 				'grado_id'							=> $GrupoPrecioDetData->getGradoId(),
-				'tallos_x_bunch'					=> $GrupoPrecioDetData->getTallosXBunch()
 		);
 		$record = array(
 				'grupo_precio_cab_id'				=> $GrupoPrecioDetData->getGrupoPrecioCabId(),
 				'producto_id'						=> $GrupoPrecioDetData->getProductoId(),				
 				'variedad_id'		                => $GrupoPrecioDetData->getVariedadId(),
 				'grado_id'		            		=> $GrupoPrecioDetData->getGradoId(),
-				'tallos_x_bunch'					=> $GrupoPrecioDetData->getTallosXBunch(),
 				'precio'                			=> $GrupoPrecioDetData->getPrecio(),
 				'precio_oferta'        				=> $GrupoPrecioDetData->getPrecioOferta()
 		);
@@ -54,14 +52,12 @@ class GrupoPrecioDetDAO extends Conexion
 				'producto_id'						=> $GrupoPrecioDetData->getProductoId(),
 				'variedad_id'						=> $GrupoPrecioDetData->getVariedadId(),
 				'grado_id'						    => $GrupoPrecioDetData->getGradoId(),
-				'tallos_x_bunch'					=> $GrupoPrecioDetData->getTallosXBunch()
 		);
 		$record = array(
 				'grupo_precio_cab_id'				=> $GrupoPrecioDetData->getGrupoPrecioCabId(),
 				'producto_id'						=> $GrupoPrecioDetData->getProductoId(),				
 				'variedad_id'		                => $GrupoPrecioDetData->getVariedadId(),
 				'grado_id'		            		=> $GrupoPrecioDetData->getGradoId(),
-				'tallos_x_bunch'					=> $GrupoPrecioDetData->getTallosXBunch(),
 				'precio'                			=> $GrupoPrecioDetData->getPrecio(),
 				'precio_oferta'        				=> $GrupoPrecioDetData->getPrecioOferta()
 		);
@@ -82,8 +78,7 @@ class GrupoPrecioDetDAO extends Conexion
 				'grupo_precio_cab_id'		      	=> $GrupoPrecioDetData->getGrupoPrecioCabId(),
 				'producto_id'						=> $GrupoPrecioDetData->getProductoId(),
 				'variedad_id'						=> $GrupoPrecioDetData->getVariedadId(),
-				'grado_id'						    => $GrupoPrecioDetData->getGradoId(),
-				'tallos_x_bunch'					=> $GrupoPrecioDetData->getTallosXBunch(),				
+				'grado_id'						    => $GrupoPrecioDetData->getGradoId(),				
 		);
 		
 		switch($tipo_precio)
@@ -114,10 +109,9 @@ class GrupoPrecioDetDAO extends Conexion
 	 * @param istring $producto_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
-	 * @param int $tallos_x_bunch
 	 * @return \Dispo\Data\GrupoPrecioDetData|NULL
 	 */
-	public function consultar($grupo_precio_cab_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch)
+	public function consultar($grupo_precio_cab_id, $producto_id, $variedad_id, $grado_id)
 	{
 		$GrupoPrecioDetData 		    = new GrupoPrecioDetData();
 
@@ -126,15 +120,13 @@ class GrupoPrecioDetDAO extends Conexion
 				' WHERE grupo_precio_cab_id = :grupo_precio_cab_id '.
 				'   and producto_id		= :producto_id'.
 				'   and variedad_id		= :variedad_id'.
-				'   and grado_id		= :grado_id'.
-				'   and tallos_x_bunch  = :tallos_x_bunch';
+				'   and grado_id		= :grado_id';
 
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->bindValue(':grupo_precio_cab_id',$grupo_precio_cab_id);
 		$stmt->bindValue(':producto_id',$producto_id);		
 		$stmt->bindValue(':variedad_id',$variedad_id);
 		$stmt->bindValue(':grado_id',$grado_id);
-		$stmt->bindValue(':tallos_x_bunch',$tallos_x_bunch);		
 		$stmt->execute();
 		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
 		if($row){
@@ -142,7 +134,6 @@ class GrupoPrecioDetDAO extends Conexion
 			$GrupoPrecioDetData->setProductoId 					($row['producto_id']);			
 			$GrupoPrecioDetData->setVariedadId					($row['variedad_id']);
 			$GrupoPrecioDetData->setGradoId		    			($row['grado_id']);
-			$GrupoPrecioDetData->setTallosXBunch 				($row['tallos_x_bunch']);
 			$GrupoPrecioDetData->setPrecio						($row['precio']);
 			$GrupoPrecioDetData->setPrecioOferta				($row['precio_oferta']);
 			return $GrupoPrecioDetData;
@@ -160,11 +151,10 @@ class GrupoPrecioDetDAO extends Conexion
 	 * @param string $producto_id
 	 * @param string $variedad_id
 	 * @param string $grado_id
-	 * @param int $tallos_x_bunch
 	 * @return \Dispo\Data\GrupoPrecioDetData|NULL
 	 */
 	/*consultarPorClienteIdPorVariedadIdPorGradoId*/
-	public function consultarPorUsuarioIdPorVariedadIdPorGradoId($usuario_id, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch) /*MORONITOR*/
+	public function consultarPorUsuarioIdPorVariedadIdPorGradoId($usuario_id, $producto_id, $variedad_id, $grado_id) /*MORONITOR*/
 	{
 		$GrupoPrecioDetData 		    = new GrupoPrecioDetData();
 		
@@ -176,8 +166,7 @@ class GrupoPrecioDetDAO extends Conexion
 				' WHERE grupo_precio_det.grupo_precio_cab_id 	= usuario.grupo_precio_cab_id '.
 				"   and grupo_precio_det.producto_id			= '".$producto_id."'".
 				"   and grupo_precio_det.variedad_id		 	= '".$variedad_id."'".
-				"   and grupo_precio_det.grado_id				= '".$grado_id."'".
-				'   and grupo_precio_det.tallos_x_bunch			= '.$tallos_x_bunch;
+				"   and grupo_precio_det.grado_id				= '".$grado_id."'";
 
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$stmt->execute();
@@ -197,7 +186,7 @@ class GrupoPrecioDetDAO extends Conexion
 	{
 		if ($tipo_precio=='OFERTA')
 		{
-			$sql = 	' SELECT grupo_precio_det.producto_id, variedad.nombre as variedad, grupo_precio_det.variedad_id, grupo_precio_det.tallos_x_bunch, '.
+			$sql = 	' SELECT grupo_precio_det.producto_id, variedad.nombre as variedad, grupo_precio_det.variedad_id, '.
 					'        color_ventas.nombre as color_ventas_nombre, '.					
 					" 		 sum(if(grupo_precio_det.grado_id=40,  grupo_precio_det.precio_oferta, 0)) as '40',".
 					" 		 sum(if(grupo_precio_det.grado_id=50,  grupo_precio_det.precio_oferta, 0)) as '50',".
@@ -225,10 +214,10 @@ class GrupoPrecioDetDAO extends Conexion
 			{
 				$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."'";
 			}//end if			
-			$sql = $sql.' GROUP BY grupo_precio_det.producto_id, variedad.nombre, variedad.id, grupo_precio_det.tallos_x_bunch, color_ventas.nombre '.
+			$sql = $sql.' GROUP BY grupo_precio_det.producto_id, variedad.nombre, variedad.id, color_ventas.nombre '.
 					" ORDER BY variedad.nombre ";
 		}else{
-			$sql = 	' SELECT grupo_precio_det.producto_id, variedad.nombre as variedad, grupo_precio_det.variedad_id, grupo_precio_det.tallos_x_bunch, '.
+			$sql = 	' SELECT grupo_precio_det.producto_id, variedad.nombre as variedad, grupo_precio_det.variedad_id,  '.
 					'        color_ventas.nombre as color_ventas_nombre, '.					
 					" 		 sum(if(grupo_precio_det.grado_id=40,  grupo_precio_det.precio, 0)) as '40',".
 					" 		 sum(if(grupo_precio_det.grado_id=50,  grupo_precio_det.precio, 0)) as '50',".
@@ -256,7 +245,7 @@ class GrupoPrecioDetDAO extends Conexion
 				$sql = $sql." and variedad.color_ventas_id = '".$condiciones['color_ventas_id']."'";
 			}//end if
 					
-			$sql = $sql.' GROUP BY grupo_precio_det.producto_id, variedad.nombre, variedad.id, grupo_precio_det.tallos_x_bunch, color_ventas.nombre'.
+			$sql = $sql.' GROUP BY grupo_precio_det.producto_id, variedad.nombre, variedad.id, color_ventas.nombre'.
 					" ORDER BY variedad.nombre ";
 		}//end if
 			
@@ -282,8 +271,7 @@ class GrupoPrecioDetDAO extends Conexion
 	public function registrarPrecio($tipo_precio, GrupoPrecioDetData $GrupoPrecioDetData)
 	{
 		$GrupoPrecioDetData2 = $this->consultar($GrupoPrecioDetData->getGrupoPrecioCabId(), $GrupoPrecioDetData->getProductoId(),
-												$GrupoPrecioDetData->getVariedadId(), $GrupoPrecioDetData->getGradoId(),
-												$GrupoPrecioDetData->getTallosXBunch());
+												$GrupoPrecioDetData->getVariedadId(), $GrupoPrecioDetData->getGradoId());
 		if ($GrupoPrecioDetData2)
 		{
 			$accion = \Application\Constants\Accion::MODIFICAR;

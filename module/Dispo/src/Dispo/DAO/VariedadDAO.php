@@ -346,12 +346,33 @@ class VariedadDAO extends Conexion
 	}//end function consultar
 
 	
+	/**
+	 * 
+	 * @param array $condiciones (color_ventas_id)
+	 * @return array
+	 */
 	public function listadoDispo($condiciones)
-	{
-		$sql = 	' SELECT * '.
-				' FROM variedad '.
-				' WHERE 1 = 1';
 	
+	{
+		$sql = 	' SELECT variedad.producto_id, variedad.id as variedad_id, variedad.nombre as variedad, '.
+				' 		 color_ventas.nombre as color_ventas_nombre, variedad.url_ficha '.
+				' FROM variedad  LEFT JOIN color_ventas '.
+				' 					    ON variedad.color_ventas_id = color_ventas.id'.
+				' WHERE 1 = 1';
+		
+
+			if (!empty($condiciones['color_ventas_id']))
+			{
+				$sql = $sql." and variedad.color_ventas_id = ".$condiciones['color_ventas_id'];
+			}//end if
+			
+			$sql = $sql." ORDER BY variedad.nombre ";
+
+			$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+			$stmt->execute();
+			$result = $stmt->fetchAll();	
+
+			return $result;
 	}//end function listadoDispo
 	
 }//end class

@@ -84,23 +84,27 @@ class GrupoPrecioCabBO extends Conexion
 		
 		
 		/**
-		 * Se obtiene los registro de la DISPO GENERAL  (UNIVERSO)
+		 * Se obtiene los registro de la lista de VARIEDADES (UNIVERSO)
 		 */
 		$condiciones2 = array(
+				"clasifica_fox"		=> $reg_grupoPrecioCab['clasifica_fox'],
+				"color_ventas_id"	=> $condiciones['color_ventas_id']
+		);		
+		$result_dispo = $VariedadDAO->listadoDispo($condiciones2);
+		
+		
+		/**
+		 * Se obtiene los registro de la DISPO GENERAL  (UNIVERSO)
+		 */
+/*		$condiciones2 = array(
 				"inventario_id"	=> $reg_grupoPrecioCab['inventario_id'],
 				"proveedor_id"	=> null,
 				"clasifica"		=> $reg_grupoPrecioCab['clasifica_fox'],
 				"color_ventas_id"	=> $condiciones['color_ventas_id']				
 		);
 		$result_dispo = $DispoDAO->listado($condiciones2);
-		
-		
-/*		$condiciones2 = array(
-				"clasifica"			=> $reg_grupoPrecioCab['clasifica_fox'],
-				"color_ventas_id"	=> $condiciones['color_ventas_id']
-		);
-		$result_dispo = $VariedadDAO->listado($condiciones);
 */		
+				
 		/**
 		 * Se obtiene los registros de el PRECIO POR GRUPO
 		 */
@@ -109,7 +113,7 @@ class GrupoPrecioCabBO extends Conexion
 				"color_ventas_id"		=> $condiciones['color_ventas_id']				
 		);		
 		$result_dispo_grupo = $GrupoDispoDetDAO->listado($tipo_precio, $condiciones2);
-		
+
 
 		/**
 		 * Se realizar el proceso de consolidacion de informacion
@@ -121,7 +125,7 @@ class GrupoPrecioCabBO extends Conexion
 			$reg_new['producto_id'] 	= $reg['producto_id'];
 			$reg_new['variedad_id'] 	= $reg['variedad_id'];
 			$reg_new['variedad'] 		= trim($reg['variedad']);
-			$reg_new['tallos_x_bunch'] 	= $reg['tallos_x_bunch'];
+			/*$reg_new['tallos_x_bunch'] 	= $reg['tallos_x_bunch'];*/
 			$reg_new['color_ventas_nombre'] 	= $reg['color_ventas_nombre'];				
 			$reg_new['40'] 				= 0;
 			$reg_new['50'] 				= 0;
@@ -140,7 +144,8 @@ class GrupoPrecioCabBO extends Conexion
 			$reg_new['ofer100']			= 0;
 			$reg_new['ofer110']			= 0;
 			$reg_new['existe']			= 0;
-			$result[$reg['producto_id'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch']] = $reg_new;
+			//$result[$reg['producto_id'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch']] = $reg_new;
+			$result[$reg['producto_id'].'-'.$reg['variedad_id']] = $reg_new;
 		}//end foreach
 		
 		//Completa los campos del RESULT con la DISPO POR GRUPO
@@ -148,12 +153,13 @@ class GrupoPrecioCabBO extends Conexion
 		{
 			//Se puede dar el caso que el registro exista en la lista de precios y no exista en el dispo
 			//esto se puede deber a que de la dispo general lo han quitado por alguna razon de comercializacion
-			$key = $reg['producto_id'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch'];
+			//$key = $reg['producto_id'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch'];
+			$key = $reg['producto_id'].'-'.$reg['variedad_id'];
 			if (!array_key_exists($key, $result))
 			{
 				$reg_new['variedad_id'] 		= $reg['variedad_id'];
 				$reg_new['variedad'] 			= trim($reg['variedad']);
-				$reg_new['tallos_x_bunch'] 		= $reg['tallos_x_bunch'];
+				/*$reg_new['tallos_x_bunch'] 		= $reg['tallos_x_bunch'];*/
 				$reg_new['color_ventas_nombre']	= $reg['color_ventas_nombre'];				
 				$reg_new['40'] 			= 0;
 				$reg_new['50'] 			= 0;
@@ -184,7 +190,7 @@ class GrupoPrecioCabBO extends Conexion
 			$reg_result['90']	= $reg['90'];
 			$reg_result['100']	= $reg['100'];
 			$reg_result['110']	= $reg['110'];
-			$reg_result['ofer40'] 		= $reg['ofer110'];;
+			$reg_result['ofer40'] 		= $reg['ofer40'];;
 			$reg_result['ofer50'] 		= $reg['ofer50'];;
 			$reg_result['ofer60'] 		= $reg['ofer60'];;
 			$reg_result['ofer70'] 		= $reg['ofer70'];;

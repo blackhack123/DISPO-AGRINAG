@@ -250,7 +250,7 @@ class DisponibilidadController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function listadodispoAction
+	}//end function listadodetalledispoAction
 
 	
 	
@@ -521,7 +521,7 @@ class DisponibilidadController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function listadodispoAction
+	}//end function panelAction
 	
 	
 

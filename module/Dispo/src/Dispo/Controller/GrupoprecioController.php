@@ -302,8 +302,7 @@ class GrupoprecioController extends AbstractActionController
 			$GrupoPrecioDetData->setGrupoPrecioCabId 		($json['grupo_precio_cab_id']);
 			$GrupoPrecioDetData->setProductoId 				($json['producto_id']);
 			$GrupoPrecioDetData->setVariedadId				($json['variedad_id']);
-			$GrupoPrecioDetData->setGradoId					($json['grado_id']);
-			$GrupoPrecioDetData->setTallosXBunch 			($json['tallos_x_bunch']);			
+			$GrupoPrecioDetData->setGradoId					($json['grado_id']);			
 			$GrupoPrecioDetData->setPrecio  				($json['precio']);
 			$GrupoPrecioDetData->setPrecioOferta 			($json['precio']);  
 
@@ -538,8 +537,7 @@ class GrupoprecioController extends AbstractActionController
 			$grupo_precio_cab_id  	= $request->getQuery('grupo_precio_cab_id');
 			$producto_id  			= $request->getQuery('producto_id');			
 			$variedad_id  			= $request->getQuery('variedad_id');
-			$grado_id  				= $request->getQuery('grado_id');
-			$tallos_x_bunch			= $request->getQuery('tallos_x_bunch');			
+			$grado_id  				= $request->getQuery('grado_id');			
 			$page 			= $request->getQuery('page');
 			$limit 			= $request->getQuery('rows');
 			$sidx			= $request->getQuery('sidx',1);
@@ -553,7 +551,6 @@ class GrupoprecioController extends AbstractActionController
 					"producto_id"			=> $producto_id,
 					"variedad_id"			=> $variedad_id,
 					"grado_id"				=> $grado_id,
-					"tallos_x_bunch"		=> $tallos_x_bunch
 			);
 			$result = $GrupoPrecioOfertaBO->listado($condiciones);
 			$response = new \stdClass();
@@ -566,11 +563,9 @@ class GrupoprecioController extends AbstractActionController
 					$row2['producto_id'] 			= $row['producto_id'];
 					$row2['variedad_id'] 			= $row['variedad_id'];
 					$row2['grado_id'] 				= $row['grado_id'];
-					$row2['tallos_x_bunch'] 		= $row['tallos_x_bunch'];
 					$row2['producto_combo_id']		= $row['producto_combo_id'];
 					$row2['variedad_combo_id']		= $row['variedad_combo_id'];
-					$row2['grado_combo_id']			= $row['grado_combo_id'];
-					$row2['tallos_x_bunch_combo']	= $row['tallos_x_bunch_combo'];					
+					$row2['grado_combo_id']			= $row['grado_combo_id'];					
 					$row2['factor_combo']			= $row['factor_combo'];
 					$row2['variedad_combo_nombre']	= trim($row['variedad_combo_nombre']);
 					$row2['color_ventas_combo_nombre']	= $row['color_ventas_combo_nombre'];
@@ -620,11 +615,9 @@ class GrupoprecioController extends AbstractActionController
 			$GrupoPrecioOfertaData->setProductoId 			($json['producto_id']);
 			$GrupoPrecioOfertaData->setVariedadId			($json['variedad_id']);
 			$GrupoPrecioOfertaData->setGradoId				($json['grado_id']);
-			$GrupoPrecioOfertaData->setTallosXBunch 		($json['tallos_x_bunch']);
 			$GrupoPrecioOfertaData->setProductoComboId 		($json['producto_combo_id']);
 			$GrupoPrecioOfertaData->setVariedadComboId		($json['variedad_combo_id']);
 			$GrupoPrecioOfertaData->setGradoComboId			($json['grado_combo_id']);
-			$GrupoPrecioOfertaData->setTallosXBunchCombo  	($json['tallos_x_bunch_combo']);
 			$GrupoPrecioOfertaData->setFactorCombo			($json['factor_combo']);
 			$GrupoPrecioOfertaData->setUsuarioIngId			($usuario_id);
 			$GrupoPrecioOfertaData->setUsuarioModId			($usuario_id);
@@ -688,11 +681,9 @@ class GrupoprecioController extends AbstractActionController
 				$GrupoPrecioOfertaData->setProductoId 			($reg['producto_id']);
 				$GrupoPrecioOfertaData->setVariedadId			($reg['variedad_id']);
 				$GrupoPrecioOfertaData->setGradoId				($reg['grado_id']);
-				$GrupoPrecioOfertaData->setTallosXBunch 		($reg['tallos_x_bunch']);
 				$GrupoPrecioOfertaData->setProductoComboId 		($reg['producto_combo_id']);
 				$GrupoPrecioOfertaData->setVariedadComboId		($reg['variedad_combo_id']);
 				$GrupoPrecioOfertaData->setGradoComboId			($reg['grado_combo_id']);
-				$GrupoPrecioOfertaData->setTallosXBunchCombo 	($reg['tallos_x_bunch_combo']);
 
 				$ArrGrupoPrecioOfertaData[] = $GrupoPrecioOfertaData;
 			}//end foreach
@@ -743,7 +734,6 @@ class GrupoprecioController extends AbstractActionController
 			$producto_combo_id				= $json['producto_combo_id'];			
 			$variedad_id					= null;
 			$grado_id						= null;
-			$tallos_x_bunch					= $config['tallos_x_bunch_default'];
 			$producto_combo_1er_elemento	= $json['producto_combo_1er_elemento'];
 
 			$producto_opciones		= $ProductoBO->getComboProductoId($producto_combo_id, $producto_combo_1er_elemento);
