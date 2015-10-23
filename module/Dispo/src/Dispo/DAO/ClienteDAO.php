@@ -279,11 +279,14 @@ class ClienteDAO extends Conexion
 				break;
 				
 			case \Application\Constants\ResultType::MATRIZ:
-				$sql = 	' SELECT cliente.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name  '.
+				$sql = 	' SELECT cliente.*, usuario_ing.username as usuario_ing_user_name, usuario_mod.username as usuario_mod_user_name,  '.
+						'		 usuario_vendedor.username as usuario_vendededor_name, usuario_vendedor.email as usuario_vendedor_email '.
 						' FROM cliente LEFT JOIN usuario as usuario_ing '.
 						'                           ON usuario_ing.id = cliente.usuario_ing_id '.
 						'					 LEFT JOIN usuario as usuario_mod '.
-						'                           ON usuario_mod.id = cliente.usuario_mod_id '.						
+						'                           ON usuario_mod.id = cliente.usuario_mod_id '.
+						'					 LEFT JOIN usuario as usuario_vendedor'.
+						'							ON usuario_vendedor.id = cliente.usuario_vendedor_id '.
 						' WHERE cliente.id = :id ';
 				
 				$stmt = $this->getEntityManager()->getConnection()->prepare($sql);

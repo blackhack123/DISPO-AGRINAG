@@ -183,6 +183,7 @@ class DispoBO extends Conexion
 				}//end if
 			}//end if
 			
+			$result_dispo = null;
 			foreach($result as $row)
 			{
 				if (($row['variedad_id']=='ALB')&&($row['grado_id']=='60'))

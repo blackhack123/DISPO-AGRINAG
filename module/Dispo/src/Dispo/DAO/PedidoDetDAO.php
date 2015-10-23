@@ -482,7 +482,7 @@ class PedidoDetDAO extends Conexion
 */		$sql = 	' SELECT pedido_det.*, variedad.producto_id as variedad_producto_id, variedad.nombre as variedad_nombre, '.
 				'        pedido_cab.cliente_id, pedido_cab.marcacion_sec, '.
 				' 		 pedido_cab.agencia_carga_id, color_ventas.nombre as color_ventas_nombre, '.	
-				'        tipo_caja.nombre as tipo_caja_nombre, '.			
+				'        CONCAT(tipo_caja.tipo_caja_homologada_id, IFNULL(tipo_caja.stipo_caja_homologada_id,"")) as tipo_caja_nombre, '.			
 				'		 CASE pedido_det.estado_reg_oferta '.
 				'			WHEN 1 THEN variedad_hueso.nombre '.
 				'			WHEN 0 THEN variedad_carne.nombre '.

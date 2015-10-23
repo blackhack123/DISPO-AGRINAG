@@ -212,12 +212,17 @@
 	        $("body").on('click', '.btn_cambiar_marca', function(event){	
 	            var tr =  $(this).closest('tr');
 				var pedido_det_sec 	=  tr.attr('pedido_det_sec');				
-				var pedido_det_marca = $(this).html();
+				//var pedido_det_marca = $(this).html();
+				var icono_editar = $(this).find('i');
 				var boton_id = $(this).attr('id');
 
-				if (pedido_det_marca=='Write your mark box')
+				console.log(icono_editar);
+				//if (pedido_det_marca=='Write your mark box')
+				if(icono_editar.length>0)
 				{
 					pedido_det_marca = '';
+				}else{
+					pedido_det_marca = $(this).html();
 				}//end if
 							
 				$("#frm_marca #control_id").val(boton_id);												
@@ -251,7 +256,7 @@
 												var control_id = $("#frm_marca #control_id").val();
 												var marca = $.trim($("#frm_marca #pedido_det_marca").val());
 												if (marca==''){
-													marca = 'Write your mark box';
+													marca = '<i class="glyphicon glyphicon-pencil  icono" style="color:orange; font-size:16px;"></i>';
 												}//end if
 												$("#"+control_id).html(marca);
 	    									}//end if									

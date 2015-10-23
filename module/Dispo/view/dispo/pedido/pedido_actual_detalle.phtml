@@ -50,7 +50,7 @@
                                 <td class="th-inner" width="100%">Variety</td>
                                 <td class="th-inner"  width="90">Length (cm)</td>
                                 <td class="th-inner"  width="90">Unts /Bunch</td>
-                                <td class="th-inner"  width="100">Box Type</td>
+                                <td class="th-inner"  width="100"><a href="#" style="color:white; text-decoration:underline">Box Type <i class="glyphicon glyphicon-question-sign" style="color:white; font-size:16px"></i></a></td>
                                 <td class="th-inner"  width="100">Bunch /Box</td> 
                                 <td class="th-inner"  width="50">Boxes</td>
                                 <td class="th-inner"  width="100">Units</td>
@@ -67,8 +67,18 @@
 			$total_pedido = 0; 	
             if ($this->rs_pedido_det)
             {
+				$i = 0;
                 foreach ($this->rs_pedido_det as $reg)
                 {	
+					$i++;
+					if ($i%2 == 0)
+					{
+						$color_fondo = '#E0EBF5';  //E0EBF5 //E0F5E6
+
+					}else{
+						$color_fondo = '';
+					}
+					
 					$total_pedido = $total_pedido + $reg['total'];
 					$total_x_caja = $reg['tallos_x_bunch'] * $reg['cantidad_bunch']/$reg['nro_cajas'] * $reg['precio'];
 				
@@ -78,13 +88,13 @@
 						$html_tallos_x_bunch = '&nbsp;<span class="tallos_buches_no_standar">('.$reg['tallos_x_bunch'].')</span>';
 					}//end if		
 
-					$html_marca = 'Write your mark box';
+					$html_marca = '<i class="glyphicon glyphicon-pencil icono" style="color:orange; font-size:16px;"></i>';
 					if (!empty($reg['marca']))
 					{
 						$html_marca = $reg['marca'];
 					}//end if	
         ?>
-                            <tr class="tr_det_<?php echo($reg['pedido_det_sec']); ?>" oferta="<?php echo($reg['estado_reg_oferta']); ?>" pedido_cab_oferta_id="<?php echo($reg['pedido_cab_oferta_id']); ?>" pedido_det_oferta_sec="<?php echo($reg['pedido_det_oferta_sec']); ?>" variedad_nombre_oferta_vinculada="<?php echo($reg['variedad_nombre_oferta_vinculada']); ?>" pedido_det_sec="<?php echo($reg['pedido_det_sec']); ?>">    
+                            <tr class="tr_det_<?php echo($reg['pedido_det_sec']); ?>" oferta="<?php echo($reg['estado_reg_oferta']); ?>" pedido_cab_oferta_id="<?php echo($reg['pedido_cab_oferta_id']); ?>" pedido_det_oferta_sec="<?php echo($reg['pedido_det_oferta_sec']); ?>" variedad_nombre_oferta_vinculada="<?php echo($reg['variedad_nombre_oferta_vinculada']); ?>" pedido_det_sec="<?php echo($reg['pedido_det_sec']); ?>" style="background-color:<?php echo($color_fondo); ?>">    
                                 <td align="left">
                                     <span class="variedad_nombre"><?php echo($reg['variedad_nombre']); ?></span><?php echo($html_tallos_x_bunch); ?>
                                     <?php if ($reg['estado_reg_oferta']==1){ ?>
@@ -107,7 +117,7 @@
                                     <?php echo($reg['tallos_x_bunch']); ?>                        
                                 </td>
                                 <td>
-                                    <h4><small><?php echo($reg['tipo_caja_nombre']); ?></small></h4>
+                                    <?php echo($reg['tipo_caja_nombre']); ?>
                                 </td>
                                 <td>
                                     <?php echo($reg['cantidad_bunch']/$reg['nro_cajas']); ?>
