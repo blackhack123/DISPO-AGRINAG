@@ -110,8 +110,16 @@ class PedidoCabDAO extends Conexion
 				'usuario_mod_id'               		=> $usuario_id,
 				'fec_modifica'		                => \Application\Classes\Fecha::getFechaHoraActualServidor()
 		);
+		
+		if ($estado = \Application\Constants\Pedido::ESTADO_ACTIVO)
+		{
+			$fecha_hora_confirmado				    = \Application\Classes\Fecha::getFechaHoraActualServidor();
+			$record['fec_confirmado']				= $fecha_hora_confirmado;
+		}//end if
+
+		
 		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
-		return $key;	
+		return array($key, $record);	
 	}//end function actualizarEstado
 	
 	

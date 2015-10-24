@@ -13,8 +13,9 @@
 						//->appendStylesheet('http://getbootstrap.com/2.3.2/assets/css/bootstrap.css')
 	    				->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap.min.css'))	  			//BOOTSTRAP
     					->appendStylesheet($this->basePath('js/bootstrap-3.3.5/css/bootstrap-theme.min.css'))	  	//BOOTSTRAP OPCIONAL																			
-                        ->appendStylesheet($this->basePath('css/sweet-alert.css'))
+ //                       ->appendStylesheet($this->basePath('css/sweet-alert.css'))
 //                        ->appendStylesheet($this->basePath('css/main.css'))
+                        ->appendStylesheet($this->basePath('js/sweet-alert/sweetalert.css'))   
                         ->appendStylesheet($this->basePath('css/mycustom.css'))                         
                         ->appendStylesheet($this->basePath('js/custom-alert/custom-alert.css'))   
                         ->appendStylesheet($this->basePath('js/custom-validate/custom-validate.css'))
@@ -34,9 +35,9 @@
             ->appendFile($this->basePath('js/jquery-jqGrid-5.0.0/js/jquery.jqGrid.min.js'))
  ///           ->appendFile($this->basePath('js/jquery-jqGrid-5.0.0/js/grid.loader.js'))
     		->appendFile($this->basePath('js/bootstrap-3.3.5/js/bootstrap.min.js'))
-            ->appendFile($this->basePath('js/scripts/sweet-alert.js'))     
+//            ->appendFile($this->basePath('js/scripts/sweet-alert.js'))     
  //           ->appendFile($this->basePath('js/scripts/behaviors.js'))
-            
+            ->appendFile($this->basePath('js/sweet-alert/sweetalert.min.js'))   
             ->appendFile($this->basePath('js/respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9',))
             ->appendFile($this->basePath('js/html5shiv.min.js'),   'text/javascript', array('conditional' => 'lt IE 9',))
             ->appendFile($this->basePath('js/custom-system/serializeFormJSON.js'))            

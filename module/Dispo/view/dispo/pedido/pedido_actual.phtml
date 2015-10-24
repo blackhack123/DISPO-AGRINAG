@@ -23,11 +23,27 @@
 											//console.log('response.respuesta_codex:',response.respuesta_codex);
 											switch (response.respuesta_codex){
 											case 'OK':
+												var dia_describe = '';
+												var titulo = "Your order has been successfully confirmed!";
+												if (response.nro_dias_procesa>0)
+												{
+													switch (response.nro_dias_procesa)
+													{
+														case 1:
+															dia_describe = 'tomorrow';
+															break;
+															
+														case 2:
+															dia_describe = 'day after tomorrow';
+															break;	
+													}
+													titulo = titulo + " <span style='color:red'>It will be sent "+dia_describe+"</span>";
+												}//end if
 												//console.log('paso01');
-												swal({  title: "Your order has been successfully confirmed!",   
-													text: "You want to continúe using the same mark / label ? To continue making orders",
+												swal({  title: titulo,   
+													text: "You want to continue using the same mark / label ? To continue making orders",
 													//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
-													//html:true,
+													html:true,
 													type: "success",
 													showCancelButton: true,
 													confirmButtonColor: "#DD6B55",
@@ -45,12 +61,16 @@
 														type: "success",
 														showCancelButton: false,
 														showConfirmButton: false,
+														closeOnConfirm: false,
+														closeOnCancel: false,
 													});
 													if (isConfirm) {
 														//Redirigir al listado de la disponibilidad y conservar las variables de marcacion y agencia de carga
+														cargador_visibility('hide');
 														window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/listado';
 													}else{
 														//Se enceran las variables de seccion de marcacion y agencia de carga, 
+																		cargador_visibility('hide');
 														window.location.href = '<?php echo($this->basePath()); ?>/dispo/disponibilidad/liberarMarcacionAgencia';
 													}//end if
 												});

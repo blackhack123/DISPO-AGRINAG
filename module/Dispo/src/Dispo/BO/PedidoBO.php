@@ -16,6 +16,7 @@ use Dispo\Data\GrupoDispoDetData;
 use Dispo\DAO\GrupoDispoDetDAO;
 use Dispo\Exception\PedidoException;
 use Seguridad\DAO\UsuarioDAO;
+use Dispo\DAO\ParametrizarDAO;
 
 
 class PedidoBO extends Conexion
@@ -505,6 +506,7 @@ class PedidoBO extends Conexion
 		$GrupoDispoDetDAO 		= new GrupoDispoDetDAO();
 		$DispoBO				= new DispoBO();
 		$UsuarioDAO				= new UsuarioDAO();
+		$ParametrizarDAO 		= new ParametrizarDAO();
 		
 		$PedidoProveedorData	= new PedidoProveedorData();
 
@@ -528,7 +530,8 @@ class PedidoBO extends Conexion
 			$GrupoDispoDetDAO->setEntityManager($this->getEntityManager());
 			$DispoBO->setEntityManager($this->getEntityManager());
 			$UsuarioDAO->setEntityManager($this->getEntityManager());
-
+			$ParametrizarDAO->setEntityManager($this->getEntityManager());
+			
 			/**
 			 * Consulta datos relacionados al usuario
 			 */
@@ -723,7 +726,7 @@ class PedidoBO extends Conexion
 						}
 					}//end foreach
 
-					$PedidoCabDAO->actualizarEstado($pedido_cab_id, \Application\Constants\Pedido::ESTADO_ACTIVO, $usuario_procesa_id);
+					list($key_pedidocab, $reg_pedidocab) = $PedidoCabDAO->actualizarEstado($pedido_cab_id, \Application\Constants\Pedido::ESTADO_ACTIVO, $usuario_procesa_id);
 				}//end if  //CONTROL DE bd_rollback
 			}//end foreach
 			
@@ -731,14 +734,24 @@ class PedidoBO extends Conexion
 			{
 				$this->getEntityManager()->getConnection()->rollback();
 				$result = array(
-									'respuesta' => 'NOVEDAD',
-									'novedades_pedido_det'	=> $arr_novedad_pedido_det
+									'respuesta' 			=> 'NOVEDAD',
+									'novedades_pedido_det'	=> $arr_novedad_pedido_det,
+									'nro_dias_procesa'		=> '',
+								    'dia_semana_procesa'	=> ''
 								);					
 			}else{
+				/*-------------Indica los dias que debe que se procesan---*/
+				$reg_despacho = $ParametrizarDAO->getDiaDespacho($reg_pedidocab['fec_confirmado']);
+				
 				$this->getEntityManager()->getConnection()->commit();
+				
+				
+				/*--------------Devuelve el resultado --------------------*/
 				$result = array	(
-								'respuesta' => 'OK',
-								'novedades_pedido_det'	=> ''
+								'respuesta' 			=> 'OK',
+								'novedades_pedido_det'	=> '',
+								'nro_dias_procesa'		=> $reg_despacho['nro_dias_procesa'],
+								'dia_semana_procesa'	=> $reg_despacho['dia_semana_procesa']
 								);
 			}//end if
 			

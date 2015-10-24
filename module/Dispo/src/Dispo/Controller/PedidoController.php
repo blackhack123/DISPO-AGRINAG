@@ -454,6 +454,8 @@ class PedidoController extends AbstractActionController
 				$response->respuesta_mensaje	= $result['respuesta_descripcion'];
 			}//end if
 			$response->novedades_pedido_det		= $result['novedades_pedido_det'];
+			$response->nro_dias_procesa			= $result['nro_dias_procesa'];
+			$response->dia_semana_procesa		= $result['dia_semana_procesa'];
 			$response->html						= '';
 			if ($result['respuesta']=='NOVEDAD')
 			{

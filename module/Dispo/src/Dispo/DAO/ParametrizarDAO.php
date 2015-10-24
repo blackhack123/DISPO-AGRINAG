@@ -140,4 +140,102 @@ class ParametrizarDAO extends Conexion
 		return $ParametrizarData->getId();
 	}//end function modificar
 	
+	
+	
+	/**
+	 *
+	 * @param string $id
+	 * @return string|int|NULL
+	 */
+	public function getValorParametro($id)
+	{
+		$sql = 	' SELECT parametro.* '.
+				' FROM parametro '.
+				' WHERE id = :id ';
+	
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->bindValue(':id',$id);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		if($row){
+			switch ($row['tipo'])
+			{
+				case 'T':
+					return $row['valor_texto'];
+					break;
+	
+				case 'N':
+					return $row['valor_numerico'];
+					break;
+						
+				default:
+					return null;
+			}//end switch
+			return $ParametroData;
+		}else{
+			return null;
+		}//end if
+	}//end function getValorParametro
+	
+	
+	/**
+	 * 
+	 * @param string $fecha
+	 * @return array (nro_dias_procesa, dia_semana_procesa)
+	 */
+	public function getDiaDespacho($fecha)
+	{
+		$fecha_actual	= \Application\Classes\Fecha::convertirFechaPHPToFechaServidor($fecha);
+		$hora_actual 	= strtotime(\Application\Classes\Fecha::convertirFechaToHora($fecha));
+		
+		$parametros['pedido_LV_hoy'] 			= $this->getValorParametro('pedido_LV_hoy');
+		$parametros['pedido_LV_dia_sig'] 		= intval($this->getValorParametro('pedido_LV_dia_sig'));
+		$parametros['pedido_SAB_hoy'] 			= $this->getValorParametro('pedido_SAB_hoy');
+		$parametros['pedido_SAB_dia_sig'] 		= intval($this->getValorParametro('pedido_SAB_dia_sig'));
+		$parametros['pedido_DOM_hoy'] 			= $this->getValorParametro('pedido_DOM_hoy');
+		$parametros['pedido_DOM_dia_sig'] 		= intval($this->getValorParametro('pedido_DOM_dia_sig'));
+		
+		
+		$fecha_procesa =  new \DateTime($fecha_actual);
+		$dia_semana = $fecha_procesa->format('w');
+
+		switch ($dia_semana)
+		{
+			case 0: //DOMINGO
+				$campo_pedido_dia_siguiente = 'pedido_DOM_dia_sig';
+				$campo_pedido_hoy			= 'pedido_DOM_hoy';
+				break;
+		
+			case 6: //SABADO
+				$campo_pedido_dia_siguiente = 'pedido_SAB_dia_sig';
+				$campo_pedido_hoy			= 'pedido_SAB_hoy';
+				break;
+		
+			default: //LUNES A VIERNES
+				$campo_pedido_dia_siguiente = 'pedido_LV_dia_sig';
+				$campo_pedido_hoy			= 'pedido_LV_hoy';
+				break;
+		}//end switch	
+
+		$dias_procesa = $parametros[$campo_pedido_dia_siguiente];
+		if ($parametros[$campo_pedido_hoy]!='00:00')
+		{
+			$hora_limite =  strtotime($fecha_actual.' '.$parametros[$campo_pedido_hoy]);
+			if ($hora_actual <= $hora_limite)
+			{
+				$dias_procesa = 0; //SE LO DESPACHA HOY
+			}//end if
+		}//end if
+				
+		$fecha_procesa->add(new \DateInterval('P'.$dias_procesa.'D'));  //Se depacha a la fecha
+		$fecha_procesa_format = $fecha_procesa->format('w');	
+
+		$result['nro_dias_procesa']		= $dias_procesa;
+		$result['dia_semana_procesa'] 	= $fecha_procesa_format;
+		
+		return $result;
+	}//end function getDiaDespacho
+	
+	
+	
 }//end class
