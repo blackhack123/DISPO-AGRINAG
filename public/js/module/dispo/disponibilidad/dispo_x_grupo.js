@@ -12,6 +12,12 @@ $(document).ready(function () {
 	/*----------------------Se cargan los controles -----------------*/
 	dispoGrupo_init();
 	//DispoGrupo_initMantenimiento();
+	
+	$("#frm_dispo_grupo #btn_consultar").on('click', function(event){ 
+		$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		return false;
+	});	
+	
 
 	$("#frm_dispo_grupo #grupo_dispo_cab_id").on('change', function(event){
 		if ($('#frm_dispo_grupo #grupo_dispo_cab_id').val()=='') 

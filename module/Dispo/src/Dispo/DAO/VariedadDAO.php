@@ -228,7 +228,7 @@ class VariedadDAO extends Conexion
 						 variedad.url_ficha '.
 				' FROM variedad '.
 				' 			LEFT JOIN color_ventas '.
-				' 					ON variedad.color_ventas_id = color_ventas.id';
+				' 					ON variedad.color_ventas_id = color_ventas.id ';
 	
 		if (!empty($condiciones['criterio_busqueda']))
 		{
