@@ -101,7 +101,8 @@ class TipoCajaDAO extends Conexion
 	public function consultarTodos()
 	{
 		$sql = 	' SELECT tipo_caja.* '.
-				' FROM tipo_caja ';
+				' FROM tipo_caja '.
+				' order by nombre ';
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();

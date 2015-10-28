@@ -557,10 +557,9 @@ class GrupoDispoCabBO extends Conexion
 		$row		= 5;
 		
 		foreach($result as $reg){
-			$reg['variedad_id'] 			= trim($reg['variedad_id']);
-			$reg['variedad'] 				= trim($reg['variedad']);
-			$reg['color_ventas_nombre'] 	= trim($reg['color_ventas_nombre']);
-				
+			
+			if (!empty($reg['variedad_id']))			{ $reg['variedad_id']		    = trim($reg['variedad_id']); 			}//end if
+			if (!empty($reg['color_ventas_nombre'])) 	{ $reg['color_ventas_nombre'] 	= trim($reg['color_ventas_nombre']);	}//end if
 
 			$cont_linea++;
 			$row		= $row + 1;

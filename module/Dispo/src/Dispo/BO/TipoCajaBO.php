@@ -73,4 +73,21 @@ class TipoCajaBO extends Conexion
 	}//end function getArrayIndexado
 	
 	
+	
+	/**
+	 *
+	 *
+	 * @return array
+	 */
+	function consultarTodos()
+	{
+	
+		$TipoCajaDAO = new TipoCajaDAO();
+		$TipoCajaDAO->setEntityManager($this->getEntityManager());
+		$result = $TipoCajaDAO->consultarTodos();
+		return $result;
+	}//end function ConsultarTodos
+	
+	
+	
 }//end class
