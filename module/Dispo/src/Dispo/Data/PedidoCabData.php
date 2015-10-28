@@ -55,6 +55,11 @@ class PedidoCabData
 	 * @var string
 	 */
 	protected $fec_confirmado;
+
+	/**
+	 * @var string
+	 */
+	protected $fec_despacho;
 	
 	/**
 	 * @var string
@@ -131,6 +136,7 @@ class PedidoCabData
 	public function getComentario() 				{return $this->comentario;}
 	public function getEstado() 					{return $this->estado;}
 	public function getFecConfirmado()				{return $this->fec_confirmado;}
+	public function getFecDespacho()				{return $this->$fec_despacho;}
 	public function getFecAprobado()				{return $this->fec_aprobado;}	
 	public function getFecExportado() 				{return $this->fec_exportado;}
 	public function getFecAnulado()					{return $this->fec_anulado;}
@@ -158,7 +164,8 @@ class PedidoCabData
 	public function setTotal($valor) 				{$this->total					= $valor;}
 	public function setComentario($valor) 			{$this->comentario				= $valor;}
 	public function setEstado($valor) 				{$this->estado					= $valor;}
-	public function setFecConfirmado($valor)		{$this->fec_confirmado			= $valor;}	
+	public function setFecConfirmado($valor)		{$this->fec_confirmado			= $valor;}
+	public function setFecDespacho($valor)			{$this->fec_despacho			= $valor;}	
 	public function setFecAprobado($valor)			{$this->fec_aprobado			= $valor;}	
 	public function setFecExportado($valor) 		{$this->fec_exportado			= $valor;}
 	public function setFecAnulado($valor)			{$this->fec_anulado				= $valor;}

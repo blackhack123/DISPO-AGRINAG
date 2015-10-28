@@ -742,11 +742,15 @@ class PedidoBO extends Conexion
 									'novedades_pedido_det'	=> $arr_novedad_pedido_det,
 									'nro_dias_procesa'		=> '',
 								    'dia_semana_procesa'	=> ''
-								);					
+								);
 			}else{
 				/*-------------Indica los dias que debe que se procesan---*/
 				$reg_despacho = $ParametrizarDAO->getDiaDespacho($reg_pedidocab['fec_confirmado']);
-								
+				$PedidoCabDAO->actualizarFechaDespacho(
+														$pedido_cab_id, 
+														$reg_despacho['fecha_procesa']
+														);
+				
 				$this->getEntityManager()->getConnection()->commit();
 				
 				$this->enviarEmailAdjuntoPDF($pedido_cab_id);
@@ -970,13 +974,19 @@ class PedidoBO extends Conexion
 		$html = str_replace('$$direccion_marcacion$$', $reg_pedido_cab['marcacion_direccion'], $html);
 		//Telefono Marcacion
 		$html = str_replace('$$telefono_marcacion$$', $reg_pedido_cab['marcacion_telefono'], $html);
-		//Fecha Confirmado		
+		//Fecha Ingreso		
 		$fec_ingreso = \Application\Classes\Fecha::getFechaImpresion($reg_pedido_cab['fec_ingreso'],  \Application\Classes\Fecha::IMPRESION_FECHA_LARGA);
 		$html = str_replace('$$fec_creado$$', $fec_ingreso, $html);
 		//Fecha Confirmado
 		$fec_confirmado = \Application\Classes\Fecha::getFechaImpresion($reg_pedido_cab['fec_confirmado'],  \Application\Classes\Fecha::IMPRESION_FECHA_LARGA);
 		$html = str_replace('$$fec_confirmado$$', $fec_confirmado, $html);
-		
+		//Fecha Despacho
+		$fec_despacho = \Application\Classes\Fecha::getFechaImpresion($reg_pedido_cab['fec_despacho'],  \Application\Classes\Fecha::IMPRESION_FECHA_CORTA);
+		$html = str_replace('$$fec_despacho$$', $fec_despacho, $html);
+		//Comentario
+		$html = str_replace('$$comentario$$', $reg_pedido_cab['comentario'], $html);		
+
+
 		$html_det 	= '';
 		$total    	= 0;
 		$tot_eq_fb	= 0;
@@ -1001,7 +1011,7 @@ class PedidoBO extends Conexion
 				<td>'.$reg['marca'].'</td>
 				</tr>
 			';
-			
+
 			$total= $total + $reg['total'];
 			$tot_eq_fb = $tot_eq_fb + $reg['eq_fb'];
 		}//end foreach
@@ -1011,7 +1021,9 @@ class PedidoBO extends Conexion
 		//Total Eq FB
 		$html = str_replace('$$eq_fb$$', $tot_eq_fb, $html);
 		//Total del Pedido
-		$html = str_replace('$$total$$', $total, $html);
+		$total_format = '$'.number_format($total, 2);	
+		$html = str_replace('$$total$$', $total_format, $html);
+
 		
 		$mpdf->WriteHTML($html);
 
@@ -1058,7 +1070,7 @@ class PedidoBO extends Conexion
 						  ' - '.ucwords($reg_cliente['nombre']);
 		$html			= 'Processed by: Web';
 
-		$resultadoEnvio = $CorreoElectronico->SendMail($destinatario, $cc, $titulo, $html, $cc, $salida_archivo_pdf);
+		$resultadoEnvio = $CorreoElectronico->SendMail('order', $destinatario, $cc, null, $titulo, $html, $cc, $salida_archivo_pdf);
 		
 		//elimina el archivo
 		unlink($salida_archivo_pdf);		

@@ -26,6 +26,12 @@ $(document).ready(function ()
 	});	
 	
 	
+	$("#frm_grupo_usuario #btn_enviar_dispo").on('click', function(event){ 
+		DispoGrupo_enviarEmail();
+		return false;
+	});	
+	
+	
 	/*---------------------------------------------------------------*/	
 	
 	/*---------------------------------------------------------------*/
@@ -308,5 +314,39 @@ $(document).ready(function ()
 	}//end function dispoGrupo_ComboGrupoRefresh
 	
 	
+	
+	function DispoGrupo_enviarEmail(){
+		var grupo_dispo_cab_id = $("#frm_grupo_usuario #grupo_dispo_cab_id").val();
+		
+		if (grupo_dispo_cab_id=='')
+		{
+			alert('Seleccione un grupo de usuarios');
+			return false;
+		}//end if
+		
+		var data = 	{
+						grupo_dispo_cab_id:		grupo_dispo_cab_id,
+					}
+		console.log('data:',data);
+		data = JSON.stringify(data);
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../seguridad/usuario/enviaremailmasivo',
+							'control_process':true,
+							'show_cargando':false,
+							'async':true,
+							'finish':function(response){
+								if (response.respuesta_code == 'OK')
+								{
+									alert('Se ha realizado la peticion de envio de email a '+response.nro_regs+' usuarios. Dentro de unos minutos sera enviado el archivo de DISPO');
+								}else{
+									console.log('response:',response);
+									message_error('ERROR', response);
+								}//end if
+							}							
+						 }
+		response = ajax_call(parameters, data);		
+		return false;
+	}//end function DispoGrupo_enviarEmail
 
 	

@@ -252,6 +252,8 @@ class DisponibilidadController extends AbstractActionController
 		}
 	}//end function listadodetalledispoAction
 
+
+	
 	
 	
 	public function getcajasAction()

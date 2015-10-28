@@ -228,10 +228,12 @@ class ParametrizarDAO extends Conexion
 		}//end if
 				
 		$fecha_procesa->add(new \DateInterval('P'.$dias_procesa.'D'));  //Se depacha a la fecha
-		$fecha_procesa_format = $fecha_procesa->format('w');	
+		$fecha_procesa_format = $fecha_procesa->format('w');
+		$fecha_procesa_completa = $fecha_procesa->format('Y-m-d');
 
 		$result['nro_dias_procesa']		= $dias_procesa;
 		$result['dia_semana_procesa'] 	= $fecha_procesa_format;
+		$result['fecha_procesa']		= $fecha_procesa_completa;
 		
 		return $result;
 	}//end function getDiaDespacho

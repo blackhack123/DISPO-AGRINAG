@@ -1010,5 +1010,46 @@ class UsuarioController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function desvinculargrupoprecioAction	
+	}//end function desvinculargrupoprecioAction
+
+	
+	
+	public function enviaremailmasivoAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+
+			$UsuarioBO = new UsuarioBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+
+			$grupo_dispo_cab_id		= $json['grupo_dispo_cab_id'];
+		
+			$nro_regs = $UsuarioBO->actualizarEstadoEnviarDispoPorGrupoDispo($grupo_dispo_cab_id, 1);
+
+			$response = new \stdClass();
+//			$response->opciones				= $opciones;
+			$response->respuesta_code 		= 'OK';
+			$response->nro_regs				= $nro_regs;
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+	
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function enviaremailmasivo	
+	
+	
+	
 }

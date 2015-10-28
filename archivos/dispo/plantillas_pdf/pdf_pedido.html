@@ -4,6 +4,10 @@
 		html{
 			font-family: DejaVuSansCondensed,  font-size: 8pt;
 		}
+		
+		p{
+			font-family: DejaVuSansCondensed,  font-size: 8pt;
+		}		
 	
         table{
             /*line-height: 1.5;*/			
@@ -68,9 +72,23 @@
 			font-size: 14pt;
 			font-weight:bold;
 		}
+		
 		.etiqueta1
 		{
 			font-weight:bold;
+		}
+
+		.etiqueta1-importante
+		{
+			font-weight:bold;
+			color: red;
+			font-size: 10pt;
+		}
+
+		.texto-importante
+		{
+			color: red;
+			font-size: 10pt;
 		}
     </style>
 </head>
@@ -102,7 +120,7 @@
                             <td>
                                 <table border=1>
                                     <tr>
-                                        <td><span class="titulo1">Order</span></td>
+                                        <td><span class="titulo1">Order #</span></td>
                                         <td><span class="titulo1">$$pedido_cab_id$$</span></td>
                                     </tr>
                                     <tr>
@@ -114,8 +132,12 @@
                                         <td> $$fec_confirmado$$</td>
                                     </tr>
                                     <tr>
+                                      <td><span class="etiqueta1-importante">Dispatch Date</span></td>
+                                      <td><span class="texto-importante">$$fec_despacho$$</span></td>
+                                    </tr>
+                                    <tr>
                                         <td><span class="etiqueta1">Full Boxes Eqv</span></td>
-                                        <td> $$eq_fb$$</td>
+                                        <td>$$eq_fb$$</td>
                                     </tr>
                                 </table>
                             </td>
@@ -191,7 +213,7 @@
             <td>LENGTH<br>
           (CM)</td>
             <td>UNITS<br>/BUNCH</td>
-            <td>BOY TYPE</td>
+            <td>BOX TYPE</td>
             <td>BUNCH<br>/BOX</td>
             <td>BOXES</td>
             <td>UNITS</td>
@@ -217,10 +239,11 @@ US$</td>
         	<td></td>
         	<td></td>
         	<td class="etiqueta1">TOTAL:</td>
-        	<td align="right">$$$total$$</td>
+        	<td align="right">$$total$$</td>
         	<td></td>
         </tr>
     </tfoot>
 </table>
+<p><b>Comentario:</b> $$comentario$$</p>
 </body>
 </html>

@@ -23,7 +23,6 @@ class UsuarioBO extends Conexion{
 	function getLimit()					{return $this->limit;}
 	function getSidx()					{return $this->sidx;}
 	function getSord()					{return $this->sord;}
-
 	
 	
 	function login($usuario, $clave, $ipAcceso, $nombreHost, $AgenteUsuario)
@@ -356,6 +355,17 @@ class UsuarioBO extends Conexion{
 		}
 	}//end function desvincularGrupoDispo
 	
+	
+
+	function actualizarEstadoEnviarDispoPorGrupoDispo($grupo_dispo_cab_id ,$estado_enviar_dispo)
+	{
+		$UsuarioDAO	= new UsuarioDAO();
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+		
+		$result = $UsuarioDAO->actualizarEstadoEnviarDispoPorGrupoDispo($grupo_dispo_cab_id, $estado_enviar_dispo);
+		
+		return $result;
+	}//end function actualizarEstadoEnviarDispo
 	
 	
 	

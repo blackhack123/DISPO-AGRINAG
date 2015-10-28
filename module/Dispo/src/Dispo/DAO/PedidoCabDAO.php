@@ -91,7 +91,7 @@ class PedidoCabDAO extends Conexion
 		return $PedidoCabData->getid();		
 	}//end function actualizarComentario
 
-
+	
 
 	/**
 	 * Actualiza el estado del pedido
@@ -370,7 +370,29 @@ class PedidoCabDAO extends Conexion
 		$result = $stmt->fetchAll();
 	
 		return $result;
-	}//end function listado	
+	}//end function listado
+
+	
+
+	/**
+	 * 
+	 * @param int $pedido_cab_id
+	 * @param string $fec_despacho
+	 * @return int
+	 */
+	public function actualizarFechaDespacho($pedido_cab_id, $fec_despacho)
+	{
+		$key    = array(
+				'id'						        => $pedido_cab_id,
+		);
+		$record = array(
+				'fec_despacho'	                   	=> $fec_despacho
+		);
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $pedido_cab_id;
+	}//end function actualizarFechaDespacho
+
+	
 }//end class
 
 ?>

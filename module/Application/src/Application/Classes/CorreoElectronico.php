@@ -6,7 +6,7 @@ use Application\Classes\PHPMailerApp;
 class CorreoElectronico
 {
 	
-	public function SendMail($emailDestino, $emailCC, $emailTitulo, $emailCuerpo, $emailReplyTo = null, $files = null)
+	public function SendMail($sender, $emailDestino, $emailCC, $emailCCO, $emailTitulo, $emailCuerpo, $emailReplyTo = null, $files = null)
 	{
 		
 		$reader = new \Zend\Config\Reader\Ini();
@@ -19,6 +19,8 @@ class CorreoElectronico
 		}//end if
 
 		
+		$ini_email = $config['email'][$sender];
+				
 		/**
 		 * This example shows making an SMTP connection with authentication.
 		 */
@@ -37,23 +39,23 @@ class CorreoElectronico
 		// 0 = off (for production use)
 		// 1 = client messages
 		// 2 = client and server messages
-		$mail->SMTPDebug = 0;
+		$mail->SMTPDebug = $ini_email['SMTPDebug'];
 		//Ask for HTML-friendly debug output
-		$mail->Debugoutput = 'html';
+		$mail->Debugoutput = $ini_email['Debugoutput'];
 		//Set the hostname of the mail server
-		$mail->Host = "smtp.gmail.com";
+		$mail->Host = $ini_email['Host'];
 		//Set the SMTP port number - likely to be 25, 465 or 587
-		$mail->Port = 587;
+		$mail->Port = $ini_email['Port'];;
 		//Whether to use SMTP authentication
-		$mail->SMTPAuth = true;
-		$mail->SMTPSecure = "tls";
+		$mail->SMTPAuth = $ini_email['SMTPAuth'];
+		$mail->SMTPSecure = $ini_email['SMTPSecure'];
 		//Username to use for SMTP authentication
-		$mail->Username = "documentsale@agrinag.com";
+		$mail->Username = $ini_email['Username'];
 		//Password to use for SMTP authentication
-		$mail->Password = "web@Ag1nag$2015";
+		$mail->Password = $ini_email['Password'];
 		
 		//Set who the message is to be sent from
-		$mail->setFrom('documentsale@agrinag.com', 'Documentos Agrinag');
+		$mail->setFrom($ini_email['From']['email'], $ini_email['From']['name']);
 				
 		//Set an alternative reply-to address
 		if (!empty($emailCC))
@@ -62,19 +64,34 @@ class CorreoElectronico
 			{
 				foreach ($emailCC as $email)
 				{
-					$mail->addCC($emailCC, $emailCC);
+					$mail->addCC($email, $email);
 				}//end foreach			
 			}else{				
 				$mail->addCC($emailCC, $emailCC);
 			}//end if
 		}//end if
 
+
+		if (!empty($emailCCO))
+		{
+			if (is_array($emailCCO))
+			{
+				foreach ($emailCCO as $email)
+				{
+					$mail->addBCC($email, $email);
+				}//end foreach
+			}else{
+				$mail->addBCC($emailCCO, $emailCCO);
+			}//end if
+		}//end if
+		
+		
 		if (!empty($emailReplyTo))
 		{
 			$mail->addReplyTo($emailReplyTo, $emailReplyTo);
 		}//end if
+
 			
-		
 		//Set who the message is to be sent to
 		if (!empty($emailDestinatario_Defecto))
 		{
@@ -116,8 +133,8 @@ class CorreoElectronico
 				$mail->addAttachment($files);
 			}//end if
 		}//end if
-		
-		
+
+
 		$mail->SMTPOptions = array(
 				'ssl' => array(
 						'verify_peer' => false,
@@ -133,7 +150,7 @@ class CorreoElectronico
 			return "OK";
 		}//end if
 
-	}//end send
-	
+	}//end send SendMail
+		
 }
 ?>

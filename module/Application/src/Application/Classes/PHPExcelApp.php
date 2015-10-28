@@ -26,7 +26,7 @@ class PHPExcelApp {
 	const FORMAT_EXCEL_2007					= 'EXCEL_2007';
 	const FORMAT_EXCEL_95					= 'EXCEL_95';
 	const FORMAT_EXCEL_2007_TO_DISK			= 'EXCEL_2007_TO_DISK';
-	
+	const FORMAT_EXCEL_2007_TO_DISK_SERVER	= 'EXCEL_2007_TO_DISK_SERVER';	
 
 	const COLOR_ORANGE						= 'FFFFA500';
 
@@ -141,7 +141,48 @@ class PHPExcelApp {
 	 );
 	 
 	 
+	 //Se da formato a las columnas de los detalles
+	 $this->styleArray['columna01'] = array(
+	 		'fill' => array(
+	 				'type' => \PHPExcel_Style_Fill::FILL_SOLID,
+	 				'color' => array('rgb' => 'C4BD97')
+	 		),
+	 );
 	 
+	 $this->styleArray['columna02'] = array(
+	 		'fill' => array(
+	 				'type' => \PHPExcel_Style_Fill::FILL_SOLID,
+	 				'color' => array('rgb' => 'CCC0DA')
+	 		),
+	 );
+	 
+	 
+	 //Se da formato a los titulos
+	 $this->styleArray['titulo01'] = array(
+	 		'fill' => array(
+	 				'type' => \PHPExcel_Style_Fill::FILL_SOLID,
+	 				'color' => array('rgb' => '16365C')
+	 		),
+	 		'font' => array(
+	 				'bold' => 'true',
+	 		),
+	 		'alignment' => array(
+	 				'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+	 		)
+	 );
+	 
+	 $this->styleArray['titulo02'] = array(
+	 		'fill' => array(
+	 				'type' => \PHPExcel_Style_Fill::FILL_SOLID,
+	 				'color' => array('rgb' => '974706')
+	 		),
+	 		'font' => array(
+	 				'bold' => 'true',
+	 		),
+	 		'alignment' => array(
+	 				'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+	 		)
+	 );	 
 
 	}//end function styleArrayLoad
 
@@ -291,6 +332,12 @@ class PHPExcelApp {
 			
 				break;
 				
+				
+			case self::FORMAT_EXCEL_2007_TO_DISK_SERVER:
+				$objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+				$objWriter->setPreCalculateFormulas(false);
+				$objWriter->save($name_file);
+				break;				
 		}//end switch
 	}//end public function save
 }//end class PHPExcel

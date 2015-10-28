@@ -637,4 +637,22 @@ class UsuarioDAO extends Conexion {
 	}//end function desvincularGrupoPrecio
 	
 	
+	/**
+	 * 
+	 * @param int $grupo_dispo_cab_id
+	 * @param int $estado_enviar_dispo
+	 * @return int
+	 */
+	function actualizarEstadoEnviarDispoPorGrupoDispo($grupo_dispo_cab_id, $estado_enviar_dispo)
+	{
+		$sql = 	'UPDATE '.$this->table_name.
+				" SET estado_enviar_dispo		=".$estado_enviar_dispo.
+				" WHERE grupo_dispo_cab_id		=".$estado_enviar_dispo.
+				"   and estado = 'A'";
+
+		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
+
+		return $count;
+	}//end function actualizarEstadoEnviarDispoPorGrupoDispo	
+	
 }//end class

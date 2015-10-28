@@ -350,7 +350,7 @@ class Fecha {
 	 * @param number $tipo_salida_fecha
 	 * @return string
 	 */
-	public static function getFechaImpresion($fecha, $tipo_salida_fecha = IMPRESION_FECHA_LARGA)
+	public static function getFechaImpresion($fecha, $tipo_salida_fecha = self::IMPRESION_FECHA_LARGA)
 	{
 		if (empty($fecha))
 		{
@@ -368,12 +368,12 @@ class Fecha {
 		
 		switch($tipo_salida_fecha)
 		{
-			case 1: //Fecha Larga
+			case self::IMPRESION_FECHA_LARGA: //Fecha Larga
 				$texto = $mes.', '.$dia_numero.' '.$anio.', '.$dia_texto.', '.$hora.':'.$minuto;
 				break;
 			
-			case 2:
-				$texto = null; //Por implementar
+			case self::IMPRESION_FECHA_CORTA:
+				$texto = $mes.', '.$dia_numero.' '.$anio.', '.$dia_texto;
 				break;
 				
 			case 3:  //USO FUTURO

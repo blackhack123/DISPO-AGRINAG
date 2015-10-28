@@ -204,7 +204,7 @@ class DispoDAO extends Conexion
 	
 	
 	/**
-	 * consultarInventarioPorCliente
+	 * consultarInventarioPorUsuario
 	 * 
 	 * Se obtiene el inventario para el cliente por proveedor y tipo de inventario especifico,
 	 * por lo que dara los bunches disponibles, y posteriormente si existe una 
@@ -274,7 +274,7 @@ class DispoDAO extends Conexion
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$result = $stmt->fetchAll();
 		return $result;		
-	}//end function consultarInventarioPorCliente
+	}//end function consultarInventarioPorUsuario
 	
 	
 	
