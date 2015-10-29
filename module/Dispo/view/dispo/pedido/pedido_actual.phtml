@@ -477,7 +477,14 @@
 	  </div>
 	</div>
 	
-	
+
+     <!-- DIALOGS -->	
+    <?php echo $this->partial('dispo/dialog/seleccioncliente', array(
+            'identidad_usuario' 		=> $this->identidad_usuario,
+            'opcion_consulta'			=> ''
+    ));
+    ?>	
+
 	<!-- Modal -->
 	<div id="dialog_comentario" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -503,11 +510,6 @@
 	
 
 
-	     <!-- DIALOGS -->	
-		<?php echo $this->partial('dispo/dialog/seleccioncliente', array(
-				'identidad_usuario' 		=> $this->identidad_usuario,
-				'opcion_consulta'			=> ''
-		));
-		?>		
+	
 		
-<div id="novedad_mover_scroll"></div>		
+<div id="novedad_mover_scroll"></div>

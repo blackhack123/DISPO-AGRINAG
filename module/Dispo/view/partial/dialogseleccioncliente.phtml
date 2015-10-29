@@ -10,7 +10,7 @@
 	 				{
 <?php 
 	 					if ((empty($this->identidad_usuario["cliente_id"]))||(empty($this->identidad_usuario["cliente_usuario_id"])))
-	 					{
+	 					{								
 ?>	 					
 							$('#dialog_seleccion_cliente').modal('show');
 
@@ -173,13 +173,14 @@
 											'url':'<?php echo($this->basePath()); ?>/dispo/cliente/getcombo',
 											'cancel_process_previous':false,
 											'async': true,											
-											'show_cargando':true,
+											'show_cargando':false,
 											'finish':function(response){
 													if (response.respuesta_code=='OK'){
 														$("#dialog_seleccion_cli_cliente").html(response.opciones);									
 													}else{
 														message_error('ERROR', response);
-													}//end if								
+													}//end if
+													cargador_visibility('hide');								
 											}							
 						                 }
 						response = ajax_call(parameters, data);		
@@ -219,8 +220,8 @@
  				</script>
 
 
-			    <div id="dialog_seleccion_cliente" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="Modal Asignar Clientes" aria-hidden="true">
-			      <div class="modal-dialog modal-sm">
+			    <div id="dialog_seleccion_cliente" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Escoger Cliente">
+                  <div class="modal-dialog modal-sm" role="document">
 			        <div class="modal-content">
 			          <div class="modal-header">
 			            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>

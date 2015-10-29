@@ -647,7 +647,7 @@ class UsuarioDAO extends Conexion {
 	{
 		$sql = 	'UPDATE '.$this->table_name.
 				" SET estado_enviar_dispo		=".$estado_enviar_dispo.
-				" WHERE grupo_dispo_cab_id		=".$estado_enviar_dispo.
+				" WHERE grupo_dispo_cab_id		=".$grupo_dispo_cab_id.
 				"   and estado = 'A'";
 
 		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
