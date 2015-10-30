@@ -41,6 +41,11 @@ $(document).ready(function () {
 		return false;
 	});	
 	
+	$("#frm_dispo #btn_cero").on('click', function(event){ 
+		//disponibilidad_mover();
+		DispoGeneral_ActualizarCero();
+		return false;
+	});		
 	
 	$("#frm_dispo_proveedor #btn_grabar").on('click', function(event){ 
 		grabar_dispo_proveedor();
@@ -91,8 +96,8 @@ $(document).ready(function () {
 		/*height:'400',*/
 		colNames:['tallos_x_bunch','variedad_nombre','Id','Variedad','','Color','40','50','60','70','80','90', '100', '110','Total'],
 		colModel:[
-/*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
-			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:50, align:"center", sorttype:"int", hidden:true},
+/*			{name:'seleccion',index:'', width:30,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
+*/			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:50, align:"center", sorttype:"int", hidden:true},
 			{name:'variedad',index:'variedad_nombre', width:50, sorttype:"string", hidden:true},
 			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
 			{name:'variedad',index:'variedad', width:170, sorttype:"string", formatter: gridDispoGeneral_VariedadNombreFormatter},
@@ -111,6 +116,7 @@ $(document).ready(function () {
 			{name:'total',index:'total', width:50, align:"right", sorttype:"int"}
 		],
 		rowNum:999999,
+		multiselect: true,
 		pager: '#pager_dispo_general',
 		toppager:false,
 		pgbuttons:false,
@@ -952,3 +958,68 @@ $(document).ready(function () {
 		
 		cargador_visibility('hide');
 	}//end function DispoGeneral_ExportarExcel
+	
+	
+	
+	function DispoGeneral_ActualizarCero()
+	{
+		var grid 				= $("#grid_dispo_general");
+		var col_variedad_id	 	= jqgrid_get_columnIndexByName(grid, "variedad_id");
+		var col_tallos_x_bunch 	= jqgrid_get_columnIndexByName(grid, "tallos_x_bunch");
+        var rowKey 	= grid.getGridParam("selrow");
+
+        if (!rowKey)
+		{
+			alert("SELECCIONE UN REGISTRO");
+			return false;
+		}//end if
+		
+		var r = confirm("Esta seguro de poner a CERO las variedades seleccionadas?");
+		
+		if (r == false)
+		{ 
+			return false; 
+		}//end if
+		
+        var selectedIDs = grid.getGridParam("selarrrow");
+        var variedad_id  = null;
+		
+		var arr_data 	= new Array();
+		for (var i = 0; i < selectedIDs.length; i++) {
+			variedad_id 	= grid.jqGrid('getCell',selectedIDs[i], col_variedad_id);
+			tallos_x_bunch 	= grid.jqGrid('getCell',selectedIDs[i], col_tallos_x_bunch);
+			
+			var element				= {};
+			element.variedad_id		= variedad_id;
+			element.tallos_x_bunch  = tallos_x_bunch;
+			arr_data.push(element);
+		}//end for
+		
+
+		var data = 	{
+						inventario_id: 	$("#frm_dispo #inventario_id").val(),
+						proveedor_id: 	$("#frm_dispo #proveedor_id").val(),
+						clasifica: 		$("#frm_dispo #calidad_id").val(),
+						grid_data: 		arr_data,
+					}
+		console.log(data);
+		data = JSON.stringify(data);		
+		
+		//$("frm_dispo_general_stockgrado #btn_grabar").button('loading')
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/disponibilidad/actualizarcerostock',
+							'control_process':false,
+							'show_cargando':true,
+							'async':true, 
+							'finish':function(response){
+									//$("frm_dispo_general_stockgrado #btn_grabar").button('reset');
+									cargador_visibility('hide');
+									$('#grid_dispo_general').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+							}							
+						 }
+		response = ajax_call(parameters, data);		
+		return false;					
+
+	}//end function DispoGeneral_ActualizarCero

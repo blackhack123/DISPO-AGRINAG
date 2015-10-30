@@ -1246,6 +1246,29 @@ class DispoBO extends Conexion
 		$PHPExcelApp->save($objPHPExcel, $PHPExcelApp::FORMAT_EXCEL_2007, "Dispo General.xlsx" );
 				
 	}//end function generarExcel
+
 	
+	
+	public function actualizarCerosStock($ArrDispoData)
+	{
+		$DispoDAO		= new DispoDAO();
+
+		$DispoDAO->setEntityManager($this->getEntityManager());
+
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			foreach($ArrDispoData as $DispoData)
+			{
+				$DispoDAO->actualizarCeroStock($DispoData);
+			}//end foreach
+		
+			$this->getEntityManager()->getConnection()->commit();
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}
+	}//end function actualizarCerosStock
 	
 }//end class DispoBO

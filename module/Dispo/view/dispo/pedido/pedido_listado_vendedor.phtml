@@ -1,46 +1,243 @@
 <meta charset="UTF-8">
 <script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/pedido/listado_vendedor.js')); ?>"></script>
-<script>
-	$(document).ready(function () {
-		InputData_TrimAll();			
-	});//$(document).ready
-</script>
 
-   	<div class="title-admin-section">
+
+<style type="text/css">
+   	.tbl_pedido {			
+		text-align: center;	
+	}
+	
+	table .row-cabecera{
+		font-size:13px;
+		color: #0C4AD1;	
+			
+	}
+	
+	table .row-cab td{
+		padding-top: 20px	
+	}	
+	
+	
+	table .row-desglose {
+		font-size:12px;
+		border-bottom: #000000 solid 2px;	
+	}
+
+	table .row-det{
+	}
+	
+	table .row-proveedor{
+		background-color:#F0F0F0;
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 12px;
+		color:green;
+		font-weight:bold;
+	}
+	
+</style>
+
+<div class="title-admin-section">
         <h1>LISTADO DE PEDIDOS</h1>
     </div>  
     
     <div class="table-container" style="margin-top:5px">
         <div class="row-fluid">
-            <form id="frm_buscar" name="frm_buscar" action="#" method="post" class="form-inline">
+            <form id="frm_buscar" name="frm_buscar" method="post" class="form-inline">
                 
                 <div class="form-inline">                                    
                     <div class="form-group">
                         <label for="cliente_nombre">Cliente:</label>
-                        <input type="text" class="form-control" id="cliente_nombre" placeholder="Moroni Salazar">
+                        <input type="text" class="form-control" id="cliente_nombre" name="cliente_nombre" placeholder="Moroni Salazar">
                     </div>
                     <div class="form-group">
                         <label for="fecha_ini">Fecha Ini:</label>
-                        <input type="text" class="form-control" id="fecha_ini" placeholder="yyyy-mm-dd">
+                        <input type="text" class="form-control" id="fecha_ini" name="fecha_ini" placeholder="yyyy-mm-dd">
                     </div>	                    
                     <div class="form-group">
                         <label for="fecha_ini">Fecha Fin:</label>
-                        <input type="text" class="form-control" id="fecha_fin" placeholder="yyyy-mm-dd">
+                        <input type="text" class="form-control" id="fecha_fin" name="fecha_fin" placeholder="yyyy-mm-dd">
                     </div>
                     
-					<button id="btn_consultar" type="button" class="btn btn-default">Consultar</button>                    	                    
+					<button id="accion" name="accion" type="submit" value="C" class="btn btn-default">Consultar</button>                    	                    
                 </div>
-                
-                <div class="form-inline">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" id="desglosar_fincas"> Desglosar Fincas
-                        </label>
-                    </div>
-                </div>                
             </form>
             
-            <table id="grid_listado">            
-            </table>
-        </div>
+
+<?php
+if (!empty($this->result))
+{
+?>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tbody>
+<?php
+ 		$pedido_cab_id_ant 		= null;
+		$pedido_det_sec_ant 	= null;
+		$flag_1era_vez				= true;
+	
+		foreach($this->result as $reg)
+		{
+			
+			if ($pedido_cab_id_ant != $reg['pedido_cab_id'])
+			{
+				$pedido_cab_id_ant = $reg['pedido_cab_id'];
+				
+				if (!$flag_1era_vez)
+				{
+?>					
+                </tbody>
+              </table></td>
+              </tr>	
+<?php				
+				}//end if
+				$flag_1era_vez = false;
+?>		
+            <tr>
+              <td>X</td>
+              <td><b>Order:</b> #<?php echo($reg['pedido_cab_id']); ?></td>
+              <td><b>CONSIGNEE:</b> <?php echo($reg['cliente_nombre']); ?></td>
+              <td><b>Create:</b> <?php echo($reg['fec_ingreso']); ?></td>
+              <td><b>Confirm:</b> <?php echo($reg['fec_confirmado']); ?></td>
+              <td><b>Dispatch:</b> <?php echo($reg['fec_despacho']); ?></td>
+              <td><b>Full Boxes Eqv:</b> <?php echo($reg['fec_despacho']); ?></td>
+            </tr>
+            <tr>
+              <td colspan="7"><table width="100%" border="1" cellspacing="0" cellpadding="0">
+                <tbody>
+                  <tr>
+                    <td><span class="th-inner">Variety</span></td>
+                    <td><span class="th-inner">LENGTH (CM)</span></td>
+                    <td><span class="th-inner">UNITS /BUNCH</span></td>
+                    <td><span class="th-inner">BOX TYPE</span></td>
+                    <td><span class="th-inner">BUNCH/ BOX</span></td>
+                    <td><span class="th-inner">BOXES</span></td>
+                    <td><span class="th-inner">UNITS</span></td>
+                    <td><span class="th-inner">PRICE /ITEM</span></td>
+                    <td><span class="th-inner">TOTAL /BOX</span></td>
+                    <td><span class="th-inner">TOTAL US$</span></td>
+                    <td>MARK/PO</td>
+                  </tr>
+<?php
+			}//end if
+?>				
+                  
+                  <tr>
+                    <td>A</td>
+                    <td>B</td>
+                    <td>C</td>
+                    <td>D</td>
+                    <td>E</td>
+                    <td>F</td>
+                    <td>G</td>
+                    <td>H</td>
+                    <td>I</td>
+                    <td>J</td>
+                    <td>K</td>
+                  </tr>
+
+<?php
+		}//end foreach    
+?>
+  </tbody>
+</table>
+ <?php
+}//end if    
+?>
+     sssss
+     <br><br><br><br>
+      xxxxxx      
+            <table border="1">
+
+			<thead>
+            	<tr class="row-cabecera">
+            		<td>X</td>                 
+                  	<td><b>Order:</b> #</td> 
+                    <td><b>CONSIGNEE:</b> </td>
+                    <td><b>Create:</b> </td>
+                    <td><b>Confirm:</b> </td>
+                    <td><b>Dispatch:</b> </td>
+                    <td><b>Full Boxes Eqv:</b> </td>
+                </tr>
+   
+   
+            	<tr class="row-desglose">
+            	  <td colspan="7">
+                  	<table class="table-dispo border tbl_pedido"  width="100%">
+
+                        <thead>
+                          <tr>
+                            <th class="th-inner"  width="200">Variety</th>
+                            <th class="th-inner"  width="90">LENGTH (CM)</th>
+                            <th class="th-inner"  width="90">UNITS /BUNCH</th>
+                            <th class="th-inner"  width="100">BOX TYPE</th>
+                            <th class="th-inner"  width="100">BUNCH/ BOX</th>
+                            <th class="th-inner"  width="50"> BOXES</th>
+                            <th class="th-inner"  width="100">UNITS</th>
+                            <th class="th-inner"  width="100">PRICE /ITEM</th>
+                            <th class="th-inner"  width="100">TOTAL /BOX</th>
+                            <th class="th-inner"  width="100">TOTAL US$</th>
+                            <th class="th-inner"  width="100">MARK/PO</th>
+                        </tr>
+                      </thead>
+                   
+                       <tbody class="row-det">
+                          <tr>
+                            <td align="left">VEDENLA</td>
+                            <td>60</td>
+                            <td>25</td>
+                            <td>HB</td>
+                            <td>12</td>
+                            <td>10</td>
+                            <td>3000</td>
+                            <td>$0.16</td>
+                            <td>$48.00</td>
+                            <td align="right" nowrap>$480.00</td>
+                            <td nowrap>OTRA MARCA</td>
+                        </tr>
+                          <tr class="row-proveedor">
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td colspan="2" align="right">PED FOX #103173</td>
+                            <td>AGR</td>
+                            <td>3</td>
+                            <td>900</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td align="right" nowrap>$144.00</td>
+                            <td nowrap>&nbsp;</td>
+                        </tr>
+                          <tr class="row-proveedor">
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td colspan="2" align="right">PED FOX #83173</td>
+                            <td>RLM</td>
+                            <td>7</td>
+                            <td>2100</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td align="right" nowrap>$336.00</td>
+                            <td nowrap>&nbsp;</td>
+                        </tr>
+                          <tr style="border-top: #06A604 solid 2px">
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px">&nbsp;</td>
+                            <td style="border:#FFFFFF none 0px"><b>TOTAL:</b></td>
+                            <td style="border:#FFFFFF none 0px" align="right" nowrap><b>$480.00</b></td>
+                            <td style="border:#FFFFFF none 0px" nowrap>&nbsp;</td>
+                        </tr>
+                     
+                     
+  					   </tbody>
+          	    	</table>
+             	</td>
+           	  </tr>
+
+           	</table>
+ 
+      </div>
     </div>

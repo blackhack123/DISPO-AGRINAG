@@ -20,6 +20,7 @@ use Dispo\BO\ClienteAgenciaCargaBO;
 use Dispo\BO\TipoCajaBO;
 use Dispo\BO\CalidadVariedadBO;
 use Dispo\BO\Dispo\BO;
+use Dispo\Data\DispoData;
 
 class DisponibilidadController extends AbstractActionController
 {
@@ -1328,6 +1329,63 @@ class DisponibilidadController extends AbstractActionController
 	}//end function exportarexcel2Action
 	
 	
+
+	public function actualizarcerostockAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$DispoBO 				= new DispoBO();
+	
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+	
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+	
+			$inventario_id 		= $json['inventario_id'];
+			$clasifica 			= $json['clasifica'];
+			$proveedor_id 		= $json['proveedor_id'];
+			$grid_data 			= $json['grid_data'];
+
+			//Prepara el Buffer de datos antes de llamar al BO
+			$ArrDispoData   	= array();
+			foreach ($grid_data as $reg)
+			{
+				$DispoData = new DispoData();
+				$DispoData->setInventarioId($inventario_id);
+				$DispoData->setProveedorId($proveedor_id);
+				$DispoData->setProducto('ROS');
+				$DispoData->setVariedadId($reg['variedad_id']);
+				$DispoData->setTallosxBunch($reg['tallos_x_bunch']);
+				$DispoData->setClasifica($clasifica);
+
+				$ArrDispoData[] = $DispoData;
+			}//end foreach			
+
+			//Convierte en cadena el array de color de ventas
+			$result = $DispoBO->actualizarCerosStock($ArrDispoData);
+
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+	
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function actualizarcerostockAction
 
 	
 }

@@ -868,7 +868,35 @@ class DispoDAO extends Conexion
 			return null;
 		}//end if
 	
-	}//end function consultar	
+	}//end function consultar
+
+	
+	/**
+	 * 
+	 * @param DispoData $DispoData
+	 * @return int
+	 */
+	public function actualizarCeroStock($DispoData)
+	{
+		$proveedor_id = $DispoData->getProveedorId();
+		
+		$sql = 	" UPDATE dispo ".
+				" SET cantidad_bunch_disponible = 0".
+				" WHERE inventario_id 	= '".$DispoData->getInventarioId()."'";
+		
+		if (!empty($proveedor_id))
+		{
+			$sql = $sql."   and proveedor_id  	= '".$DispoData->getProveedorId()."'";
+		}//end if
+		
+		$sql = $sql."   and producto		= '".$DispoData->getProducto()."'".
+				"   and variedad_id		= '".$DispoData->getVariedadId()."'".
+				"   and tallos_x_bunch  = ".$DispoData->getTallosxbunch().
+				"   and clasifica		= '".$DispoData->getClasifica()."'";
+		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
+		return $count;		
+	}//end function actualizarCeroStock
+	
 }//end class
 
 

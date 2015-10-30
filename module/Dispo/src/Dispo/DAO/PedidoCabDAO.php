@@ -344,25 +344,77 @@ class PedidoCabDAO extends Conexion
 	 */
 	public function listadoVendedor($condiciones)
 	{
-		$sql = 	' SELECT pedido_cab.*, cliente.nombre as cliente_nombre, agencia_carga.nombre as agencia_carga_nombre, '.
-				'        marcacion.nombre as marcacion_nombre '.
-				' FROM pedido_cab INNER JOIN pedido_det '.
-				'				  		  ON pedito_det.pedido_cab_id = pedido_cab '.
-				'                 INNER JOIN pedido_proveedor '.
-				'						  ON pedido_proveedor '.
-				'				  INNER JOIN cliente '.
-				'                         ON cliente.id = pedido_cab.cliente_id '.
-				'				  INNER JOIN marcacion '.
-				'						  ON marcacion.marcacion_sec = pedido_cab.marcacion_sec '.
-				'				  INNER JOIN agencia_carga '.
-				'						  ON agencia_carga.id = pedido_cab.agencia_carga_id '.
+		$sql = 	' SELECT 	pedido_cab.id as pedido_cab_id,'.
+				'			pedido_cab.cliente_id,'.
+				'			pedido_cab.fec_ingreso,'.
+				'	        pedido_cab.fec_despacho,'. 
+				'	        pedido_cab.fec_confirmado,'.
+				'	        pedido_cab.fec_sincronizado,'.
+				'			pedido_cab.marcacion_sec,'.
+				'	        pedido_cab.agencia_carga_id,'.
+				'	        pedido_cab.comentario,'.
+				'	        pedido_cab.estado,'.
+				'	        cliente.nombre as cliente_nombre,'.
+				'	        marcacion.nombre as marcacion_nombre,'.
+				'	        agencia_carga.nombre as agencia_carga_nombre,'.
+				'	        pedido_det.pedido_det_sec,'.
+				'	        pedido_det.variedad_id,'.
+				'	        variedad.nombre as variedad_nombre,'.
+				'	        variedad.color_ventas_id,'.
+				'	        color_ventas.nombre as color_ventas_nombre,'.
+				'	        pedido_det.grado_id,'.
+				'	        pedido_det.tallos_x_bunch,'. 
+				'	        pedido_det.tipo_caja_id,'.
+				'	        pedido_det.nro_cajas,'.
+				'	        pedido_det.tallos_total as pedido_det_tallos_total,'.
+				'	        pedido_det.precio as pedido_det_precio,'.
+				'	        pedido_det.total_x_caja,'.
+				'	        pedido_det.total as pedido_det_total,'.
+				'	        pedido_det.marca,'.
+				'	        pedido_det.eq_fb as pedido_det_eq_fb,'.
+				'	        pedido_proveedor.proveedor_id,'.
+				'	        pedido_proveedor.nro_cajas as pedido_proveedor_nro_cajas,'.
+				'	        pedido_proveedor.eq_fb as pedido_proveedor_eq_fb,'.
+				'	        pedido_proveedor.cantidad_bunch as pedido_proveedor_cantidad_bunch,'.
+				'	        pedido_proveedor.tallos_total as pedido_proveedor_tallos_total,'.
+				'	        pedido_proveedor.precio as pedido_proveedor_precio,'.
+				'	        pedido_proveedor.total as pedido_proveedor_total,'.
+				'	        pedido_proveedor.sync_pedfijo_tipo_doc,'.
+				'	        pedido_proveedor.sync_pedfijo_serie,'.
+				'	        pedido_proveedor.sync_pedfijo_pedido,'.
+				'	        pedido_proveedor.sync_pedfijo_sec,'.
+				'	        pedido_proveedor.sync_pedfijo_secc'.
+				'	FROM pedido_cab INNER JOIN cliente'.
+				'							ON cliente.id				= pedido_cab.cliente_id'.
+				'					INNER JOIN marcacion'.
+				'						    ON marcacion.marcacion_sec 	= pedido_cab.marcacion_sec'.
+				'					INNER JOIN agencia_carga'.
+				'							ON agencia_carga.id			= pedido_cab.agencia_carga_id'.
+				'					 LEFT JOIN pedido_det'.
+				'							ON pedido_det.pedido_cab_id	= pedido_cab.id'.
+				'					 LEFT JOIN variedad'.
+				'							ON variedad.id				= pedido_det.variedad_id'.
+				'					 LEFT JOIN color_ventas'.
+				'							ON color_ventas.id			= variedad.color_ventas_id'.
+				'				     LEFT JOIN pedido_proveedor'.
+				'							ON pedido_proveedor.pedido_cab_id	= pedido_det.pedido_cab_id'.
+				'	                       AND pedido_proveedor.pedido_det_sec  = pedido_det.pedido_det_sec'.	 
 				' WHERE 1=1';
 	
-		if (!empty($condiciones['cliente_id']))
+		if (!empty($condiciones['cliente_nombre']))
 		{
-			$sql = $sql."  and pedido_cab.cliente_id 	= '".$condiciones['cliente_id']."'";
+			$sql = $sql."  and cliente.nombre 	= '%".$condiciones['cliente_nombre']."%'";
 		}
-		$sql = $sql.' ORDER BY id DESC';
+		if (!empty($condiciones['fec_ingreso_ini']))
+		{
+			$sql = $sql."  and pedido_cab.fec_ingreso 	>= '".$condiciones['fec_ingreso_ini']."'";
+		}
+		if (!empty($condiciones['fecha_pedido_fin']))
+		{
+			$sql = $sql."  and pedido_cab.fec_ingreso 	<= '".$condiciones['fec_ingreso_fin']."'";
+		}
+
+		$sql = $sql.' ORDER BY pedido_cab.id, pedido_det.pedido_det_sec ';
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
