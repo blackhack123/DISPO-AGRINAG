@@ -17,13 +17,13 @@ class ProveedorBO extends Conexion
 	 * @param string $color_1er_elemento
 	 * @return string
 	 */
-	function getCombo($proveedor_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	function getCombo($proveedor_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA", $buscar_proveedor_id = null)
 	{	
 		$ProveedorDAO = new ProveedorDAO();
 		
 		$ProveedorDAO->setEntityManager($this->getEntityManager());
 
-		$result = $ProveedorDAO->consultarTodos();
+		$result = $ProveedorDAO->consultarTodos($buscar_proveedor_id);
 		
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'id', 'nombre',$proveedor_id, $texto_1er_elemento, $color_1er_elemento);
 		 

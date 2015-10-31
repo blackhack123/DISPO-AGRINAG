@@ -100,6 +100,7 @@ class LoginController extends AbstractActionController
 								$session->offsetSet('usuario_nombre', $rsUsuario['usuario_nombre']);
 								$session->offsetSet('username', $rsUsuario['username']);
 								$session->offsetSet('email', $rsUsuario['email']);
+								$session->offsetSet('atributos', $rsUsuario['atributos']);
 								$session->offsetSet('perfil_id', $rsUsuario['perfil_id']);
 								$session->offsetSet('perfil_nombre', $rsUsuario['perfil_nombre']);
 								$session->offsetSet('cliente_id', $rsUsuario['cliente_id']);
@@ -174,9 +175,14 @@ class LoginController extends AbstractActionController
 										$session->offsetSet('layout','layout/pedido');
 										//$session->offsetSet('layout','layout/admin');
 										break;
+										
+									default: //PARA EL PERFIL de DISPO
+										$session->offsetSet('layout','layout/pedido');
+										break;
 								}//end switch								
 
 								return $this->redirect()->toRoute('load-app');
+								
 								break;
 
 							case "CAMBIO":

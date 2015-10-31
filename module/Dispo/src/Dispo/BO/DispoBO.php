@@ -576,7 +576,7 @@ class DispoBO extends Conexion
 	
 	/**
 	 * 
-	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id)
+	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id, nro_tallos)
 	 * @return array:
 	 */
 	public function listado($condiciones)

@@ -117,6 +117,17 @@ class PedidoController extends AbstractActionController
 		try
 		{
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			
+			if ($SesionUsuarioPlugin->isPerfil(\Application\Constants\Perfil::ID_DISPO)==true)
+			{
+				$response = new \stdClass();
+				$response->nro_items_comprando		= 0;
+				$response->respuesta_code 			= 'OK';
+				$response->respuesta_mensaje 		= '';	
+				$json = new JsonModel(get_object_vars($response));
+				return $json;					
+			}//end if
+			
 			$SesionUsuarioPlugin->isLoginClienteVendedor(); //Controla el inicio de sesion
 
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();

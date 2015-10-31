@@ -28,7 +28,12 @@ class GrupodispoController extends AbstractActionController
 			$EntityManagerPlugin = $this->EntityManagerPlugin();
 	
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->isLoginAdmin();
+			
+			if (($SesionUsuarioPlugin->isLoginAdmin()==false)&&($SesionUsuarioPlugin->isPerfil(\Application\Constants\Perfil::ID_DISPO)==false))
+			{
+				exit;
+			}//end if
+					
 	
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
@@ -547,7 +552,7 @@ class GrupodispoController extends AbstractActionController
 			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 		
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->isLoginClienteVendedor();
+			$SesionUsuarioPlugin->isLogin();
 		
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);

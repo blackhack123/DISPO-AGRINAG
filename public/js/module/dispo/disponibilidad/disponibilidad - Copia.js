@@ -482,9 +482,9 @@ $(document).ready(function () {
 						inventario_id: 				'USA',
 						inventario_1er_elemento:	'',
 						calidad_1er_elemento:		'',
-						proveedor_1er_elemento:		'&lt;FINCAS&gt;',
-						color_ventas_1er_elemento:  '&lt;COLORES&gt;',
-						calidad_variedad_1er_elemento:  '&lt;CATEGORIAS&gt;',
+						proveedor_1er_elemento:		'&lt;TODAS LAS FINCAS&gt;',
+						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;',
+						calidad_variedad_1er_elemento:  '&lt;TODAS LAS CATEGORIAS&gt;',
 						nro_tallos_1er_elemento:		'&lt;TALLOS&gt;'
 					}
 		data = JSON.stringify(data);

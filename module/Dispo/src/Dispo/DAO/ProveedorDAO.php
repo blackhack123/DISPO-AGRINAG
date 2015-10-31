@@ -91,10 +91,15 @@ class ProveedorDAO extends Conexion
 	 *
 	 * @return array
 	 */
-	public function consultarTodos()
+	public function consultarTodos($buscar_proveedor_id = NULL)
 	{
 		$sql = 	' SELECT proveedor.* '.
 				' FROM proveedor ';
+		
+		if (!empty($buscar_proveedor_id))
+		{
+			$sql = $sql." WHERE id = '".$buscar_proveedor_id."'";
+		}//end if
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
