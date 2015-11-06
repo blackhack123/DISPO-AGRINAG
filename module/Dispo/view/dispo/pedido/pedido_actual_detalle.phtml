@@ -1,3 +1,4 @@
+<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/tipo_caja/popup_tipo_caja.js')); ?>"></script>
 	<style>
 		#tbl_pedido_actual{
 			text-align: center;	
@@ -7,6 +8,9 @@
 		  border-bottom: 0px solid #ffffff;
 		  border-right: 0px solid #ffffff;
 		}
+		
+		<!-- ESTILOS CSS PARA MODAL TYPEBOX-->
+		
 	</style>
 
 	<script>
@@ -50,7 +54,7 @@
                                 <td class="th-inner" width="100%">Variety</td>
                                 <td class="th-inner"  width="90">Length (cm)</td>
                                 <td class="th-inner"  width="90">Unts /Bunch</td>
-                                <td class="th-inner"  width="100"><a href="#"  style="color:white; text-decoration:underline">Box Type <i class="glyphicon glyphicon-question-sign" style="color:white; font-size:16px"></i></a></td>
+                                <td class="th-inner"  width="100"><a href="#"  style="color:white; text-decoration:underline" id="popup_tipo_caja" name="popup_tipo_caja">Box Type <i class="glyphicon glyphicon-question-sign" style="color:white; font-size:16px"></i></a></td>
                                 <td class="th-inner"  width="100">Bunch /Box</td> 
                                 <td class="th-inner"  width="50">Boxes</td>
                                 <td class="th-inner"  width="100">Units</td>
@@ -200,3 +204,4 @@
         </div>
       </div>
     </div>
+     
