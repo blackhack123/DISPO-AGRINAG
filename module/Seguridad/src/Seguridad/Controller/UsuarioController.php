@@ -191,7 +191,7 @@ class UsuarioController extends AbstractActionController
 	
 			$condiciones['criterio_busqueda']			= $this->params()->fromPost('criterio_busqueda','');
 			$condiciones['estado']						= $this->params()->fromPost('busqueda_estado','');
-			$condiciones['perfil_id']						= $this->params()->fromPost('busqueda_perfil_id','');
+			$condiciones['perfil_id']					= $this->params()->fromPost('busqueda_perfil_id','');
 			$condiciones['solo_vendedor_administrador']	= 1;
 				
 			$result 		= $UsuarioBO->listado($condiciones);

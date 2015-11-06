@@ -37,6 +37,8 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	public function getUserGrupoDispoCabId()			{return $this->getRecord()['cliente_usuario_grupo_dispo_cab_id'];}
 	public function getUserPuntoCorte()					{return $this->getRecord()['cliente_usuario_punto_corte'];}
 	public function getMarcacionTipoCajaDefaultId()		{return $this->getRecord()['marcacion_tipo_caja_default_id'];}
+	
+	public function getAtributos()						{return $this->getRecord()['atributos'];}
 	//------------------------
 
 	
@@ -157,6 +159,7 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 					'cliente_usuario_punto_corte'		=> $session->offsetGet('cliente_usuario_punto_corte'),	//2015-09-29 NUEVO
 					'marcacion_tipo_caja_default_id'	=> $session->offsetGet('marcacion_tipo_caja_default_id'),	//2015-09-29 NUEVO
 //					'cliente_calidad_id'				=> $session->offsetGet('cliente_calidad_id'),
+					'atributos'							=> $session->offsetGet('atributos')
 					];
 		return $result;
 	}//end function getRecord
@@ -256,6 +259,24 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 	}//end function isLoginVentas
 	
 	
+	public function isPerfil($perfil)
+	{
+		if ($this->isLogin())
+		{
+			if (($this->getUserPerfilId() == $perfil))
+			{
+				return true;
+			}//end if
+		}//end if
+		return false;		
+	}
+	
+	
+	public function gotoHome()
+	{
+		$this->getController()->plugin('redirect')->toRoute('home'); //seguridad-login;		
+	}//end function gotoHome
+	
 	
 	/*-----------------------------------------------------------------------------*/
 	public function logout()
@@ -269,4 +290,19 @@ class SesionUsuarioPlugin extends AbstractPlugin {
 		 
 		return true;
 	}//end function logout
+	
+
+
+	/*-----------------------------------------------------------------------------*/
+	public function existeAtributo($atribute)
+	/*-----------------------------------------------------------------------------*/
+	{
+		$cadena_atributos =  $this->getAtributos();
+		$arr_atributos	  = $porciones = explode("|", $cadena_atributos);
+		
+		return in_array($atribute, $arr_atributos, true);		
+	}//end function existeAtributo
+
+
+
 }//end class

@@ -46,7 +46,18 @@ class LoadController extends AbstractActionController
 		return $viewModel;		
 */
 //		$this->layout()->identidad_usuario 	= $data;
-		return $this->redirect()->toRoute('dispo-disponibilidad');
+		
+		switch($SesionUsuarioPlugin->getUserPerfilId())
+		{
+			case \Application\Constants\Perfil::ID_DISPO:
+				return $this->redirect()->toRoute('dispo-panel');
+				break;
+				
+			default:
+				return $this->redirect()->toRoute('dispo-disponibilidad');
+				break;
+		}//end switch
+		
     }//end function indexAction
 
 }//end class

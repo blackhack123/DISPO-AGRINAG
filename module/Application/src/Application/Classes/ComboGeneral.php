@@ -75,4 +75,21 @@ class ComboGeneral {
 	}//end function getComboEstado
 	
 	
+	/**
+	 *
+	 * @param string $tipo
+	 * @param string $texto_1er_elemento
+	 * @param string $color_1er_elemento
+	 * @return string
+	 */
+	public static function getComboNroTallos($nro_tallo, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
+	{
+		$arrData = array('25'=>'25','NO25'=>'<>25');
+	
+		$opciones = \Application\Classes\Combo::getComboDataArray($arrData, $nro_tallo, $texto_1er_elemento);
+			
+		return $opciones;
+	}//end function getComboNroTallos	
+	
+	
 }//end class Combo

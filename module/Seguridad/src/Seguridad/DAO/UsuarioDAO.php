@@ -289,7 +289,7 @@ class UsuarioDAO extends Conexion {
 		
 		if (!empty($condiciones['solo_vendedor_administrador']))
 		{
-			$sql = $sql." and usuario.perfil_id in (2,3)";
+			$sql = $sql." and usuario.perfil_id <> 1";
 		}	
 		if (isset($condiciones['perfil_id']))
 		{
@@ -322,7 +322,8 @@ class UsuarioDAO extends Conexion {
 				"		 usuario.grupo_precio_cab_id as usuario_grupo_precio_cab_id,".
 				"        grupo_precio_cab.inventario_id as grupo_precio_cab_inventario_id, grupo_precio_cab.calidad_id as grupo_precio_cab_calidad_id,".
 				"        grupo_dispo_cab.inventario_id as grupo_dispo_cab_inventario_id, grupo_dispo_cab.calidad_id as grupo_dispo_cab_calidad_id, ".
-				"        inventario.punto_corte as usuario_punto_corte ".
+				"        inventario.punto_corte as usuario_punto_corte, ".
+				"		 usuario.atributos ".
 /*				"        grupo_precio_cab.calidad_id ".*/
 				" FROM usuario INNER JOIN perfil ".
 				"                      ON perfil.id		= usuario.perfil_id".

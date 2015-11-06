@@ -507,14 +507,30 @@ class DisponibilidadController extends AbstractActionController
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 	
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
-			$SesionUsuarioPlugin->isLoginAdmin(true);
-	
+			if (($SesionUsuarioPlugin->isLoginAdmin()==false)&&($SesionUsuarioPlugin->isPerfil(\Application\Constants\Perfil::ID_DISPO)==false))
+			{
+				$SesionUsuarioPlugin->gotoHome();
+			}//end if
+			
+			$proveedor_seleccionado = '';
+			if ($SesionUsuarioPlugin->existeAtributo('DISPO-AGR')){
+				$proveedor_seleccionado = 'AGR'; 
+			}//end if
+			if ($SesionUsuarioPlugin->existeAtributo('DISPO-HTC')){
+				$proveedor_seleccionado = 'HTC'; 
+			}//end if
+			if ($SesionUsuarioPlugin->existeAtributo('DISPO-LMA')){
+				$proveedor_seleccionado = 'LMA'; 
+			}//end if
+
 			$DispoBO				= new DispoBO();
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 		
 			$viewModel 				= new ViewModel();
 			$this->layout($SesionUsuarioPlugin->getUserLayout());
 			$viewModel->setTemplate('dispo/disponibilidad/panel.phtml');
+			$viewModel->usuario_perfil_id 		= $SesionUsuarioPlugin->getUserPerfilId();
+			$viewModel->proveedor_seleccionado 	= $proveedor_seleccionado;
 			return $viewModel;
 	
 		}catch (\Exception $e) {
@@ -692,6 +708,7 @@ class DisponibilidadController extends AbstractActionController
 			$clasifica  	= $request->getQuery('clasifica', "");
 			$color_ventas_id= $request->getQuery('color_ventas_id', "");
 			$calidad_variedad_id= $request->getQuery('calidad_variedad_id', "");
+			$nro_tallos		= $request->getQuery('nro_tallos', "");
 			$page 			= $request->getQuery('page');
 			$limit 			= $request->getQuery('rows');
 			$sidx			= $request->getQuery('sidx',1);
@@ -705,7 +722,8 @@ class DisponibilidadController extends AbstractActionController
 					"proveedor_id"		=> $proveedor_id,
 					"clasifica"			=> $clasifica,
 					"color_ventas_id"	=> $color_ventas_id,
-					"calidad_variedad_id"=> $calidad_variedad_id
+					"calidad_variedad_id"=> $calidad_variedad_id,
+					"nro_tallos"		=> $nro_tallos
 			);
 			$result = $DispoBO->listado($condiciones);
 			$response = new \stdClass();
@@ -800,16 +818,25 @@ class DisponibilidadController extends AbstractActionController
 					$color_ventas_1er_elemento	= $json['color_ventas_1er_elemento'];
 					$inventario_id				= $json['inventario_id'];
 					$calidad_variedad_1er_elemento	= $json['calidad_variedad_1er_elemento'];
+					$nro_tallos_1er_elemento	= $json['nro_tallos_1er_elemento'];
+					$buscar_proveedor_id			= null;
+					if (array_key_exists('buscar_proveedor_id',$json))
+					{
+						$buscar_proveedor_id		= $json['buscar_proveedor_id'];
+					}//end if
+
 					$clasifica_fox	= null;
 					$proveedor_id	= null;
 					$color_ventas_id= null;
-					$calidad_variedad_id		= null;
+					$calidad_variedad_id= null;
+					$nro_tallos= null;
 					
 					$inventario_opciones 	= $InventarioBO->getCombo($inventario_id, $inventario_1er_elemento);
 					$calidad_opciones 		= $CalidadBO->getComboCalidadFox($clasifica_fox, $calidad_1er_elemento);
-					$proveedor_opciones 	= $ProveedorBO->getCombo($proveedor_id, $proveedor_1er_elemento);
+					$proveedor_opciones 	= $ProveedorBO->getCombo($proveedor_id, $proveedor_1er_elemento, null, $buscar_proveedor_id);
 					$color_ventas_opciones 	= $ColorVentasBO->getCombo($color_ventas_id, $color_ventas_1er_elemento);
 					$calidad_variedad_opciones= $CalidadVariedadBO->getComboCalidadVariedad($calidad_variedad_id, $calidad_variedad_1er_elemento);
+					$nro_tallos_opciones	= \Application\Classes\ComboGeneral::getComboNroTallos($nro_tallos, $nro_tallos_1er_elemento);
 
 					$response = new \stdClass();
 					$response->inventario_opciones		= $inventario_opciones;
@@ -817,6 +844,7 @@ class DisponibilidadController extends AbstractActionController
 					$response->proveedor_opciones		= $proveedor_opciones;
 					$response->color_ventas_opciones	= $color_ventas_opciones;
 					$response->calidad_variedad_opciones= $calidad_variedad_opciones;
+					$response->nro_tallos_opciones		= $nro_tallos_opciones;
 					$response->respuesta_code 			= 'OK';
 					break;
 			}//end switch
@@ -934,9 +962,14 @@ class DisponibilidadController extends AbstractActionController
 				
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 				
-			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if (($SesionUsuarioPlugin->isLoginAdmin()==false)&&($SesionUsuarioPlugin->isPerfil(\Application\Constants\Perfil::ID_DISPO)==false))
+			{
+				return false;
+			}//end if
+					
+/*			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
-
+*/
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 
@@ -969,9 +1002,9 @@ class DisponibilidadController extends AbstractActionController
 			return $response;
 		}
 	}//end function grabarstockproveedorAction
-	
 
-	
+
+
 	public function listadovariedaddialogdataAction()
 	{
 		try
@@ -1225,6 +1258,7 @@ class DisponibilidadController extends AbstractActionController
 			$clasifica  		= $request->getQuery('clasifica', "");
 			$color_ventas_id	= $request->getQuery('color_ventas_id', "");
 			$calidad_variedad_id= $request->getQuery('calidad_variedad_id', "");
+			$nro_tallos			= $request->getQuery('nro_tallos', "");
 
 /*			$InventarioData 		= $InventarioBO->consultar($inventario_id, Application\Constants\ResultType::OBJETO);
 			$CalidadData			= $CalidadBO->consultarPorClasificaFox($clasifica, Application\Constants\ResultType::OBJETO);
@@ -1237,7 +1271,8 @@ class DisponibilidadController extends AbstractActionController
 					"proveedor_id"		=> $proveedor_id,
 					"clasifica"			=> $clasifica,
 					"color_ventas_id"	=> $color_ventas_id,
-					"calidad_variedad_id"=> $calidad_variedad_id
+					"calidad_variedad_id"=> $calidad_variedad_id,
+					"nro_tallos"		=> $nro_tallos
 			);
 			$result = $DispoBO->listado($condiciones);
 
@@ -1344,7 +1379,7 @@ class DisponibilidadController extends AbstractActionController
 			if ($respuesta==false) return false;
 	
 			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
-	
+
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 	

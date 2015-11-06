@@ -341,7 +341,7 @@ class DispoDAO extends Conexion
 
 	/**
 	 *
-	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id)
+	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id, nro_tallos)
 	 * @return array:
 	 */
 	public function listado($condiciones)
@@ -397,6 +397,20 @@ class DispoDAO extends Conexion
 			$sql = $sql." and variedad.calidad_variedad_id in (".$condiciones['cadena_calidad_variedad_ids'].")";
 		}//end if
 		
+		if (!empty($condiciones['nro_tallos']))
+		{
+			switch($condiciones['nro_tallos'])
+			{
+				case 'NO25':
+					$sql = $sql." and tallos_x_bunch <> 25";
+					break;
+					
+				default:
+					$sql = $sql." and tallos_x_bunch = ".$condiciones['nro_tallos'];					
+					break;
+			}//end switch
+			
+		}//end if		
 		
 		$sql=$sql.' GROUP BY variedad.nombre, dispo.variedad_id, tallos_x_bunch, color_ventas.nombre, url_ficha ';
 		$sql=$sql." ORDER BY variedad.nombre ";
