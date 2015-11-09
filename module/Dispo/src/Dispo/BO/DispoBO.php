@@ -791,11 +791,13 @@ class DispoBO extends Conexion
 	
 	public function consultarPorInventarioPorCalidadPorVariedadPorGrado($inventario_id, $calidad_id, $variedad_id, $grado_id)
 	{
+		$ProveedorDAO	= new ProveedorDAO();
 		$DispoDAO 		= new DispoDAO();
 		$CalidadDAO		= new CalidadDAO();
 
 		$DispoDAO->setEntityManager($this->getEntityManager());
 		$CalidadDAO->setEntityManager($this->getEntityManager());
+		$ProveedorDAO->setEntityManager($this->getEntityManager());
 
 		$CalidadData =  $CalidadDAO->consultar($calidad_id);
 		$clasifica_fox = null;
@@ -803,10 +805,17 @@ class DispoBO extends Conexion
 		{
 			$clasifica_fox = $CalidadData->getClasificaFox();
 		}//end if
+
+		
+		$row = null;
+		$result_proveedor = $ProveedorDAO->consultarTodos();
+		foreach($result_proveedor as $reg)
+		{
+			$row[$reg['id']]['tot_bunch_disponible'] = 0;
+		}//end foreach
+
 		
 		$result = $DispoDAO->consultarPorInventarioPorCalidadPorVariedadPorGrado($inventario_id, $clasifica_fox, $variedad_id, $grado_id);
-
-		$row = null;
 		foreach($result as $reg)
 		{
 			$row[$reg['proveedor_id']]['tot_bunch_disponible'] = $reg['tot_bunch_disponible'];

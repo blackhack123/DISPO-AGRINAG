@@ -729,7 +729,7 @@ class DisponibilidadController extends AbstractActionController
 					"calidad_variedad_id"=> $calidad_variedad_id,
 					"nro_tallos"		=> $nro_tallos
 			);
-			$omitir_registro_vacio = false;
+			//$omitir_registro_vacio = false;
 			if ($omitir_registro_vacio)
 			{
 				$result = $DispoBO->listadoSinVacios($condiciones);				
