@@ -283,9 +283,6 @@ class VariedadDAO extends Conexion
 				' 				LEFT JOIN colores '.
 				'						ON variedad.colorbase = colores.color ';
 				
-		
-		
-		
 		if (!empty($condiciones['criterio_busqueda']))
 		{
 			$sql = $sql." and (variedad.nombre like '%".$condiciones['criterio_busqueda']."%'".

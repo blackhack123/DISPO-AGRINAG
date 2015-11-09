@@ -4,8 +4,7 @@ $(document).ready(function ()
 {		
 			function crearModal() { 
 		
-				
-				//DIV MODAL
+				//DIV FADE
 				var Modal = document.createElement('div');
 				Modal.id = 'modal_popup_tipo_caja';
 				Modal.className ='modal fade';
@@ -14,14 +13,13 @@ $(document).ready(function ()
 				Modal.setAttribute("data-keyboard", false);
 				document.body.appendChild(Modal);
 
-
 				//DIV MODAL-DIALOG
 				var dialog = document.createElement('div');
 				dialog.className ='modal-dialog modal-dialog-fullscreen';
 				dialog.setAttribute("role", "document");
 				Modal.appendChild(dialog);
 
-				//DIV CONTENT
+				//DIV MODAL-CONTENT
 				var content = document.createElement('div');
 				content.className ='modal-content';
 				dialog.appendChild(content);
@@ -31,7 +29,7 @@ $(document).ready(function ()
 				header.className ='modal-header';
 				content.appendChild(header);
 				
-				//TITLE
+				//TITLE TO HEADER
 				var title = document.createElement('h4');
 				//title.document.createTextNode('Box Type');
 				title.appendChild( document.createTextNode("Box Type") );
@@ -44,6 +42,7 @@ $(document).ready(function ()
 				closeBtn.className = 'close';
 				closeBtn.setAttribute("data-dismiss", "modal");
 				closeBtn.setAttribute("aria-label", "Close");
+				closeBtn.setAttribute("title", "Close");
 				title.appendChild(closeBtn);
 				
 				//SPAN TO BUTTON
@@ -51,8 +50,6 @@ $(document).ready(function ()
 				BtnSpan.setAttribute("aria-hidden","true");
 				BtnSpan.appendChild( document.createTextNode("x") );
 				closeBtn.appendChild(BtnSpan);
-				
-				
 				
 				//MODAL BODY
 				var body = document.createElement('div');
@@ -70,10 +67,10 @@ $(document).ready(function ()
 			
 			$("#popup_tipo_caja").click(function() {
 				crearModal();
-				openModal();
+				openAndShowModal();
 			});//end funtion click
 	
-			function openModal() {
+			function openAndShowModal() {
 				
 				$('#modal_popup_tipo_caja .modal-body').load("../../dispo/prueba/mantenimiento #row_box");
 				$('#modal_popup_tipo_caja').modal('show');
