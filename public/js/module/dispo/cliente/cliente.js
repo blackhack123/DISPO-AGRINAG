@@ -5,10 +5,21 @@
 	$(document).ready(function () {
 		
 		
+		$("#frm_busqueda_cliente").submit(function( event ) {
+			  event.preventDefault();
+			  $('#grid_cliente').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		}); 
+
 		$("#frm_busqueda_cliente #btn_consultar").on('click', function(event){ 
 			$('#grid_cliente').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 			return false;
 		});
+		
+		$("#frm_busqueda_cliente #btn_consultar").on('click', function(event){ 
+			$('#grid_cliente').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+			return false;
+		});
+		
 	
 		$("#frm_nuevo_cliente #btn_nuevo_cliente").on('click', function(event){
 			cliente_nuevo(); 

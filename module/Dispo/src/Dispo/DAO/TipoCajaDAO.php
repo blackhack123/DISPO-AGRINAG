@@ -102,7 +102,7 @@ class TipoCajaDAO extends Conexion
 	{
 		$sql = 	' SELECT tipo_caja.* '.
 				' FROM tipo_caja '.
-				' order by nombre ';
+				' order by orden ';
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
