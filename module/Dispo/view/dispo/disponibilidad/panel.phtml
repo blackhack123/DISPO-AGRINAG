@@ -35,7 +35,7 @@
 
 			$(".btn_refrescar").on('click', function(event){ 
 				var proveedor 		= $(this).data('proveedor');
-				console.log('proveedor:',proveedor);
+				//console.log('proveedor:',proveedor);
 				consultarDispoRemote(proveedor);
 				return false;
 			});			
@@ -93,18 +93,23 @@
 											var tr 			= $("#"+reg.Proveedor.toUpperCase());
 											var fec_finca 	= tr.find('.fec_finca');
 											var nro_reg		= tr.find('.nro_reg');
+											var nro_procesados= tr.find('.nro_procesados');
+											var observacion = tr.find('.observacion');
+											var texto_observacion = '<b>Fecha Ult. Dispo:</b> '+reg.fec_ult_dispo
 											fec_finca.html(reg.fecha);
-											nro_reg.html(reg.nro_reg);
+											nro_procesados.html(reg.tot_bunch_internet);
+											nro_reg.html(reg.tot_bunch);
+											observacion.html(texto_observacion);
 										});	
-										 $.each(response.connect, function(key, reg) {
+										$.each(response.connect, function(key, reg) {
 											var tr 				= $("#"+key.toUpperCase());
 											var observacion 	= tr.find('.observacion');
 											var btn_refrescar	= tr.find('.btn_refrescar');
 											var btn_sincronizar	= tr.find('.btn_sincronizar');
-											observacion.html(reg.message);
 											
 											if (reg.message!='')
 											{
+												observacion.html(observacion.html()+' Mensaje:'+reg.message);												
 												btn_refrescar.removeClass('disabled');
 												btn_sincronizar.addClass('disabled');
 											}else{
@@ -238,19 +243,22 @@
 								'async':true,
 								'finish':function(response){
 									//console.log('response:',response);									
-									
+
 									if (response.respuesta_codex=="OK")
 									{
 									   $.each(response.result, function(key, reg) {
 											var tr 				= $("#"+reg.proveedor_id.toUpperCase());
 											var nro_procesados	= tr.find('.nro_procesados');
-											nro_procesados.html(reg.nro_reg);
+											var observacion 	= tr.find('.observacion');	
+											var texto_observacion = '<b>Fecha Ult. Dispo:</b> '+reg.fec_ult_dispo;
+											nro_procesados.html(reg.tot_bunch_internet);
+											observacion.html(texto_observacion);
 										});	
-										 $.each(response.connect, function(key, reg) {
+										/* $.each(response.connect, function(key, reg) {
 											var tr 			= $("#"+key.toUpperCase());
 											var observacion = tr.find('.observacion');											 
 											observacion.html(reg.message);
-										 });																
+										 });*/																
 									}else{
 										message_error(response.response.code, response.response.message, true);
 										/*swal({title: '('+ response.response.code + ') '+response.response.message,		    											
@@ -322,7 +330,7 @@
                                     </tr>
                                     <tr>
                                         <th class="th-inner">&nbsp;FECHA&nbsp;</th>
-                                        <th class="th-inner" nowrap>&nbsp;NRO. REG.&nbsp;</th>
+                                        <th class="th-inner" nowrap>&nbsp;NRO. BUNCH.&nbsp;</th>
                                         <th class="th-inner">PROCESADOS</th> 
                                     </tr>
                                  </thead>
@@ -338,12 +346,17 @@
 												{
 											?>
 	                                       	<a data-proveedor="AGR" href="#" class="btn_refrescar btn btn-primary btn-xs"><i class="glyphicon glyphicon-refresh"></i> REFRESCAR</a>
+                                            <?php
+													if ($this->usuario_perfil_id==\Application\Constants\Perfil::ID_DISPO)
+													{
+											?>
                                         	<a data-proveedor="AGR" href="#" class="btn_sincronizar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
                                             <?php
+													}//end if
 												}//end if
 											?>
                                         </td>
-                                        <td width="100%" class="observacion" align="left">..</td>                        
+                                        <td width="100%" class="observacion" align="left"></td>                        
                                     </tr>
                                     <tr id="HTC">
                                         <td>HTC</td>
@@ -356,12 +369,17 @@
 												{
 											?>                                        
 	                                       	<a data-proveedor="HTC" href="#" class="btn_refrescar btn btn-primary btn-xs"><i class="glyphicon glyphicon-refresh"></i> REFRESCAR</a>
-                                        	<a data-proveedor="HTC" href="#" class="btn_sincronizar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
                                             <?php
+													if ($this->usuario_perfil_id==\Application\Constants\Perfil::ID_DISPO)
+													{
+											?>
+			                                        	<a data-proveedor="HTC" href="#" class="btn_sincronizar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
+                                            <?php
+													}//end if
 												}//end if
 											?>
                                         </td>
-                                        <td class="observacion" align="left">..</td>                    
+                                        <td class="observacion" align="left">&nbsp;</td>                    
                                   </tr>
                                     <tr id="LMA">
                                         <td>RLM</td>
@@ -374,12 +392,17 @@
 												{
 											?>                                        
                                         	<a data-proveedor="LMA" href="#" class="btn_refrescar btn btn-primary btn-xs"><i class="glyphicon glyphicon-refresh"></i> REFRESCAR</a>
-                                        	<a data-proveedor="LMA" href="#" class="btn_sincronizar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
                                             <?php
+													if ($this->usuario_perfil_id==\Application\Constants\Perfil::ID_DISPO)
+													{
+											?>                                            
+			                                        	<a data-proveedor="LMA" href="#" class="btn_sincronizar btn btn-primary btn-xs disabled"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
+                                            <?php
+													}//end if
 												}//end if
 											?>
                                         </td>
-                                        <td class="observacion" align="left">..</td>                      
+                                        <td class="observacion" align="left">&nbsp;</td>                      
                                   </tr>
                                  </tbody>
                             </table>
@@ -390,11 +413,17 @@
                     ?>                                        
                             
                             <a  href="#" class="btn_refrescar btn btn-primary btn-xs" data-proveedor="ALL"><i class="glyphicon glyphicon-refresh"></i> REFRESCAR</a>
-                            <a href="#" class="btn_sincronizar_general btn btn-primary btn-xs disabled" data-proveedor="ALL"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
+							<?php
+                                    if ($this->usuario_perfil_id==\Application\Constants\Perfil::ID_DISPO)
+                                    {
+                            ?>                            
+	                            <a href="#" class="btn_sincronizar_general btn btn-primary btn-xs disabled" data-proveedor="ALL"><i class="glyphicon glyphicon-cog"></i> PROCESAR</a>
+                            
                     <?php
+									}//end if
 						}//end if
 					?>
-                    	</div>
+                   	  </div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="tab_dispo">
                         <div class="panel panel-default">
@@ -405,9 +434,17 @@
                                 	 <section class="body-admin-section">
                                      	<div class="accion-admin-section">
                                         	<div class="botonera-admin-section pull-left separator">
-                                        		<button id="btn_nuevo" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> NUEVO</button>
-                                                <button id="btn_mover" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-sort"></i> MOVER</button>
-                                                <button id="btn_cero" type="button" class="btn btn-info btn-xs"><i class="glyphicon glyphicon-ban-circle"></i> CERO</button>
+												<div class="btn-group">
+                                                  <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    ACCION <span class="caret"></span>
+                                                  </button>
+                                                  <ul class="dropdown-menu">
+                                                  	<li><a id="btn_cero" href="return false;"><i class="glyphicon glyphicon-ban-circle text-success"></i> CERO</a></li>                                                  
+                                                    <li role="separator" class="divider"></li>                                                    
+                                                  	<li><a id="btn_nuevo" href="return false;"><i class="glyphicon glyphicon-plus text-primary"></i> NUEVA VARIEDAD</a></li>
+                                                  	<li><a id="btn_mover" href="return false;"><i class="glyphicon glyphicon-sort text-warning"></i> MOVER DISPO</a></li>
+                                                  </ul>
+                                                </div>                                             
                                         	</div>
                                             <div class="busqueda-admin-section pull-left">
                                             	 <select  id="inventario_id" class="form-control input-sm"></select>
@@ -417,7 +454,7 @@
                                                  <select name="calidad_variedad_id" class="form-control input-sm"  id="calidad_variedad_id"></select>
                                                  <select name="nro_tallos" class="form-control input-sm"  id="nro_tallos"></select>
                                                  
-												<button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
+												<button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> MOSTRAR</button>
 												<button id="btn_excel" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-download-alt"></i></button>
                                             </div>
                                         </div>
@@ -664,12 +701,12 @@
                                                 <input type="hidden" id="proveedor_id" value="" />
                                                 <input type="hidden" id="color_ventas_id" value="" />
                                                 <input type="hidden" id="calidad_variedad_id" value="" />
-
+                                                <input type="hidden" id="nro_tallos" value="" />
                          
                                                 <div class="form-inline">
                                                         <div class="form-group">                                                
-                                                            <label for="calidad_id">Destino Calidad:</label>
-                                                            <select  id="calidad_id" class="form-control input-sm"></select>
+                                                            <label for="calidad_destino_id">Destino Calidad:</label>
+                                                            <select  id="calidad_destino_id" class="form-control input-sm"></select>
                                                         </div>
     
                                                         <button id="btn_mover" type="button" class="btn btn-primary btn-sm" data-loading-text="Procesando..."><i class="glyphicon glyphicon-ok"></i> MOVER</button>
@@ -716,7 +753,7 @@
                                             </div>
                                             <span>&nbsp;&nbsp;&nbsp;</span>
                                             <span class="botonera-admin-section">
-                                            <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
+                                            <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> MOSTRAR</button>
                     						<button id="btn_excel" type="button" class="btn btn-primary btn-xs"> <i class="glyphicon glyphicon-download-alt"></i></button>
                     						</span>  
                                         </div>
@@ -920,19 +957,17 @@
                                                   	<li><a id="btn_cero" href="#"><i class="glyphicon glyphicon-ban-circle text-success"></i> CERO</a></li>
                                                   </ul>
                                                 </div>                                            
-                                        		
-                                                
-                                                
+                                            	<button id="btn_cero" type="button" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-ban-circle"></i> CERO</button>
                                         	</div>
                                             <div class="busqueda-admin-section pull-left">
                                             	 <select  id="inventario_id" class="form-control input-sm"  title="INVENTARIO"></select>
                                                  <select  id="calidad_id" class="form-control input-sm" title="CALIDAD"></select>
                                                  <select  id="proveedor_id" class="form-control input-sm" title="FINCA"></select>
                                           	     <select  id="color_ventas_id" class="form-control input-sm"></select>
-                                                 <select name="calidad_variedad_id" class="form-control input-sm"  id="calidad_variedad_id"></select>
+                                                 <select name="calidad_variedad_id" class="form-control input-sm"  id="calidad_variedad_id" style="display:none"></select>
                                                  <select name="nro_tallos" class="form-control input-sm"  id="nro_tallos"></select>
                                                  
-												<button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
+												<button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> MOSTRAR</button>
 												<button id="btn_excel" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-download-alt"></i></button>
                                             </div>
                                         </div>

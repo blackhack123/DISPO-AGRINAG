@@ -260,6 +260,9 @@
                         </div>
                     <?php 
                     }//end if ?>               
+					<?php 
+					if ($this->identidad_usuario['perfil_id'] != \Application\Constants\Perfil::ID_DISPO)
+					{ ?>
 					<div class="menu-app-opcion">
                     	<a href="#">
                         	<img id="inicio" class="tool" title="Home" src="<?php echo($this->basePath()); ?>/images/side-menu-home.png">
@@ -278,7 +281,10 @@
                         <a href="#/list-ordenes">
                             <img class="tool" title="Orders" src="<?php echo($this->basePath()); ?>/images/side-menu-item6.png" id="opt_list_orders_client">
                         </a>
-					</div>                    
+					</div> 
+                    <?php
+					}//end if
+					?>
 					<?php
                     if ($this->identidad_usuario['perfil_id'] == \Application\Constants\Perfil::ID_ADMIN)
                     { ?>

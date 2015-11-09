@@ -89,7 +89,7 @@ $(document).ready(function () {
 				   cellattr: function () { return ' title=" Modificar"'; }
 				},
 			{name:'color_ventas_nombre',index:'color_ventas_nombre', width:120, sorttype:"string"},
-			{name:'40',index:'40', width:50, align:"center", sorttype:"int", editable:true,
+			{name:'40',index:'40', width:50, align:"center", sorttype:"int", editable:true, formatter:gridDispoFinca_GradosFormatter, unformat:gridDispoFinca_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
 										dataEvents: [
@@ -115,7 +115,7 @@ $(document).ready(function () {
 													]																					
 									 }											
 			},
-			{name:'50',index:'50', width:50, align:"center", sorttype:"int", editable:true,
+			{name:'50',index:'50', width:50, align:"center", sorttype:"int", editable:true,  formatter:gridDispoFinca_GradosFormatter, unformat:gridDispoFinca_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },
 										dataEvents: [
@@ -137,7 +137,7 @@ $(document).ready(function () {
 
 									 }											
 			},
-			{name:'60',index:'60', width:50, align:"center", sorttype:"int", editable:true,
+			{name:'60',index:'60', width:50, align:"center", sorttype:"int", editable:true, formatter:gridDispoFinca_GradosFormatter, unformat:gridDispoFinca_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },
 										dataEvents: [
@@ -159,7 +159,7 @@ $(document).ready(function () {
 
 									 }
 			},
-			{name:'70',index:'70', width:50, align:"center", sorttype:"int", editable:true,
+			{name:'70',index:'70', width:50, align:"center", sorttype:"int", editable:true, formatter:gridDispoFinca_GradosFormatter, unformat:gridDispoFinca_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },
 										dataEvents: [
@@ -181,7 +181,7 @@ $(document).ready(function () {
 
 									 }
 			},
-			{name:'80',index:'80', width:50, align:"center", sorttype:"int", editable:true,
+			{name:'80',index:'80', width:50, align:"center", sorttype:"int", editable:true, formatter:gridDispoFinca_GradosFormatter, unformat:gridDispoFinca_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },
 										dataEvents: [
@@ -203,7 +203,7 @@ $(document).ready(function () {
 
 									 }
 			},
-			{name:'90',index:'90', width:50, align:"center", sorttype:"int", editable:true,
+			{name:'90',index:'90', width:50, align:"center", sorttype:"int", editable:true, formatter:gridDispoFinca_GradosFormatter, unformat:gridDispoFinca_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },
 										dataEvents: [
@@ -225,7 +225,7 @@ $(document).ready(function () {
 
 									 }
 			},
-			{name:'100',index:'100', width:50, align:"center", sorttype:"int", editable:true,
+			{name:'100',index:'100', width:50, align:"center", sorttype:"int", editable:true, formatter:gridDispoFinca_GradosFormatter, unformat:gridDispoFinca_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },
 										dataEvents: [
@@ -247,7 +247,7 @@ $(document).ready(function () {
 
 									 }
 			},
-			{name:'110',index:'110', width:50, align:"center", sorttype:"int", editable:true,
+			{name:'110',index:'110', width:50, align:"center", sorttype:"int", editable:true, formatter:gridDispoFinca_GradosFormatter, unformat:gridDispoFinca_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },
 										dataEvents: [
@@ -272,7 +272,7 @@ $(document).ready(function () {
 													]																					
 									 }											
 			},
-			{name:'total',index:'total', width:50, align:"right", sorttype:"int", editable:true}
+			{name:'total',index:'total', width:50, align:"right", sorttype:"int", formatter:gridDispoFinca_GradosFormatter, unformat:gridDispoFinca_GradosUnFormatter}
 		],
 		rowNum:999999,
 		cellEdit: true,
@@ -334,6 +334,8 @@ $(document).ready(function () {
 		},
 	});
 	
+	jQuery("#grid_dispo_finca").jqGrid('navGrid','#pager_dispo_finca',{edit:false,add:false,del:false});	
+
 
 
 	function gridDispoFinca_VariedadNombreFormatter(cellvalue, options, rowObject){
@@ -345,6 +347,7 @@ $(document).ready(function () {
 		}//end if
 		return new_format_value;
 	}//end function gridDispoFinca_VariedadNombreFormatter
+
 
 
 	function GridDispoFinca_FotoFormatter(cellvalue, options, rowObject){
@@ -360,7 +363,24 @@ $(document).ready(function () {
 		return new_format_value;
 	}//end function ListadoCliente_FormatterEdit
 		
-	jQuery("#grid_dispo_finca").jqGrid('navGrid','#pager_dispo_finca',{edit:false,add:false,del:false});
+
+	
+
+	function gridDispoFinca_GradosFormatter(cellvalue, options, rowObject){
+		cellvalue = number_val(cellvalue, 0);		
+		var color = "Black";
+		if (cellvalue==0)
+		{
+			color = "LightGray";
+		}
+		cellvalue = $.number( cellvalue, 0, '.',','); 		
+		new_format_value = '<span style="color:'+color+'">'+cellvalue+ '</a>';
+		return new_format_value;
+	}
+		
+	function gridDispoFinca_GradosUnFormatter(cellvalue, options, cell){
+		return number_val($('span', cell).html());
+	}		
 
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/
@@ -753,8 +773,6 @@ $(document).ready(function () {
 	function DispoFinca_ActualizarCero()
 	{
 		var grid 				= $("#grid_dispo_finca");
-		var col_variedad_id	 	= jqgrid_get_columnIndexByName(grid, "variedad_id");
-		var col_tallos_x_bunch 	= jqgrid_get_columnIndexByName(grid, "tallos_x_bunch");
         var rowKey 	= grid.getGridParam("selrow");
 
         if (!rowKey)
@@ -763,52 +781,66 @@ $(document).ready(function () {
 			return false;
 		}//end if
 		
-		var r = confirm("Esta seguro de poner a CERO las variedades seleccionadas?");
 		
-		if (r == false)
-		{ 
-			return false; 
-		}//end if
-		
-        var selectedIDs = grid.getGridParam("selarrrow");
-        var variedad_id  = null;
-		
-		var arr_data 	= new Array();
-		for (var i = 0; i < selectedIDs.length; i++) {
-			variedad_id 	= grid.jqGrid('getCell',selectedIDs[i], col_variedad_id);
-			tallos_x_bunch 	= grid.jqGrid('getCell',selectedIDs[i], col_tallos_x_bunch);
-			
-			var element				= {};
-			element.variedad_id		= variedad_id;
-			element.tallos_x_bunch  = tallos_x_bunch;
-			arr_data.push(element);
-		}//end for
-		
+		swal({  title: 'CONFIGURAR EN CERO',   
+			text: "Esta seguro de poner a CERO las variedades seleccionadas?",
+			//text: "<b style='color:blue'>Desea continuar utilizando la misma marcacion? <br> Para seguir realizando mas pedidos</b>",  
+			html:true,
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Si",
+			cancelButtonText: "No",
+			closeOnConfirm: true,
+			closeOnCancel: true,
+			/*timer: 2000*/
+		},
+		function(isConfirm){													
+			if (isConfirm) {
+						var grid 				= $("#grid_dispo_finca");
+						var col_variedad_id	 	= jqgrid_get_columnIndexByName(grid, "variedad_id");
+						var col_tallos_x_bunch 	= jqgrid_get_columnIndexByName(grid, "tallos_x_bunch");
 
-		var data = 	{
-						inventario_id: 	$("#frm_finca #inventario_id").val(),
-						proveedor_id: 	$("#frm_finca #proveedor_id").val(),
-						clasifica: 		$("#frm_finca #calidad_id").val(),
-						grid_data: 		arr_data,
-					}
-		console.log(data);
-		data = JSON.stringify(data);		
-		
-		//$("frm_finca_general_stockgrado #btn_grabar").button('loading')
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'../../dispo/disponibilidad/actualizarcerostock',
-							'control_process':false,
-							'show_cargando':true,
-							'async':true, 
-							'finish':function(response){
-									//$("frm_finca_general_stockgrado #btn_grabar").button('reset');
-									cargador_visibility('hide');
-									$('#grid_dispo_finca').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-							}							
-						 }
-		response = ajax_call(parameters, data);		
-		return false;					
-
+						var selectedIDs = grid.getGridParam("selarrrow");
+						var variedad_id  = null;
+						
+						var arr_data 	= new Array();
+						for (var i = 0; i < selectedIDs.length; i++) {
+							variedad_id 	= grid.jqGrid('getCell',selectedIDs[i], col_variedad_id);
+							tallos_x_bunch 	= grid.jqGrid('getCell',selectedIDs[i], col_tallos_x_bunch);
+							
+							var element				= {};
+							element.variedad_id		= variedad_id;
+							element.tallos_x_bunch  = tallos_x_bunch;
+							arr_data.push(element);
+						}//end for
+						
+				
+						var data = 	{
+										inventario_id: 	$("#frm_finca #inventario_id").val(),
+										proveedor_id: 	$("#frm_finca #proveedor_id").val(),
+										clasifica: 		$("#frm_finca #calidad_id").val(),
+										grid_data: 		arr_data,
+									}
+						//console.log(data);
+						data = JSON.stringify(data);		
+						
+						//$("frm_finca_general_stockgrado #btn_grabar").button('loading')
+						
+						var parameters = {	'type': 'POST',//'POST',
+											'contentType': 'application/json',
+											'url':'../../dispo/disponibilidad/actualizarcerostock',
+											'control_process':false,
+											'show_cargando':true,
+											'async':true, 
+											'finish':function(response){
+													//$("frm_finca_general_stockgrado #btn_grabar").button('reset');
+													cargador_visibility('hide');
+													$('#grid_dispo_finca').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+											}							
+										 }
+						response = ajax_call(parameters, data);		
+			}
+		});
+		return false;
 	}//end function DispoFinca_ActualizarCero
