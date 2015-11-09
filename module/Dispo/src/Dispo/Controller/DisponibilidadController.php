@@ -1485,7 +1485,7 @@ class DisponibilidadController extends AbstractActionController
 				$DispoData->setVariedadId($reg['variedad_id']);
 				$DispoData->setTallosxBunch($reg['tallos_x_bunch']);
 				$DispoData->setClasifica($clasifica);
-						
+
 				$ArrDispoData[] = $DispoData;
 			}//end foreach
 		
