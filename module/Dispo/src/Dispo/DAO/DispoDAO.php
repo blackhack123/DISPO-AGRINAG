@@ -5,6 +5,7 @@ use Doctrine\ORM\EntityManager,
 	Application\Classes\Conexion;
 use Dispo\Data\DispoData;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Dispo\Data\Dispo\Data;
 
 class DispoDAO extends Conexion 
 {
@@ -911,6 +912,123 @@ class DispoDAO extends Conexion
 		return $count;		
 	}//end function actualizarCeroStock
 	
+	
+	
+	/**
+	 * 
+	 * @param DispoData $DispoData
+	 * @param array $grados
+	 * @param int $color_ventas_id
+	 * @param int $calidad_variedad_id
+	 */
+	public function moverStock($DispoData, $grados, $color_ventas_id, $calidad_variedad_id, $clasifica_destino)
+	{
+		//Se establece el RANGO DE GRADOS al que se va afectar
+		$flag_1era_vez = true;
+		$sql_grados = '';
+		foreach($grados as $reg)
+		{
+			if (!$flag_1era_vez)
+			{
+				$sql_grados = $sql_grados.",";
+			}//end if			
+			$sql_grados = $sql_grados."'".$reg['grado_id']."'";
+			
+			$flag_1era_vez = false;
+		}//end foreach
+		
+		//Se consulta el registro de la DISPO ORIGEN
+		$sql = 	" SELECT dispo.* ".
+				" FROM dispo INNER JOIN variedad ".
+				"                    ON variedad.id 		= dispo.variedad_id ";
+		if (!empty($calidad_variedad_id))
+		{
+			$sql=$sql."             AND variedad.calidad_variedad_id = ".$calidad_variedad_id;
+		}//end if		
+		if (!empty($color_ventas_id))
+		{
+			$sql=$sql."      LEFT JOIN color_ventas ".
+				"                    ON color_ventas.id 	= dispo.color_ventas_id ";
+		}//end if
+		$sql=$sql." WHERE dispo.inventario_id 	= '".$DispoData->getInventarioId()."'".
+				"   and dispo.producto 			= '".$DispoData->getProducto()."'".
+				"   and dispo.variedad_id		= '".$DispoData->getVariedadId()."'".
+				"   and dispo.grado_id 			in (".$sql_grados.")".
+				"   and dispo.tallos_x_bunch 	= ".$DispoData->getTallosxbunch().
+				"	and dispo.clasifica		 	= '".$DispoData->getClasifica()."'";
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);		
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro		
+		
+		$DispoDataFind 		= new DispoData();
+		$DispoDataTarget 	= new DispoData();
+		foreach($result as $reg)
+		{
+			$DispoDataFind->setFecha		($reg['fecha']);
+			$DispoDataFind->setInventarioId	($reg['inventario_id']);
+			$DispoDataFind->setFechaBunch	($reg['fecha_bunch']);
+			$DispoDataFind->setProveedorId	($reg['proveedor_id']);
+			$DispoDataFind->setProducto		($reg['producto']);
+			$DispoDataFind->setVariedadId	($reg['variedad_id']);
+			$DispoDataFind->setGradoId		($reg['grado_id']);
+			$DispoDataFind->setTallosxBunch	($reg['tallos_x_bunch']);
+			$DispoDataFind->setClasifica	($clasifica_destino);
+
+			$DispoDataSource = $this->consultarPorKey($DispoDataFind);
+			if (empty($DispoDataSource))
+			{
+				$DispoDataTarget->setFecha			($reg['fecha']);
+				$DispoDataTarget->setInventarioId	($reg['inventario_id']);
+				$DispoDataTarget->setFechaBunch		($reg['fecha_bunch']);
+				$DispoDataTarget->setProveedorId	($reg['proveedor_id']);
+				$DispoDataTarget->setProducto		($reg['producto']);
+				$DispoDataTarget->setVariedadId		($reg['variedad_id']);
+				$DispoDataTarget->setGradoId		($reg['grado_id']);
+				$DispoDataTarget->setTallosxBunch	($reg['tallos_x_bunch']);
+				$DispoDataTarget->setClasifica		($clasifica_destino);
+				$DispoDataTarget->setCantidadBunch	($reg['cantidad_bunch']);
+				$DispoDataTarget->setCantidadBunchDisponible($reg['cantidad_bunch_disponible']);
+				
+				$DispoDataTarget->setClasifica($clasifica_destino);
+				$id = $this->ingresar($DispoDataTarget);
+			}else{
+				//Se actualiza la dispo de DESTINO (acumula)
+				$sql = 	" UPDATE dispo ".
+					   	" SET cantidad_bunch_disponible = cantidad_bunch_disponible + ".$reg['cantidad_bunch_disponible'].
+						" WHERE fecha				= '".$reg['fecha']."'".
+						"	and inventario_id 		= '".$reg['inventario_id']."'".
+						"   and fecha_bunch			= '".$reg['fecha_bunch']."'".
+						"   and proveedor_id		= '".$reg['proveedor_id']."'".
+						"	and producto			= '".$reg['producto']."'".
+						"   and variedad_id			= '".$reg['variedad_id']."'".
+						"	and grado_id			= ".$reg['grado_id'].
+						"	and tallos_x_bunch		= ".$reg['tallos_x_bunch'].
+						"	and clasifica			= '".$clasifica_destino."'";
+				$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
+			}//end if
+
+			//Se resta la dispo de ORIGEN (DISMINUYE)
+			$sql = 	" UPDATE dispo ".
+					" SET cantidad_bunch_disponible = cantidad_bunch_disponible - ".$reg['cantidad_bunch_disponible'].
+					" WHERE fecha				= '".$reg['fecha']."'".
+					"	and inventario_id 		= '".$reg['inventario_id']."'".
+					"   and fecha_bunch			= '".$reg['fecha_bunch']."'".
+					"   and proveedor_id		= '".$reg['proveedor_id']."'".
+					"   and producto			= '".$reg['producto']."'".
+					"   and variedad_id			= '".$reg['variedad_id']."'".
+					"	and grado_id			= ".$reg['grado_id'].
+					"	and tallos_x_bunch		= ".$reg['tallos_x_bunch'].
+					"	and clasifica			= '".$reg['clasifica']."'";
+			$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
+				
+		}//end foreach
+		
+		return true;
+	}//end function moverStock
+	
+	
+	
+
 }//end class
 
 

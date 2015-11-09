@@ -12,7 +12,7 @@ $(document).ready(function () {
 	/*----------------------Se cargan los controles -----------------*/
 	disponibilidad_init();
 	
-	$("#frm_dispo #inventario_id, #frm_dispo #calidad_id, #frm_dispo #proveedor_id, #frm_dispo #color_ventas_id, #frm_dispo #calidad_variedad_id, #frm_dispo #nro_tallos").on('change', function(event){
+	$("#frm_dispo #inventario_id, #frm_dispo #calidad_id, #frm_dispo #proveedor_id, #frm_dispo #color_ventas_id, #frm_dispo #calidad_variedad_id").on('change', function(event){
 //		$("#grid_dispo_general").jqGrid('clearGridData');
 		$('#grid_dispo_general').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;		
@@ -89,8 +89,7 @@ $(document).ready(function () {
 			proveedor_id: 	function() {return $("#frm_dispo #proveedor_id").val();},
 			clasifica: 		function() {return $("#frm_dispo #calidad_id").val();},
 			color_ventas_id:function() {return $("#frm_dispo #color_ventas_id").val();},
-			calidad_variedad_id: function() {return $("#frm_dispo #calidad_variedad_id").val();},
-			nro_tallos:		function() {return $("#frm_dispo #nro_tallos").val();},
+			calidad_variedad_id: function() {return $("#frm_dispo #calidad_variedad_id").val();}
 		},
 		datatype: "json",
 		loadonce: true,			
@@ -485,7 +484,8 @@ $(document).ready(function () {
 						proveedor_1er_elemento:		'&lt;TODAS LAS FINCAS&gt;',
 						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;',
 						calidad_variedad_1er_elemento:  '&lt;TODAS LAS CATEGORIAS&gt;',
-						nro_tallos_1er_elemento:		'&lt;TALLOS&gt;'
+						nro_tallos_1er_elemento:		'&lt;TALLOS&gt;',
+						/*nro_tallos:					'&lt;TALLOS&gt;'*/
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',
@@ -499,7 +499,6 @@ $(document).ready(function () {
 								$("body #frm_dispo #proveedor_id").html(response.proveedor_opciones);
 								$("body #frm_dispo #color_ventas_id").html(response.color_ventas_opciones);
 								$("body #frm_dispo #calidad_variedad_id").html(response.calidad_variedad_opciones);
-								$("body #frm_dispo #nro_tallos").html(response.nro_tallos_opciones);								
 
 								//Habilita los botones del formulario
 								$("#frm_dispo button").prop('disabled', false);
@@ -955,8 +954,7 @@ $(document).ready(function () {
 					 '&proveedor_id='+$("#frm_dispo #proveedor_id").val()+
 				 	 '&clasifica='+$("#frm_dispo #calidad_id").val()+
 					 '&color_ventas_id='+$("#frm_dispo #color_ventas_id").val()+
-					 '&calidad_variedad_id='+$("#frm_dispo #calidad_variedad_id").val()+
-					 '&nro_tallos='+$("#frm_dispo #nro_tallos").val();
+					 '&calidad_variedad_id='+$("#frm_dispo #calidad_variedad_id").val();
 		url = url + params;
 		var win = window.open(url);
 		

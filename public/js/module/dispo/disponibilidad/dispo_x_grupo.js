@@ -561,8 +561,8 @@ $(document).ready(function () {
 						opcion: 'panel-control-disponibilidad',
 						grupo_dispo_1er_elemento:	'&lt;SELECCIONE&gt;',
 						//grupo_dispo_cab_id:			grupo_dispo_cab_id;
-						color_ventas_1er_elemento:  '&lt;TODOS LOS COLORES&gt;',
-						calidad_variedad_1er_elemento:  '&lt;TODAS LAS CATEGORIAS&gt;'
+						color_ventas_1er_elemento:  '&lt;COLORES&gt;',
+						calidad_variedad_1er_elemento:  '&lt;CATEGORIAS&gt;'
 					}
 		data = JSON.stringify(data);
 		var parameters = {	'type': 'POST',//'POST',

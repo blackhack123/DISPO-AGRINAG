@@ -571,7 +571,7 @@ class DisponibilidadController extends AbstractActionController
 			}else{
 				$lma_connect = $json['lma_connect'];
 			}//end if
-			
+
 			$uri = $config['url_server_integrador'].'/sincronizador/disponibilidad/sincronizarpreview';
 			$data = array(
 							'agr_connect' => $agr_connect,
@@ -579,10 +579,10 @@ class DisponibilidadController extends AbstractActionController
 							'lma_connect' => $lma_connect
 			);
 			$json = json_encode($data);
-			
+
 			//Instantiate a client object
-			$client = new Client($uri, array('timeout'      => 60));
-			
+			$client = new Client($uri, array('timeout'      => 360));
+
 			$requestHeaders = $client->getRequest()->getHeaders();
 			$client->setRawBody($json);
 			$client->setMethod('post');
@@ -617,6 +617,9 @@ class DisponibilidadController extends AbstractActionController
 	{
 		try
 		{
+			set_time_limit(500);
+			ini_set('max_execution_time', 500);
+			
 			$config 				= $this->getServiceLocator()->get('Config');
 				
 			$body = $this->getRequest()->getContent();
@@ -658,7 +661,7 @@ class DisponibilidadController extends AbstractActionController
 			$json = json_encode($data);
 				
 			//Instantiate a client object
-			$client = new Client($uri, array('timeout'      => 600));
+			$client = new Client($uri, array('timeout'      => 500));
 				
 			$requestHeaders = $client->getRequest()->getHeaders();
 			$client->setRawBody($json);
@@ -707,7 +710,8 @@ class DisponibilidadController extends AbstractActionController
 			$proveedor_id  	= $request->getQuery('proveedor_id', "");
 			$clasifica  	= $request->getQuery('clasifica', "");
 			$color_ventas_id= $request->getQuery('color_ventas_id', "");
-			$calidad_variedad_id= $request->getQuery('calidad_variedad_id', "");
+			$calidad_variedad_id = $request->getQuery('calidad_variedad_id', "");
+			$omitir_registro_vacio = $request->getQuery('omitir_registro_vacio', false);
 			$nro_tallos		= $request->getQuery('nro_tallos', "");
 			$page 			= $request->getQuery('page');
 			$limit 			= $request->getQuery('rows');
@@ -725,7 +729,13 @@ class DisponibilidadController extends AbstractActionController
 					"calidad_variedad_id"=> $calidad_variedad_id,
 					"nro_tallos"		=> $nro_tallos
 			);
-			$result = $DispoBO->listado($condiciones);
+			$omitir_registro_vacio = false;
+			if ($omitir_registro_vacio)
+			{
+				$result = $DispoBO->listadoSinVacios($condiciones);				
+			}else{
+				$result = $DispoBO->listado($condiciones);
+			}//end if
 			$response = new \stdClass();
 			$i=0;
 			$totales['40'] = 0; 
@@ -737,22 +747,25 @@ class DisponibilidadController extends AbstractActionController
 			$totales['100'] = 0;
 			$totales['110'] = 0;
 			$totales['total'] = 0;
-			foreach($result as $row){	
-				$row['variedad'] = trim($row['variedad']);
-				$row['total']	 = $row['40'] + $row['50'] + $row['60'] + $row['70'] + $row['80'] + $row['90'] + $row['100'] + $row['110'];
-				$response->rows[$i] = $row;
-				$i++;
-				
-				$totales['40'] 		= $totales['40'] + $row['40'];
-				$totales['50'] 		= $totales['50'] + $row['50'];
-				$totales['60'] 		= $totales['60'] + $row['60'];
-				$totales['70'] 		= $totales['70'] + $row['70'];
-				$totales['80'] 		= $totales['80'] + $row['80'];
-				$totales['90'] 		= $totales['90'] + $row['90'];
-				$totales['100'] 	= $totales['100'] + $row['100'];
-				$totales['110'] 	= $totales['110'] + $row['110'];
-				$totales['total'] 	= $totales['total'] + $row['total'];
-			}//end foreach
+			if ($result)
+			{
+				foreach($result as $row){	
+					$row['variedad'] = trim($row['variedad']);
+					$row['total']	 = $row['40'] + $row['50'] + $row['60'] + $row['70'] + $row['80'] + $row['90'] + $row['100'] + $row['110'];
+					$response->rows[$i] = $row;
+					$i++;
+
+					$totales['40'] 		= $totales['40'] + $row['40'];
+					$totales['50'] 		= $totales['50'] + $row['50'];
+					$totales['60'] 		= $totales['60'] + $row['60'];
+					$totales['70'] 		= $totales['70'] + $row['70'];
+					$totales['80'] 		= $totales['80'] + $row['80'];
+					$totales['90'] 		= $totales['90'] + $row['90'];
+					$totales['100'] 	= $totales['100'] + $row['100'];
+					$totales['110'] 	= $totales['110'] + $row['110'];
+					$totales['total'] 	= $totales['total'] + $row['total'];
+				}//end foreach
+			}//end if
 			$tot_reg = $i;
 			$response->total 	= ceil($tot_reg/$limit);
 			$response->page 	= $page;
@@ -1064,6 +1077,7 @@ class DisponibilidadController extends AbstractActionController
 			$EntityManagerPlugin = $this->EntityManagerPlugin();
 	
 			$DispoBO = new DispoBO();
+			$CalidadBO = new CalidadBO();
 	
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
@@ -1077,7 +1091,8 @@ class DisponibilidadController extends AbstractActionController
 			$inventario_id			= $json['inventario_id'];
 			$calidad_id				= $json['calidad_id'];
 			$variedad_id			= $json['variedad_id'];
-	
+
+			
 			$variedad_opciones 	= $DispoBO->getComboVariedadNoExiste($inventario_id, $calidad_id, $variedad_id, $texto_primer_elemento);
 	
 			$response = new \stdClass();
@@ -1375,8 +1390,12 @@ class DisponibilidadController extends AbstractActionController
 	
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
 	
-			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
-			if ($respuesta==false) return false;
+			//$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			//if ($respuesta==false) return false;
+			if (($SesionUsuarioPlugin->isLoginAdmin()==false)&&($SesionUsuarioPlugin->isPerfil(\Application\Constants\Perfil::ID_DISPO)==false))
+			{
+				return false;				
+			}//end if
 	
 			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
 
@@ -1423,4 +1442,71 @@ class DisponibilidadController extends AbstractActionController
 	}//end function actualizarcerostockAction
 
 	
+	
+	public function moverstockAction()
+	{
+		try
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$DispoBO 				= new DispoBO();
+		
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+		
+			//$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			//if ($respuesta==false) return false;
+			if ($SesionUsuarioPlugin->isLoginAdmin()==false)
+			{
+				return false;
+			}//end if
+		
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+		
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+		
+			$inventario_id 		= $json['inventario_id'];
+			$clasifica 			= $json['clasifica'];
+			$color_ventas_id 	= $json['color_ventas_id'];
+			$calidad_variedad_id= $json['calidad_variedad_id'];
+			$grid_data 			= $json['grid_data'];
+			$grados				= $json['grados'];
+			$clasifica_destino  = $json['clasifica_destino'];
+			
+		
+			//Prepara el Buffer de datos antes de llamar al BO
+			$ArrDispoData   	= array();
+			foreach ($grid_data as $reg)
+			{
+				$DispoData = new DispoData();
+				
+				$DispoData->setInventarioId($inventario_id);
+				$DispoData->setProducto('ROS');
+				$DispoData->setVariedadId($reg['variedad_id']);
+				$DispoData->setTallosxBunch($reg['tallos_x_bunch']);
+				$DispoData->setClasifica($clasifica);
+						
+				$ArrDispoData[] = $DispoData;
+			}//end foreach
+		
+			//Convierte en cadena el array de color de ventas
+			$result = $DispoBO->moverStock($ArrDispoData, $grados, $color_ventas_id, $calidad_variedad_id, $clasifica_destino);
+		
+			//Retorna la informacion resultante por JSON
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$response->validacion_code 		= 'OK';
+			
+		
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+			//false
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function moverstockAction
 }

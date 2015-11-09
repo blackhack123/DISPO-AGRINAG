@@ -577,7 +577,7 @@ class DispoBO extends Conexion
 	/**
 	 * 
 	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id, nro_tallos)
-	 * @return array:
+	 * @return array
 	 */
 	public function listado($condiciones)
 	{
@@ -588,6 +588,50 @@ class DispoBO extends Conexion
 	}//end function listado
 	
 
+	/**
+	 * 
+	 * @param unknown $condiciones
+	 */
+	public function listadoSinVacios($condiciones)
+	{
+		$result = $this->listado($condiciones);
+		$result2 = null;
+		foreach ($result as $reg)
+		{
+			if ((empty($reg['40']))&&(empty($reg['50']))&&(empty($reg['60']))&&(empty($reg['70']))
+				&&(empty($reg['80']))&&(empty($reg['90']))&&(empty($reg['100']))&&(empty($reg['110'])))
+			{
+				//Registro VACIO
+			}else{
+				$result2[] = $reg;
+			}//end if
+		}//end foreach
+		return $result2;
+	}//end function listadoSinVacios
+	
+
+	/**
+	 *
+	 * @param unknown $condiciones
+	 */
+	public function listadoVacios($condiciones)
+	{
+		$result = $this->listado($condiciones);
+		$result2 = null;
+		foreach ($result as $reg)
+		{
+			if ((empty($reg['40']))&&(empty($reg['50']))&&(empty($reg['60']))&&(empty($reg['70']))
+					&&(empty($reg['80']))&&(empty($reg['90']))&&(empty($reg['100']))&&(empty($reg['110'])))
+			{
+				$result2[] = $reg;
+			}
+		}//end foreach
+		return $result2;
+	}//end function listadoSinVacios
+	
+	
+	
+	
 	/**
 	 * 
 	 * @param string $inventario_id
@@ -699,23 +743,45 @@ class DispoBO extends Conexion
 
 	
 	
+
+	
 	function getComboVariedadNoExiste($inventario_id, $calidad_id, $variedad_id, $texto_1er_elemento = "&lt;Seleccione&gt;", $color_1er_elemento = "#FFFFAA")
 	{
 		$DispoDAO 	= new DispoDAO();
 		$CalidadDAO = new CalidadDAO();
-
+		
 		$DispoDAO->setEntityManager($this->getEntityManager());
-		$CalidadDAO->setEntityManager($this->getEntityManager());
+		$CalidadDAO->setEntityManager($this->getEntityManager());		
 
-		$CalidadData = $CalidadDAO->consultar($calidad_id);		
-		$clasifica_fox = null;
-		if ($CalidadData)
+		$CalidadData = $CalidadDAO->consultar($calidad_id);
+		$condiciones = array(
+				"inventario_id"		=> $inventario_id,
+				"proveedor_id"		=> null,
+				"clasifica"			=> $CalidadData->getClasificaFox(),
+				"color_ventas_id"	=> null,
+				"calidad_variedad_id"=> null,
+				"nro_tallos"		=> 25
+		);
+		$result_dispo = $this->listadoVacios($condiciones);
+		
+		$result_variedad = $DispoDAO->variedadesNoExiste($inventario_id, $CalidadData->getClasificaFox());
+			
+		$result = null;
+		foreach($result_dispo as $row)
 		{
-			$clasifica_fox = $CalidadData->getClasificaFox();
-		}//end if
-
-		$result = $DispoDAO->variedadesNoExiste($inventario_id, $clasifica_fox);
-
+			$reg['variedad_id'] 	= $row['variedad_id'];
+			$reg['variedad_nombre'] = $row['variedad'];
+			$result[$reg['variedad_id']] = $reg;
+		}//end foreach
+		
+		foreach($result_variedad as $row)
+		{
+			$reg['variedad_id'] 	= $row['variedad_id'];
+			$reg['variedad_nombre'] = $row['variedad_nombre'];
+			$result[$reg['variedad_id']] = $reg;
+		}//end foreach
+		
+				
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'variedad_id', 'variedad_nombre',$variedad_id, $texto_1er_elemento, $color_1er_elemento);
 
 		return $opciones;
@@ -1141,7 +1207,7 @@ class DispoBO extends Conexion
 		$objPHPExcel_getActiveSheet=$objPHPExcel->getActiveSheet();
 		
 		
-		$result = $this->listado($condiciones);
+		$result = $this->listadoSinVacios($condiciones);
 		
 		$totales['40'] = 0;
 		$totales['50'] = 0;
@@ -1270,5 +1336,29 @@ class DispoBO extends Conexion
 			throw $e;
 		}
 	}//end function actualizarCerosStock
+
+	
+	
+	public function moverStock($ArrDispoData, $grados, $color_ventas_id, $calidad_variedad_id, $clasifica_destino)
+	{
+		$DispoDAO		= new DispoDAO();
+		
+		$DispoDAO->setEntityManager($this->getEntityManager());
+		
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try{
+			foreach($ArrDispoData as $DispoData)
+			{
+				$DispoDAO->moverStock($DispoData, $grados, $color_ventas_id, $calidad_variedad_id, $clasifica_destino);
+			}//end foreach
+
+			$this->getEntityManager()->getConnection()->commit();
+			return true;
+		} catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}		
+	}//end function moverStock
 	
 }//end class DispoBO
