@@ -517,11 +517,12 @@ class GrupodispoController extends AbstractActionController
 			$response = new \stdClass();
 			$i=0;
 			foreach($result as $row){
-				$row2["cliente_nombre"] 	= trim($row["cliente_nombre"]);
-				$row2["usuario_id"] 		= trim($row["usuario_id"]);
-				$row2["usuario_nombre"] 	= trim($row["usuario_nombre"]);
-				$row2["estado"] 			= trim($row["estado"]);
-	
+				$row2["cliente_nombre"] 		= trim($row["cliente_nombre"]);
+				$row2["usuario_id"] 			= trim($row["usuario_id"]);
+				$row2["usuario_nombre"] 		= trim($row["usuario_nombre"]);
+				$row2["estado"] 				= trim($row["estado"]);
+				$row2["grupo_precio_nombre"]	= trim($row["grupo_precio_nombre"]);
+				
 				$response->rows[$i] = $row2;
 				$i++;
 			}//end foreach

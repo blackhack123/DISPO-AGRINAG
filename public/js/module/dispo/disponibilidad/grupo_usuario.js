@@ -104,11 +104,12 @@ $(document).ready(function ()
 		},
 		datatype: "json",
 		loadonce: true,			
-		colNames:['ID','CLIENTE','USUARIO','ESTADO'],
+		colNames:['ID','CLIENTE','USUARIO','GRUPO PRECIO','ESTADO'],
 		colModel:[
 			{name:'usuario_id',index:'usuario_id', width:100, sorttype:"integer", hidden:true},
 			{name:'cliente_nombre',index:'cliente_nombre', width:150, sorttype:"string"},
 			{name:'usuario_nombre',index:'usuario_nombre', width:150, sorttype:"string"},
+			{name:'grupo_precio_nombre',index:'grupo_precio_nombre', width:150, sorttype:"string"},
 			{name:'estado',index:'estado', width:60, sorttype:"string", hidden:true},
 		],
 		rowNum:999999,

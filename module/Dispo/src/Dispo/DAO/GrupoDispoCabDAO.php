@@ -363,9 +363,11 @@ class GrupoDispoCabDAO extends Conexion
 	 */
 	public function listadoAsignadas($condiciones)
 	{
-		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre, usuario.estado, usuario.id AS usuario_id '.
+		$sql = 	' SELECT cliente.nombre AS cliente_nombre, usuario.nombre AS usuario_nombre, usuario.estado, usuario.id AS usuario_id,grupo_precio_cab.nombre as grupo_precio_nombre '.
 				' FROM   usuario INNER JOIN  cliente '.
 				'						 ON cliente.id = usuario.cliente_id '.
+				' 				 LEFT JOIN grupo_precio_cab '.
+				' 						 ON usuario.grupo_precio_cab_id = grupo_precio_cab.id '.
 				' WHERE 1 = 1';
 		
 		if (!empty($condiciones['grupo_dispo_cab_id']))
