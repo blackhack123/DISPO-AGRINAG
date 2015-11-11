@@ -22,6 +22,10 @@ class PHPExcelApp {
 	const STYLE_ARRAY_BORDE_ARRIBA 		    = 'borde_arriba';
 	const STYLE_ARRAY_BORDE_DERECHA 		= 'borde_derecha';
 	const STYLE_ARRAY_UNDERLINE 		    = 'underline';
+	const STYLE_ARRAY_COLUMNA01				= 'columna01';
+	const STYLE_ARRAY_COLUMNA02				= 'columna02';
+	const STYLE_ARRAY_TITULO01				= 'titulo01';
+	const STYLE_ARRAY_TITULO02				= 'titulo02';	
 
 	const FORMAT_EXCEL_2007					= 'EXCEL_2007';
 	const FORMAT_EXCEL_95					= 'EXCEL_95';
@@ -184,6 +188,7 @@ class PHPExcelApp {
 	 		)
 	 );	 
 
+	 
 	}//end function styleArrayLoad
 
 

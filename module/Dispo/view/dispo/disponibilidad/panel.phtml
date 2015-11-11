@@ -754,8 +754,21 @@
                                             <span>&nbsp;&nbsp;&nbsp;</span>
                                             <span class="botonera-admin-section">
                                             <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> MOSTRAR</button>
-                    						<button id="btn_excel" type="button" class="btn btn-primary btn-xs"> <i class="glyphicon glyphicon-download-alt"></i></button>
-                    						</span>  
+                                                                                        
+                                            <div class="btn-group">
+                                                  <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="glyphicon glyphicon-download-alt"></i>
+                                                    
+                                                    
+                                                  </button>
+                                                  <ul class="dropdown-menu">
+                                                    <li><a id="btn_excel" href="#"><i class="glyphicon glyphicon-download-alt text-success"></i> FORMATO BUNCHES</a></li>                                                  
+                                                    <li role="separator" class="divider"></li>                                                    
+                                                    <li><a id="btn_excel_cajas_usa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> FORMATO CAJAS USA</a></li>
+                                                    <li><a id="btn_excel_cajas_rusa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> FORMATO CAJAS RUSA</a></li>
+                                                  </ul>
+                                            </div>
+                                            </span>  
                                         </div>
                                      </section>
                                 	 
@@ -947,16 +960,6 @@
                                 	 <section class="body-admin-section">
                                      	<div class="accion-admin-section">
                                         	<div class="botonera-admin-section pull-left separator">
-                                                <div class="btn-group ">
-                                                  <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    ACCION <span class="caret"></span>
-                                                  </button>
-                                                  <ul class="dropdown-menu">
-                                                  	<li><a id="btn_nuevo" href="#"><i class="glyphicon glyphicon-plus text-primary"></i> NUEVO</a></li>
-                                                    <li role="separator" class="divider"></li>                                                    
-                                                  	<li><a id="btn_cero" href="#"><i class="glyphicon glyphicon-ban-circle text-success"></i> CERO</a></li>
-                                                  </ul>
-                                                </div>                                            
                                             	<button id="btn_cero" type="button" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-ban-circle"></i> CERO</button>
                                         	</div>
                                             <div class="busqueda-admin-section pull-left">

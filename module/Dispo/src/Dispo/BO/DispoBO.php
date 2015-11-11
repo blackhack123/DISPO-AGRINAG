@@ -18,6 +18,11 @@ use Dispo\DAO\InventarioDAO;
 use Dispo\DAO\ProveedorDAO;
 use Dispo\DAO\ColorVentasDAO;
 use Dispo\DAO\CalidadVariedadDAO;
+use Dispo\DAO\GrupoDispoCabDAO;
+use Dispo\DAO\GrupoDispoDetDAO;
+use Dispo\DAO\Dispo\DAO;
+use Dispo\Data\GrupoDispoDetData;
+use Dispo\Data\Dispo\Data;
 
 
 
@@ -670,13 +675,21 @@ class DispoBO extends Conexion
 	 * @throws Exception
 	 * @return array
 	 */
-	public function actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock)
+	public function actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock, $usuario_id = null)
 	{
 		$this->getEntityManager()->getConnection()->beginTransaction();
 		try
 		{
-			$DispoDAO = new DispoDAO();
+			$DispoDAO 			= new DispoDAO();
+			$GrupoDispoCabDAO	= new GrupoDispoCabDAO();
+			$GrupoDispoDetDAO	= new GrupoDispoDetDAO();
+			$CalidadDAO			= new CalidadDAO();
+			$GrupoDispoDetData	= new GrupoDispoDetData();
+
 			$DispoDAO->setEntityManager($this->getEntityManager());
+			$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+			$GrupoDispoDetDAO->setEntityManager($this->getEntityManager());
+			$CalidadDAO->setEntityManager($this->getEntityManager());
 
 			if (empty($proveedor_id))
 			{
@@ -693,6 +706,26 @@ class DispoBO extends Conexion
 				$DispoDAO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock);
 			}//end if
 
+			//ACTUALIZA EL STOCK DE LOS GRUPOS
+			$tot_stock = $DispoDAO->consultartotalInventario($inventario_id, $producto, $clasifica_fox, $variedad_id, $grado_id, $tallos_x_bunch);
+
+			$CalidadData = $CalidadDAO->consultarPorClasificaFox($clasifica_fox);
+			$result_dispocab = $GrupoDispoCabDAO->consultarPorInventario($inventario_id, $CalidadData->getId());
+			foreach($result_dispocab as $reg_dispocab)
+			{
+				$GrupoDispoDetData->setGrupoDispoCabId			($reg_dispocab['id']);
+				$GrupoDispoDetData->setProductoId				($producto);
+				$GrupoDispoDetData->setVariedadId				($variedad_id);
+				$GrupoDispoDetData->setGradoId					($grado_id);
+				$GrupoDispoDetData->setTallosXBunch				($tallos_x_bunch);
+				$GrupoDispoDetData->setCantidadBunch			($tot_stock['tot_bunch_disponible']);
+				$GrupoDispoDetData->setCantidadBunchDisponible	($tot_stock['tot_bunch_disponible']);
+				$GrupoDispoDetData->setUsuarioModId				($usuario_id);
+				$GrupoDispoDetData->setUsuarioIngId				($usuario_id);
+				
+			    $GrupoDispoDetDAO->registrar($GrupoDispoDetData);
+			}//end foreach
+				
 			$result['validacion_code'] 	= 'OK';
 			$result['respuesta_mensaje']= '';
 		
@@ -1323,18 +1356,34 @@ class DispoBO extends Conexion
 	}//end function generarExcel
 
 	
-	
+	/**
+	 * 
+	 * @param Dispo\Data\DispoData $ArrDispoData[]
+	 * @throws Exception
+	 * @return boolean
+	 */
 	public function actualizarCerosStock($ArrDispoData)
 	{
-		$DispoDAO		= new DispoDAO();
+		$DispoDAO			= new DispoDAO();
+		$GrupoDispoDetDAO	= new GrupoDispoDetDAO();
+		$GrupoDispoDetData	= new GrupoDispoDetData();
 
 		$DispoDAO->setEntityManager($this->getEntityManager());
+		$GrupoDispoDetDAO->setEntityManager($this->getEntityManager());
 
 		$this->getEntityManager()->getConnection()->beginTransaction();
 		try{
 			foreach($ArrDispoData as $DispoData)
 			{
 				$DispoDAO->actualizarCeroStock($DispoData);
+				
+				$GrupoDispoDetDAO->actualizarCeroStock(	$DispoData->getInventarioId(), 
+														$DispoData->getClasifica(),
+														$DispoData->getProducto(),
+														$DispoData->getVariedadId(),
+														$DispoData->getGradoId(),
+														$DispoData->getTallosxbunch()
+														);
 			}//end foreach
 		
 			$this->getEntityManager()->getConnection()->commit();
@@ -1369,5 +1418,7 @@ class DispoBO extends Conexion
 			throw $e;
 		}		
 	}//end function moverStock
+
+		
 	
 }//end class DispoBO

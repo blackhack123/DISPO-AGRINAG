@@ -342,12 +342,18 @@ class DispoDAO extends Conexion
 
 	/**
 	 *
-	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id, nro_tallos)
+	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id, nro_tallos, $group_by_proveedor_id)
 	 * @return array:
 	 */
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT dispo.producto as producto_id, variedad.nombre as variedad, dispo.variedad_id, dispo.tallos_x_bunch, '.
+		$sql = 	' SELECT ';
+		if (array_key_exists('group_by_proveedor_id',$condiciones))
+		{
+			$sql = $sql.' dispo.proveedor_id, ';
+		}//end if		
+		
+		$sql = $sql.'    dispo.producto as producto_id, variedad.nombre as variedad, dispo.variedad_id, dispo.tallos_x_bunch, '.
 				'        color_ventas.nombre as color_ventas_nombre, variedad.url_ficha, '.
 				" 		 SUM(if(dispo.grado_id=40,  dispo.cantidad_bunch_disponible, 0)) as '40',".
 				" 		 SUM(if(dispo.grado_id=50,  dispo.cantidad_bunch_disponible, 0)) as '50',".
@@ -412,8 +418,15 @@ class DispoDAO extends Conexion
 			}//end switch
 			
 		}//end if		
+				
+		if (array_key_exists('group_by_proveedor_id',$condiciones))
+		{
+			$sql = $sql.' GROUP BY dispo.proveedor_id, dispo.producto, variedad.nombre, dispo.variedad_id, tallos_x_bunch, color_ventas.nombre, url_ficha  ';
+		}else{
+			$sql=$sql.' GROUP BY dispo.producto, variedad.nombre, dispo.variedad_id, tallos_x_bunch, color_ventas.nombre, url_ficha ';
+		}//end if		
 		
-		$sql=$sql.' GROUP BY variedad.nombre, dispo.variedad_id, tallos_x_bunch, color_ventas.nombre, url_ficha ';
+		
 		$sql=$sql." ORDER BY variedad.nombre ";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
@@ -1028,7 +1041,105 @@ class DispoDAO extends Conexion
 	
 	
 	
+	
+	/**
+	 *
+	 * @param string $inventario_id
+	 * @param string $clasifica_fox
+	 * @return array
+	 */
+	function consultarFechaMinimaInventario($inventario_id, $clasifica_fox)
+	{
+		$sql = 	" SELECT min(fecha) as fecha_minima ".
+				" FROM dispo ".
+				" WHERE inventario_id 	= '".$inventario_id."'".
+				"   and clasifica		= '".$clasifica_fox."'";
+		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$reg = $stmt->fetch();
+		return $reg;
+	}//end function consultarFechaMinimaInventario	
 
+	
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $producto
+	 * @param string $clasifica_fox
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @param int $tallos_x_bunch
+	 * @return array
+	 */
+	function consultartotalInventario($inventario_id, $producto, $clasifica_fox, $variedad_id, $grado_id, $tallos_x_bunch)
+	{
+		$sql = 	" SELECT sum(cantidad_bunch) as tot_cantidad_bunch, sum(cantidad_bunch_disponible) as tot_bunch_disponible ".
+				" FROM dispo ".
+				" WHERE inventario_id 	= '".$inventario_id."'".
+				"   and producto		= '".$producto."'".
+				"   and clasifica		= '".$clasifica_fox."'".
+				"   and variedad_id		= '".$variedad_id."'".
+				"	and grado_id		= '".$grado_id."'".
+				"	and tallos_x_bunch	= ".$tallos_x_bunch;
+		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$reg = $stmt->fetch();
+		return $reg;
+	}//end function consultartotalInventario
+
+
+	/**
+	 * 
+	 * @param array $result
+	 * @return array
+	 */
+	function TransformarResultIndexadoProveedor($result)
+	{
+		$result2 = null;
+		foreach($result as $reg)
+		{
+			$key = $reg['producto_id'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch'];
+			$subkey = $reg['proveedor_id'];
+			$result2[$key][$subkey] = $reg;
+		}//end foreach
+		
+		return $result2;
+	}//end function TransformarResultIndexadoProveedor
+
+	
+	
+	/**
+	 * 
+	 * @param string $producto_id
+	 * @param string $inventario_id
+	 * @param string $clasifica_fox
+	 * @param string $variedad_id
+	 * @param int $tallos_x_bunch
+	 * @return array
+	 */
+	function consultarPorInventarioPorClasificaPorVariedadPorTallos($producto_id, $inventario_id, $clasifica_fox, $variedad_id, $tallos_x_bunch)
+	{
+		$sql = 	" SELECT grado_id, proveedor_id, sum(cantidad_bunch_disponible) as tot_bunch_disponible ".
+				" FROM dispo ".
+				" WHERE inventario_id 	= '".$inventario_id."'".
+				"   and producto		= '".$producto_id."'".
+				"   and clasifica		= '".$clasifica_fox."'".
+				"   and variedad_id		= '".$variedad_id."'".
+			//	"	and grado_id		= '".$grado_id."'".
+				"	and tallos_x_bunch	= ".$tallos_x_bunch.
+				" GROUP BY grado_id, proveedor_id ".
+				" ORDER BY tot_bunch_disponible DESC";
+		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
+		$result = $stmt->fetchAll();
+		
+		$result2 = null;
+		foreach($result as $reg)
+		{
+			$reg_new[$reg['grado_id']][$reg['proveedor_id']] = $reg['tot_bunch_disponible'];
+			$result2 = $reg_new;
+		}//end foreach
+		
+		return $result2;		
+	}//end function consultarPorInventarioPorClasificaPorVariedadPorTallos
+	
 }//end class
 
 

@@ -95,6 +95,33 @@ $(document).ready(function () {
 	});
 
 	
+	
+	$("#frm_dispo_grupo #btn_excel_cajas_usa").on('click', function(event){ 
+		DispoGrupo_ExportarExcelCajas('USA');
+		return false;
+	});	
+
+
+	$("#frm_dispo_grupo #btn_excel_cajas_rusa").on('click', function(event){ 
+		DispoGrupo_ExportarExcelCajas('RUS');
+		return false;
+	});	
+	
+	
+	function DispoGrupo_ExportarExcelCajas(inventario_id)
+	{
+		cargador_visibility('show');
+
+		var url = '../../dispo/grupodispo/exportaExcelCajasDispoGrupo';
+		var params = '?inventario_id='+inventario_id+'&grupo_dispo_cab_id='+$("#frm_dispo_grupo #grupo_dispo_cab_id").val()+
+					 '&color_ventas_id='+$("#frm_dispo_grupo #color_ventas_id").val()+
+					 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val();
+		url = url + params;
+		var win = window.open(url);
+		
+		cargador_visibility('hide');
+	}//end function DispoGeneral_ExportarExcel
+	
 		
 	/*---------------------------------------------------------------*/	
 	

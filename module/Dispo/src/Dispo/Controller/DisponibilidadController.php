@@ -228,7 +228,7 @@ class DisponibilidadController extends AbstractActionController
 			$result_cajas	= $TipoCajaBO->getArrayIndexado();
 
 			$result 		= $DispoBO->getDispo($cliente_id, $usuario_id, $marcacion_sec, $tipo_caja_id);
-
+			//var_dump($result);
 			$viewModel 							= new ViewModel();
 			$viewModel->respuesta_dispo_code	= $result['respuesta_code'];
 			$viewModel->respuesta_dispo_msg		= $result['respuesta_msg'];
@@ -970,16 +970,18 @@ class DisponibilidadController extends AbstractActionController
 			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
 			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
 				
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+			
 			//$config = $this->getServiceLocator()->get('Config');
 			$DispoBO 			= new DispoBO();
-				
+
 			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-				
+
 			if (($SesionUsuarioPlugin->isLoginAdmin()==false)&&($SesionUsuarioPlugin->isPerfil(\Application\Constants\Perfil::ID_DISPO)==false))
 			{
 				return false;
 			}//end if
-					
+
 /*			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
 			if ($respuesta==false) return false;
 */
@@ -996,7 +998,7 @@ class DisponibilidadController extends AbstractActionController
 			$stock['AGR'] 		= $json['stock_agr'];
 			$stock['HTC'] 		= $json['stock_htc'];
 			$stock['LMA'] 		= $json['stock_lma'];
-			$result = $DispoBO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock);
+			$result = $DispoBO->actualizarStock($inventario_id, $producto, $clasifica_fox, $proveedor_id, $variedad_id, $grado_id, $tallos_x_bunch, $stock, $usuario_id);
 
 			//Retorna la informacion resultante por JSON
 			$response = new \stdClass();
@@ -1509,4 +1511,6 @@ class DisponibilidadController extends AbstractActionController
 			return $response;
 		}
 	}//end function moverstockAction
+	
+
 }
