@@ -97,12 +97,13 @@ $(document).ready(function () {
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['ID','CLIENTE','USUARIO','ESTADO'],
+		colNames:['ID','CLIENTE','USUARIO','GRUPO DISPO','ESTADO'],
 		colModel:[
 			{name:'id',index:'id', width:150, sorttype:"integer", hidden:true},
 			{name:'nombre',index:'nombre', width:150, sorttype:"string"},
 			{name:'usuario_nombre',index:'usuario_nombre', width:150, sorttype:"string"},						
-			{name:'estado',index:'estado', width:60, sorttype:"string", hidden:true},
+			{name:'grupo_dispo_nombre',index:'grupo_dispo_nombre', width:150, sorttype:"string"},
+			{name:'estado',index:'estado', width:60, sorttype:"string", hidden:true}
 		],
 		rowNum:999999,
 		pager: '#pager_grupoprecio_asignados',
