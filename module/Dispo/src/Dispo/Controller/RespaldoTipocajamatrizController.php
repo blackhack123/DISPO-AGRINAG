@@ -102,32 +102,6 @@ class TipocajamatrizController extends AbstractActionController
 					$response->variedad_opciones		= $variedad_opciones;
 					$response->grado_opciones			= $grado_opciones;
 					$response->respuesta_code 			= 'OK';
-					break;
-					
-				case 'caja-matriz':
-					
-					$TipoCajaBO		= new TipoCajaBO();
-					$InventarioBO 	= new InventarioBO();
-					$VariedadBO		= new VariedadBO();
-					
-					$TipoCajaBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-					$InventarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-					$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
-					
-					$tipo_caja_id		= $json['tipo_caja_id'];
-					$inventario_id		= $json['inventario_id'];
-					$variedad_id		= $json['variedad_id'];
-					
-					$inventario_opciones 	= $InventarioBO->getCombo($inventario_id);
-					$tipocaja_opciones 		= $TipoCajaBO->getCombo($tipo_caja_id);
-					$variedad_opciones		= $VariedadBO->getCombo($variedad_id);	
-					
-					$response = new \stdClass();
-					$response->tipocaja_opciones		= $tipocaja_opciones;
-					$response->inventario_opciones		= $inventario_opciones;
-					$response->variedad_opciones		= $variedad_opciones;
-					$response->respuesta_code 			= 'OK';
-					
 			}//end switch
 	
 			$json = new JsonModel(get_object_vars($response));
@@ -216,7 +190,7 @@ class TipocajamatrizController extends AbstractActionController
 		
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
-			
+		
 			$TipoCajaMatrizData = new TipoCajaMatrizData();
 			$TipoCajaMatrizData->setTipoCajaId 		($json['tipo_caja_id']);
 			$TipoCajaMatrizData->setInventarioId 	($json['inventario_id']);

@@ -116,7 +116,7 @@ class TipoCajaMatrizDAO extends Conexion
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
 	
-		foreach($result as $reg)
+		foreach($result as &$reg)
 		{
 			$reg['variedad'] = trim($reg['variedad']);
 		}

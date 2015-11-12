@@ -2,9 +2,9 @@
  * 
  */
 var selRowId_TipoCajaMatrizGrid 	= 0;	
-var selColName_TipoCajaMatrizGrid = 0;	
-var seliRow_TipoCajaMatrizGrid 	= 0;		
-var seliCol_TipoCajaMatrizGrid 	= 0;	
+var selColName_TipoCajaMatrizGrid 	= 0;	
+var seliRow_TipoCajaMatrizGrid 		= 0;		
+var seliCol_TipoCajaMatrizGrid 		= 0;	
 var valAnt_TipoCajaMatrizGrid		= null;
 
 
@@ -34,7 +34,18 @@ $(document).ready(function () {
 	$("#frm_tipo_caja_matenimiento #btn_grabar").on('click', function(event){ 
 		TipoCaja_TipoCaja_GrabarMasivo();
 		return false;
-	});		
+	});	
+	
+	$("#frm_tipo_caja_busqueda #btn_nueva_variedad").on('click', function(event){ 
+		NuevaCajaMatriz();
+		return false;
+	});
+
+	$("#form_nueva_caja_matriz #btn_grabar_caja_matriz").on('click', function(event){ 
+		GrabarCajaMatriz();
+		return false;
+	});
+	
 	/*---------------------------------------------------------------*/	
 	
 	
@@ -50,11 +61,12 @@ $(document).ready(function () {
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['Id','Variedad','40','50','60','70','80','90', '100', '110'],
+		colNames:['Id','Variedad','Tallos X Bunch','40','50','60','70','80','90', '100', '110'],
 		colModel:[
 /*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
 			{name:'variedad_id',index:'variedad_id', width:50, align:"center", sorttype:"int"},
 			{name:'variedad',index:'variedad', width:170, sorttype:"string"},
+			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:110, sorttype:"int", align:"center"},
 			{name:'40',index:'40', width:50, align:"center", sorttype:"int", editable:true, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },									
@@ -306,6 +318,71 @@ $(document).ready(function () {
 	/*---------------------------------------------------------------*/	
 	/*---------------------------------------------------------------*/
 	
+	
+	/*---------------------------------------------------------------*/
+	/*-----Se configura los JQGRID de NUEVA CAJA MATRIZ--------------*/
+	/*---------------------------------------------------------------*/	
+			
+			var dataGridNuevaCajaMatriz = [{
+				'40': 0,
+				'50': 0,
+				'60': 0,
+				'70': 0,
+				'80': 0,
+				'90': 0,
+				'100': 0,
+				'110': 0
+			}];
+			
+			jQuery("#grid_nueva_caja_matriz").jqGrid({
+			data: dataGridNuevaCajaMatriz,       
+			datatype: "local",
+			//datatype: "json",
+			loadonce: true,			
+			/*height:'400',*/
+			colNames:['40','50','60','70','80','90', '100', '110'],
+			colModel:[
+			//{name:'seleccion',index:'', width:50, align: 'center',editable: false, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
+			{name:'40',index:'40', width:50, align:"center",editable:true},
+			{name:'50',index:'50', width:50, align:"center",editable:true},	
+			{name:'60',index:'60', width:50, align:"center",editable:true},	
+			{name:'70',index:'70', width:50, align:"center",editable:true},	
+			{name:'80',index:'80', width:50, align:"center",editable:true},	
+			{name:'90',index:'90', width:50, align:"center",editable:true},	
+			{name:'100',index:'100', width:50, align:"center",editable:true},
+			{name:'110',index:'110', width:50, align:"center",editable:true},	
+			],
+			rowNum:999999,
+			pager: '#pager_nueva_caja_matriz',
+			toppager:false,
+			pgbuttons:false,
+			pginput:false,
+			rowList:false,
+			gridview:false,	
+			shrinkToFit: false,
+			jsonReader: {
+			repeatitems : false,
+			cellEdit: true,
+			cellsubmit : 'clientArray',
+			editurl: 'clientArray',	
+			},		
+			loadError: function (jqXHR, textStatus, errorThrown) {
+			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+			},
+			//ondblClickRow
+			onSelectRow: function(){
+			    var row_id = $("#grid_nueva_caja_matriz").getGridParam('selrow');
+			    jQuery('#grid_nueva_caja_matriz').editRow(row_id, true);
+			}
+			});
+			
+			jQuery("#form_nueva_caja_matriz #grid_nueva_caja_matriz").jqGrid('navGrid','#pager_nueva_caja_matriz',{edit:false,add:false,del:false});
+			
+			
+			
+	/*---------------------------------------------------------------*/	
+	/*---------------------------------------------------------------*/
+	
 });
 
 
@@ -469,3 +546,64 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 	response = ajax_call(parameters, data);		
 	return false;			
 }//end function TipoCaja_TipoCaja_GrabarMasivo
+
+
+/****************************************************/
+/**********CREACION DE NUEVA CAJA MATRIZ*************/
+/****************************************************/
+
+	function nueva_caja_matriz_init()
+	{
+		var data = 	{
+						opcion: 'caja-matriz',
+						tipo_caja_id:		$("#frm_tipo_caja_busqueda #tipo_caja_id").val(),
+						inventario_id:		$("#frm_tipo_caja_busqueda #inventario_id").val(),
+						variedad_id:		'&lt;TODAS&gt;',
+					}
+		data = JSON.stringify(data);
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/tipocajamatriz/initcontrols',
+							'show_cargando':false,
+							'async':true,
+							'finish':function(response){		
+								$("#form_nueva_caja_matriz #tipo_caja_id").html(response.tipocaja_opciones);
+								$("#form_nueva_caja_matriz #inventario_id").html(response.inventario_opciones);
+								$("#form_nueva_caja_matriz #variedad_id").html(response.variedad_opciones);
+							 }							
+						 }
+		response = ajax_call(parameters, data);		
+		return false;	
+	}//end function nueva_caja_matriz_init
+	
+	
+	function NuevaCajaMatriz()
+	{
+		nueva_caja_matriz_init();
+		$('#modal_nueva_variedad').modal('show');
+		
+	}//end NuevaCajaMatriz
+	
+	function GrabarCajaMatriz()
+	{
+		if (!ValidateControls('form_nueva_caja_matriz')) 
+		{
+			return false;
+		}
+		
+		var data = 	{
+				tipo_caja_id:		$("#form_nueva_caja_matriz #tipo_caja_id").val(),
+				inventario_id:		$("#form_nueva_caja_matriz #inventario_id").val(),
+				variedad_id:		$("#form_nueva_caja_matriz #variedad_id").val(),
+				tallos_x_bunch:		$("#form_nueva_caja_matriz #tallos_x_bunch").val()
+				
+			}
+		//alert("entra al evento data");
+		data = JSON.stringify(data);
+		console.log(data);
+		
+	}//end GrabarCajaMatriz
+
+/****************************************************/
+/****************************************************/
+/****************************************************/

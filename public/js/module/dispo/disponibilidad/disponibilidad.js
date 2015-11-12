@@ -244,7 +244,8 @@ $(document).ready(function () {
 		new_format_value = '<span style="color:'+color+'">'+cellvalue+ '</a>';
 		return new_format_value;
 	}
-		
+	
+	
 	function gridDispoGeneral_GradosUnFormatter2(cellvalue, options, cell){
 		return number_val($('span', cell).html());
 	}		
@@ -501,6 +502,7 @@ $(document).ready(function () {
 
 });
 	
+
 	
 
 	function disponibilidad_init()

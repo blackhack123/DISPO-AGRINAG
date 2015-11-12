@@ -28,6 +28,9 @@
                         <div class="form-group">
                              <section class="body-admin-section">
                                 <div class="accion-admin-section">
+                                 	<div class="botonera-admin-section pull-left separator">
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal_nueva_variedad" data-target="modal_nueva_variedad" id="btn_nueva_variedad"><i class="glyphicon glyphicon-plus"></i> CREAR CAJA MATRIZ </button>
+                                    </div>   
                                     <div class="botonera-admin-section pull-left separator">
                                         <button id="btn_actualizacion_masiva" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> ACTUALIZACION MASIVA</button>
                                     </div>                    
@@ -145,3 +148,57 @@
 		  </div>
 		
 	</div>
+	
+	
+	<!-- MODAL PARA NUEVA VARIEDAD -->
+	
+		<div class="modal fade" tabindex="modal_nueva_variedad" role="dialog" aria-labelledby="modal_nueva_variedad" id="modal_nueva_variedad">
+			  <div class="modal-dialog">
+				    <div class="modal-content">
+				    	<form id="form_nueva_caja_matriz" name="form_nueva_caja_matriz" class="form-horizontal">
+					    	<div class="modal-header">
+						    		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						    		<span aria-hidden="true">&times;</span></button>
+		        					<h4 class="modal-title" id="nueva_variedad_label">Nueva Caja Matriz</h4>
+					    	</div>
+					    	<div class="modal-body">
+										 <div class="form-group">
+											    <label for="tipo_caja_id" class="col-sm-2 control-label">Caja:</label>
+											    <div class="col-sm-10">
+											      <select  id="tipo_caja_id" class="form-control" validate="required" validateMessage="Seleccione Tipo de Caja"></select>
+											    </div>
+										 </div>
+										 <div class="form-group">
+											    <label for="inventario_id" class="col-sm-2 control-label">Inventario:</label>
+											    <div class="col-sm-10">
+											     <select  id="inventario_id" class="form-control" validate="required" validateMessage="Seleccione una opcion"></select>
+											    </div>
+										 </div>
+										 <div class="form-group">
+											    <label for="variedad_id" class="col-sm-2 control-label">Variedad:</label>
+											    <div class="col-sm-10">
+											      <select  id="variedad_id" class="form-control" validate="required" validateMessage="Seleccione una Variedad"></select>
+											    </div>
+										  </div>
+										  <div class="form-group">
+											    <label for="tallos_x_bunch" class="col-sm-2 control-label">Tallos:</label>
+											    <div class="col-sm-10">
+											      <input type="text" class="form-control" id="tallos_x_bunch" validate="required" validateMessage="Ingrese la Cantidad de Tallos">
+											    </div>
+										  </div>
+										<div class="row" align="center">
+											<div class="col-md-12">
+					                            <table id="grid_nueva_caja_matriz" class="grid"></table>
+					                            <div id="pager_nueva_caja_matriz"></div>
+					                        </div>
+					                    </div><br>
+							</div>
+							<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+	        						<button type="button" class="btn btn-primary" id="btn_grabar_caja_matriz" name="btn_grabar_caja_matriz">Guardar</button>	
+							</div>
+						</form>
+				    </div><!-- end div modal-dialog -->
+			  </div><!-- end div modal-dialog -->
+		</div> <!-- end div modal fade -->
+	
