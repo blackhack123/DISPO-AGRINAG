@@ -222,5 +222,42 @@ class GrupoDispoDetDAO extends Conexion
 
 
 	
+	
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $clasifica_fox
+	 * @param string $producto_id
+	 * @param string $variedad_id
+	 * @param string $grado_id
+	 * @param int $tallos_x_bunch
+	 * @return int
+	 */
+	public function actualizarCeroStock($inventario_id, $clasifica_fox, $producto_id, $variedad_id, $grado_id, $tallos_x_bunch)
+	{
+		$sql = 	" UPDATE grupo_dispo_det ".
+				" INNER JOIN grupo_dispo_cab ".
+				" 		  ON grupo_dispo_cab.id				= grupo_dispo_det.grupo_dispo_cab_id ".
+				"	     AND grupo_dispo_cab.inventario_id 	= '".$inventario_id."'".
+				" INNER JOIN calidad ".
+				"   	  ON calidad.id						= grupo_dispo_cab.calidad_id".
+				"	     AND calidad.clasifica_fox			= '".$clasifica_fox."'".
+				" SET grupo_dispo_det.cantidad_bunch 			= 0,".
+				"     grupo_dispo_det.cantidad_bunch_disponible = 0".
+				" WHERE grupo_dispo_det.producto_id 	= '".$producto_id."'".
+				"   and grupo_dispo_det.variedad_id 	= '".$variedad_id."'";
+		if (!empty($grado_id))
+		{				
+				$sql=$sql." and grupo_dispo_det.grado_id= '".$grado_id."'";
+		}//end if
+		$sql = $sql."  and grupo_dispo_det.tallos_x_bunch = ".$tallos_x_bunch;
+
+		$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
+		return $count;		
+	}//end function actualizarCeroStock
+
+	
+	
+	
 }//end class
 ?>
