@@ -627,7 +627,7 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 		for(var i = 0; i < allDataTipoCaja.length; i++ )
 		{
 			
-			g_40 = grid.jqGrid('getCell','allDataTipoCaja[i]', 40 );
+			g_40 = grid.jqGrid('getCell',allDataTipoCaja[i], 40 );
 			g_50 = grid.jqGrid('getCell','allDataTipoCaja[i]', 50 );
 			g_60 = grid.jqGrid('getCell','allDataTipoCaja[i]', 60 );
 			g_70 = grid.jqGrid('getCell','allDataTipoCaja[i]', 70 );
