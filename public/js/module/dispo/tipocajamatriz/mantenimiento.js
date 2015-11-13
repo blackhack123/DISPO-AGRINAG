@@ -651,29 +651,11 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 		var ids = grid.jqGrid('getDataIDs');
 		var arr_data 			= new	Array();
 		
+		//guarda la grilla local en un arr_data
 		for (var i = 0; i < ids.length; i++) {
 			id = ids[i];
 			row =  grid.jqGrid('getRowData', id);
 			
-			g_40 = grid.jqGrid('getCell',allDataTipoCaja[i], 40 );
-			g_50 = grid.jqGrid('getCell','allDataTipoCaja[i]', 50 );
-			g_60 = grid.jqGrid('getCell','allDataTipoCaja[i]', 60 );
-			g_70 = grid.jqGrid('getCell','allDataTipoCaja[i]', 70 );
-			g_80 = grid.jqGrid('getCell','allDataTipoCaja[i]', 80 );
-			g_90 = grid.jqGrid('getCell','allDataTipoCaja[i]', 90 );
-			g_100 = grid.jqGrid('getCell','allDataTipoCaja[i]', 100 );
-			g_110 = grid.jqGrid('getCell','allDataTipoCaja[i]', 110 );
-			//console.log("g40:",g_40);
-			var element				= {};
-			element.g_40 = 40;
-			element.g_50 = 50;
-			element.g_60 = 60;
-			element.g_70 = 70;
-			element.g_80 = 80;
-			element.g_90 = 90;
-			element.g_100 = 100;
-			element.g_110 = 110;
-		
 			var element		= {};
 			element['40'] 	= row['40'];
 			element['50'] 	= row['50'];
@@ -695,8 +677,21 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 			}
 		//alert("entra al evento data");
 		data = JSON.stringify(data);
-		console.log(data);
-		
+
+		var parameters = {	'type': 'POST',//'POST',
+				'contentType': 'application/json',
+				'url':'../../dispo/tipocajamatriz/registrarcajamatriz',
+				'control_process':false,
+				'show_cargando':true,
+				'async':true, 
+				'finish':function(response){
+						cargador_visibility('hide');
+						//$('#grid_nueva_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+				}							
+			 }
+		response = ajax_call(parameters, data);		
+		return false;	
+				
 	}//end GrabarCajaMatriz
 
 /****************************************************/
