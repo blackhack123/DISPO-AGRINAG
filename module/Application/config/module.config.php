@@ -11,7 +11,7 @@ return array(
     'controller_plugins' => array(
         'invokables' => array(
 //            'ImagePlugin' 			=> 'Application\Controller\Plugin\ImagePlugin',
-//            'ArchivoPlugin' 		=> 'Application\Controller\Plugin\ArchivoPlugin',	
+            'ArchivoPlugin' 		=> 'Application\Controller\Plugin\ArchivoPlugin',	
             'EntityManagerPlugin' 	=> 'Application\Controller\Plugin\EntityManagerPlugin',
         ),
 	),
