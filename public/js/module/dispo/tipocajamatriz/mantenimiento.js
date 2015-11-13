@@ -335,48 +335,82 @@ $(document).ready(function () {
 			}];
 			
 			jQuery("#grid_nueva_caja_matriz").jqGrid({
-			data: dataGridNuevaCajaMatriz,       
-			datatype: "local",
-			//datatype: "json",
-			loadonce: true,			
-			/*height:'400',*/
-			colNames:['40','50','60','70','80','90', '100', '110'],
-			colModel:[
-			//{name:'seleccion',index:'', width:50, align: 'center',editable: false, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
-			{name:'40',index:'40', width:50, align:"center",editable:true},
-			{name:'50',index:'50', width:50, align:"center",editable:true},	
-			{name:'60',index:'60', width:50, align:"center",editable:true},	
-			{name:'70',index:'70', width:50, align:"center",editable:true},	
-			{name:'80',index:'80', width:50, align:"center",editable:true},	
-			{name:'90',index:'90', width:50, align:"center",editable:true},	
-			{name:'100',index:'100', width:50, align:"center",editable:true},
-			{name:'110',index:'110', width:50, align:"center",editable:true},
-			],
-			rowNum:10,
-			pager: '#pager_nueva_caja_matriz',
-			toppager:false,
-			pgbuttons:false,
-			pginput:false,
-			rowList:false,
-			gridview:false,	
-			shrinkToFit: false,
-			jsonReader: {
-			repeatitems : false,
-			//cellEdit: true,
-			//cellsubmit : 'clientArray',
-			editurl: 'clientArray',	
-			},		
-			loadError: function (jqXHR, textStatus, errorThrown) {
-			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
-			},
-			//ondblClickRow
-			onSelectRow: function(){
-			    var row_id = $("#grid_nueva_caja_matriz").getGridParam('selrow');
-			    jQuery('#grid_nueva_caja_matriz').editRow(row_id, true);
-			    startEdit();
-			}
+				data: dataGridNuevaCajaMatriz,       
+				datatype: "local",
+				//datatype: "json",
+				loadonce: true,			
+				/*height:'400',*/
+				colNames:['40','50','60','70','80','90', '100', '110'],
+				colModel:[
+					//{name:'seleccion',index:'', width:50, align: 'center',editable: false, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
+					{name:'40',index:'40', width:50, sorttype:"int", align:"center", editable:true,
+						editoptions: {
+												dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
+									 }
+					},
+					{name:'50',index:'50', width:50, sorttype:"int", align:"center",editable:true,
+						editoptions: {
+												dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
+									 }			
+					},	
+					{name:'60',index:'60', width:50, sorttype:"int", align:"center",editable:true,
+						editoptions: {
+												dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
+						}
+					},	
+					{name:'70',index:'70', width:50, sorttype:"int", align:"center",editable:true,
+						editoptions: {
+												dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
+									 }
+					},	
+					{name:'80',index:'80', width:50, sorttype:"int", align:"center",editable:true,
+						editoptions: {
+												dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
+									 }
+					},	
+					{name:'90',index:'90', width:50, sorttype:"int", align:"center",editable:true,
+						editoptions: {
+												dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
+									 }			
+					},	
+					{name:'100',index:'100', width:50, sorttype:"int", align:"center",editable:true,
+						editoptions: {
+												dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
+									 }			
+					},
+					{name:'110',index:'110', width:50, sorttype:"int", align:"center",editable:true,
+						editoptions: {
+												dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
+									 }
+					},
+				],
+				rowNum:10,
+				pager: '#pager_nueva_caja_matriz',
+				toppager:false,
+				pgbuttons:false,
+				pginput:false,
+				rowList:false,
+				gridview:false,	
+				shrinkToFit: false,
+				jsonReader: {
+					repeatitems : false,
+				},	
+				cellEdit: true,
+				cellsubmit: 'clientArray',
+				editurl: 'clientArray',					
+				loadError: function (jqXHR, textStatus, errorThrown) {
+					message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+				},
+				//ondblClickRow
+	/*			
+				onSelectRow: function(){
+					var row_id = $("#grid_nueva_caja_matriz").getGridParam('selrow');
+					jQuery('#grid_nueva_caja_matriz').editRow(row_id, true);
+					startEdit();
+				}
+*/			
 			});
-			
+/*			
 			function startEdit() {
 	            var grid = $("#grid_nueva_caja_matriz");
 	            var ids = grid.jqGrid('getDataIDs');
@@ -385,7 +419,7 @@ $(document).ready(function () {
 	                grid.jqGrid('editRow',ids[i]);
 	            }
 	        };
-	        
+*/        
 	/*        function saveRows() {
 	            var grid = $("#grid_nueva_caja_matriz");
 	            var ids = grid.jqGrid('getDataIDs');
@@ -610,22 +644,16 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 			return false;
 		}
 		
+		$('#grid_nueva_caja_matriz').jqGrid('editCell', 1, 0, false);
+
 		//Guarda los datos de la grilla #grid_nueva_caja_matriz
-		  var grid = $("#grid_nueva_caja_matriz");
-	      var ids = grid.jqGrid('getDataIDs');
-	
-	      for (var i = 0; i < ids.length; i++) {
-	          grid.jqGrid('saveRow', ids[i]);
-	      }
-		
-		//var grid 				= $("#grid_nueva_caja_matriz");
-		//var allDataTipoCaja 	= grid.getGridParam("getRowData");
-		var allDataTipoCaja 	= grid.getRowData();
-		console.log(allDataTipoCaja);
+		var grid = $("#grid_nueva_caja_matriz");
+		var ids = grid.jqGrid('getDataIDs');
 		var arr_data 			= new	Array();
 		
-		for(var i = 0; i < allDataTipoCaja.length; i++ )
-		{
+		for (var i = 0; i < ids.length; i++) {
+			id = ids[i];
+			row =  grid.jqGrid('getRowData', id);
 			
 			g_40 = grid.jqGrid('getCell',allDataTipoCaja[i], 40 );
 			g_50 = grid.jqGrid('getCell','allDataTipoCaja[i]', 50 );
@@ -646,8 +674,16 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 			element.g_100 = 100;
 			element.g_110 = 110;
 		
+			var element		= {};
+			element['40'] 	= row['40'];
+			element['50'] 	= row['50'];
+			element['60'] 	= row['60'];
+			element['70'] 	= row['70'];
+			element['80'] 	= row['80'];
+			element['90'] 	= row['90'];
+			element['100'] 	= row['100'];
+			element['110'] 	= row['110'];
 			arr_data.push(element);
-			
 		}//end for
 		
 		var data = 	{
