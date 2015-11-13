@@ -350,9 +350,9 @@ $(document).ready(function () {
 			{name:'80',index:'80', width:50, align:"center",editable:true},	
 			{name:'90',index:'90', width:50, align:"center",editable:true},	
 			{name:'100',index:'100', width:50, align:"center",editable:true},
-			{name:'110',index:'110', width:50, align:"center",editable:true},	
+			{name:'110',index:'110', width:50, align:"center",editable:true},
 			],
-			rowNum:999999,
+			rowNum:10,
 			pager: '#pager_nueva_caja_matriz',
 			toppager:false,
 			pgbuttons:false,
@@ -362,8 +362,8 @@ $(document).ready(function () {
 			shrinkToFit: false,
 			jsonReader: {
 			repeatitems : false,
-			cellEdit: true,
-			cellsubmit : 'clientArray',
+			//cellEdit: true,
+			//cellsubmit : 'clientArray',
 			editurl: 'clientArray',	
 			},		
 			loadError: function (jqXHR, textStatus, errorThrown) {
@@ -373,9 +373,28 @@ $(document).ready(function () {
 			onSelectRow: function(){
 			    var row_id = $("#grid_nueva_caja_matriz").getGridParam('selrow');
 			    jQuery('#grid_nueva_caja_matriz').editRow(row_id, true);
+			    startEdit();
 			}
 			});
 			
+			function startEdit() {
+	            var grid = $("#grid_nueva_caja_matriz");
+	            var ids = grid.jqGrid('getDataIDs');
+
+	            for (var i = 0; i < ids.length; i++) {
+	                grid.jqGrid('editRow',ids[i]);
+	            }
+	        };
+	        
+	/*        function saveRows() {
+	            var grid = $("#grid_nueva_caja_matriz");
+	            var ids = grid.jqGrid('getDataIDs');
+
+	            for (var i = 0; i < ids.length; i++) {
+	                grid.jqGrid('saveRow', ids[i]);
+	            }
+	        }
+	*/
 			jQuery("#form_nueva_caja_matriz #grid_nueva_caja_matriz").jqGrid('navGrid','#pager_nueva_caja_matriz',{edit:false,add:false,del:false});
 			
 			
@@ -591,12 +610,52 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 			return false;
 		}
 		
+		//Guarda los datos de la grilla #grid_nueva_caja_matriz
+		  var grid = $("#grid_nueva_caja_matriz");
+	      var ids = grid.jqGrid('getDataIDs');
+	
+	      for (var i = 0; i < ids.length; i++) {
+	          grid.jqGrid('saveRow', ids[i]);
+	      }
+		
+		//var grid 				= $("#grid_nueva_caja_matriz");
+		//var allDataTipoCaja 	= grid.getGridParam("getRowData");
+		var allDataTipoCaja 	= grid.getRowData();
+		console.log(allDataTipoCaja);
+		var arr_data 			= new	Array();
+		
+		for(var i = 0; i < allDataTipoCaja.length; i++ )
+		{
+			
+			g_40 = grid.jqGrid('getCell','allDataTipoCaja[i]', 40 );
+			g_50 = grid.jqGrid('getCell','allDataTipoCaja[i]', 50 );
+			g_60 = grid.jqGrid('getCell','allDataTipoCaja[i]', 60 );
+			g_70 = grid.jqGrid('getCell','allDataTipoCaja[i]', 70 );
+			g_80 = grid.jqGrid('getCell','allDataTipoCaja[i]', 80 );
+			g_90 = grid.jqGrid('getCell','allDataTipoCaja[i]', 90 );
+			g_100 = grid.jqGrid('getCell','allDataTipoCaja[i]', 100 );
+			g_110 = grid.jqGrid('getCell','allDataTipoCaja[i]', 110 );
+			//console.log("g40:",g_40);
+			var element				= {};
+			element.g_40 = 40;
+			element.g_50 = 50;
+			element.g_60 = 60;
+			element.g_70 = 70;
+			element.g_80 = 80;
+			element.g_90 = 90;
+			element.g_100 = 100;
+			element.g_110 = 110;
+		
+			arr_data.push(element);
+			
+		}//end for
+		
 		var data = 	{
 				tipo_caja_id:		$("#form_nueva_caja_matriz #tipo_caja_id").val(),
 				inventario_id:		$("#form_nueva_caja_matriz #inventario_id").val(),
 				variedad_id:		$("#form_nueva_caja_matriz #variedad_id").val(),
-				tallos_x_bunch:		$("#form_nueva_caja_matriz #tallos_x_bunch").val()
-				
+				tallos_x_bunch:		$("#form_nueva_caja_matriz #tallos_x_bunch").val(),
+				grid_data: 			arr_data
 			}
 		//alert("entra al evento data");
 		data = JSON.stringify(data);

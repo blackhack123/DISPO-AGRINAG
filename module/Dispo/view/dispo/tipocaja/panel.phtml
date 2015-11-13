@@ -4,6 +4,7 @@
 <script>
 	$(document).ready(function () {
 		InputData_TrimAll();
+		InputData_initNumberNoDecimal();
 	});//$(document).ready
 </script>
 
@@ -183,7 +184,7 @@
 										  <div class="form-group">
 											    <label for="tallos_x_bunch" class="col-sm-2 control-label">Tallos:</label>
 											    <div class="col-sm-10">
-											      <input type="text" class="form-control" id="tallos_x_bunch" validate="required" validateMessage="Ingrese la Cantidad de Tallos">
+											      <input type="text" class="form-control inputdata-number-no-decimal" id="tallos_x_bunch" maxlength="6" validate="required" validateMessage="Ingrese la Cantidad de Tallos">
 											    </div>
 										  </div>
 										<div class="row" align="center">
