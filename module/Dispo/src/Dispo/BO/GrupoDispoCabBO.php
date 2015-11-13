@@ -625,6 +625,84 @@ class GrupoDispoCabBO extends Conexion
 	
 	
 	
+	public function generarTextoCajas($condiciones, $usuario_id)
+	{
+		set_time_limit ( 0 );
+		ini_set('memory_limit','-1');
+		
+		$GrupoDispoCabDAO	= new GrupoDispoCabDAO();
+		$reader 			= new \Zend\Config\Reader\Ini();
+		$config  			= $reader->fromFile('ini/config.ini');	
+			
+		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+		
+		$inventario_id = $condiciones['inventario_id'];		
+		
+		//Consulta la lista de registros
+		$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
+
+		$tipo_caja = 'HB';
+		$result_HB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+
+		$tipo_caja = 'QB';
+		$result_QB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+
+//		$result_cajas = array_merge($result_HB, $result_QB);
+//		ksort($result_cajas);
+		
+		if ($result_HB)	ksort($result_HB);
+		if ($result_QB) ksort($result_QB);
+		
+		$files_zip = null;
+		//$files = null;
+		$archivo_texto_HB = '';
+		$archivo_texto_QB = '';
+		for($cont_file = 0; $cont_file<2; $cont_file++)	
+		{
+			if ($cont_file==0){
+				$result_cajas = $result_HB;
+			}else{
+				$result_cajas = $result_QB;
+			}//end if
+			$arr_grados = array('40','50','60','70','80','90','100','110');
+			$arr_archivo_texto = null;		
+			foreach($result_cajas as $reg){
+				foreach($arr_grados as $grado_id)
+				{
+					$total_cajas 	= $reg[$grado_id]['cajas']['total'];
+					if ($total_cajas>0)
+					{
+						$tipo_caja_id	= $reg['tipo_caja_id'];
+						$tallos_x_bunch = $reg['tallos_x_bunch'];
+		
+						$arr_archivo_texto[] = $total_cajas.$tipo_caja_id.' '.$reg['variedad'].' '.$grado_id.'cm (x'.$reg['tallos_x_bunch'].')';
+					}//end if
+				}//end foreach
+			}// end foreach
+			
+
+			$ruta 	= $config['ruta_archivos']['tmp'];
+			//$ruta 	= $config['ruta_archivos']['public']['descarga'];
+			if ($cont_file==0){
+				$archivo_texto	= $ruta.'skype_HB_'.$usuario_id.'.txt';
+				$archivo_texto_HB = basename($archivo_texto);
+			}else{
+				$archivo_texto		= $ruta.'skype_QB_'.$usuario_id.'.txt';
+				$archivo_texto_QB	= basename($archivo_texto);
+			}//end if
+			\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $arr_archivo_texto);
+			
+			//$files['file'] = basename($archivo_texto);
+			$files_zip[] = $archivo_texto;			
+		}//end for
+
+		$zipname = $ruta.'skype_'.$usuario_id.'.zip';
+		\Application\Classes\Compress::comprimir($files_zip, $zipname);		
+		\Application\Classes\Compress::downloadFile($zipname);
+		//BORRA ARCHIVO
+		//return array($archivo_texto_HB, $archivo_texto_QB);
+	}//end function generarTextoCajas
+	
 	
 	/***
 	 *
@@ -689,8 +767,7 @@ class GrupoDispoCabBO extends Conexion
 		$objPHPExcel->getActiveSheet()->getPageMargins()->setBottom(0.1);
 
 		
-		//Consulta los registros
-		//Consulta la lista de registros  MORONITOR
+		//Consulta la lista de registros  
 		$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
 
 
@@ -1101,11 +1178,12 @@ procesar_result:
 		foreach($result as $reg)
 		{
 			$reg_new = array();
-			$x = $reg['producto_id'];
+			//$x = $reg['producto_id'];
 			$reg_new['producto_id'] 	= $reg['producto_id'];
 			$reg_new['variedad_id'] 	= $reg['variedad_id'];
 			$reg_new['variedad'] 		= trim($reg['variedad']);
 			$reg_new['tallos_x_bunch'] 	= $reg['tallos_x_bunch'];
+			$reg_new['tipo_caja_id'] 	= $tipo_caja_id;
 			$reg_new['color_ventas_nombre'] = $reg['color_ventas_nombre'];
 			$reg_new['40']['cajas']['total']	= 0;
 			$reg_new['50']['cajas']['total']	= 0;
@@ -1115,7 +1193,6 @@ procesar_result:
 			$reg_new['90']['cajas']['total']	= 0;
 			$reg_new['100']['cajas']['total']	= 0;
 			$reg_new['110']['cajas']['total']	= 0;
-			
 			
 			foreach($arr_grados as $grado)
 			{
@@ -1158,7 +1235,8 @@ procesar_result:
 			{
 				continue;
 			}else{
-				$result2[] = $reg_new;
+				$key = $reg_new['producto_id'].'-'.$reg_new['variedad'].'-'.$reg_new['variedad_id'].'-'.$reg_new['tallos_x_bunch'].'-'.$reg_new['tipo_caja_id'];				
+				$result2[$key] = $reg_new;
 			}//end if
 		}//end foreach
 	
