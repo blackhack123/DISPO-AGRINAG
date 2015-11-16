@@ -11,6 +11,7 @@ use Dispo\DAO\GrupoDispoDetDAO;
 use Dispo\Data\GrupoDispoCabData;
 use Dispo\Data\GrupoDispoDetData;
 use Dispo\DAO\CalidadDAO;
+use Dispo\DAO\ProveedorDAO;
 
 
 class GrupoDispoCabBO extends Conexion
@@ -1115,6 +1116,18 @@ procesar_result:
 
 	public function transformarDispoEnCajas($inventario_id, $tipo_caja_id, $result)
 	{
+		$ProveedorDAO			= new ProveedorDAO();
+
+		$ProveedorDAO->setEntityManager($this->getEntityManager());		
+
+		$result_fincas = $ProveedorDAO->consultarTodos();
+		
+		$reg_fincas = null;
+		foreach($result_fincas as $reg)
+		{
+			$reg_fincas[$reg['id']] = 0;
+		}//end foreach
+
 		switch($inventario_id)
 		{
 			case 'USA':
@@ -1193,6 +1206,15 @@ procesar_result:
 			$reg_new['90']['cajas']['total']	= 0;
 			$reg_new['100']['cajas']['total']	= 0;
 			$reg_new['110']['cajas']['total']	= 0;
+
+			$reg_new['40']['cajas']['fincas']	= $reg_fincas;
+			$reg_new['50']['cajas']['fincas']	= $reg_fincas;
+			$reg_new['60']['cajas']['fincas']	= $reg_fincas;
+			$reg_new['70']['cajas']['fincas']	= $reg_fincas;
+			$reg_new['80']['cajas']['fincas']	= $reg_fincas;
+			$reg_new['90']['cajas']['fincas']	= $reg_fincas;
+			$reg_new['100']['cajas']['fincas']	= $reg_fincas;
+			$reg_new['110']['cajas']['fincas']	= $reg_fincas;
 			
 			foreach($arr_grados as $grado)
 			{
@@ -1206,6 +1228,8 @@ procesar_result:
 								$nro_cajas = floor($valor/$arr_bunchxcaja[$grado]);
 								$reg_new[$grado]['cajas']['fincas'][$key_finca] = $nro_cajas;
 								$reg_new[$grado]['cajas']['total'] = $reg_new[$grado]['cajas']['total'] + $nro_cajas;
+							}else{
+								$reg_new[$grado]['cajas']['fincas'][$key_finca] = 0;
 							}//end if
 						
 						}//end foreach
@@ -1244,6 +1268,286 @@ procesar_result:
 	}//end function transformarDispoEnCajas
 	
 	
+	
+
+	/***
+	 *
+	 * @param array $condiciones
+	 */
+	public function generarExcelInternoCajas($condiciones)
+	{
+		set_time_limit ( 0 );
+		ini_set('memory_limit','-1');
+	
+	
+		$GrupoDispoCabDAO		= new GrupoDispoCabDAO();
+		$ProveedorDAO			= new ProveedorDAO();
+
+		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+		$ProveedorDAO->setEntityManager($this->getEntityManager());
+	
+		//----------------Se configura las Etiquetas de Seleccion-----------------
+		$texto_grupo_dispo_cab_id	= 'TODOS';
+		$texto_color_ventas_id		= 'TODOS';
+		$texto_calidad_variedad_id	= 'TODOS';
+	
+		$inventario_id = $condiciones['inventario_id'];
+	
+		if (!empty($condiciones['grupo_dispo_cab_id'])){
+			$texto_grupo_dispo_cab_id	= $condiciones['grupo_dispo_cab_id'];
+		}//end if
+	
+		if (!empty($condiciones['color_ventas_id'])){
+			$texto_color_ventas_id		= $condiciones['color_ventas_id'];
+		}//end if
+	
+		if (!empty($condiciones['calidad_variedad_id'])){
+			$texto_calidad_variedad_id	= $condiciones['calidad_variedad_id'];
+		}//end if
+	
+	
+		//----------------Se inicia la configuracion del PHPExcel-----------------
+	
+		$PHPExcelApp 	= new PHPExcelApp();
+		$objPHPExcel 	= new \PHPExcel;
+	
+		// Set document properties
+		$PHPExcelApp->setUserName('');
+		$PHPExcelApp->setMetaDataDocument($objPHPExcel);
+	
+		$objPHPExcel->setActiveSheetIndex(0);
+	
+		//Configura el tamaÃ±o del Papel
+		$objPHPExcel->getActiveSheet()->getPageSetup()
+					->setOrientation(\PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+		$objPHPExcel->getActiveSheet()->getPageSetup()
+					->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
+	
+	
+		//Se establece la escala de la pagina
+		$objPHPExcel->getActiveSheet()->getPageSetup()->setFitToWidth(1);
+		$objPHPExcel->getActiveSheet()->getPageSetup()->setFitToHeight(0);
+	
+		//Se establece los margenes de la pagina
+		$objPHPExcel->getActiveSheet()->getPageMargins()->setTop(0.1);
+		$objPHPExcel->getActiveSheet()->getPageMargins()->setRight(0.1);
+		$objPHPExcel->getActiveSheet()->getPageMargins()->setLeft(0.1);
+		$objPHPExcel->getActiveSheet()->getPageMargins()->setBottom(0.1);
+	
+	
+		//Consulta la lista de registros
+		$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
+	
+		//Convertir Dispo en Cajas
+		$result_HB = $this->transformarDispoEnCajas($inventario_id, 'HB', $result_dispo);
+		$result_QB = $this->transformarDispoEnCajas($inventario_id, 'QB', $result_dispo);
+		
+		//Consulta las fincas
+		$result_fincas = $ProveedorDAO->consultarTodos();
+	
+		$estilo_titulo  = $PHPExcelApp::STYLE_ARRAY_TITULO01;
+		$estilo_columna = $PHPExcelApp::STYLE_ARRAY_COLUMNA01;
+	
+		$indice_hoja = -1;
+	
+		$arr_tipo_caja[]=array('tipo_caja_id'=>'HB');
+		$arr_tipo_caja[]=array('tipo_caja_id'=>'QB');
+		foreach($result_fincas as $reg_finca)
+		{
+			
+			foreach($arr_tipo_caja as $reg_tipo_caja)
+			{
+				switch ($reg_tipo_caja['tipo_caja_id'])
+				{
+					case 'HB':
+						$result_procesar = $result_HB;
+						break;
+						
+					case 'QB':
+						$result_procesar = $result_QB;
+						break;
+				}//end switch
+				
+				/*----------------------------------------------------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
+				$indice_hoja++;
+				
+				if ($indice_hoja>0)
+				{
+					$objPHPExcel->createSheet($indice_hoja);
+					$estilo_titulo  = $PHPExcelApp::STYLE_ARRAY_TITULO02;
+					$estilo_columna = $PHPExcelApp::STYLE_ARRAY_COLUMNA02;
+				}//end if
+				
+				$objPHPExcel->setActiveSheetIndex($indice_hoja);
+
+
+				//------------------------------Registra la cabecera--------------------------------
+				$row				= 1;
+				$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
+				$col_fin 			= $PHPExcelApp->getNameFromNumber(11);
+
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, "Disponibilidad Por Grupo");
+				$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
+				$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
+				$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				
+				
+				//------------------------------Registra criterios linea 1--------------------------
+				$row++;
+				$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
+				//$col_fin 			= $PHPExcelApp->getNameFromNumber(11);
+
+				$objRichText = new \PHPExcel_RichText();
+				$objRichText->createText('');
+
+				$objInventario = $objRichText->createTextRun('     Grupo: ');
+				$objInventario->getFont()->setBold(true);
+				$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+				$objRichText->createText($texto_grupo_dispo_cab_id);
+				
+				$objInventario = $objRichText->createTextRun('     Color: ');
+				$objInventario->getFont()->setBold(true);
+				$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+				$objRichText->createText($texto_color_ventas_id);
+				
+				$objInventario = $objRichText->createTextRun('     Calidad: ');
+				$objInventario->getFont()->setBold(true);
+				$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+				$objRichText->createText($texto_calidad_variedad_id);
+				
+				
+				$objPHPExcel->getActiveSheet()->getCell($col_ini.$row)->setValue($objRichText);
+				$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
+				
+				
+				//------------------------------ Registro de Fecha de Generacion --------------------------------
+				$row++;
+				$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
+				//$col_fin 			= $PHPExcelApp->getNameFromNumber(11);
+				
+				
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, "Generado: ".\Application\Classes\Fecha::getFechaHoraActualServidor());
+				
+				$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
+				$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
+				$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+				
+				
+				//---------------------------IMPRIME TITULO DE COLUMNA-----------------------------
+				
+				$row++;
+				$row_detalle_ini 	= $row;
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,$row, "Nro");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1,$row, "Id");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2,$row, "Variedad");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3,$row, "Color");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4,$row, "40");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5,$row, "50");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6,$row, "60");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(7,$row, "70");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(8,$row, "80");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(9,$row, "90");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(10,$row, "100");
+				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(11,$row, "110");
+				
+				
+				//----------------------AUTO DIMENSIONAR CELDAS DE ACUERDO AL CONTENIDO---------------
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(0)->setAutoSize(true);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(1)->setAutoSize(true);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(2)->setAutoSize(true);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(3)->setAutoSize(true);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(4)->setWidth(6);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(5)->setWidth(6);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(6)->setWidth(6);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(7)->setWidth(6);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(8)->setWidth(6);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(9)->setWidth(6);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(10)->setWidth(6);
+				$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(11)->setWidth(6);
+				
+				
+				$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($estilo_titulo));
+				$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->getFont()->getColor()->setARGB(\PHPExcel_Style_Color::COLOR_WHITE);
+				
+				
+				//		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
+				
+				//----------------------CONSULTA LOS REGISTROS A EXPORTAR---------------
+				//$result = $this->listado($condiciones);
+				
+				$cont_linea = 0;
+				$row_detalle_info_ini = $row+1;
+				foreach($result_procesar as $reg){
+				
+					if (!empty($reg['variedad_id']))			{ $reg['variedad_id']		    = trim($reg['variedad_id']); 			}//end if
+					if (!empty($reg['color_ventas_nombre'])) 	{ $reg['color_ventas_nombre'] 	= trim($reg['color_ventas_nombre']);	}//end if
+				
+					$cont_linea++;
+					$row		= $row + 1;
+				
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $cont_linea);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $reg['variedad_id'] );
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['variedad'] );
+					if ($reg['tallos_x_bunch']==25)
+					{
+						$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['variedad'] );
+					}else{
+						$objRichText = new \PHPExcel_RichText();
+						$objRichText->createText($reg['variedad'] );
+				
+						$objInventario = $objRichText->createTextRun(' ('.$reg['tallos_x_bunch'].')');
+						$objInventario->getFont()->setBold(true);
+						$objInventario->getFont()->setItalic(true);
+				
+						$col_variedad 			= $PHPExcelApp->getNameFromNumber(2);
+						$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\Application\Classes\PHPExcelApp::COLOR_ORANGE));
+						$objPHPExcel->getActiveSheet()->getCell($col_variedad.$row)->setValue($objRichText);
+						//$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['variedad'] );
+					}//end if
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $reg['color_ventas_nombre'] );
+					if (!array_key_exists('fincas', $reg['40']['cajas']))
+					{
+						$debug = true;
+					}
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['40']['cajas']['fincas'][$reg_finca['id']]);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['50']['cajas']['fincas'][$reg_finca['id']]);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $row, $reg['60']['cajas']['fincas'][$reg_finca['id']]);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(7, $row, $reg['70']['cajas']['fincas'][$reg_finca['id']]);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(8, $row, $reg['80']['cajas']['fincas'][$reg_finca['id']]);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(9, $row, $reg['90']['cajas']['fincas'][$reg_finca['id']]);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(10, $row, $reg['100']['cajas']['fincas'][$reg_finca['id']]);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(11, $row, $reg['100']['cajas']['fincas'][$reg_finca['id']]);
+				
+				
+				}// end foreach
+				
+				//Formato de Numeros
+				$col_ini 			= $PHPExcelApp->getNameFromNumber(4);
+				$col_fin 			= $PHPExcelApp->getNameFromNumber(11);
+				$row_detalle_info_ini = $row_detalle_ini +1;
+				$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row_detalle_info_ini.':'.$col_fin.$row)->getNumberFormat()->setFormatCode("#,###");
+				
+				//Margenes
+				$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
+				$col_fin 			= $PHPExcelApp->getNameFromNumber(11);
+				$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row_detalle_info_ini.":".$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_BORDE_TODO));
+				
+				// Rename worksheet
+				$objPHPExcel->getActiveSheet()->setTitle($reg_finca['id'].' - '.$reg_tipo_caja['tipo_caja_id']);
+				
+				/*----------------------------------------------------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/
+				/*----------------------------------------------------------------------------------------------------*/				
+				
+			}//end foreach
+		}//end foreach($result_fincas as $reg_finca)
+			
+		$PHPExcelApp->save($objPHPExcel, $PHPExcelApp::FORMAT_EXCEL_2007, "Dispo Grupo.xlsx" );
+	}//end function generarExcelInternoCajas	
 	
 	
 }//end class

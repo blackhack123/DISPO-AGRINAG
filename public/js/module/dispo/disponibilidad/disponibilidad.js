@@ -1075,7 +1075,7 @@ $(document).ready(function () {
 		var col_variedad_id	 	= jqgrid_get_columnIndexByName(grid, "variedad_id");
 		var col_tallos_x_bunch 	= jqgrid_get_columnIndexByName(grid, "tallos_x_bunch");		
         var rowKey 				= grid.getGridParam("selrow");
-				
+
 		var check_40 			= ($("#frm_dispo_general_moverstock #chk_mover_select_40").is(':checked'));
 		var check_50 			= ($("#frm_dispo_general_moverstock #chk_mover_select_50").is(':checked'));
 		var check_60 			= ($("#frm_dispo_general_moverstock #chk_mover_select_60").is(':checked'));
