@@ -651,6 +651,7 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 		var ids = grid.jqGrid('getDataIDs');
 		var arr_data 			= new	Array();
 		
+		//guarda la grilla local en un arr_data
 		for (var i = 0; i < ids.length; i++) {
 			id = ids[i];
 			row =  grid.jqGrid('getRowData', id);
@@ -676,8 +677,21 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 			}
 		//alert("entra al evento data");
 		data = JSON.stringify(data);
-		console.log(data);
-		
+
+		var parameters = {	'type': 'POST',//'POST',
+				'contentType': 'application/json',
+				'url':'../../dispo/tipocajamatriz/registrarcajamatriz',
+				'control_process':false,
+				'show_cargando':true,
+				'async':true, 
+				'finish':function(response){
+						cargador_visibility('hide');
+						//$('#grid_nueva_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+				}							
+			 }
+		response = ajax_call(parameters, data);		
+		return false;	
+				
 	}//end GrabarCajaMatriz
 
 /****************************************************/
