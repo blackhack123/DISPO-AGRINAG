@@ -1093,6 +1093,7 @@ class DispoDAO extends Conexion
 	 */
 	function TransformarResultIndexadoProveedor($result)
 	{
+		//Estructura la forma de ver la informacion
 		$result2 = null;
 		foreach($result as $reg)
 		{
@@ -1101,6 +1102,39 @@ class DispoDAO extends Conexion
 			$result2[$key][$subkey] = $reg;
 		}//end foreach
 		
+		//Se totaliza el STOCK con la estructura reformada
+		foreach($result2 as &$reg)
+		{
+			$total['40'] = 0;
+			$total['50'] = 0;
+			$total['60'] = 0;
+			$total['70'] = 0;
+			$total['80'] = 0;
+			$total['90'] = 0;
+			$total['100'] = 0;
+			$total['110'] = 0;
+			foreach($reg as $key_proveedor => $reg_proveedor)
+			{
+				$total['40'] 	= $total['40'] + $reg_proveedor['40'];
+				$total['50'] 	= $total['50'] + $reg_proveedor['50'];
+				$total['60'] 	= $total['60'] + $reg_proveedor['60'];
+				$total['70'] 	= $total['70'] + $reg_proveedor['70'];
+				$total['80'] 	= $total['80'] + $reg_proveedor['80'];
+				$total['90'] 	= $total['90'] + $reg_proveedor['90'];
+				$total['100'] 	= $total['100'] + $reg_proveedor['100'];
+				$total['110'] 	= $total['110'] + $reg_proveedor['110'];				
+			}//end foreach
+			
+			$reg['40'] 	= $total['40'];
+			$reg['50'] 	= $total['50'];
+			$reg['60'] 	= $total['60'];
+			$reg['70'] 	= $total['70'];
+			$reg['80'] 	= $total['80'];
+			$reg['90'] 	= $total['90'];
+			$reg['100'] = $total['100'];
+			$reg['110'] = $total['110'];
+		}//end foreach
+
 		return $result2;
 	}//end function TransformarResultIndexadoProveedor
 

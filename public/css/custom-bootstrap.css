@@ -18,3 +18,14 @@
   height: auto;
   padding: 0;
 }
+
+
+
+/*Iconos Adicional para el bootstrap*/
+.icon-excel {
+    background-image: url(../images/ico/file-excel.png);
+    background-position: center center;
+	height: 24px;
+    line-height: 24px;
+    width: 24px;    
+}

@@ -809,5 +809,50 @@ class GrupodispoController extends AbstractActionController
 
 		$ArchivoPlugin->downloadForce($nombre_archivo);
 		exit();
-	}//end function verArchivoNovedadesAction	
+	}//end function verArchivoNovedadesAction
+
+
+
+	function exportaExcelInternoCajasDispoGrupoAction()
+	{
+		try
+		{
+			$viewModel 			= new ViewModel();
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$GrupoDispoCabBO = new GrupoDispoCabBO();
+			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 				= $this->getRequest();
+	
+			$inventario_id			= $request->getQuery('inventario_id', "");
+			$grupo_dispo_cab_id 	= $request->getQuery('grupo_dispo_cab_id', "");
+			$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
+			$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
+	
+			//$grupo_dispo_cab_id = 1;
+				
+			$condiciones = array(
+					"inventario_id"				=> $inventario_id,
+					"grupo_dispo_cab_id"		=> $grupo_dispo_cab_id,
+					"color_ventas_id"			=> $color_ventas_id,
+					"calidad_variedad_id"		=> $calidad_variedad_id
+			);
+			$result = $GrupoDispoCabBO->generarExcelInternoCajas($condiciones);
+	
+			exit;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function exportaExcelInternoCajasDispoGrupoAction
+
+	
+
 }//end class
