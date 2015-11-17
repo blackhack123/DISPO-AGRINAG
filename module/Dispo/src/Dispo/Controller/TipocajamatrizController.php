@@ -293,4 +293,55 @@ class TipocajamatrizController extends AbstractActionController
 	}//end funcion actualizarmasivoAction
 	
 	
+	
+	public function registrarCajaMatrizAction()
+	{
+		
+		try 
+		
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+			
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$TipoCajaMatrizBO 		= new TipoCajaMatrizBO();
+			
+			$TipoCajaMatrizBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+			
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+			
+			
+			$gridNuevaCaja_ingresar 		= $json['grid_data'];
+			
+			
+			$ArrNuevaCaja	= array();
+			foreach ($gridNuevaCaja_ingresar	as $reg){
+				$TipoCajaMatrizData = new TipoCajaMatrizData();
+				
+				$TipoCajaMatrizData->setTipoCajaId($reg['tipo_caja_id']);
+				$TipoCajaMatrizData->setInventarioId($reg['inventario_id']);
+				$TipoCajaMatrizData->setVariedadId($reg['variedad_id']);
+				$TipoCajaMatrizData->setTallosxBunch($reg['tallos_x_bunch']);
+				$TipoCajaMatrizData->setGradoId($reg['grado_id']);
+				$TipoCajaMatrizData->setUndsBunch($reg['g_40']);
+				$ArrNuevaCaja[] = $TipoCajaMatrizData;
+				unset($TipoCajaMatrizData);
+			}
+			
+			
+			
+		}catch(\Exception $e){
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function registrarCajaMatrizAction
+	
+	
 }

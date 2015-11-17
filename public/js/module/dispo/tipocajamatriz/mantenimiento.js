@@ -633,7 +633,10 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 	function NuevaCajaMatriz()
 	{
 		nueva_caja_matriz_init();
-		$('#modal_nueva_variedad').modal('show');
+		
+		titulo = $("#frm_tipo_caja_busqueda #tipo_caja_id option:selected").text() + ' - ' + $("#frm_tipo_caja_busqueda #inventario_id option:selected").text();
+		$("#modal_nueva_caja_matriz_titulo").html(titulo);
+		$('#modal_nueva_caja_matriz').modal('show');
 		
 	}//end NuevaCajaMatriz
 	
@@ -650,6 +653,11 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 		var grid = $("#grid_nueva_caja_matriz");
 		var ids = grid.jqGrid('getDataIDs');
 		var arr_data 			= new	Array();
+		
+		var tipo_caja_id		= $("#form_nueva_caja_matriz #tipo_caja_id").val();
+		var inventario_id		= $("#form_nueva_caja_matriz #tipo_caja_id").val();
+		var variedad_id			= $("#form_nueva_caja_matriz #variedad_id").val();
+		var tallos_x_bunch 		= $("#form_nueva_caja_matriz #tallos_x_bunch").val();
 		
 		//guarda la grilla local en un arr_data
 		for (var i = 0; i < ids.length; i++) {
@@ -677,7 +685,7 @@ function TipoCaja_TipoCaja_GrabarMasivo()
 			}
 		//alert("entra al evento data");
 		data = JSON.stringify(data);
-
+		console.log(data);
 		var parameters = {	'type': 'POST',//'POST',
 				'contentType': 'application/json',
 				'url':'../../dispo/tipocajamatriz/registrarcajamatriz',

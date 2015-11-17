@@ -33,6 +33,11 @@ class TipoCajaMatrizData
 	/**
 	 * @var int
 	 */	
+	protected $tallos_x_bunch;
+	
+	/**
+	 * @var int
+	 */
 	protected $unds_bunch;
 	
 	/**
@@ -63,6 +68,7 @@ class TipoCajaMatrizData
 	public function getInventarioId() 				{return $this->inventario_id;}
 	public function getVariedadId() 				{return $this->variedad_id;}
 	public function getGradoId() 					{return $this->grado_id;}
+	public function getTallosxBunch()				{return $this->tallos_x_bunch;}
 	public function getUndsBunch()					{return $this->unds_bunch;}
 	public function getFecIngreso()					{return $this->fec_ingreso;}
 	public function getFecModifica()				{return $this->fec_modifica;}
@@ -76,6 +82,7 @@ class TipoCajaMatrizData
 	public function setInventarioId($valor) 		{$this->inventario_id		= $valor;}
 	public function setVariedadId($valor) 			{$this->variedad_id			= $valor;}
 	public function setGradoId($valor) 				{$this->grado_id			= $valor;}
+	public function setTallosxBunch($valor) 		{$this->tallos_x_bunch		= $valor;}
 	public function setUndsBunch($valor) 			{$this->unds_bunch			= $valor;}
 	public function setFecIngreso($valor)			{$this->fec_ingreso			= $valor;}
 	public function setFecModifica($valor)			{$this->fec_modifica 		= $valor;}
