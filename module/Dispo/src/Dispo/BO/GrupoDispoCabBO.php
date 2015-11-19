@@ -626,7 +626,7 @@ class GrupoDispoCabBO extends Conexion
 	
 	
 	
-	public function generarTextoCajas($condiciones, $usuario_id)
+	public function generarTextoCajas($condiciones, $usuario_id, $separar_archivo = 'S')
 	{
 		set_time_limit ( 0 );
 		ini_set('memory_limit','-1');
@@ -648,22 +648,34 @@ class GrupoDispoCabBO extends Conexion
 		$tipo_caja = 'QB';
 		$result_QB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
 
-//		$result_cajas = array_merge($result_HB, $result_QB);
-//		ksort($result_cajas);
+		if ($separar_archivo=='N')
+		{
+			$result_QB = $this->transformarResiduosCajaQB($result_HB);  //ESCOGE EL RESIDUO DE LAS CAJAS HB
+			
+			$result_cajas = array_merge($result_HB, $result_QB);
+			ksort($result_cajas);
+			$nro_archivos = 1;
+		}else{
+			if ($result_HB)	ksort($result_HB);
+			if ($result_QB) ksort($result_QB);
+			$nro_archivos = 2;
+		}//end if
 		
-		if ($result_HB)	ksort($result_HB);
-		if ($result_QB) ksort($result_QB);
+
 		
 		$files_zip = null;
 		//$files = null;
 		$archivo_texto_HB = '';
 		$archivo_texto_QB = '';
-		for($cont_file = 0; $cont_file<2; $cont_file++)	
+		for($cont_file = 0; $cont_file<$nro_archivos; $cont_file++)	
 		{
-			if ($cont_file==0){
-				$result_cajas = $result_HB;
-			}else{
-				$result_cajas = $result_QB;
+			if ($separar_archivo=='S')
+			{
+				if ($cont_file==0){				
+					$result_cajas = $result_HB;
+				}else{
+					$result_cajas = $result_QB;
+				}//end if
 			}//end if
 			$arr_grados = array('40','50','60','70','80','90','100','110');
 			$arr_archivo_texto = null;		
@@ -676,33 +688,165 @@ class GrupoDispoCabBO extends Conexion
 						$tipo_caja_id	= $reg['tipo_caja_id'];
 						$tallos_x_bunch = $reg['tallos_x_bunch'];
 		
-						$arr_archivo_texto[] = $total_cajas.$tipo_caja_id.' '.$reg['variedad'].' '.$grado_id.'cm (x'.$reg['tallos_x_bunch'].')';
+						$key = $reg['producto_id'].'-'.$reg['variedad'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch'].'-'.$grado_id.'-'.$reg['tipo_caja_id'];
+						if ($reg['tallos_x_bunch']==25)
+						{
+							$arr_archivo_texto[$key] = $total_cajas.$tipo_caja_id.' '.$reg['variedad'].' '.$grado_id.'cm';
+						}else{
+							$arr_archivo_texto[$key] = $total_cajas.$tipo_caja_id.' '.$reg['variedad'].' '.$grado_id.'cm (x'.$reg['tallos_x_bunch'].')';
+						}//end if
 					}//end if
 				}//end foreach
 			}// end foreach
-			
+
+
+			ksort($arr_archivo_texto);
 
 			$ruta 	= $config['ruta_archivos']['tmp'];
 			//$ruta 	= $config['ruta_archivos']['public']['descarga'];
-			if ($cont_file==0){
-				$archivo_texto	= $ruta.'skype_HB_'.$usuario_id.'.txt';
-				$archivo_texto_HB = basename($archivo_texto);
+			if ($separar_archivo=='S')
+			{			
+				if ($cont_file==0){
+					$archivo_texto	= $ruta.'skype_HB_'.$usuario_id.'.txt';
+					$archivo_texto_HB = basename($archivo_texto);
+				}else{
+					$archivo_texto		= $ruta.'skype_QB_'.$usuario_id.'.txt';
+					$archivo_texto_QB	= basename($archivo_texto);
+				}//end if
+				\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $arr_archivo_texto);
 			}else{
-				$archivo_texto		= $ruta.'skype_QB_'.$usuario_id.'.txt';
-				$archivo_texto_QB	= basename($archivo_texto);
+				$archivo_texto	= $ruta.'skype_consolidado_'.$usuario_id.'.txt';
+				\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $arr_archivo_texto);
 			}//end if
-			\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $arr_archivo_texto);
 			
 			//$files['file'] = basename($archivo_texto);
 			$files_zip[] = $archivo_texto;			
 		}//end for
 
 		$zipname = $ruta.'skype_'.$usuario_id.'.zip';
+		if (file_exists($zipname)) {
+			$respuesta = unlink($zipname);
+		}//end if
 		\Application\Classes\Compress::comprimir($files_zip, $zipname);		
 		\Application\Classes\Compress::downloadFile($zipname);
 		//BORRA ARCHIVO
 		//return array($archivo_texto_HB, $archivo_texto_QB);
 	}//end function generarTextoCajas
+	
+	
+	
+	
+	public function generarTextoCajasXFincas($condiciones, $usuario_id, $separar_archivo = 'S')
+	{
+		set_time_limit ( 0 );
+		ini_set('memory_limit','-1');
+	
+		$GrupoDispoCabDAO	= new GrupoDispoCabDAO();
+		$reader 			= new \Zend\Config\Reader\Ini();
+		$config  			= $reader->fromFile('ini/config.ini');
+			
+		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+	
+		$inventario_id = $condiciones['inventario_id'];
+	
+		//Consulta la lista de registros
+		$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
+	
+		$tipo_caja = 'HB';
+		$result_HB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+	
+		$tipo_caja = 'QB';
+		$result_QB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+	
+		if ($result_HB)	ksort($result_HB);
+		if ($result_QB) ksort($result_QB);
+		$nro_archivos = 2;
+	
+		$files_zip = null;
+		//$files = null;
+		$archivo_texto_HB = '';
+		$archivo_texto_QB = '';
+		for($cont_file = 0; $cont_file<$nro_archivos; $cont_file++)
+		{
+			if ($cont_file==0){
+				$result_cajas = $result_HB;
+			}else{
+				$result_cajas = $result_QB;
+			}//end if
+
+			$arr_grados = array('40','50','60','70','80','90','100','110');
+			$arr_archivo_texto_proveedor['AGR'] = null;
+			$arr_archivo_texto_proveedor['LMA'] = null;
+			$arr_archivo_texto_proveedor['HTC'] = null;
+			//$arr_archivo_texto = null;
+			foreach($result_cajas as $reg){
+				foreach($arr_grados as $grado_id)
+				{
+					foreach($reg[$grado_id]['cajas']['fincas'] as $key_finca => $reg_finca)
+					{
+						//$total_cajas = $reg_finca;
+						$total_cajas = $reg_finca['total'];
+						if ($total_cajas>0)
+						{
+							$tipo_caja_id	= $reg['tipo_caja_id'];
+							$tallos_x_bunch = $reg['tallos_x_bunch'];
+								
+							$key = $reg['producto_id'].'-'.$reg['variedad'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch'].'-'.$grado_id.'-'.$reg['tipo_caja_id'];
+								
+							if ($reg['tallos_x_bunch']==25)
+							{
+								$arr_archivo_texto_proveedor[$key_finca][$key] = $total_cajas.$tipo_caja_id.' '.$reg['variedad'].' '.$grado_id.'cm';
+							}else{
+								$arr_archivo_texto_proveedor[$key_finca][$key] = $total_cajas.$tipo_caja_id.' '.$reg['variedad'].' '.$grado_id.'cm (x'.$reg['tallos_x_bunch'].')';
+							}//end if
+						}//end if 
+					}//end foreach
+
+				}//end foreach
+			}// end foreach
+						
+			//Ordena Array
+			ksort($arr_archivo_texto_proveedor['AGR']);
+			ksort($arr_archivo_texto_proveedor['LMA']);
+			ksort($arr_archivo_texto_proveedor['HTC']);
+
+			$ruta 	= $config['ruta_archivos']['tmp'];
+			//$ruta 	= $config['ruta_archivos']['public']['descarga'];
+			if ($cont_file==0){
+				foreach($arr_archivo_texto_proveedor as $key_archivo_texto_proveedor => $reg_archivo_texto_proveedor)
+				{
+					$archivo_texto	= $ruta.'skype_'.$key_archivo_texto_proveedor.'_HB_'.$usuario_id.'.txt';
+					$archivo_texto_HB = basename($archivo_texto);
+					
+					\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $reg_archivo_texto_proveedor);
+					
+					$files_zip[] = $archivo_texto;						
+				}//end foreach
+			}else{
+				foreach($arr_archivo_texto_proveedor as $key_archivo_texto_proveedor => $reg_archivo_texto_proveedor)
+				{
+					$archivo_texto	= $ruta.'skype_'.$key_archivo_texto_proveedor.'_QB_'.$usuario_id.'.txt';
+					$archivo_texto_QB = basename($archivo_texto);
+						
+					\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $reg_archivo_texto_proveedor);
+					
+					$files_zip[] = $archivo_texto;						
+				}//end foreach				
+			}//end if
+			//$files['file'] = basename($archivo_texto);
+		}//end for
+
+		$zipname = $ruta.'skype_fincas_'.$usuario_id.'.zip';
+		if (file_exists($zipname)) {
+			$respuesta = unlink($zipname);
+		}//end if
+		\Application\Classes\Compress::comprimir($files_zip, $zipname);
+		\Application\Classes\Compress::downloadFile($zipname);
+		//BORRA ARCHIVO
+									//return array($archivo_texto_HB, $archivo_texto_QB);
+	}//end function generarTextoCajasXFincas
+	
+	
 	
 	
 	/***
@@ -1111,9 +1255,54 @@ procesar_result:
 	}//end function listadoDisponibilidadPorProveedor
 
 
-	
+	/**
+	 * 
+	 * @param array $result_HB
+	 * @return Ambigous <NULL, array>
+	 */
+	public function transformarResiduosCajaQB($result_HB)
+	{
+		$result2 = null;
+		$arr_grados = array('40','50','60','70','80','90','100','110');	
+
+		foreach($result_HB as $reg){
+			if ($reg['existe_residuo_QB']==1)
+			{
+				$reg_new = $reg;
+				$reg_new['tipo_caja_id'] 		= 'QB';
+				$reg_new['existe_residuo_QB'] 	= 0;
+				
+				foreach($arr_grados as $grado_id)
+				{
+					$reg_new[$grado_id]['cajas']['total'] = 0;
+					
+					foreach($reg_new[$grado_id]['cajas']['fincas'] as $key_finca => $reg_finca)
+					{
+						$nro_cajas_residuo_QB	= $reg_new[$grado_id]['cajas']['fincas'][$key_finca]['residuo_QB'];	
+						$reg_new[$grado_id]['cajas']['fincas'][$key_finca]['total'] = $nro_cajas_residuo_QB;
+						$reg_new[$grado_id]['cajas']['total'] = $reg_new[$grado_id]['cajas']['total'] + $nro_cajas_residuo_QB;
+						
+						$reg_new[$grado_id]['cajas']['fincas'][$key_finca]['residuo_QB'] = 0;
+					}//end foreach
+
+					$reg_new[$grado_id]['cajas']['residuo_QB'] = 0;
+				}//end foreach
+				
+				$result2[] = $reg_new;
+			}//end if			
+		}//end foreach
+		
+		return $result2;
+	}//end function transformarResiduosCajaQB
 
 
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $tipo_caja_id
+	 * @param array $result
+	 * @return Ambigous <NULL, array>
+	 */
 	public function transformarDispoEnCajas($inventario_id, $tipo_caja_id, $result)
 	{
 		$ProveedorDAO			= new ProveedorDAO();
@@ -1125,7 +1314,9 @@ procesar_result:
 		$reg_fincas = null;
 		foreach($result_fincas as $reg)
 		{
-			$reg_fincas[$reg['id']] = 0;
+			//$reg_fincas[$reg['id']] = 0;
+			$reg_fincas[$reg['id']]['total'] = 0;
+			$reg_fincas[$reg['id']]['residuo_QB'] = 0;
 		}//end foreach
 
 		switch($inventario_id)
@@ -1142,6 +1333,15 @@ procesar_result:
 						$arr_bunchxcaja['90'] = 0;
 						$arr_bunchxcaja['100'] = 0;
 						$arr_bunchxcaja['110'] = 0;
+						
+						$arr_bunchxcaja_QB['40'] = 5;
+						$arr_bunchxcaja_QB['50'] = 4;
+						$arr_bunchxcaja_QB['60'] = 4;
+						$arr_bunchxcaja_QB['70'] = 3;
+						$arr_bunchxcaja_QB['80'] = 0;
+						$arr_bunchxcaja_QB['90'] = 0;
+						$arr_bunchxcaja_QB['100'] = 0;
+						$arr_bunchxcaja_QB['110'] = 0;
 						break;
 	
 					case 'QB':
@@ -1169,6 +1369,15 @@ procesar_result:
 						$arr_bunchxcaja['90'] = 12;
 						$arr_bunchxcaja['100'] = 0;
 						$arr_bunchxcaja['110'] = 0;
+						
+						$arr_bunchxcaja_QB['40'] = 6;
+						$arr_bunchxcaja_QB['50'] = 5;
+						$arr_bunchxcaja_QB['60'] = 4;
+						$arr_bunchxcaja_QB['70'] = 4;
+						$arr_bunchxcaja_QB['80'] = 4;
+						$arr_bunchxcaja_QB['90'] = 4;
+						$arr_bunchxcaja_QB['100'] = 0;
+						$arr_bunchxcaja_QB['110'] = 0;						
 						break;
 	
 					case 'QB':
@@ -1198,6 +1407,7 @@ procesar_result:
 			$reg_new['tallos_x_bunch'] 	= $reg['tallos_x_bunch'];
 			$reg_new['tipo_caja_id'] 	= $tipo_caja_id;
 			$reg_new['color_ventas_nombre'] = $reg['color_ventas_nombre'];
+			$reg_new['existe_residuo_QB']		= 0;
 			$reg_new['40']['cajas']['total']	= 0;
 			$reg_new['50']['cajas']['total']	= 0;
 			$reg_new['60']['cajas']['total']	= 0;
@@ -1205,8 +1415,17 @@ procesar_result:
 			$reg_new['80']['cajas']['total']	= 0;
 			$reg_new['90']['cajas']['total']	= 0;
 			$reg_new['100']['cajas']['total']	= 0;
-			$reg_new['110']['cajas']['total']	= 0;
-
+			$reg_new['110']['cajas']['total']	= 0;			
+			$reg_new['40']['cajas']['residuo_QB']	= 0;
+			$reg_new['50']['cajas']['residuo_QB']	= 0;
+			$reg_new['60']['cajas']['residuo_QB']	= 0;
+			$reg_new['70']['cajas']['residuo_QB']	= 0;
+			$reg_new['80']['cajas']['residuo_QB']	= 0;
+			$reg_new['90']['cajas']['residuo_QB']	= 0;
+			$reg_new['100']['cajas']['residuo_QB']	= 0;
+			$reg_new['110']['cajas']['residuo_QB']	= 0;
+				
+			
 			$reg_new['40']['cajas']['fincas']	= $reg_fincas;
 			$reg_new['50']['cajas']['fincas']	= $reg_fincas;
 			$reg_new['60']['cajas']['fincas']	= $reg_fincas;
@@ -1226,10 +1445,28 @@ procesar_result:
 						{
 							if ($arr_bunchxcaja[$grado] > 0){
 								$nro_cajas = floor($valor/$arr_bunchxcaja[$grado]);
-								$reg_new[$grado]['cajas']['fincas'][$key_finca] = $nro_cajas;
-								$reg_new[$grado]['cajas']['total'] = $reg_new[$grado]['cajas']['total'] + $nro_cajas;
+
+								if ($tipo_caja_id=='HB')
+								{
+									$residuo_bunch_HB = $valor%$arr_bunchxcaja[$grado];
+									$nro_cajas_residuo_QB = floor($residuo_bunch_HB/$arr_bunchxcaja_QB[$grado]);
+									if ($nro_cajas_residuo_QB > 0)
+									{
+										$reg_new['existe_residuo_QB']=1;
+									}//end if 
+								}else{
+									$nro_cajas_residuo_QB = 0;
+								}//end if
+								
+								//$reg_new[$grado]['cajas']['fincas'][$key_finca] = $nro_cajas;
+								$reg_new[$grado]['cajas']['fincas'][$key_finca]['total'] 		= $nro_cajas;
+								$reg_new[$grado]['cajas']['fincas'][$key_finca]['residuo_QB'] 	= $nro_cajas_residuo_QB;
+								
+								$reg_new[$grado]['cajas']['total'] 		= $reg_new[$grado]['cajas']['total'] + $nro_cajas;
+								$reg_new[$grado]['cajas']['residuo_QB'] = $reg_new[$grado]['cajas']['residuo_QB'] + $nro_cajas_residuo_QB;
 							}else{
-								$reg_new[$grado]['cajas']['fincas'][$key_finca] = 0;
+								$reg_new[$grado]['cajas']['fincas'][$key_finca]['total']  		= 0;
+								$reg_new[$grado]['cajas']['fincas'][$key_finca]['residuo_QB']  	= 0;
 							}//end if
 						
 						}//end foreach
@@ -1254,7 +1491,15 @@ procesar_result:
 				($reg_new['80']['cajas']['total']==0) &&
 				($reg_new['90']['cajas']['total']==0) &&
 				($reg_new['100']['cajas']['total']==0) &&
-				($reg_new['110']['cajas']['total']==0)
+				($reg_new['110']['cajas']['total']==0) &&
+				($reg_new['40']['cajas']['residuo_QB']==0) &&
+				($reg_new['50']['cajas']['residuo_QB']==0) &&
+				($reg_new['60']['cajas']['residuo_QB']==0) &&
+				($reg_new['70']['cajas']['residuo_QB']==0) &&
+				($reg_new['80']['cajas']['residuo_QB']==0) &&
+				($reg_new['90']['cajas']['residuo_QB']==0) &&
+				($reg_new['100']['cajas']['residuo_QB']==0) &&
+				($reg_new['110']['cajas']['residuo_QB']==0)
 			   )
 			{
 				continue;
@@ -1508,20 +1753,17 @@ procesar_result:
 						//$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['variedad'] );
 					}//end if
 					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $reg['color_ventas_nombre'] );
-					if (!array_key_exists('fincas', $reg['40']['cajas']))
-					{
-						$debug = true;
-					}
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['40']['cajas']['fincas'][$reg_finca['id']]);
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['50']['cajas']['fincas'][$reg_finca['id']]);
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $row, $reg['60']['cajas']['fincas'][$reg_finca['id']]);
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(7, $row, $reg['70']['cajas']['fincas'][$reg_finca['id']]);
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(8, $row, $reg['80']['cajas']['fincas'][$reg_finca['id']]);
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(9, $row, $reg['90']['cajas']['fincas'][$reg_finca['id']]);
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(10, $row, $reg['100']['cajas']['fincas'][$reg_finca['id']]);
-					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(11, $row, $reg['100']['cajas']['fincas'][$reg_finca['id']]);
-				
-				
+
+					
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['40']['cajas']['fincas'][$reg_finca['id']]['total']);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['50']['cajas']['fincas'][$reg_finca['id']]['total']);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $row, $reg['60']['cajas']['fincas'][$reg_finca['id']]['total']);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(7, $row, $reg['70']['cajas']['fincas'][$reg_finca['id']]['total']);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(8, $row, $reg['80']['cajas']['fincas'][$reg_finca['id']]['total']);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(9, $row, $reg['90']['cajas']['fincas'][$reg_finca['id']]['total']);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(10, $row, $reg['100']['cajas']['fincas'][$reg_finca['id']]['total']);
+					$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(11, $row, $reg['100']['cajas']['fincas'][$reg_finca['id']]['total']);
+
 				}// end foreach
 				
 				//Formato de Numeros
