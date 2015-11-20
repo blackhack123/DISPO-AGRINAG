@@ -90,13 +90,14 @@ class TipoCajaMatrizDAO extends Conexion
 	
 	
 	/**
-	 *
-	 * @param array $condiciones (tipo_caja_id, inventario_id)
+	 * 
+	 * @param array $condiciones
 	 * @return array
 	 */
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT variedad.nombre as variedad, tipo_caja_matriz.variedad_id, tipo_caja_matriz.tallos_x_bunch, '.
+		$sql = 	' SELECT tipo_caja_matriz.inventario_id, tipo_caja_matriz.tipo_caja_id, tipo_caja_matriz.tamano_bunch_id,
+						 tipo_caja.nombre AS tipo_caja_nombre, tipo_caja_matriz.tallos_x_bunch, tamano_bunch.nombre AS tamano_bunch_nombre, '.
 				" 		 sum(if(tipo_caja_matriz.grado_id=40,  tipo_caja_matriz.unds_bunch, 0)) as '40',".
 				" 		 sum(if(tipo_caja_matriz.grado_id=50,  tipo_caja_matriz.unds_bunch, 0)) as '50',".
 				" 		 sum(if(tipo_caja_matriz.grado_id=60,  tipo_caja_matriz.unds_bunch, 0)) as '60',".
@@ -105,22 +106,38 @@ class TipoCajaMatrizDAO extends Conexion
 				" 		 sum(if(tipo_caja_matriz.grado_id=90,  tipo_caja_matriz.unds_bunch, 0)) as '90',".
 				" 		 sum(if(tipo_caja_matriz.grado_id=100, tipo_caja_matriz.unds_bunch, 0)) as '100',".
 				" 		 sum(if(tipo_caja_matriz.grado_id=110, tipo_caja_matriz.unds_bunch, 0)) as '110'".
-				' FROM tipo_caja_matriz INNER JOIN variedad '.
-				'		                      ON variedad.id = tipo_caja_matriz.variedad_id '.
-				" WHERE tipo_caja_matriz.tipo_caja_id 	= '".$condiciones['tipo_caja_id']."'".
-				"   and tipo_caja_matriz.inventario_id	='".$condiciones['inventario_id']."'".
-				' GROUP BY variedad.nombre, variedad.id'.
-				" ORDER BY variedad.nombre ";
-				
+				' FROM tipo_caja_matriz '.
+				'					LEFT JOIN tipo_caja '.
+				' 							ON tipo_caja_matriz.tipo_caja_id = tipo_caja.id '.
+				'					LEFT JOIN tamano_bunch '.
+				' 							ON tamano_bunch.id = tipo_caja_matriz.tamano_bunch_id '.
+				" WHERE tipo_caja_matriz.inventario_id	= '".$condiciones['inventario_id']."'";
+		
+		if (!empty($condiciones['tipo_caja_id']))
+		{
+			$sql = $sql." and tipo_caja_matriz.tipo_caja_id = '".$condiciones['tipo_caja_id']."'";
+		}//end if
+		
+		
+		if (!empty($condiciones['tamano_bunch_id']))
+		{
+			$sql = $sql." and tipo_caja_matriz.tamano_bunch_id = '".$condiciones['tamano_bunch_id']."'";
+		}//end if
+		
+		
+		if (!empty($condiciones['tallos_x_bunch']))
+		{
+			$sql = $sql." and tipo_caja_matriz.tallos_x_bunch = '".$condiciones['tallos_x_bunch']."'";
+		}//end if
+		
+		
+		$sql=$sql." GROUP  BY tipo_caja_nombre, tipo_caja_matriz.tallos_x_bunch, tamano_bunch.nombre  ";
+		
+		//die($sql);
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
-	
-		foreach($result as $reg)
-		{
-			$reg['variedad'] = trim($reg['variedad']);
-		}
-	
+		
 		return $result;
 	}//end function listado
 	
@@ -192,9 +209,10 @@ class TipoCajaMatrizDAO extends Conexion
 				'id'				=> $TipoCajaMatrizData->getId(),
 		);
 		$record = array(
-				'tipo_caja_id' 		=> $TipoCajaMatrizData->getTipoCajaId(),			
-				'inventario_id' 	=> $TipoCajaMatrizData->getInventarioId(),			
-				'variedad_id' 		=> $TipoCajaMatrizData->getVariedadId(),
+				'inventario_id' 	=> $TipoCajaMatrizData->getInventarioId(),
+				'tipo_caja_id' 		=> $TipoCajaMatrizData->getTipoCajaId(),
+				'tallos_x_bunch' 	=> $TipoCajaMatrizData->getTallosxBunch(),
+				'tamano_bunch_id' 	=> $TipoCajaMatrizData->getTamanoBunchId(),
 				'grado_id' 			=> $TipoCajaMatrizData->getGradoId(),
 				'unds_bunch' 		=> $TipoCajaMatrizData->getUndsBunch(),
 				'fec_ingreso' 		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
@@ -208,6 +226,34 @@ class TipoCajaMatrizDAO extends Conexion
 		return $id;
 	}//end function ingresar
 	
+	
+	/**
+	 * Modificar
+	 *
+	 * @param TipoCajaMatrizData $TipoCajaMatrizData
+	 * @return array Retorna un Array $key el cual contiene el id
+	 */
+	public function modificar(TipoCajaMatrizData $TipoCajaMatrizData)
+	{
+		$key    = array(
+				'id'				=> $TipoCajaMatrizData->getId(),
+		);
+		$record = array(
+				'inventario_id' 	=> $TipoCajaMatrizData->getInventarioId(),
+				'tipo_caja_id' 		=> $TipoCajaMatrizData->getTipoCajaId(),
+				'tallos_x_bunch' 	=> $TipoCajaMatrizData->getTallosxBunch(),
+				'tamano_bunch_id' 	=> $TipoCajaMatrizData->getTamanoBunchId(),
+				'grado_id' 			=> $TipoCajaMatrizData->getGradoId(),
+				'unds_bunch' 		=> $TipoCajaMatrizData->getUndsBunch(),
+				'fec_ingreso' 		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'fec_modifica' 		=> \Application\Classes\Fecha::getFechaHoraActualServidor(),
+				'usuario_ing_id' 	=> $TipoCajaMatrizData->getUsuarioIngId(),
+				'usuario_mod_id' 	=> $TipoCajaMatrizData->getUsuarioModId(),
+		);
+	
+		$this->getEntityManager()->getConnection()->update($this->table_name, $record, $key);
+		return $TipoCajaMatrizData->getId();
+	}//end function ingresar
 	
 	
 	/**
@@ -340,6 +386,54 @@ class TipoCajaMatrizDAO extends Conexion
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
 		return $result;
 	}//end function consultarVariedadPorInventario
+	
+	
+	
+	/**
+	 *
+	 * @param string $inventario_id
+	 * @param string $tipo_caja_id
+	 * @param int $tallos_x_bunch
+	 * @param string $tamano_bunch_id
+	 * @param int $grado_id 
+	 * @return \Dispo\Data\TipoCajaMatrizData|NULL
+	 */
+	public function consultarPorClaveAlterna($inventario_id, $tipo_caja_id, $tallos_x_bunch, $tamano_bunch_id, $grado_id, $resultType = \Application\Constants\ResultType::OBJETO)
+	{
+		$TipoCajaMatrizData 		    = new TipoCajaMatrizData();
+		
+		$sql = 	' SELECT tipo_caja_matriz.* '.
+				' FROM tipo_caja_matriz '.
+				" WHERE tipo_caja_matriz.inventario_id				= '".$inventario_id."'".
+				"			AND tipo_caja_matriz.tipo_caja_id 		= '".$tipo_caja_id."'".
+				"			AND tipo_caja_matriz.tallos_x_bunch 	= ".$tallos_x_bunch.
+				"			AND tipo_caja_matriz.tamano_bunch_id 	= '".$tamano_bunch_id."'".
+				"			AND tipo_caja_matriz.grado_id 			= '".$grado_id."'";
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		//$stmt->bindValue(':id',$id);
+		$stmt->execute();
+		$row = $stmt->fetch();  //Se utiliza el fecth por que es un registro
+		
+		if($row)
+		{
+			$TipoCajaMatrizData->setId				($row['id']);
+			$TipoCajaMatrizData->setInventarioId	($row['inventario_id']);
+			$TipoCajaMatrizData->setTipoCajaId		($row['tipo_caja_id']);
+			$TipoCajaMatrizData->setTallosxBunch	($row['tallos_x_bunch']);
+			$TipoCajaMatrizData->setTamanoBunchId	($row['tamano_bunch_id']);
+			$TipoCajaMatrizData->setGradoId			($row['grado_id']);
+			$TipoCajaMatrizData->setUndsBunch		($row['unds_bunch']);
+			$TipoCajaMatrizData->setUsuarioIngId    ($row['usuario_ing_id']);
+			$TipoCajaMatrizData->setFecIngreso		($row['fec_ingreso']);
+			$TipoCajaMatrizData->setUsuarioModId    ($row['usuario_mod_id']);
+			$TipoCajaMatrizData->setFecModifica		($row['fec_modifica']);
+
+			return $TipoCajaMatrizData;
+		}else 
+		{
+			return null;
+		}
+	}//end function consultarPorClaveAlterna
 	
 	
 }//end class

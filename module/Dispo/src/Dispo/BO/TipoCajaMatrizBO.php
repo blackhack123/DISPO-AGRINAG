@@ -16,7 +16,7 @@ class TipoCajaMatrizBO extends Conexion
 
 	/**
 	 * @param string
-	 * @param array $condiciones  (tipo_caja_id, inventario_id)
+	 * @param array $condiciones  (inventario_id)
 	 * @return array
 	 */
 	public function listado($condiciones)
@@ -29,43 +29,12 @@ class TipoCajaMatrizBO extends Conexion
 		 * Se obtiene los registros de el PRECIO POR GRUPO
 		*/
 		$condiciones2 = array(
-				"tipo_caja_id"	=> $condiciones['tipo_caja_id'],
+				//"tipo_caja_id"	=> $condiciones['tipo_caja_id'],
 				"inventario_id"	=> $condiciones['inventario_id'],
 		);
 		$result  = $TipoCajaMatrizDAO->listado($condiciones2);
 
 
-		//Completa los campos del RESULT con la DISPO POR GRUPO
-		foreach($result  as $reg)
-		{
-			//Se puede dar el caso que el registro exista en la lista de precios y no exista en el dispo
-			//esto se puede deber a que de la dispo general lo han quitado por alguna razon de comercializacion
-			//if (!array_key_exists($reg['variedad_id'], $result))
-			//{
-				$reg_new['variedad_id'] = $reg['variedad_id'];
-				$reg_new['variedad'] 	= $reg['variedad'];
-				$reg_new['tallos_x_bunch'] 	= $reg['tallos_x_bunch'];
-				$reg_new['40'] 			= 0;
-				$reg_new['50'] 			= 0;
-				$reg_new['60'] 			= 0;
-				$reg_new['70'] 			= 0;
-				$reg_new['80'] 			= 0;
-				$reg_new['90'] 			= 0;
-				$reg_new['100']			= 0;
-				$reg_new['110']			= 0;
-				
-				$reg_result = $reg['variedad_id'];
-				$reg_result['40']	= $reg['40'];
-				$reg_result['50']	= $reg['50'];
-				$reg_result['60']	= $reg['60'];
-				$reg_result['70']	= $reg['70'];
-				$reg_result['80']	= $reg['80'];
-				$reg_result['90']	= $reg['90'];
-				$reg_result['100']	= $reg['100'];
-				$reg_result['110']	= $reg['110'];
-			//$reg_result['existe']	= 1;
-		}//end foreach
-	
 		return $result;
 	}//end function listado
 	
@@ -244,5 +213,87 @@ class TipoCajaMatrizBO extends Conexion
 		$opciones = \Application\Classes\Combo::getComboDataResultset($result, 'variedad_id', 'variedad_nombre',$variedad_id, $texto_1er_elemento, $color_1er_elemento);
 			
 		return $opciones;
-	}//end function getComboVariedadPorInventario	
+	}//end function getComboVariedadPorInventario
+
+	
+	
+	/**
+	 * 
+	 * @param ArrTipoCajaMatrizData[]  $ArrTipoCajaMatrizData
+	 * @throws Exception
+	 * @return string
+	 */
+	function registrarCajaMatriz($ArrTipoCajaMatrizData)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try
+		{
+			$TipoCajaMatrizData = new TipoCajaMatrizData();
+			$TipoCajaMatrizDAO = new TipoCajaMatrizDAO();
+			$TipoCajaMatrizDAO->setEntityManager($this->getEntityManager());
+			
+			//$TipoCajaMatrizData = new TipoCajaMatrizData();
+			
+				foreach($ArrTipoCajaMatrizData as $TipoCajaMatrizData)
+				
+				{
+					$TipoCajaMatrizData2 = $TipoCajaMatrizDAO->consultarPorClaveAlterna
+																	(
+																	$TipoCajaMatrizData->getInventarioId(), $TipoCajaMatrizData->getTipoCajaId(), 
+																	$TipoCajaMatrizData->getTallosxBunch(), $TipoCajaMatrizData->getTamanoBunchId(),
+																	$TipoCajaMatrizData->getGradoId()
+																	);
+					if (!empty($TipoCajaMatrizData2))
+					{
+						//SI  EXISTE EL REGISTRO LO ACTUALIZA
+						$clave_alterna = $TipoCajaMatrizData2->getId();
+						$TipoCajaMatrizData->setId($clave_alterna);
+						$id = $TipoCajaMatrizDAO->modificar($TipoCajaMatrizData);
+					}else{
+						//SI NO EXISTE EL REGISTRO LO INSERTA
+						$id = $TipoCajaMatrizDAO->ingresar($TipoCajaMatrizData);
+					}//end if
+					
+				}//end foreach
+				
+			$this->getEntityManager()->getConnection()->commit();
+			
+			$result['validacion_code'] 	= 'OK';
+			$result['respuesta_mensaje']= 'Registros procesados correctamente';			
+			return $result;
+		}catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();		
+			throw $e;
+		}//end try
+		
+	}//end function registrarCajaMatriz
+	
+	
+	/**
+	 * 
+	 * @param array $condiciones
+	 * @return multitype:
+	 */
+	public function consultarPorClaveAlternaListado($condiciones)
+	{
+		$TipoCajaMatrizDAO 	= new TipoCajaMatrizDAO();
+		$TipoCajaMatrizDAO->setEntityManager($this->getEntityManager());
+		
+		//paramtros para enviar y consultar listado $condiciones2
+		$condiciones = array(
+				
+				"inventario_id"		=> $condiciones['inventario_id'],
+				"tipo_caja_id"		=> $condiciones['tipo_caja_id'],
+				"tamano_bunch_id"	=> $condiciones['tamano_bunch_id'],
+				"tallos_x_bunch"	=> $condiciones['tallos_x_bunch'],
+		);
+		
+		//obtiene el listado bajo paramtros enviados $condiciones
+		$result  = $TipoCajaMatrizDAO->listado($condiciones);
+		
+		return $result;
+	}//end public function consultarPorClaveAlternaListado
+	
+	
 }//end class

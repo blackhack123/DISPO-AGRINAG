@@ -30,13 +30,13 @@
                              <section class="body-admin-section">
                                 <div class="accion-admin-section">
                                  	<div class="botonera-admin-section pull-left separator">
-                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal_nueva_variedad" data-target="modal_nueva_variedad" id="btn_nueva_variedad"><i class="glyphicon glyphicon-plus"></i> CREAR CAJA MATRIZ </button>
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal_nueva_variedad" data-target="modal_nueva_variedad" id="btn_nueva_caja_matriz"><i class="glyphicon glyphicon-plus"></i> CREAR CAJA MATRIZ </button>
                                     </div>   
-                                    <div class="botonera-admin-section pull-left separator">
+                                    <!-- div class="botonera-admin-section pull-left separator">
                                         <button id="btn_actualizacion_masiva" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i> ACTUALIZACION MASIVA</button>
-                                    </div>                    
+                                    </div -->                    
                                     <div class="busqueda-admin-section pull-left">
-                                         <select  id="tipo_caja_id" class="form-control input-sm"></select>                        
+                                         <!-- select  id="tipo_caja_id" class="form-control input-sm"></select -->                        
                                          <select  id="inventario_id" class="form-control input-sm"></select>
                                          <button id="btn_consultar" type="button" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
                                     </div>
@@ -153,41 +153,49 @@
 	
 	<!-- MODAL PARA NUEVA VARIEDAD -->
 	
-		<div class="modal fade" tabindex="modal_nueva_caja_matriz" role="dialog" aria-labelledby="modal_nueva_caja_matriz" id="modal_nueva_caja_matriz">
+		<div class="modal fade" tabindex="modal_matenimiento_caja_matriz" role="dialog" aria-labelledby="modal_matenimiento_caja_matriz" id="modal_matenimiento_caja_matriz">
 			  <div class="modal-dialog">
 				    <div class="modal-content">
-				    	<form id="form_nueva_caja_matriz" name="form_nueva_caja_matriz" class="form-horizontal">
+				    	<form id="form_mantenimiento_caja_matriz" name="form_mantenimiento_caja_matriz" class="form-horizontal">
 					    	<div class="modal-header">
 						    		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						    		<span aria-hidden="true">&times;</span></button>
-		        					<h4 class="modal-title" id="modal_nueva_caja_matriz_titulo"></h4>
+		        					<h4 class="modal-title" id="modal_matenimiento_caja_matriz_titulo"></h4>
 					    	</div>
 					    	<div class="modal-body">
 										 <div class="form-group">
-											    <div class="col-sm-10">
-											      <select  id="tipo_caja_id" class="form-control" validate="required" validateMessage="Seleccione Tipo de Caja" style="display:none;"></select>
-											    </div>
-											    <div class="col-sm-10">
-											     <select  id="inventario_id" class="form-control" validate="required" validateMessage="Seleccione una opcion" style="display:none;"></select>
+										 		<label for="tipo_caja_id" class="col-sm-3 control-label">Tipo Caja:</label>
+											    <div class="col-sm-8">
+											      <select  id="tipo_caja_id" class="form-control" validate="required" validateMessage="Seleccione Tipo de Caja"></select>
 											    </div>
 										 </div>
+										 		 <div class="col-sm-10">
+											     <select  id="inventario_id" class="form-control" style="display:none;"></select>
+											    </div>
 										 <div class="form-group">
-											    <label for="variedad_id" class="col-sm-2 control-label">Variedad:</label>
-											    <div class="col-sm-10">
-											      <select  id="variedad_id" class="form-control" validate="required" validateMessage="Seleccione una Variedad"></select>
+											    <label for="tamano_bunch_id" class="col-sm-3 control-label">Tamaño Bunch:</label>
+											    <div class="col-sm-8">
+											      <select  id="tamano_bunch_id" class="form-control" validate="required" validateMessage="Seleccione Tanaño Bunch"></select>
 											    </div>
 										  </div>
 										  <div class="form-group">
-											    <label for="tallos_x_bunch" class="col-sm-2 control-label">Tallos:</label>
-											    <div class="col-sm-10">
+											    <label for="tallos_x_bunch" class="col-sm-3 control-label">Tallos:</label>
+											    <div class="col-sm-8">
 											      <input type="text" class="form-control inputdata-number-no-decimal" id="tallos_x_bunch" maxlength="6" validate="required" validateMessage="Ingrese la Cantidad de Tallos">
 											    </div><br>
 										  </div>
 										<div class="row" align="center">
-											<div class="col-md-12">
-					                            <table id="grid_nueva_caja_matriz" class="grid"></table>
-					                            <div id="pager_nueva_caja_matriz"></div>
+											
+											  <div class="col-md-12">
+					                            <table id="grid_mantenimiento_caja_matriz" class="grid"></table>
+					                            <div id="pager_mantenimiento_caja_matriz"></div>					                            
+					                        </div><br>
+					                         <!-- 
+					                        <div class="col-md-12" id="id_grid__caja_matriz_data">
+					                            <table id="grid_caja_matriz_data" class="grid"></table>
+					                            <div id="pager_caja_matriz_data"></div>
 					                        </div>
+					                         -->
 					                    </div><br>
 							</div>
 							<div class="modal-footer">
