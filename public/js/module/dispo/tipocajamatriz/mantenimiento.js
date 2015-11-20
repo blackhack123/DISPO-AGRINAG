@@ -50,24 +50,25 @@ $(document).ready(function () {
 	
 	//OnChange Combos 
 	
-	$("#form_mantenimiento_caja_matriz #tipo_caja_id").on('change', function(event){ 
-		var inventario_id =  $("#frm_tipo_caja_busqueda #inventario_id").val()
+	/*
+	$("#form_mantenimiento_caja_matriz #inventario_id").on('change', function(event){ 
+		var inventario_id =  $("#form_mantenimiento_caja_matriz #inventario_id").val();
 		recargarGrilla(inventario_id);
 	});
-	
-	$("#form_mantenimiento_caja_matriz #tamano_bunch_id").on('change', function(event){ 
-		var inventario_id =  $("#frm_tipo_caja_busqueda #tamano_bunch_id").val()
-		recargarGrilla(tamano_bunch_id);
-	});
-	
-	$("#form_mantenimiento_caja_matriz #tallos_x_bunch").on('change', function(event){ 
-		var inventario_id =  $("#frm_tipo_caja_busqueda #tallos_x_bunch").val()
-		recargarGrilla(tallos_x_bunch);
-	});
-	
+	*/
 	$("#form_mantenimiento_caja_matriz #tipo_caja_id").on('change', function(event){ 
 		recargarGrilla();
 	});
+	
+	$("#form_mantenimiento_caja_matriz #tamano_bunch_id").on('change', function(event){ 
+		recargarGrilla();
+	});
+	
+	$("#form_mantenimiento_caja_matriz #tallos_x_bunch").on('change', function(event){ 
+		recargarGrilla();
+	});
+	
+	
 	
 	/*---------------------------------------------------------------*/	
 	
@@ -823,6 +824,27 @@ function TipoCaja_OpenModalActualizacionMasiva()
 	}//end function consultar_caja_matriz_por_clave_alterna
 	
 
+	
+	
+	function recargarGrilla()
+	{
+		
+		var inventario_id 		=  $("#form_mantenimiento_caja_matriz #inventario_id").val();
+		var tipo_caja_id	 	=  $("#form_mantenimiento_caja_matriz #tipo_caja_id").val();
+		var tamano_bunch_id 	=  $("#form_mantenimiento_caja_matriz #tamano_bunch_id").val();
+		var tallos_x_bunch 		=  $("#form_mantenimiento_caja_matriz #tallos_x_bunch").val();
+		$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json", url: '../../dispo/tipocajamatriz/consultarPorClaveAlternaListado'}).trigger("reloadGrid");
+	/*	if ( (inventario_id='') || (tipo_caja_id='') || (tamano_bunch_id='') || (tallos_x_bunch=''))
+		{
+			alert('entro al if');
+			consultar_caja_matriz_por_clave_alterna(inventario_id, tipo_caja_id, tamano_bunch_id,tallos_x_bunch);
+			$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+			//$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+		}//end if
+		*/
+		console.log(inventario_id, tipo_caja_id, tamano_bunch_id,tallos_x_bunch)
+	}//end function recargarGrilla
 /****************************************************/
 /****************************************************/
 /****************************************************/
