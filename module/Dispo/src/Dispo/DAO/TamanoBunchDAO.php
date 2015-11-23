@@ -53,7 +53,7 @@ class TamanoBunchDAO extends Conexion
 	{
 		$sql = 	' SELECT tamano_bunch.* '.
 				' FROM tamano_bunch '.
-				' ORDER BY nombre ';
+				' ORDER BY orden ';
 	
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
@@ -62,9 +62,9 @@ class TamanoBunchDAO extends Conexion
 		//Elimina los espacios
 		foreach($result as &$reg)
 		{
+			$reg['id'] = trim($reg['id']);
 			$reg['nombre'] = trim($reg['nombre']);
 		}//end foreach
-	
 		return $result;
 	}//end function consultarTodos	
 }//end class

@@ -107,7 +107,7 @@ $(document).ready(function () {
 		//new_format_value = '<a href="javascript:void(0)" onclick="consultar_listado(\''+marcacion_sec+'\')"><img src="<?php echo($this->basePath()); ?>/images/edit.png" border="0" /></a> ';
 		new_format_value = '<a href="javascript:void(0)" onclick="usuario_consultar(\''+id+'\')"><i class="glyphicon glyphicon-pencil" style="color:orange" id="btn_editar_usuario" ></i></a>'; 
 		return new_format_value
-	}//end function ListadoMarcacion_FormatterSincronizado
+	}//end function ListadoUsuario_FormatterEdit
 
 	
 	function ListadoUsuario_FormatterSincronizado(cellvalue, options, rowObject){	
