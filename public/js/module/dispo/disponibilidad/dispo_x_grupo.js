@@ -152,17 +152,32 @@ $(document).ready(function () {
 		return false;
 	});		
 
+	/*---------------------------------------------------------------------------*/
 	$("#frm_dispo_grupo #btn_skype_cajas_x_finca_usa").on('click', function(event){ 
-		DispoGrupo_ExportarSkypeCajasXFincas('USA');
+		//DispoGrupo_ExportarSkypeCajasXFincas('USA');
+		DispoGrupo_OpenDialogExportarSkypeCajasXFincas('USA')
 		return false;
 	});
 	
 	$("#frm_dispo_grupo #btn_skype_cajas_x_finca_rusa").on('click', function(event){ 
-		DispoGrupo_ExportarSkypeCajasXFincas('RUS');
+		//DispoGrupo_ExportarSkypeCajasXFincas('RUS');
+		DispoGrupo_OpenDialogExportarSkypeCajasXFincas('RUS')
 		return false;
 	});
 
-	
+	//DIALOG
+	$("#frm_dispo_grupo_generar_skypexfincas #btn_separar_archivo").on('click', function(event){ 
+		var separar_archivo = 'S';
+		DispoGrupo_ExportarSkypeCajasXFincas($("#frm_dispo_grupo_generar_skypexfincas #inventario_id").val(), separar_archivo);
+		return false;
+	});	
+
+	//DIALOG
+	$("#frm_dispo_grupo_generar_skypexfincas #btn_unificar_archivo").on('click', function(event){
+		var separar_archivo = 'N'; 
+		DispoGrupo_ExportarSkypeCajasXFincas($("#frm_dispo_grupo_generar_skypexfincas #inventario_id").val(), separar_archivo);
+		return false;
+	});		
 	/*---------------------------------------------------------------*/	
 	
 	
@@ -1042,11 +1057,10 @@ $(document).ready(function () {
 	
 		return false;
 	}//end function DispoGrupo_ExportarSkypeCajas
-		
-		
-		
-	function DispoGrupo_ExportarSkypeCajasXFincas(inventario_id)
-	{ 
+
+
+	function DispoGrupo_OpenDialogExportarSkypeCajasXFincas(inventario_id)
+	{
 		if ($("#frm_dispo_grupo #grupo_dispo_cab_id").val()=='')
 		{
 			swal({  title: "Debe seleccionar un grupo",   
@@ -1061,14 +1075,23 @@ $(document).ready(function () {
 				closeOnCancel: false,
 			});
 			return false;
-		}//end if
+		}else{
+			$("#frm_dispo_grupo_generar_skypexfincas #inventario_id").val(inventario_id);
 			
+			$("#dialog_dispo_grupo_generar_skypexfincas").modal('show');
+		}//end if
+	}//end function DispoGrupo_DialogExportarSkypeCajas		
+		
+		
+	function DispoGrupo_ExportarSkypeCajasXFincas(inventario_id, separar_archivo)
+	{
 		cargador_visibility('show');
 
 		var url = '../../dispo/grupodispo/exportarSkypeCajasXFincasDispoGrupo';
 		var params = '?inventario_id='+inventario_id+'&grupo_dispo_cab_id='+$("#frm_dispo_grupo #grupo_dispo_cab_id").val()+
 					 '&color_ventas_id='+$("#frm_dispo_grupo #color_ventas_id").val()+
-					 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val();
+					 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val()+
+					 '&separar_archivo='+separar_archivo;;
 		url = url + params;
 		var win = window.open(url);
 

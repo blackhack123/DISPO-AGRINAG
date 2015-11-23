@@ -806,7 +806,7 @@ class GrupodispoController extends AbstractActionController
 			//$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
 			$color_ventas_id  		= '';
 			$calidad_variedad_id	= '';
-			//$separar_archivo 		= $request->getQuery('separar_archivo', "");
+			$separar_archivo 		= $request->getQuery('separar_archivo', "");
 	
 			$condiciones = array(
 					"inventario_id"				=> $inventario_id,
@@ -814,7 +814,7 @@ class GrupodispoController extends AbstractActionController
 					"color_ventas_id"			=> $color_ventas_id,
 					"calidad_variedad_id"		=> $calidad_variedad_id,
 			);
-			list($archivo_texto_HB, $archivo_texto_QB) = $GrupoDispoCabBO->generarTextoCajasXFincas($condiciones, $usuario_id);
+			list($archivo_texto_HB, $archivo_texto_QB) = $GrupoDispoCabBO->generarTextoCajasXFincas($condiciones, $usuario_id, $separar_archivo);
 			exit;
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));

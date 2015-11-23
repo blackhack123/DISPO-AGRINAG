@@ -734,9 +734,145 @@ class GrupoDispoCabBO extends Conexion
 	}//end function generarTextoCajas
 	
 	
-	
-	
 	public function generarTextoCajasXFincas($condiciones, $usuario_id, $separar_archivo = 'S')
+	{
+		set_time_limit ( 0 );
+		ini_set('memory_limit','-1');
+	
+		$GrupoDispoCabDAO	= new GrupoDispoCabDAO();
+		$reader 			= new \Zend\Config\Reader\Ini();
+		$config  			= $reader->fromFile('ini/config.ini');
+			
+		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+	
+		$inventario_id = $condiciones['inventario_id'];
+	
+		//Consulta la lista de registros
+		$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
+	
+		$tipo_caja = 'HB';
+		$result_HB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+	
+		$tipo_caja = 'QB';
+		$result_QB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+
+		if ($separar_archivo=='N')
+		{
+			$result_QB = $this->transformarResiduosCajaQB($result_HB);  //ESCOGE EL RESIDUO DE LAS CAJAS HB
+				
+			$result_cajas = array_merge($result_HB, $result_QB);
+			ksort($result_cajas);
+			$nro_archivos = 1;
+		}else{
+			if ($result_HB)	ksort($result_HB);
+			if ($result_QB) ksort($result_QB);
+			$nro_archivos = 2;
+		}//end if		
+
+		$files_zip = null;
+		//$files = null;
+		$archivo_texto_HB = '';
+		$archivo_texto_QB = '';
+		for($cont_file = 0; $cont_file<$nro_archivos; $cont_file++)
+		{
+			if ($separar_archivo=='S')
+			{
+				if ($cont_file==0){
+					$result_cajas = $result_HB;
+				}else{
+					$result_cajas = $result_QB;
+				}//end if
+			}//end if
+
+			$arr_grados = array('40','50','60','70','80','90','100','110');
+			$arr_archivo_texto_proveedor['AGR'] = null;
+			$arr_archivo_texto_proveedor['LMA'] = null;
+			$arr_archivo_texto_proveedor['HTC'] = null;
+			//$arr_archivo_texto = null;
+			foreach($result_cajas as $reg)
+			{
+				foreach($arr_grados as $grado_id)
+				{
+					foreach($reg[$grado_id]['cajas']['fincas'] as $key_finca => $reg_finca)
+					{
+						//$total_cajas = $reg_finca;
+						$total_cajas = $reg_finca['total'];
+						if ($total_cajas>0)
+						{
+							$tipo_caja_id	= $reg['tipo_caja_id'];
+							$tallos_x_bunch = $reg['tallos_x_bunch'];
+					
+							$key = $reg['producto_id'].'-'.$reg['variedad'].'-'.$reg['variedad_id'].'-'.$reg['tallos_x_bunch'].'-'.$grado_id.'-'.$reg['tipo_caja_id'];
+		
+							if ($reg['tallos_x_bunch']==25)
+							{
+								$arr_archivo_texto_proveedor[$key_finca][$key] = $total_cajas.$tipo_caja_id.' '.$reg['variedad'].' '.$grado_id.'cm';
+							}else{
+								$arr_archivo_texto_proveedor[$key_finca][$key] = $total_cajas.$tipo_caja_id.' '.$reg['variedad'].' '.$grado_id.'cm (x'.$reg['tallos_x_bunch'].')';
+							}//end if
+						}//end if
+					}//end foreach
+		
+				}//end foreach
+			}// end foreach
+	
+			//Ordena Array
+			ksort($arr_archivo_texto_proveedor['AGR']);
+			ksort($arr_archivo_texto_proveedor['LMA']);
+			ksort($arr_archivo_texto_proveedor['HTC']);
+		
+			$ruta 	= $config['ruta_archivos']['tmp'];
+			//$ruta 	= $config['ruta_archivos']['public']['descarga'];
+			if ($separar_archivo=='S')
+			{
+				if ($cont_file==0)
+				{
+					foreach($arr_archivo_texto_proveedor as $key_archivo_texto_proveedor => $reg_archivo_texto_proveedor)
+					{
+						$archivo_texto	= $ruta.'skype_'.$key_archivo_texto_proveedor.'_HB_'.$usuario_id.'.txt';
+						$archivo_texto_HB = basename($archivo_texto);
+							
+						\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $reg_archivo_texto_proveedor);
+							
+						$files_zip[] = $archivo_texto;
+					}//end foreach
+				}else{
+					foreach($arr_archivo_texto_proveedor as $key_archivo_texto_proveedor => $reg_archivo_texto_proveedor)
+					{
+						$archivo_texto	= $ruta.'skype_'.$key_archivo_texto_proveedor.'_QB_'.$usuario_id.'.txt';
+						$archivo_texto_QB = basename($archivo_texto);
+			
+						\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $reg_archivo_texto_proveedor);
+
+						$files_zip[] = $archivo_texto;
+					}//end foreach
+				}//end if
+			}else{
+				foreach($arr_archivo_texto_proveedor as $key_archivo_texto_proveedor => $reg_archivo_texto_proveedor)
+				{
+					$archivo_texto	= $ruta.'skype_consolidado_'.$key_archivo_texto_proveedor.'_'.$usuario_id.'.txt';
+					\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $reg_archivo_texto_proveedor);
+					
+					$files_zip[] = $archivo_texto;
+				}//end foreach			
+			}//end if
+			//$files['file'] = basename($archivo_texto);
+		}//end for
+
+		$zipname = $ruta.'skype_consolidado_x_fincas_'.$usuario_id.'.zip';
+		if (file_exists($zipname)) {
+			$respuesta = unlink($zipname);
+		}//end if
+		\Application\Classes\Compress::comprimir($files_zip, $zipname);
+		\Application\Classes\Compress::downloadFile($zipname);
+		//BORRA ARCHIVO
+		//return array($archivo_texto_HB, $archivo_texto_QB);
+	}//end function generarTextoCajasXFincas
+	
+	
+	
+	
+	public function generarTextoCajasXFincasOld($condiciones, $usuario_id, $separar_archivo = 'S')
 	{
 		set_time_limit ( 0 );
 		ini_set('memory_limit','-1');
