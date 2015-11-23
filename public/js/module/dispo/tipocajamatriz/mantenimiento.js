@@ -94,7 +94,7 @@ $(document).ready(function () {
 			{name:'tipo_caja_nombre',index:'tipo_caja_nombre', width:110, sorttype:"string", align:"center"},
 			{name:'tallos_x_bunch',index:'tallos_x_bunch', width:110, sorttype:"int", align:"center"},
 			{name:'tamano_bunch_nombre',index:'tamano_bunch_nombre', width:110, sorttype:"string", align:"center"},
-			{name:'40',index:'40', width:50, align:"center", sorttype:"int", editable:true, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
+			{name:'40',index:'40', width:50, align:"center", sorttype:"int", editable:false, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },									
 										dataEvents: [
@@ -120,7 +120,7 @@ $(document).ready(function () {
 													]													
 									 },
 			},	
-			{name:'50',index:'50', width:50, align:"center", sorttype:"int", editable:true, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
+			{name:'50',index:'50', width:50, align:"center", sorttype:"int", editable:false, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
 										dataEvents: [
@@ -141,7 +141,7 @@ $(document).ready(function () {
 													]																				
 									 }
 			},	
-			{name:'60',index:'60', width:50, align:"center", sorttype:"int", editable:true, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
+			{name:'60',index:'60', width:50, align:"center", sorttype:"int", editable:false, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
 										dataEvents: [
@@ -162,7 +162,7 @@ $(document).ready(function () {
 													]																				
 									 }
 			},	
-			{name:'70',index:'70', width:50, align:"center", sorttype:"int", editable:true, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
+			{name:'70',index:'70', width:50, align:"center", sorttype:"int", editable:false, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
 										dataEvents: [
@@ -183,7 +183,7 @@ $(document).ready(function () {
 													]																				
 									 }
 			},	
-			{name:'80',index:'80', width:50, align:"center", sorttype:"int", editable:true, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
+			{name:'80',index:'80', width:50, align:"center", sorttype:"int", editable:false, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
 										dataEvents: [
@@ -204,7 +204,7 @@ $(document).ready(function () {
 													]																				
 									 }
 			},	
-			{name:'90',index:'90', width:50, align:"center", sorttype:"int", editable:true, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
+			{name:'90',index:'90', width:50, align:"center", sorttype:"int", editable:false, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
 										dataEvents: [
@@ -225,7 +225,7 @@ $(document).ready(function () {
 													]																				
 									 }
 			},	
-			{name:'100',index:'100', width:50, align:"center", sorttype:"int", editable:true, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
+			{name:'100',index:'100', width:50, align:"center", sorttype:"int", editable:false, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
 										dataEvents: [
@@ -246,7 +246,7 @@ $(document).ready(function () {
 													]																				
 									 }
 			},	
-			{name:'110',index:'110', width:50, align:"center", sorttype:"int", editable:true, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
+			{name:'110',index:'110', width:50, align:"center", sorttype:"int", editable:false, formatter: gridTipoCaja_GradosFormatter, unformat:gridTipoCaja_GradosUnFormatter,
 						editoptions: {
 										dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
 										dataEvents: [
@@ -286,7 +286,7 @@ $(document).ready(function () {
 		loadComplete: grid_setAutoHeight,
 		resizeStop: grid_setAutoHeight, 
 		rownumbers: true,
-		cellEdit: true,
+		cellEdit: false,
 		cellsubmit: 'clientArray',
 		editurl: 'clientArray',	
 		jsonReader: {
@@ -835,14 +835,7 @@ function TipoCaja_OpenModalActualizacionMasiva()
 		var tallos_x_bunch 		=  $("#form_mantenimiento_caja_matriz #tallos_x_bunch").val();
 		$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json", url: '../../dispo/tipocajamatriz/consultarPorClaveAlternaListado'}).trigger("reloadGrid");
-	/*	if ( (inventario_id='') || (tipo_caja_id='') || (tamano_bunch_id='') || (tallos_x_bunch=''))
-		{
-			alert('entro al if');
-			consultar_caja_matriz_por_clave_alterna(inventario_id, tipo_caja_id, tamano_bunch_id,tallos_x_bunch);
-			$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-			//$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-		}//end if
-		*/
+
 		console.log(inventario_id, tipo_caja_id, tamano_bunch_id,tallos_x_bunch)
 	}//end function recargarGrilla
 /****************************************************/
