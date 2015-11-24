@@ -13,6 +13,12 @@ $(document).ready(function () {
 	dispoGrupo_init();
 	//DispoGrupo_initMantenimiento();
 	
+	$("#frm_dispo_grupo #btn_excel").on('click', function(event){ 
+		DispoGrupo_ExportarExcel();
+		return false;
+	});	
+	
+	
 	$("#frm_dispo_grupo #btn_consultar").on('click', function(event){ 
 		$('#grid_dispo_grupo').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;
@@ -108,16 +114,34 @@ $(document).ready(function () {
 	});	
 	
 	
+	/*--------------------------------------------------------------------------*/
+	/**/
 	$("#frm_dispo_grupo #btn_skype_cajas_usa").on('click', function(event){ 
-		DispoGrupo_ExportarSkypeCajas('USA');
+		DispoGrupo_OpenDialogExportarSkypeCajas('USA')
 		return false;
 	});	
 	
 	$("#frm_dispo_grupo #btn_skype_cajas_rusa").on('click', function(event){ 
-		DispoGrupo_ExportarSkypeCajas('RUS');
+		DispoGrupo_OpenDialogExportarSkypeCajas('RUS')
 		return false;
 	});		
+	
+	//DIALOG
+	$("#frm_dispo_grupo_generar_skype #btn_separar_archivo").on('click', function(event){ 
+		var separar_archivo = 'S';
+		DispoGrupo_ExportarSkypeCajas($("#frm_dispo_grupo_generar_skype #inventario_id").val(), separar_archivo);
+		return false;
+	});	
 
+	//DIALOG
+	$("#frm_dispo_grupo_generar_skype #btn_unificar_archivo").on('click', function(event){
+		var separar_archivo = 'N'; 
+		DispoGrupo_ExportarSkypeCajas($("#frm_dispo_grupo_generar_skype #inventario_id").val(), separar_archivo);
+		return false;
+	});	
+	
+
+	/*---------------------------------------------------------------------------*/
 	$("#frm_dispo_grupo #btn_excel_interno_usa").on('click', function(event){ 
 		DispoGrupo_ExportarExcelInternoCajas('USA');
 		return false;
@@ -127,7 +151,33 @@ $(document).ready(function () {
 		DispoGrupo_ExportarExcelInternoCajas('RUS');
 		return false;
 	});		
+
+	/*---------------------------------------------------------------------------*/
+	$("#frm_dispo_grupo #btn_skype_cajas_x_finca_usa").on('click', function(event){ 
+		//DispoGrupo_ExportarSkypeCajasXFincas('USA');
+		DispoGrupo_OpenDialogExportarSkypeCajasXFincas('USA')
+		return false;
+	});
 	
+	$("#frm_dispo_grupo #btn_skype_cajas_x_finca_rusa").on('click', function(event){ 
+		//DispoGrupo_ExportarSkypeCajasXFincas('RUS');
+		DispoGrupo_OpenDialogExportarSkypeCajasXFincas('RUS')
+		return false;
+	});
+
+	//DIALOG
+	$("#frm_dispo_grupo_generar_skypexfincas #btn_separar_archivo").on('click', function(event){ 
+		var separar_archivo = 'S';
+		DispoGrupo_ExportarSkypeCajasXFincas($("#frm_dispo_grupo_generar_skypexfincas #inventario_id").val(), separar_archivo);
+		return false;
+	});	
+
+	//DIALOG
+	$("#frm_dispo_grupo_generar_skypexfincas #btn_unificar_archivo").on('click', function(event){
+		var separar_archivo = 'N'; 
+		DispoGrupo_ExportarSkypeCajasXFincas($("#frm_dispo_grupo_generar_skypexfincas #inventario_id").val(), separar_archivo);
+		return false;
+	});		
 	/*---------------------------------------------------------------*/	
 	
 	
@@ -901,9 +951,58 @@ $(document).ready(function () {
 	
 	
 	
+		function DispoGrupo_ExportarExcel()
+		{
+			if ($("#frm_dispo_grupo #grupo_dispo_cab_id").val()=='')
+			{
+				swal({  title: "Debe seleccionar un grupo",   
+					//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+					//html:true,
+					type: "warning",
+					showCancelButton: false,
+					confirmButtonColor: "#DD6B55",
+					confirmButtonText: "OK",
+					cancelButtonText: "",
+					closeOnConfirm: false,
+					closeOnCancel: false,
+				});
+				return false;
+			}//end if
+						
+			cargador_visibility('show');
+
+			var url = '../../dispo/grupodispo/exportarExcelDispoGrupo';
+			var params = '?grupo_dispo_cab_id='+$("#frm_dispo_grupo #grupo_dispo_cab_id").val()+
+						 '&color_ventas_id='+$("#frm_dispo_grupo #color_ventas_id").val()+
+					 	 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val();
+			url = url + params;
+			var win = window.open(url);
+			
+			cargador_visibility('hide');
+		}//end function DispoGeneral_ExportarExcel
+
+
+	
+	
 	
 	function DispoGrupo_ExportarExcelCajas(inventario_id)
 	{
+		if ($("#frm_dispo_grupo #grupo_dispo_cab_id").val()=='')
+		{
+			swal({  title: "Debe seleccionar un grupo",   
+				//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+				//html:true,
+				type: "warning",
+				showCancelButton: false,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "OK",
+				cancelButtonText: "",
+				closeOnConfirm: false,
+				closeOnCancel: false,
+			});
+			return false;
+		}//end if
+				
 		cargador_visibility('show');
 
 		var url = '../../dispo/grupodispo/exportaExcelCajasDispoGrupo';
@@ -916,28 +1015,111 @@ $(document).ready(function () {
 		cargador_visibility('hide');
 	}//end function DispoGeneral_ExportarExcel
 	
+
+	function DispoGrupo_OpenDialogExportarSkypeCajas(inventario_id)
+	{
+		if ($("#frm_dispo_grupo #grupo_dispo_cab_id").val()=='')
+		{
+			swal({  title: "Debe seleccionar un grupo",   
+				//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+				//html:true,
+				type: "warning",
+				showCancelButton: false,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "OK",
+				cancelButtonText: "",
+				closeOnConfirm: false,
+				closeOnCancel: false,
+			});
+			return false;
+		}else{
+			$("#frm_dispo_grupo_generar_skype #inventario_id").val(inventario_id);
+			
+			$("#dialog_dispo_grupo_generar_skype").modal('show');
+		}//end if
+	}//end function DispoGrupo_DialogExportarSkypeCajas
 	
-	function DispoGrupo_ExportarSkypeCajas(inventario_id)
+	
+	function DispoGrupo_ExportarSkypeCajas(inventario_id, separar_archivo)
 	{ 
 		cargador_visibility('show');
-
+	
 		var url = '../../dispo/grupodispo/exportarSkypeCajasDispoGrupo';
 		var params = '?inventario_id='+inventario_id+'&grupo_dispo_cab_id='+$("#frm_dispo_grupo #grupo_dispo_cab_id").val()+
 					 '&color_ventas_id='+$("#frm_dispo_grupo #color_ventas_id").val()+
-					 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val();
+					 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val()+
+					 '&separar_archivo='+separar_archivo;
+		url = url + params;
+		var win = window.open(url);
+	
+		cargador_visibility('hide');
+		swal.close();					
+	
+		return false;
+	}//end function DispoGrupo_ExportarSkypeCajas
+
+
+	function DispoGrupo_OpenDialogExportarSkypeCajasXFincas(inventario_id)
+	{
+		if ($("#frm_dispo_grupo #grupo_dispo_cab_id").val()=='')
+		{
+			swal({  title: "Debe seleccionar un grupo",   
+				//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+				//html:true,
+				type: "warning",
+				showCancelButton: false,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "OK",
+				cancelButtonText: "",
+				closeOnConfirm: false,
+				closeOnCancel: false,
+			});
+			return false;
+		}else{
+			$("#frm_dispo_grupo_generar_skypexfincas #inventario_id").val(inventario_id);
+			
+			$("#dialog_dispo_grupo_generar_skypexfincas").modal('show');
+		}//end if
+	}//end function DispoGrupo_DialogExportarSkypeCajas		
+		
+		
+	function DispoGrupo_ExportarSkypeCajasXFincas(inventario_id, separar_archivo)
+	{
+		cargador_visibility('show');
+
+		var url = '../../dispo/grupodispo/exportarSkypeCajasXFincasDispoGrupo';
+		var params = '?inventario_id='+inventario_id+'&grupo_dispo_cab_id='+$("#frm_dispo_grupo #grupo_dispo_cab_id").val()+
+					 '&color_ventas_id='+$("#frm_dispo_grupo #color_ventas_id").val()+
+					 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val()+
+					 '&separar_archivo='+separar_archivo;;
 		url = url + params;
 		var win = window.open(url);
 
 		cargador_visibility('hide');
 
 		return false;
-	}//end function DispoGeneral_ExportarExcel
-		
+	}//end function DispoGrupo_ExportarSkypeCajasXFincas		
 		
 		
 		
 	function DispoGrupo_ExportarExcelInternoCajas(inventario_id)
-	{ 
+	{  
+		if ($("#frm_dispo_grupo #grupo_dispo_cab_id").val()=='')
+		{
+			swal({  title: "Debe seleccionar un grupo",   
+				//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+				//html:true,
+				type: "warning",
+				showCancelButton: false,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "OK",
+				cancelButtonText: "",
+				closeOnConfirm: false,
+				closeOnCancel: false,
+			});
+			return false;
+		}//end if
+	
 		cargador_visibility('show');
 
 		var url = '../../dispo/grupodispo/exportaExcelInternoCajasDispoGrupo';

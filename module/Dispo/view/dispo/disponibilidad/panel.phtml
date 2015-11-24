@@ -51,10 +51,6 @@
 				$(this).tab('show')
 			})
 			
-			$("#frm_dispo_grupo #btn_excel").on('click', function(event){ 
-	        	DispoGrupo_ExportarExcel();
-	    		return false;
-	    	});	
 		});//$(document).ready
 		
 		
@@ -276,21 +272,6 @@
 			return false;				
 		}//end function sincronizarDispoRemote
 
-
-		function DispoGrupo_ExportarExcel()
-		{
-			cargador_visibility('show');
-
-			var url = '../../dispo/grupodispo/exportarExcelDispoGrupo';
-			var params = '?grupo_dispo_cab_id='+$("#frm_dispo_grupo #grupo_dispo_cab_id").val()+
-						 '&color_ventas_id='+$("#frm_dispo_grupo #color_ventas_id").val()+
-					 	 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val();
-			url = url + params;
-			var win = window.open(url);
-			
-			cargador_visibility('hide');
-		}//end function DispoGeneral_ExportarExcel
-		
 	</script>
 
 
@@ -765,14 +746,17 @@
                                                     <li role="separator" class="divider"></li>
                                                     <li class="bg-primary">&nbsp;&nbsp;Formato USA</li>
                                                     <li><a id="btn_excel_cajas_usa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> EXCEL CAJAS GENERAL</a></li>
-                                                    <li><a id="btn_skype_cajas_usa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> SKYPE</a></li>
                                                     <li><a id="btn_excel_interno_usa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> EXCEL CAJAS POR FINCAS</a></li>
+                                                    <li><a id="btn_skype_cajas_usa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> SKYPE GENERAL</a></li>
+                                                     <li><a id="btn_skype_cajas_x_finca_usa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> SKYPE POR FINCAS</a></li>
                                                     
                                                     <li role="separator" class="divider"></li>    
                                                     
                                                     <li style="background:ForestGreen"><span style="color:white">&nbsp;&nbsp;Formato RUSO</span></li>                                                    
-                                                    <li><a id="btn_excel_cajas_rusa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> EXCEL CAJAS GENERAL</a></li>                                                    <li><a id="btn_skype_cajas_rusa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> SKYPE</a></li>
-                                                    <li><a id="btn_excel_interno_rusa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> EXCEL CAJAS POR FINCAS</a></li>
+                                                    <li><a id="btn_excel_cajas_rusa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> EXCEL CAJAS GENERAL</a></li>     
+                                                    <li><a id="btn_excel_interno_rusa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> EXCEL CAJAS POR FINCAS</a></li>                                               
+                                                    <li><a id="btn_skype_cajas_rusa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> SKYPE GENERAL</a></li>
+													<li><a id="btn_skype_cajas_x_finca_rusa" href="return false;"><i class="glyphicon glyphicon-download-alt text-primary"></i> SKYPE POR FINCAS</a></li>                                                    
                                                     
                                                   </ul>
                                             </div>
@@ -905,7 +889,79 @@
                                     </div>
                                 </div>
                             </div>                              
-                             <!-- END Modal GRUPOS X DISPO ----------------------------------------------------------------------------------------->                           
+                             <!-- END Modal GRUPOS X DISPO ----------------------------------------------------------------------------------------->
+                             
+                             
+                             <!-- Modal para Generar los archivos SKYPE----------------------------------------------------------------------------->
+                            <div class="modal fade" id="dialog_dispo_grupo_generar_skype" tabindex="-1" role="dialog" aria-labelledby="Dialogo para el mantenimiento del Grupo Mantenimiento">
+                                <div class="modal-dialog modal-md" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h2 class="modal-title" id="myModalLabel" style="color:#036305">DESCARGAR ARCHIVO SKYPE</h2>
+                                        </div>
+                                        <div class="modal-body">
+											<form id="frm_dispo_grupo_generar_skype" name="frm_dispo_grupo_generar_skype" action="#" method="post" class="form-horizontal" />                                      
+                                            	<input type="hidden" id="inventario_id" name="inventario_id" value="" /> 
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        <h3 style="color:#9C0A0C"><b>Desea usar un solo archivo o separarlo en un archivo HB y QB?</b></h3>
+                                                    </div>
+                                                </div>
+                                                <div class="row">                                        
+                                                    <div class="col-md-12 text-center">
+                                                        <button id="btn_separar_archivo" type="button" class="btn btn-success btn-lg ">Separar en archivo HB y QB</button>
+                                                    </div>
+                                                </div>
+                                                <div class="row text-center" style="margin-top:5px">
+                                                    <div class="col-md-12 text-center">
+                                                        <button id="btn_unificar_archivo" type="button" class="btn btn-danger btn-lg">Usar un solo archivo!</button>
+                                                    </div>
+                                                </div>
+                                          	</form>
+                                            
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                              
+                             <!-- END MODAL para Generar los archivos SKYPE----------------------------------------------------------------------------->                             
+     
+     
+                             <!-- Modal para Generar los archivos SKYPE X FINCAS------------------------------------------------------------------------>
+                            <div class="modal fade" id="dialog_dispo_grupo_generar_skypexfincas" tabindex="-1" role="dialog" aria-labelledby="Dialogo para descargar el archivo texto agrupado por fincas en formato zip">
+                                <div class="modal-dialog modal-md" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h2 class="modal-title" id="myModalLabel" style="color:#036305">DESCARGAR ARCHIVO SKYPE X FINCAS</h2>
+                                        </div>
+                                        <div class="modal-body">
+											<form id="frm_dispo_grupo_generar_skypexfincas" name="frm_dispo_grupo_generar_skype" action="#" method="post" class="form-horizontal" />                                      
+                                            	<input type="hidden" id="inventario_id" name="inventario_id" value="" /> 
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        <h3 style="color:#9C0A0C"><b>Desea usar un solo archivo o separarlo en un archivo HB y QB?</b></h3>
+                                                    </div>
+                                                </div>
+                                                <div class="row">                                        
+                                                    <div class="col-md-12 text-center">
+                                                        <button id="btn_separar_archivo" type="button" class="btn btn-success btn-lg ">Separar en archivo HB y QB</button>
+                                                    </div>
+                                                </div>
+                                                <div class="row text-center" style="margin-top:5px">
+                                                    <div class="col-md-12 text-center">
+                                                        <button id="btn_unificar_archivo" type="button" class="btn btn-danger btn-lg">Usar un solo archivo!</button>
+                                                    </div>
+                                                </div>
+                                          	</form>
+                                            
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                              
+                             <!-- END MODAL para Generar los archivos SKYPE X FINCAS---------------------------------------------------------------->                             
      
                         </div>
                     </div>

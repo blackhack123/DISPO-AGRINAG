@@ -672,9 +672,11 @@ class GrupodispoController extends AbstractActionController
 			$request 				= $this->getRequest();
 			
 			$grupo_dispo_cab_id 	= $request->getQuery('grupo_dispo_cab_id', "");
-			$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
-			$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
-	
+			//$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
+			//$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
+			$color_ventas_id  		= "";
+			$calidad_variedad_id	= "";
+			
 			$condiciones = array(
 					"grupo_dispo_cab_id"		=> $grupo_dispo_cab_id,
 					"color_ventas_id"			=> $color_ventas_id,
@@ -712,8 +714,10 @@ class GrupodispoController extends AbstractActionController
 
 			$inventario_id			= $request->getQuery('inventario_id', "");
 			$grupo_dispo_cab_id 	= $request->getQuery('grupo_dispo_cab_id', "");
-			$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
-			$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
+			//$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
+			//$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
+			$color_ventas_id  		= "";
+			$calidad_variedad_id	= "";				
 	
 			//$grupo_dispo_cab_id = 1;
 			
@@ -750,39 +754,25 @@ class GrupodispoController extends AbstractActionController
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
 			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
-	
-			
+
 			$request 				= $this->getRequest();
-	
+
 			$inventario_id			= $request->getQuery('inventario_id', "");
 			$grupo_dispo_cab_id 	= $request->getQuery('grupo_dispo_cab_id', "");
-			$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
-			$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
-			
-			/*$body = $this->getRequest()->getContent();
-			$json = json_decode($body, true);
-			
-			$inventario_id			= $json['inventario_id'];
-			$grupo_dispo_cab_id		= $json['grupo_dispo_cab_id'];
-			$color_ventas_id		= $json['color_ventas_id'];
-			$calidad_variedad_id	= $json['calidad_variedad_id'];
-	*/
-			//$grupo_dispo_cab_id = 1;
-				
+			//$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
+			//$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
+			$color_ventas_id  		= '';
+			$calidad_variedad_id	= '';
+			$separar_archivo 		= $request->getQuery('separar_archivo', "");
+
 			$condiciones = array(
 					"inventario_id"				=> $inventario_id,
 					"grupo_dispo_cab_id"		=> $grupo_dispo_cab_id,
 					"color_ventas_id"			=> $color_ventas_id,
-					"calidad_variedad_id"		=> $calidad_variedad_id
+					"calidad_variedad_id"		=> $calidad_variedad_id,
 			);
-			list($archivo_texto_HB, $archivo_texto_QB) = $GrupoDispoCabBO->generarTextoCajas($condiciones, $usuario_id);
+			list($archivo_texto_HB, $archivo_texto_QB) = $GrupoDispoCabBO->generarTextoCajas($condiciones, $usuario_id, $separar_archivo);
 			exit;
-			/*$response = new \stdClass();			
-			$response->archivo_texto_HB 	= $archivo_texto_HB;
-			$response->archivo_texto_QB 	= $archivo_texto_QB;
-			$response->respuesta_code 		= 'OK';			
-			$json = new JsonModel(get_object_vars($response));
-			return $json;		*/	
 		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
@@ -793,6 +783,48 @@ class GrupodispoController extends AbstractActionController
 	}//end function exportaSkypelCajasDispoGrupoAction	
 
 	
+	
+	function exportarSkypeCajasXFincasDispoGrupoAction()
+	{
+		try
+		{
+			$viewModel 			= new ViewModel();
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$GrupoDispoCabBO = new GrupoDispoCabBO();
+			$GrupoDispoCabBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+	
+			$request 				= $this->getRequest();
+	
+			$inventario_id			= $request->getQuery('inventario_id', "");
+			$grupo_dispo_cab_id 	= $request->getQuery('grupo_dispo_cab_id', "");
+			//$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
+			//$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
+			$color_ventas_id  		= '';
+			$calidad_variedad_id	= '';
+			$separar_archivo 		= $request->getQuery('separar_archivo', "");
+	
+			$condiciones = array(
+					"inventario_id"				=> $inventario_id,
+					"grupo_dispo_cab_id"		=> $grupo_dispo_cab_id,
+					"color_ventas_id"			=> $color_ventas_id,
+					"calidad_variedad_id"		=> $calidad_variedad_id,
+			);
+			list($archivo_texto_HB, $archivo_texto_QB) = $GrupoDispoCabBO->generarTextoCajasXFincas($condiciones, $usuario_id, $separar_archivo);
+			exit;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function exportarSkypeCajasXFincasDispoGrupoAction
+		
 	
 	
 	public function verArchivoSkypeCajasAction()
@@ -830,8 +862,11 @@ class GrupodispoController extends AbstractActionController
 	
 			$inventario_id			= $request->getQuery('inventario_id', "");
 			$grupo_dispo_cab_id 	= $request->getQuery('grupo_dispo_cab_id', "");
-			$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
-			$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
+			//$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
+			//$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
+			$color_ventas_id  		= "";
+			$calidad_variedad_id	= "";
+				
 	
 			//$grupo_dispo_cab_id = 1;
 				
