@@ -96,7 +96,7 @@ class TipoCajaMatrizDAO extends Conexion
 	 */
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT tipo_caja_matriz.inventario_id, tipo_caja_matriz.tipo_caja_id, tipo_caja_matriz.tamano_bunch_id,
+		$sql = 	' SELECT tipo_caja_matriz.id as id_caja_matriz,tipo_caja_matriz.inventario_id, tipo_caja_matriz.tipo_caja_id, tipo_caja_matriz.tamano_bunch_id,
 						 tipo_caja.nombre AS tipo_caja_nombre, tipo_caja_matriz.tallos_x_bunch, tamano_bunch.nombre AS tamano_bunch_nombre, '.
 				" 		 sum(if(tipo_caja_matriz.grado_id=40,  tipo_caja_matriz.unds_bunch, 0)) as '40',".
 				" 		 sum(if(tipo_caja_matriz.grado_id=50,  tipo_caja_matriz.unds_bunch, 0)) as '50',".
@@ -436,6 +436,28 @@ class TipoCajaMatrizDAO extends Conexion
 	}//end function consultarPorClaveAlterna
 	
 	
+	
+	/**
+	 * 
+	 * @param string $inventario_id
+	 * @param string $tipo_caja_id
+	 * @param int $tallos_x_bunch
+	 * @param string $tamano_bunch_id
+	 */
+	public function eliminar($inventario_id, $tipo_caja_id, $tallos_x_bunch, $tamano_bunch_id)
+	{
+			$sql = 	' DELETE tipo_caja_matriz.* '.
+				' FROM tipo_caja_matriz '.
+				" WHERE tipo_caja_matriz.inventario_id				= '".$inventario_id."'".
+				"			AND tipo_caja_matriz.tipo_caja_id 		= '".$tipo_caja_id."'".
+				"			AND tipo_caja_matriz.tallos_x_bunch 	= ".$tallos_x_bunch.
+				"			AND tipo_caja_matriz.tamano_bunch_id 	= '".$tamano_bunch_id."'";
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		//$stmt->bindValue(':id',$id);
+		$stmt->execute();
+		
+	}//end function eliminar
+	
+	
 }//end class
 
-?>

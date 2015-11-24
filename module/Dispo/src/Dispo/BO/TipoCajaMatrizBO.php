@@ -296,4 +296,45 @@ class TipoCajaMatrizBO extends Conexion
 	}//end public function consultarPorClaveAlternaListado
 	
 	
+	
+	/**
+	 *
+	 * @param ArrTipoCajaMatrizData[]  $ArrTipoCajaMatrizData
+	 * @throws Exception
+	 * @return string
+	 */
+	function eliminarCajaMatrizMasiva($ArrTipoCajaMatrizData)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try
+		{
+			$TipoCajaMatrizData = new TipoCajaMatrizData();
+			$TipoCajaMatrizDAO = new TipoCajaMatrizDAO();
+			$TipoCajaMatrizDAO->setEntityManager($this->getEntityManager());
+				
+			//$TipoCajaMatrizData = new TipoCajaMatrizData();
+				
+			foreach($ArrTipoCajaMatrizData as $TipoCajaMatrizData)
+	
+			{
+			//ELIMINAR
+				$id = $TipoCajaMatrizDAO->eliminar(
+														$TipoCajaMatrizData->getInventarioId(), $TipoCajaMatrizData->getTipoCajaId(), 
+														$TipoCajaMatrizData->getTallosxBunch(), $TipoCajaMatrizData->getTamanoBunchId()
+											 	 );
+			}//end foreach
+	
+			$this->getEntityManager()->getConnection()->commit();
+			
+			$result['validacion_code'] 	= 'OK';
+			$result['respuesta_mensaje']= 'Registros eliminados correctamente';
+			return $result;
+		}catch (Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			$this->getEntityManager()->close();
+			throw $e;
+		}//end try
+	
+	}//end function eliminarCajaMatrizMasiva
+	
 }//end class

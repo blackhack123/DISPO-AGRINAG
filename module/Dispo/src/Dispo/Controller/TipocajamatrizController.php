@@ -376,12 +376,6 @@ class TipocajamatrizController extends AbstractActionController
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
 
-			//recibo los paramtros para el listado
-	  /*	$inventario_id		= $json['inventario_id'];
-			$tipo_caja_id		= $json['tipo_caja_id'];
-			$tamano_bunch_id	= $json['tamano_bunch_id'];
-			$tallos_x_bunch		= $json['tallos_x_bunch'];
-		*/
 			//paguineo de la grilla
 			$request 		= $this->getRequest();
 			
@@ -409,28 +403,33 @@ class TipocajamatrizController extends AbstractActionController
 			
 			
 			//consulta el listado con parametros $condiciones
-			$result				= $TipoCajaMatrizBO->consultarPorClaveAlternaListado($condiciones);
-			
-	
+			$result		= $TipoCajaMatrizBO->consultarPorClaveAlternaListado($condiciones);
+
 			$response = new \stdClass();
-			$response->respuesta_code 		= 'OK';
 			$i=0;
 			if ($result)
 			{
-				foreach($result as $row){
+				foreach($result as $row)
+				{
 					$response->rows[$i] = $row;
 					$i++;
 				}//end foreach
+				$response->userData['respuesta'] = 'OK';
+			}else{
+				$response->userData['respuesta'] = 'NO-DATA';
+				$response->rows				   = null;
 			}//end if
-			$i = 1;
+			
+			//$i = 1;
 			$tot_reg = $i;
-			$response->total 	= ceil($i);
-			$response->page 	= $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
 			$response->records 	= $tot_reg;
+			
 			$json = new JsonModel(get_object_vars($response));
 			return $json;
-			//false
-			}catch (\Exception $e) {
+
+		}catch (\Exception $e) {
 			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
 			$response = $this->getResponse();
 			$response->setStatusCode(500);
@@ -439,6 +438,63 @@ class TipocajamatrizController extends AbstractActionController
 		}
 	}//end function consultarPorClaveAlternaListadoAction
 	
+	
+	
+	
+	public function eliminarCajaMatrizMasivaAction()
+	{
+	
+		try
+	
+		{
+			$SesionUsuarioPlugin 	= $this->SesionUsuarioPlugin();
+			$usuario_id				= $SesionUsuarioPlugin->getUsuarioId();
+				
+			$EntityManagerPlugin 	= $this->EntityManagerPlugin();
+			$TipoCajaMatrizBO 		= new TipoCajaMatrizBO();
+				
+			$TipoCajaMatrizBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$respuesta = $SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+				
+			$body = $this->getRequest()->getContent();
+			$json = json_decode($body, true);
+				
+			$grid_data 		= $json['grid_data'];
+				
+			$ArrTipoCajaMatrizData= array();
+			
+			foreach ($grid_data	as $reg)
+			{
+	
+				$TipoCajaMatrizData = new TipoCajaMatrizData();
+					
+				
+				$TipoCajaMatrizData->setInventarioId($reg['inventario_id']);
+				$TipoCajaMatrizData->setTipoCajaId($reg['tipo_caja_id']);
+				$TipoCajaMatrizData->setTamanoBunchId($reg['tamano_bunch_id']);
+				$TipoCajaMatrizData->setTallosxBunch($reg['tallos_x_bunch']);
+				
+				$ArrTipoCajaMatrizData[] = $TipoCajaMatrizData;
+				
+				unset($TipoCajaMatrizData);
+				
+			}//end foreach
+				
+			$respuesta = $TipoCajaMatrizBO->eliminarCajaMatrizMasiva($ArrTipoCajaMatrizData);
+			$response = new \stdClass();
+			$response->respuesta_code 		= 'OK';
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch(\Exception $e){
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function registrarCajaMatrizAction
 	
 	
 }// end Class TipocajamatrizController
