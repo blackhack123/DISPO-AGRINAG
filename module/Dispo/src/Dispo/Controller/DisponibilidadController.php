@@ -1512,5 +1512,72 @@ class DisponibilidadController extends AbstractActionController
 		}
 	}//end function moverstockAction
 	
+	
+	
+	public function listadoAgrupadoFechaBunchDataAction()
+	{
+		try
+		{
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$DispoBO = new DispoBO();
+			$DispoBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+	
+			$request 		= $this->getRequest();
+			$inventario_id  = $request->getQuery('inventario_id', "");
+			$proveedor_id  	= $request->getQuery('proveedor_id', "");
+			$clasifica  	= $request->getQuery('clasifica', "");
+			$color_ventas_id= $request->getQuery('color_ventas_id', "");
+			$calidad_variedad_id = $request->getQuery('calidad_variedad_id', "");
+			$nro_tallos		= $request->getQuery('nro_tallos', "");
+			$page 			= $request->getQuery('page');
+			$limit 			= $request->getQuery('rows');
+			$sidx			= $request->getQuery('sidx',1);
+			$sord 			= $request->getQuery('sord', "");
+			$DispoBO->setPage($page);
+			$DispoBO->setLimit($limit);
+			$DispoBO->setSidx($sidx);
+			$DispoBO->setSord($sord);
+			$condiciones = array(
+					"inventario_id"		=> $inventario_id,
+					"proveedor_id"		=> $proveedor_id,
+					"clasifica"			=> $clasifica,
+					"color_ventas_id"	=> $color_ventas_id,
+					"calidad_variedad_id"=> $calidad_variedad_id,
+					"nro_tallos"		=> $nro_tallos
+			);
+			//$omitir_registro_vacio = false;
+			
+			$result = $DispoBO->listadoAgrupadoFechaBunch($condiciones);
 
+			$response = new \stdClass();
+			$i=0;
+			if ($result)
+			{
+				foreach($result as $row){
+					$row['fecha_bunch'] = $row['fecha_bunch'];
+					$response->rows[$i] = $row;
+					$i++;
+	
+				}//end foreach
+			}//end if
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+				
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function listadoAgrupadoFechaBunchDataAction
+	
 }
