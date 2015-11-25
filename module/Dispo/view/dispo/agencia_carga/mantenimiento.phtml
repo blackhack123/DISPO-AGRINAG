@@ -1,314 +1,55 @@
 
-<script>
-	$(document).ready(function () {
-		InputData_UpperCaseAll();		
-		InputData_TrimAll();
-/*		InputData_KeyEnterDisabled();*/
-//		InputData_initNumberAndDecimal();
-		
-		
-		$('table').tablesorter(); //Columna de Sueldo
-		$("table").stickyTableHeaders();
 
+<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/agenciacarga/agencia-carga.js')); ?>"></script>
 
-        $("#btn_consultar").on('click', function(event){ 
-            $("#frm_busqueda").submit();
-			return false;
-        });
-
-        $("#btn_nuevo").on('click', function(event){
-			nuevo(); 
-			return false;
-        });       
-
-        $(".btn_edit").on('click', function(event){ 
-			var tr 			= $(this).closest('tr');
-			var id 			= tr.attr('id');
-
-			consultar_agencia_carga(id);
-			//$("#dialog_mantenimiento").modal('show') 
-        });
-		
-		
-        $("#tbl_registros tbody tr").on('dblclick', function(event){ 
-			var tr 			= $(this).closest('tr');
-			var id 			= tr.attr('id');
-
-			consultar_agencia_carga(id);
-			//$("#dialog_mantenimiento").modal('show') 
-        });		
-
-        $("#btn_grabar").on('click', function(event){ 
-        	grabar();
-			return false;
-        });       
-
-        $("#frm_busqueda #btn_excel").on('click', function(event){ 
-        	AgenciaCarga_ExportarExcel();
-    		return false;
-    	});	
-
-	});//$(document).ready
-	
-	
-	function nuevo()
-	{
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/agenciacarga/nuevodata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									ValidateControlsInit();
-									$("#accion").val("I");
-									$("#dialog_mantenimiento_agenciacarga_nombre").html("NUEVO REGISTRO");
-
-									$("#id").val('');
-									$("#id").prop('readonly',false);
-									$("#nombre").val('');
-									$("#direccion").val('');
-									$("#telefono").val('');
-									$("#tipo").html(response.cbo_tipo);
-									$("#estado").html(response.cbo_estado);
-									$("#lbl_fec_sincronizado").html('');
-									$("#lbl_usuario_ing").html('');
-									$("#lbl_fec_ingreso").html('');
-									$("#lbl_usuario_mod").html('');
-									$("#lbl_fec_modifica").html('');
-									$("#sincronizado_pendiente").show();
-									$("#sincronizado_ok").hide();
-									
-									$("#dialog_mantenimiento").modal('show')
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;				
-	}//end function nuevo
-	
-	function consultar_agencia_carga(id)
-	{
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{id: id}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/agenciacarga/consultardata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									mostrar_registro(response)
-									cargador_visibility('hide');
-
-									$("#dialog_mantenimiento").modal('show')
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function consultar_agencia_carga
-
-	
-
-	function grabar(){
-		if (!ValidateControls('frm')) {
-			return false;
-		}//end FuncionGrabar
-		
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{	accion: $("#accion").val(),
-					 	id: $("#id").val(),
-					 	nombre: $("#nombre").val(),
-					 	direccion: $("#direccion").val(),
-					 	telefono: $("#telefono").val(),
-					 	tipo: $("#tipo").val(),
-					 	estado: $("#estado").val(),
-					}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/agenciacarga/grabardata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									if (response.validacion_code == 'OK')
-									{
-										mostrar_registro(response)
-										cargador_visibility('hide');
-										swal({  title: "Informacion grabada con exito!!",   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-											//html:true,
-											type: "success",
-											showCancelButton: false,
-											confirmButtonColor: "#DD6B55",
-											confirmButtonText: "OK",
-											cancelButtonText: "",
-											closeOnConfirm: false,
-											closeOnCancel: false,
-											/*timer: 2000*/
-										});
-									}else{
-										swal({title: response.respuesta_mensaje,   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-											//html:true,
-											type: "error",
-											showCancelButton: false,
-											confirmButtonColor: "#DD6B55",
-											confirmButtonText: "OK",
-											cancelButtonText: "",
-											closeOnConfirm: false,
-											closeOnCancel: false,
-											/*timer: 2000*/
-										});
-									
-									}									
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function grabar
-
-
-	function mostrar_registro(response)
-	{
-		var row = response.row;
-		if (row!==null)
-		{
-			ValidateControlsInit();
-			$("#accion").val("M");			
-			$("#dialog_mantenimiento_agenciacarga_nombre").html(row.nombre);
-			$("#id").val(row.id);
-			$("#id").prop('readonly',true);
-			$("#nombre").val(row.nombre);
-			$("#direccion").val(row.direccion);
-			$("#telefono").val(row.telefono);
-			$("#tipo").html(response.cbo_tipo);
-			$("#estado").html(response.cbo_estado);
-			$("#lbl_fec_sincronizado").html(row.fec_sincronizado);
-			$("#lbl_usuario_ing").html(row.usuario_ing_user_name);
-			$("#lbl_fec_ingreso").html(row.fec_ingreso);
-			$("#lbl_usuario_mod").html(row.usuario_mod_user_name);
-			$("#lbl_fec_modifica").html(row.fec_modifica);
-			
-			if (row.sincronizado==1)
-			{
-				$("#sincronizado_pendiente").hide();
-				$("#sincronizado_ok").show();
-			}else{
-				$("#sincronizado_pendiente").show();
-				$("#sincronizado_ok").hide();
-			}//end if
-		}//end if
-	}//end function mostrar_registro
-
-
-
-	function AgenciaCarga_ExportarExcel()
-	{
-		cargador_visibility('show');
-
-		var url = '../../dispo/agenciacarga/exportarexcel';
-		var params = '?criterio_busqueda='+$("#frm_busqueda #criterio_busqueda").val()+
-					 '&estado='+$("#frm_busqueda #busqueda_estado").val()+
-				 	 '&sincronizado='+$("#frm_busqueda #busqueda_sincronizado").val();
-		url = url + params;
-		var win = window.open(url);
-		
-		cargador_visibility('hide');
-	}//end function DispoGeneral_ExportarExcel
-	
-	
-</script>
 
 <div class="title-admin-section">
-	<h1>AGENCIA DE CARGA</h1>
+	<h1>AGENCIAS DE CARGA</h1>
 </div>
 
-<div class="table-container col-md-16 col-sm-16">
-  <div class="clearfix">
+<div class="row">
+	<section class="body-admin-section">    	
+    	<div class="accion-admin-section"> 
+    		<form id="frm_nueva_agencia" class="form-horizontal" role="form" name="frm_nueva_agencia">
         	<div class="botonera-admin-section pull-left separator">
-            	<a id="btn_nuevo" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-plus icon-white"></i> Nuevo</a>
+            	<a id="btn_nuevo" name="btn_nuevo" class="btn btn-primary btn-xs" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
             </div>
-        	<div class="busqueda-admin-section pull-left">
-            	<div class="form-inline">
-                	<form id="frm_busqueda" action="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento" method="post" >
-                    <input name="criterio_busqueda"  id="criterio_busqueda"  type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
-                    <select  name="busqueda_estado" id="busqueda_estado" class="select-class2">
-                        <?php echo($this->busqueda_estado); ?>
-                    </select>
-                    <select name="busqueda_sincronizado" id="busqueda_sincronizado" class="select-class2">
-                    	<?php echo($this->busqueda_sincronizado); ?>
-                    </select>
-                    <a id="btn_consultar" class="btn btn-small btn-success" href="#"><i class="glyphicon glyphicon-search icon-white"></i></a>
-                    <span>&nbsp;&nbsp;</span>
+       	  </form>	
+        	<div class="busqueda-admin-section pull-left">	
+            	<!--- div class="form-inline" -->
+                	
+                <form id="frm_busqueda_agencia" action="<?php echo($this->basePath()); ?>/dispo/agenciacarga/mantenimiento" method="post" >
+                <div class="input-group" style="display:inline-flex">    
+                	<input name="criterio_busqueda" id="criterio_busqueda" type="text" class="form-control input-sm" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+                     <div class="input-group">
+						<select  name="busqueda_estado" id="busqueda_estado" class="form-control input-sm" style="width:130px">
+	    	                <?php echo($this->busqueda_estado); ?>
+    	                </select>                                       
+                    </div>
+ 					<span class="input-group-btn">
+                    	<button id="btn_consultar"  name="btn_consultar" class="btn btn-sm btn-primary" type="button"><i class="glyphicon glyphicon-search icon-white"></i></button>
+                    </span> 
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     <span class="input-group">
-                    <button id="btn_excel" type="button" class="btn btn-success "> <i class="glyphicon glyphicon-download-alt"></i></button>
-                    </span>  
-                    </form>
-				</div>
+                    <button id="btn_excel" type="button" class="btn btn-sm btn-primary"> <i class="glyphicon glyphicon-download-alt"></i></button>
+                    </span>                           
+                </div>                
+               
+                </form>    
+			
             </div>
-       </div>
-		<table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
-			<thead>
-				<tr>
-				  <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
-					<th  width="100" rowspan="2" class="th-inner">ID</th>				
-					<th  width="0" rowspan="2" class="th-inner">NOMBRE</th>
-					<th  width="0" rowspan="2" class="th-inner">DIRECCION</th>
-					<th  width="150" rowspan="2" class="th-inner">TELEFONO</th>
-					<th  width="50" rowspan="2" class="th-inner">TIPO</th>
-					<th  width="70" colspan="2" class="th-inner">SINCRONIZACION</th>					
-					<th  width="70" rowspan="2" class="th-inner">ESTADO</th>
-					<th  width="70" rowspan="2" class="th-inner">&nbsp;</th>
-				</tr>
-				<tr>
-				  <th  width="70" class="th-inner">&nbsp;</th>
-				  <th class="th-inner">FEC. ULTIMA VEZ</th>
-		      </tr>
-		 </thead>
-			<tbody class="searchable" style="border: 1px solid #cdcdcd;">
-<?php  
-		$i=0;
-		foreach($this->result as $reg)
-		{
-			$i++;
-			$class_row = '';
-			if ($reg['estado']=='I'){
-				$class_row = 'row_estado_inactivo';
-			}
-?>            
-				<tr id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
-				  <td><?php echo($i); ?></td>
-					<td><?php echo($reg['id']); ?></td>
-					<td align="left"><?php echo($reg['nombre']); ?></td>
-					<td><?php echo($reg['direccion']); ?></td>
-					<td><?php echo($reg['telefono']); ?></td>
-					<td><?php echo($reg['tipo']); ?></td>
-					<td>
-					<?php if ($reg['sincronizado']==0){ ?>
-						<span class="glyphicon glyphicon-time icon-white" style="color:red"></span>
-					<?php }else{ ?>
-						<i class="glyphicon glyphicon-ok icon-white" style="color:green"></i>
-					<?php }//end if ?>	
-					</td>
-					<td><?php echo($reg['fec_sincronizado']); ?></td>
-					<td><?php echo($reg['estado']); ?></td>
-					<td><a href="#" class="btn_edit"><i class="glyphicon glyphicon-pencil icon-white" style="color:orange"></i></a></td>
-				</tr>
-<?php	}//end foreach ?>		
-			</tbody>
-		</table>    
-				</br>
-    </div>
-
+      </div>
+        <div class="clearfix"></div>
+        <div>
+			<table id="grid_agenciacarga_listado" class="grid grid-autoheight"></table>
+            <div id="pager_agenciacarga_listado"></div>        	
+        </div>
+  </section>
+</div>
 
             <!--  DIALOG DE MANTENIMIENTO -->
             <form id="frm">
-			<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal fade" id="dialog_mantenimiento"  name="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">

@@ -29,14 +29,13 @@ class AgenciacargaController extends AbstractActionController
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
 	
-			$request 		= $this->getRequest();
-			//$cliente_id    	= $request->getQuery('cliente_id', "");
-			$nombre      	= $request->getQuery('nombre', "");
-			$estado 		= $request->getQuery('estado', "");
-			$page 			= $request->getQuery('page');
-			$limit 			= $request->getQuery('rows');
-			$sidx			= $request->getQuery('sidx',1);
-			$sord 			= $request->getQuery('sord', "");
+			$request 				= $this->getRequest();
+			$nombre      			= $request->getQuery('nombre', "");
+			$estado 				= $request->getQuery('estado', "");
+			$page 					= $request->getQuery('page');
+			$limit 					= $request->getQuery('rows');
+			$sidx					= $request->getQuery('sidx',1);
+			$sord 					= $request->getQuery('sord', "");
 			$AgenciaCargaBO->setPage($page);
 			$AgenciaCargaBO->setLimit($limit);
 			$AgenciaCargaBO->setSidx($sidx);
@@ -44,7 +43,7 @@ class AgenciacargaController extends AbstractActionController
 			$condiciones = array(
 					//"id"			=> $id,
 					"criterio_busqueda"		=> $nombre,
-					"estado" 		=> $estado,
+					"estado" 				=> $estado,
 			);
 			$result = $AgenciaCargaBO->listado($condiciones);
 			$response = new \stdClass();
@@ -204,7 +203,7 @@ class AgenciacargaController extends AbstractActionController
 
 			$body = $this->getRequest()->getContent();
 			$json = json_decode($body, true);
-			$id		= $json['id'];
+			$id		= $json['id_agencia_carga'];
 
 			$row					= $AgenciaCargaBO->consultar($id, \Application\Constants\ResultType::MATRIZ);
 

@@ -311,7 +311,6 @@ class AgenciaCargaBO extends Conexion
 		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
 		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 		
-		
 		//---------------------------IMPRIME TITULO DE COLUMNA-----------------------------
 		$row = $row + 1;
 		$row_detalle_ini = $row;
@@ -350,9 +349,9 @@ class AgenciaCargaBO extends Conexion
 			$row=$row+1;
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $cont_linea);
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $reg['id'] );
-			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['nombre'] );
-			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $reg['direccion'] );
-			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['telefono'] );
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, trim($reg['nombre']));
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, trim($reg['direccion']));
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, trim($reg['telefono']));
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['estado'] );
 			
 		}// end foreach
@@ -366,7 +365,7 @@ class AgenciaCargaBO extends Conexion
 		// Rename worksheet
 		$objPHPExcel->getActiveSheet()->setTitle('Listado Agencias');
 		
-		$PHPExcelApp->save($objPHPExcel, $PHPExcelApp::FORMAT_EXCEL_2007, "Listado Agencias.xlsx" );
+		$PHPExcelApp->save($objPHPExcel, $PHPExcelApp::FORMAT_EXCEL_2007, "ListadoAgencias.xlsx" );
 		
 	}//end generarExcel
 
