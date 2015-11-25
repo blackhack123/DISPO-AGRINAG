@@ -368,5 +368,45 @@ class UsuarioBO extends Conexion{
 	}//end function actualizarEstadoEnviarDispo
 	
 	
+
+	/***
+	 *
+	 * @param array $condiciones
+	 */
+	public function generarExcel($condiciones)
+	{
+		
+		set_time_limit ( 0 );
+		ini_set('memory_limit','-1');
+		
+		
+		$UsuarioDAO			= new UsuarioDAO();
+		
+		$UsuarioDAO->setEntityManager($this->getEntityManager());
+		
+		
+		//----------------Se configura las Etiquetas de Seleccion-----------------
+		$texto_criterio_busqueda	= '';
+		$texto_estado 				= 'TODOS';
+		$texto_sincronizado			= 'TODOS';
+		
+		if (!empty($condiciones['criterio_busqueda'])){
+			$texto_criterio_busqueda	= $condiciones['criterio_busqueda'];
+		}//end if
+		
+		switch ($condiciones['estado'])
+		{
+			case 'A':
+				$texto_estado		=  'ACTIVO';
+				break;
+		
+			case 'I':
+				$texto_estado		=  'INACTIVO';
+				break;
+		
+		}//end switch
+	
+	}//end function generarExcel
+	
 	
 }//end class UsuarioBO

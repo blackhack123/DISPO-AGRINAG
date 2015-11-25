@@ -343,15 +343,15 @@ class AgenciaCargaBO extends Conexion
 			
 			$reg['nombre'] 		= trim($reg['nombre']);
 			$reg['direccion'] 	= trim($reg['direccion']);
-			
+			$reg['telefono']	= trim($reg['telefono']);
 			
 			$cont_linea++;
 			$row=$row+1;
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $cont_linea);
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $reg['id'] );
-			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, trim($reg['nombre']));
-			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, trim($reg['direccion']));
-			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, trim($reg['telefono']));
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['nombre']);
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $reg['direccion']);
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['telefono']);
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['estado'] );
 			
 		}// end foreach

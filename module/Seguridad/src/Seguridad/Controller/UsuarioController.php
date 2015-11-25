@@ -725,8 +725,11 @@ class UsuarioController extends AbstractActionController
 				
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
-	
+			
+			
+			
 			$request 		= $this->getRequest();
+			$perfil_id     	= $request->getQuery('perfil');
 			$nombre      	= $request->getQuery('nombre', "");
 			$username      	= $request->getQuery('username', "");
 			$email     		= $request->getQuery('email', "");
@@ -744,7 +747,8 @@ class UsuarioController extends AbstractActionController
 					"criterio_busqueda"		=> $nombre,
 					"username"				=> $nombre,
 					"estado" 				=> $estado,
-					"cliente_id"			=> $cliente_id
+					"cliente_id"			=> $cliente_id,
+					"perfil_id"				=> $perfil_id
 			);
 			$result = $UsuarioBO->listado($condiciones);
 			$response = new \stdClass();
@@ -758,8 +762,8 @@ class UsuarioController extends AbstractActionController
 				$row2["grupo_dispo"] 		= trim($row["grupo_dispo"]);
 				$row2["grupo_precio"]		= trim($row["grupo_precio"]);
 				$row2["nombre_calidad"]		= trim($row["nombre_calidad"]);
-				//$row2["sincronizado"] 		= $row["sincronizado"];
-				//$row2["fec_sincronizado"] 	= $row["fec_sincronizado"];
+				$row2["login_fox"] 			= trim($row["login_fox"]);
+				$row2["perfil_nombre"] 		= $row["perfil_nombre"];
 				$row2["estado"] 			= $row["estado"];
 				$response->rows[$i] = $row2;
 				$i++;
@@ -1051,5 +1055,42 @@ class UsuarioController extends AbstractActionController
 	}//end function enviaremailmasivo	
 	
 	
+	
+	function exportarexcelAction()
+	{
+		try
+		{
+			$viewModel 			= new ViewModel();
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+	
+			$UsuarioBO 		= new UsuarioBO();
+			$UsuarioBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+	
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+			if ($respuesta==false) return false;
+			
+				
+			$request 			= $this->getRequest();
+			$criterio_busqueda 	= $request->getQuery('criterio_busqueda');
+			$estado		 		= $request->getQuery('estado');
+			$perfil_id  		= $request->getQuery('sincronizado');
+				
+			$condiciones = array(
+					"criterio_busqueda"		=> $criterio_busqueda,
+					"estado"				=> $estado,
+					"perfil_id"			=> $perfil_id
+			);
+				
+			$result = $UsuarioBO->generarExcel($condiciones);
+			exit;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	}//end function exportarexcel2Action
 	
 }
