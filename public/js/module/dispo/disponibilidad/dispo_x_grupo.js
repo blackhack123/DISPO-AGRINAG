@@ -178,8 +178,21 @@ $(document).ready(function () {
 		DispoGrupo_ExportarSkypeCajasXFincas($("#frm_dispo_grupo_generar_skypexfincas #inventario_id").val(), separar_archivo);
 		return false;
 	});		
-	/*---------------------------------------------------------------*/	
 	
+	
+	//var opcion_formato_archivo = $('input[name=chk_formato_dispo]:checked', '#frm_dispo_grupo_generar_skype').val();
+	
+	/*---------------------------------------------------------------*/	
+	$('input[name=chk_formato_dispo]').on('click', function(event){
+		var opcion_formato_archivo = $('input[name=chk_formato_dispo]:checked', '#frm_dispo_grupo_generar_skype').val();		
+		if (opcion_formato_archivo=='CAJA-POR-FECHAS')
+		{
+			$("#contenedor_grid_dispo_fecha").show();
+		}else{
+			$("#contenedor_grid_dispo_fecha").hide();
+		}//end if
+		return true;
+	});
 	
 	/*---------------------------------------------------------------*/
 	/*-----Se configura los JQGRID de Dispobilidad General-----------*/
@@ -610,6 +623,50 @@ $(document).ready(function () {
 	/*---------------------------------------------------------------*/
 
 
+
+	jQuery("#grid_dispo_fecha").jqGrid({
+		url:'../../dispo/disponibilidad/listadoAgrupadoFechaBunchData',
+		postData: {
+			grupo_dispo_cab_id: 	function() {return $("#frm_dispo_grupo #grupo_dispo_cab_id").val();},
+			color_ventas_id:		function() {return $("#frm_dispo_grupo #color_ventas_id").val();},
+			calidad_variedad_id:	function() {return $("#frm_dispo_grupo #calidad_variedad_id").val();}
+		},
+		datatype: "json",
+		loadonce: true,			
+		/*height:'400',*/
+		colNames:['Fecha'],
+		colModel:[
+			{name:'fecha_bunch',index:'fecha_bunch', width:100, align:"center", sorttype:"date", key:true}
+		],
+		rowNum:999999,
+		height:'auto',				
+		multiselect: true,
+		//pager: '#pager_dispo_fecha',
+		toppager:false,
+		pgbuttons:false,
+		pginput:false,
+		rowList:false,
+		gridview:false,	
+		shrinkToFit: false,
+		footerrow : true,
+		userDataOnFooter : true,
+		//loadComplete: grid_setAutoHeight,
+		//rownumbers: true,
+		jsonReader: {
+			repeatitems : false,
+		},		
+		loadBeforeSend: function (xhr, settings) {
+			this.p.loadBeforeSend = null; //remove event handler
+			return false; // dont send load data request
+		},				
+		loadError: function (jqXHR, textStatus, errorThrown) {
+			message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+		},
+	});
+	
+	/*jQuery("#grid_dispo_fecha").jqGrid('navGrid','#pager_dispo_fecha',{edit:false,add:false,del:false});	*/
+
+
 	
 });
 	
@@ -1034,6 +1091,7 @@ $(document).ready(function () {
 			return false;
 		}else{
 			$("#frm_dispo_grupo_generar_skype #inventario_id").val(inventario_id);
+			$('#grid_dispo_fecha').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 			
 			$("#dialog_dispo_grupo_generar_skype").modal('show');
 		}//end if
@@ -1043,12 +1101,33 @@ $(document).ready(function () {
 	function DispoGrupo_ExportarSkypeCajas(inventario_id, separar_archivo)
 	{ 
 		cargador_visibility('show');
-	
+
+		var opcion_formato_archivo = $('input[name=chk_formato_dispo]:checked', '#frm_dispo_grupo_generar_skype').val();
+		var arr_fechas			   = $("#grid_dispo_fecha").jqGrid('getGridParam','selarrrow');
+		var cad_fechas			   = '';
+		
+		if (opcion_formato_archivo=='CAJA-POR-FECHAS') 
+		{
+			/*---------Se obtiene la cadena de las fechas---------*/
+			$bd_1era_vez = true;
+			for (i = 0; i < arr_fechas.length; ++i)
+			{
+				if ($bd_1era_vez==false)
+				{
+					cad_fechas = cad_fechas + ';';	
+				}
+				cad_fechas = cad_fechas+ arr_fechas[i];
+				$bd_1era_vez = false;
+			}//end for
+		}//end if
+		
 		var url = '../../dispo/grupodispo/exportarSkypeCajasDispoGrupo';
 		var params = '?inventario_id='+inventario_id+'&grupo_dispo_cab_id='+$("#frm_dispo_grupo #grupo_dispo_cab_id").val()+
 					 '&color_ventas_id='+$("#frm_dispo_grupo #color_ventas_id").val()+
 					 '&calidad_variedad_id='+$("#frm_dispo_grupo #calidad_variedad_id").val()+
-					 '&separar_archivo='+separar_archivo;
+					 '&separar_archivo='+separar_archivo+
+					 '&opcion_formato_archivo='+opcion_formato_archivo+
+					 '&fechas_cajas='+cad_fechas;
 		url = url + params;
 		var win = window.open(url);
 	

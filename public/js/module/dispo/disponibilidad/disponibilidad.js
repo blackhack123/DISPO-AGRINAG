@@ -13,7 +13,7 @@ $(document).ready(function () {
 	disponibilidad_init();
 	
 	$("#frm_dispo #inventario_id, #frm_dispo #calidad_id, #frm_dispo #proveedor_id, #frm_dispo #color_ventas_id, #frm_dispo #calidad_variedad_id, #frm_dispo #nro_tallos").on('change', function(event){
-//		$("#grid_dispo_general").jqGrid('clearGridData');
+//		$("#grid_dispo_generaxcell").jqGrid('clearGridData');
 		$('#grid_dispo_general').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 		return false;		
 	});

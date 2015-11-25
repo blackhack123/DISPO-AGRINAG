@@ -12,6 +12,7 @@ use Dispo\Data\GrupoDispoCabData;
 use Dispo\Data\GrupoDispoDetData;
 use Dispo\DAO\CalidadDAO;
 use Dispo\DAO\ProveedorDAO;
+use Dispo\DAO\ParametrizarDAO;
 
 
 class GrupoDispoCabBO extends Conexion
@@ -552,7 +553,7 @@ class GrupoDispoCabBO extends Conexion
 		
 	
 		//----------------------CONSULTA LOS REGISTROS A EXPORTAR---------------
-		$result = $this->listado($condiciones);  //moronitor
+		$result = $this->listado($condiciones);
 		
 		
 		$cont_linea = 0;
@@ -630,53 +631,199 @@ class GrupoDispoCabBO extends Conexion
 	{
 		set_time_limit ( 0 );
 		ini_set('memory_limit','-1');
-		
+
 		$GrupoDispoCabDAO	= new GrupoDispoCabDAO();
+		$ParametrizarDAO	= new ParametrizarDAO();
+
 		$reader 			= new \Zend\Config\Reader\Ini();
 		$config  			= $reader->fromFile('ini/config.ini');	
-			
+
 		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
-		
-		$inventario_id = $condiciones['inventario_id'];		
-		
-		//Consulta la lista de registros
-		$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
+		$ParametrizarDAO->setEntityManager($this->getEntityManager());
 
-		$tipo_caja = 'HB';
-		$result_HB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+		$inventario_id = $condiciones['inventario_id'];
+		$condiciones["dispo_rotacion_dias_inicio"] = $ParametrizarDAO->getValorParametro('dispo_rotacion_ini'); 
 
-		$tipo_caja = 'QB';
-		$result_QB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
 
-		if ($separar_archivo=='N')
+		switch($condiciones['opcion_formato_archivo'])
 		{
-			$result_QB = $this->transformarResiduosCajaQB($result_HB);  //ESCOGE EL RESIDUO DE LAS CAJAS HB
-			
-			$result_cajas = array_merge($result_HB, $result_QB);
-			ksort($result_cajas);
-			$nro_archivos = 1;
-		}else{
-			if ($result_HB)	ksort($result_HB);
-			if ($result_QB) ksort($result_QB);
-			$nro_archivos = 2;
-		}//end if
+			case 'CAJA-CONSOLIDADA':
+				/*-------------------------------*/
+				//Consulta la lista de registros (CAJAS CONSOLIDADAS)
+				$condiciones['opcion_dispo']				= 'BUNCH_TODOS';
+				$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
+				/*-------------------------------*/
+						
+				$tipo_caja = 'HB';
+				$result_HB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+				
+				$tipo_caja = 'QB';
+				$result_QB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+				
+				if ($separar_archivo=='N')
+				{
+					$result_QB = $this->transformarResiduosCajaQB($result_HB);  //ESCOGE EL RESIDUO DE LAS CAJAS HB
+						
+					$result_cajas = array_merge($result_HB, $result_QB);
+					ksort($result_cajas);
+					$nro_archivos = 1;
+				}else{
+					if ($result_HB)	ksort($result_HB);
+					if ($result_QB) ksort($result_QB);
+					$nro_archivos = 2;
+				}//end if				
+				break;
+
+
+			case 'CAJA-POR-FECHAS':
+				/*-------------------------------*/
+				//Consulta la lista de registros (CAJAS CONSOLIDADAS X FECHAS)
+				$condiciones['opcion_dispo']				= 'BUNCH_X_FECHA'; //MORONITOR
+				$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
+				/*-------------------------------*/
+						
+				$tipo_caja = 'HB';
+				$result_HB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+				
+				$tipo_caja = 'QB';
+				$result_QB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+				
+				if ($separar_archivo=='N')
+				{
+					$result_QB = $this->transformarResiduosCajaQB($result_HB);  //ESCOGE EL RESIDUO DE LAS CAJAS HB
+						
+					$result_cajas = array_merge($result_HB, $result_QB);
+					ksort($result_cajas);
+					$nro_archivos = 1;
+				}else{
+					if ($result_HB)	ksort($result_HB);
+					if ($result_QB) ksort($result_QB);
+					$nro_archivos = 2;
+				}//end if				
+				break;
+				
+				
+			case 'CAJA-NUEVA-VS-ROTACION':
+				/*---------------------------------*/
+				//Consulta la lista de registros (CAJAS ROTACION)
+				$condiciones_cajas_vieja 					= $condiciones;
+				$condiciones_cajas_vieja['opcion_dispo']	= 'BUNCH_ROTACION';
+				$result_dispo_vieja  = $this->listadoDisponibilidadPorProveedor($condiciones_cajas_vieja, true);
+				
+				//Consulta la lista de registros (CAJAS NUEVAS)
+				$condiciones_cajas_nueva = $condiciones;
+				$condiciones_cajas_nueva['opcion_dispo']	= 'BUNCH_NUEVA';
+				$result_dispo_nueva = $this->listadoDisponibilidadPorProveedor($condiciones_cajas_nueva, true);
+				/*---------------------------------*/
+				
+				$tipo_caja = 'HB';
+				$result_HB_vieja = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo_vieja);
+				$result_HB_nueva = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo_nueva);
+				
+				$tipo_caja = 'QB';
+				$result_QB_vieja = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo_vieja);
+				$result_QB_nueva = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo_nueva);				
+				
+				if ($separar_archivo=='N')
+				{
+					$result_QB_vieja = $this->transformarResiduosCajaQB($result_HB_vieja);  //ESCOGE EL RESIDUO DE LAS CAJAS HB
+					$result_QB_nueva = $this->transformarResiduosCajaQB($result_HB_nueva);  //ESCOGE EL RESIDUO DE LAS CAJAS HB
+				
+					$result_cajas_vieja = array_merge($result_HB_vieja, $result_QB_vieja);
+					ksort($result_cajas_vieja);
+					
+					$result_cajas_nueva = array_merge($result_HB_nueva, $result_QB_nueva);
+					ksort($result_cajas_nueva);
+					
+					$nro_archivos = 2;
+				}else{
+					if ($result_HB_vieja) ksort($result_HB_vieja);
+					if ($result_QB_vieja) ksort($result_QB_vieja);
+					if ($result_HB_nueva) ksort($result_HB_nueva);
+					if ($result_QB_nueva) ksort($result_QB_nueva);
+					$nro_archivos = 4;
+				}//end if				
+				break;
+		}//end switch
 		
 
+		
 		
 		$files_zip = null;
 		//$files = null;
-		$archivo_texto_HB = '';
-		$archivo_texto_QB = '';
+		$ruta 	= $config['ruta_archivos']['tmp'];
 		for($cont_file = 0; $cont_file<$nro_archivos; $cont_file++)	
 		{
-			if ($separar_archivo=='S')
+			switch($condiciones['opcion_formato_archivo'])
 			{
-				if ($cont_file==0){				
-					$result_cajas = $result_HB;
-				}else{
-					$result_cajas = $result_QB;
-				}//end if
-			}//end if
+				case 'CAJA-CONSOLIDADA':			
+					if ($separar_archivo=='S')
+					{
+						if ($cont_file==0){				
+							$result_cajas = $result_HB;
+							$archivo_texto	= $ruta.'skype_HB_'.$usuario_id.'.txt';
+						}else{
+							$result_cajas = $result_QB;
+							$archivo_texto	= $ruta.'skype_QB_'.$usuario_id.'.txt';
+						}//end if
+					}else{
+						$archivo_texto	= $ruta.'skype_consolidado_'.$usuario_id.'.txt';
+					}//end if
+					break;
+
+				case 'CAJA-POR-FECHAS':
+					if ($separar_archivo=='S')
+					{
+						if ($cont_file==0){
+							$result_cajas = $result_HB;
+							$archivo_texto	= $ruta.'skype_fecha_HB_'.$usuario_id.'.txt';
+						}else{
+							$result_cajas = $result_QB;
+							$archivo_texto	= $ruta.'skype_fecha_QB_'.$usuario_id.'.txt';
+						}//end if
+					}else{
+						$archivo_texto	= $ruta.'skype_fecha_consolidado_'.$usuario_id.'.txt';
+					}//end if
+					break;
+										
+				case 'CAJA-NUEVA-VS-ROTACION':
+					if ($separar_archivo=='S')
+					{
+						switch  ($cont_file){
+							case 0:
+								$result_cajas = $result_HB_vieja;
+								$archivo_texto	= $ruta.'skype_HB_rotacion_'.$usuario_id.'.txt';
+								break;
+							case 1:
+								$result_cajas = $result_QB_vieja;
+								$archivo_texto	= $ruta.'skype_QB_rotacion_'.$usuario_id.'.txt';
+								break;
+							case 2:
+								$result_cajas = $result_HB_nueva;
+								$archivo_texto	= $ruta.'skype_HB_nueva_'.$usuario_id.'.txt';
+								break;
+							case 3:
+								$result_cajas = $result_QB_nueva;
+								$archivo_texto	= $ruta.'skype_QB_nueva_'.$usuario_id.'.txt';
+								break;
+						}//end switch
+					}else{
+						switch  ($cont_file){
+							case 0: //CAJAS VIEJAS HB + QB
+								$result_cajas = $result_cajas_vieja;
+								$archivo_texto	= $ruta.'skype_rotacion_consolidado_'.$usuario_id.'.txt';
+								break;
+							
+							case 1: case 0: //CAJAS NUEVA HB + QB
+								$result_cajas = $result_cajas_nueva;
+								$archivo_texto	= $ruta.'skype_nueva_consolidado_'.$usuario_id.'.txt';
+								break;
+						}//end switch
+					}//end if					
+					break;
+			}//end switch			
+			
+			
 			$arr_grados = array('40','50','60','70','80','90','100','110');
 			$arr_archivo_texto = null;		
 			foreach($result_cajas as $reg){
@@ -701,26 +848,27 @@ class GrupoDispoCabBO extends Conexion
 
 
 			ksort($arr_archivo_texto);
-
+/*
 			$ruta 	= $config['ruta_archivos']['tmp'];
 			//$ruta 	= $config['ruta_archivos']['public']['descarga'];
 			if ($separar_archivo=='S')
 			{			
 				if ($cont_file==0){
 					$archivo_texto	= $ruta.'skype_HB_'.$usuario_id.'.txt';
-					$archivo_texto_HB = basename($archivo_texto);
 				}else{
-					$archivo_texto		= $ruta.'skype_QB_'.$usuario_id.'.txt';
-					$archivo_texto_QB	= basename($archivo_texto);
+					$archivo_texto	= $ruta.'skype_QB_'.$usuario_id.'.txt';
 				}//end if
 				\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $arr_archivo_texto);
 			}else{
 				$archivo_texto	= $ruta.'skype_consolidado_'.$usuario_id.'.txt';
 				\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $arr_archivo_texto);
 			}//end if
-			
+				
 			//$files['file'] = basename($archivo_texto);
-			$files_zip[] = $archivo_texto;			
+			$files_zip[] = $archivo_texto;	
+*/				
+			\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $arr_archivo_texto);
+			$files_zip[] = $archivo_texto;
 		}//end for
 
 		$zipname = $ruta.'skype_'.$usuario_id.'.zip';
@@ -996,8 +1144,10 @@ class GrupoDispoCabBO extends Conexion
 	
 	
 		$GrupoDispoCabDAO			= new GrupoDispoCabDAO();
+		$ParametrizarDAO			= new ParametrizarDAO();  
 	
 		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+		$ParametrizarDAO->setEntityManager($this->getEntityManager());
 	
 		//----------------Se configura las Etiquetas de Seleccion-----------------
 		$texto_grupo_dispo_cab_id	= 'TODOS';
@@ -1017,8 +1167,9 @@ class GrupoDispoCabBO extends Conexion
 		if (!empty($condiciones['calidad_variedad_id'])){
 			$texto_calidad_variedad_id	= $condiciones['calidad_variedad_id'];
 		}//end if
-	
-	
+
+		$condiciones["dispo_rotacion_dias_inicio"] = $ParametrizarDAO->getValorParametro('dispo_rotacion_ini'); 
+
 		//----------------Se inicia la configuracion del PHPExcel-----------------
 	
 		$PHPExcelApp 	= new PHPExcelApp();
@@ -1030,7 +1181,7 @@ class GrupoDispoCabBO extends Conexion
 	
 		$objPHPExcel->setActiveSheetIndex(0);
 	
-		//Configura el tamaÃ±o del Papel
+		//Configura el tamaño del Papel
 		$objPHPExcel->getActiveSheet()->getPageSetup()
 		->setOrientation(\PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
 		$objPHPExcel->getActiveSheet()->getPageSetup()
@@ -1048,10 +1199,21 @@ class GrupoDispoCabBO extends Conexion
 		$objPHPExcel->getActiveSheet()->getPageMargins()->setBottom(0.1);
 
 		
-		//Consulta la lista de registros  
+		//Consulta la lista de registros (CAJAS TOTAL)  
+		$condiciones['opcion_dispo']				= 'BUNCH_TODOS';  //MORONITOR2
 		$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
 
+		//Consulta la lista de registros (CAJAS VIEJAS)
+		$condiciones_cajas_vieja 					= $condiciones;
+		$condiciones_cajas_vieja['opcion_dispo']	= 'BUNCH_ROTACION';
+		$result_dispo_vieja = $this->listadoDisponibilidadPorProveedor($condiciones_cajas_vieja, true);
 
+		//Consulta la lista de registros (CAJAS NUEVAS)
+		$condiciones_cajas_nueva = $condiciones;
+		$condiciones_cajas_nueva['opcion_dispo']	= 'BUNCH_NUEVA';		
+		$result_dispo_nueva = $this->listadoDisponibilidadPorProveedor($condiciones_cajas_nueva, true);
+		
+		
 		$estilo_titulo  = $PHPExcelApp::STYLE_ARRAY_TITULO01;
 		$estilo_columna = $PHPExcelApp::STYLE_ARRAY_COLUMNA01;
 		
@@ -1071,15 +1233,45 @@ procesar_result:
 		
 		switch ($indice_hoja)
 		{
-			case 0: //HB
-				$tipo_caja = 'HB';				
+			case 0: //HB TOTAL
+				$tipo_caja 		= 'HB';
+				$titulo_hoja	= $tipo_caja;
+				$result = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+				$result = $this->quitarCajasVacias($result);
+				break;
+			
+			case 1://QB TOTAL
+				$tipo_caja = 'QB';
+				$titulo_hoja	= $tipo_caja;
 				$result = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
 				break;
 			
-			case 1:
-				$tipo_caja = 'QB';
-				$result = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
+			/*case 2://FLOR VIEJA HB
+				$tipo_caja = 'HB';
+				$titulo_hoja	= 'Rotacion '.$tipo_caja;
+				$result = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo_vieja);
+				$result = $this->quitarCajasVacias($result);				
 				break;
+				
+			case 3://FLOR VIEJA QB
+				$tipo_caja = 'QB';
+				$titulo_hoja	= 'Rotacion '.$tipo_caja;
+				$result = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo_vieja);
+				break;
+				
+			case 4://FLOR NUEVA HB
+				$tipo_caja = 'HB';
+				$titulo_hoja	= 'Nueva '.$tipo_caja;
+				$result = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo_nueva);
+				$result = $this->quitarCajasVacias($result);				
+				break;
+
+			case 5://FLOR NUEVA QB
+				$tipo_caja = 'QB';
+				$titulo_hoja	= 'Nueva '.$tipo_caja;
+				$result = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo_nueva);
+				break;
+			*/
 		}//switch
 	
 		//------------------------------Registra la cabecera--------------------------------
@@ -1206,10 +1398,7 @@ procesar_result:
 				//$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['variedad'] );
 			}//end if
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $reg['color_ventas_nombre'] );
-			if (!array_key_exists('total', $reg['40']['cajas']))
-			{
-				$debug = true;	
-			}
+
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['40']['cajas']['total']);
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['50']['cajas']['total']);
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $row, $reg['60']['cajas']['total']);
@@ -1234,9 +1423,11 @@ procesar_result:
 		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row_detalle_info_ini.":".$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_BORDE_TODO));
 	
 		// Rename worksheet
-		$objPHPExcel->getActiveSheet()->setTitle($tipo_caja);
+		//$objPHPExcel->getActiveSheet()->setTitle($tipo_caja);
+		$objPHPExcel->getActiveSheet()->setTitle($titulo_hoja);
 
 		if ($indice_hoja<1)
+		//if ($indice_hoja<5)
 		{
 			goto procesar_result;
 		}
@@ -1256,11 +1447,21 @@ procesar_result:
 		$GrupoDispoCabDAO 	= new GrupoDispoCabDAO();
 		$DispoDAO 			= new DispoDAO();
 		$CalidadDAO			= new CalidadDAO();
+		$ParametrizarDAO	= new ParametrizarDAO();
 
 		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
 		$DispoDAO->setEntityManager($this->getEntityManager());
 		$CalidadDAO->setEntityManager($this->getEntityManager());
-		
+		$ParametrizarDAO->setEntityManager($this->getEntityManager());
+
+		$condiciones["dispo_rotacion_dias_inicio"] = $ParametrizarDAO->getValorParametro('dispo_rotacion_ini');
+
+		/*-------En caso que no exita la condicion['arr_fechas_cajas'] se le pone un valor nulo por defecto------*/
+		if (!array_key_exists('arr_fechas_cajas', $condiciones))
+		{
+			$condiciones["arr_fechas_cajas"]=null;
+		}//end if
+		/*-------------------------------------------------------------------------------------------------------*/
 		
 		$arr_grados = array('40','50','60','70','80','90','100','110');
 		
@@ -1356,28 +1557,38 @@ procesar_result:
 			 */
 			$result_dispo = $DispoDAO->consultarPorInventarioPorClasificaPorVariedadPorTallos(
 																						$reg['producto_id'], $reg_grupoDispoCab['inventario_id'], 
-																						$clasifica_fox, $reg['variedad_id'], $reg['tallos_x_bunch']
+																						$clasifica_fox, $reg['variedad_id'], $reg['tallos_x_bunch'],
+																						$condiciones['opcion_dispo'],
+																						$condiciones['dispo_rotacion_dias_inicio'],
+																						$condiciones['arr_fechas_cajas']
 																						);			
 			foreach($arr_grados as $grado)
 			{
 				$stock_grupo 		= $reg[$grado];
-				if (array_key_exists($grado, $result_dispo))
+				if (!empty($result_dispo))
 				{
-					foreach($result_dispo[$grado] as $key_proveedor => $stock_proveedor)
+					if (array_key_exists($grado, $result_dispo))
 					{
-						if ($stock_grupo > $stock_proveedor)
+						foreach($result_dispo[$grado] as $key_proveedor => $stock_proveedor)
 						{
-							$valor = $stock_proveedor;
-							$reg_new[$grado]['bunchs']['fincas'][$key_proveedor]= $valor;
-							//$reg_new[$grado]['cajas']['fincas'][$key_proveedor]	= 0;
-							$stock_grupo	= $stock_grupo - $valor;
-						}else{
-							$valor = $stock_grupo;
-							$reg_new[$grado]['bunchs']['fincas'][$key_proveedor] = $valor;						
-							//$reg_new[$grado]['cajas']['fincas'][$key_proveedor]	= 0;
-							$stock_grupo	= 0;
-						}//end if
-					}
+							if ($stock_grupo > $stock_proveedor)
+							{
+								$valor = $stock_proveedor;
+								$reg_new[$grado]['bunchs']['fincas'][$key_proveedor]= $valor;
+								//$reg_new[$grado]['cajas']['fincas'][$key_proveedor]	= 0;
+								$stock_grupo	= $stock_grupo - $valor;
+							}else{
+								$valor = $stock_grupo;
+								$reg_new[$grado]['bunchs']['fincas'][$key_proveedor] = $valor;						
+								//$reg_new[$grado]['cajas']['fincas'][$key_proveedor]	= 0;
+								$stock_grupo	= 0;
+							}//end if
+						}//end foreach
+					}else{
+						$debug = 1;						
+						//$valor = $stock_proveedor;
+						//$reg_new[$grado]['bunchs']['fincas'][$key_proveedor]= 0;
+					}//end if
 				}else{
 					$debug = 1;
 				}//end if
@@ -1431,7 +1642,46 @@ procesar_result:
 		return $result2;
 	}//end function transformarResiduosCajaQB
 
+	
+	/**
+	 * 
+	 * @param array $result
+	 * @return array
+	 */
+	public function quitarCajasVacias($result)
+	{
+		if (empty($result))
+		{
+			return null;
+		}//end if
+		
+		$result2 = null;
+		foreach($result as $reg)
+		{
+			$reg_new = $reg;
+			if (($reg_new['40']['cajas']['total']==0) &&
+					($reg_new['50']['cajas']['total']==0) &&
+					($reg_new['60']['cajas']['total']==0) &&
+					($reg_new['70']['cajas']['total']==0) &&
+					($reg_new['80']['cajas']['total']==0) &&
+					($reg_new['90']['cajas']['total']==0) &&
+					($reg_new['100']['cajas']['total']==0) &&
+					($reg_new['110']['cajas']['total']==0))
+			{
+				continue;
+			}
+			else
+			{
+				$key = $reg_new['producto_id'].'-'.$reg_new['variedad'].'-'.$reg_new['variedad_id'].'-'.$reg_new['tallos_x_bunch'].'-'.$reg_new['tipo_caja_id'];
+				$result2[$key] = $reg_new;
+			}//end if
+		}//end foreach
+			
+		return $result2;		
+	}//end function
 
+	
+	
 	/**
 	 * 
 	 * @param string $inventario_id
@@ -1717,6 +1967,7 @@ procesar_result:
 	
 	
 		//Consulta la lista de registros
+		$condiciones['opcion_dispo'] = 'BUNCH_TODOS';
 		$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
 	
 		//Convertir Dispo en Cajas

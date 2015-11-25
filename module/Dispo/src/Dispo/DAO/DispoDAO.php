@@ -418,7 +418,15 @@ class DispoDAO extends Conexion
 			}//end switch
 			
 		}//end if		
-				
+		
+		if (array_key_exists('fecha_bunch', $condiciones))
+		{
+			if (!empty($condiciones['fecha_bunch']))
+			{
+				$sql = $sql." and dispo.fecha_bunch = '".$condiciones['fecha_bunch']."'";
+			}//end if
+		}//end if
+			
 		if (array_key_exists('group_by_proveedor_id',$condiciones))
 		{
 			$sql = $sql.' GROUP BY dispo.proveedor_id, dispo.producto, variedad.nombre, dispo.variedad_id, tallos_x_bunch, color_ventas.nombre, url_ficha  ';
@@ -1149,7 +1157,9 @@ class DispoDAO extends Conexion
 	 * @param int $tallos_x_bunch
 	 * @return array
 	 */
-	function consultarPorInventarioPorClasificaPorVariedadPorTallos($producto_id, $inventario_id, $clasifica_fox, $variedad_id, $tallos_x_bunch)
+	function consultarPorInventarioPorClasificaPorVariedadPorTallos($producto_id, $inventario_id, $clasifica_fox, $variedad_id, $tallos_x_bunch,
+																	$opcion_dispo = 'BUNCH_TODOS', $dispo_rotacion_dias_inicio = NULL,
+																	$arr_fechas_cajas = NULL)
 	{
 		$sql = 	" SELECT grado_id, proveedor_id, sum(cantidad_bunch_disponible) as tot_bunch_disponible ".
 				" FROM dispo ".
@@ -1158,12 +1168,42 @@ class DispoDAO extends Conexion
 				"   and clasifica		= '".$clasifica_fox."'".
 				"   and variedad_id		= '".$variedad_id."'".
 			//	"	and grado_id		= '".$grado_id."'".
-				"	and tallos_x_bunch	= ".$tallos_x_bunch.
-				" GROUP BY grado_id, proveedor_id ".
+				"	and tallos_x_bunch	= ".$tallos_x_bunch;
+
+		switch($opcion_dispo)
+		{
+			case 'BUNCH_ROTACION':
+				$sql = $sql." and fecha_bunch <= DATE_SUB(DATE_FORMAT(NOW(),'%y-%m-%d') , INTERVAL ".$dispo_rotacion_dias_inicio." DAY)";
+				break;
+				
+			case 'BUNCH_NUEVA':
+				$sql = $sql." and fecha_bunch > DATE_SUB(DATE_FORMAT(NOW(),'%y-%m-%d') , INTERVAL ".$dispo_rotacion_dias_inicio." DAY)";
+				break;
+				
+			case 'BUNCH_TODOS':
+				break;
+				
+			case 'BUNCH_X_FECHA':
+				$sql = $sql.' and fecha_bunch in (';
+				$bd_entra = false;
+				foreach($arr_fechas_cajas as $fecha)
+				{
+					$sql = $sql."'".$fecha."',";
+					$bd_entra = true;
+				}//end foreach
+				if ($bd_entra==true)
+				{
+					$sql = substr($sql,0,-1);
+				}//end if
+				$sql = $sql.')';
+				break;
+		}//end switch
+		
+		$sql = $sql." GROUP BY grado_id, proveedor_id ".
 				" ORDER BY tot_bunch_disponible DESC";
 		$stmt = $this->getEntityManager()->getConnection()->executeQuery($sql);
 		$result = $stmt->fetchAll();
-		
+
 		$result2 = null;
 		foreach($result as $reg)
 		{
@@ -1174,6 +1214,79 @@ class DispoDAO extends Conexion
 		return $result2;		
 	}//end function consultarPorInventarioPorClasificaPorVariedadPorTallos
 	
+	
+	
+	/**
+	 *
+	 * @param array $condiciones (inventario_id, proveedor_id, clasifica, color_ventas_id, calidad_variedad_id, nro_tallos, $group_by_proveedor_id)
+	 * @return array:
+	 */
+	public function listadoAgrupadoPorFechaBunch($condiciones)
+	{
+		$sql = 	' SELECT dispo.fecha_bunch, count(*) as nro_reg '.
+				' FROM dispo LEFT JOIN variedad '.
+				'		                ON variedad.id      = dispo.variedad_id '.
+				'            LEFT JOIN color_ventas '.
+				'                       ON color_ventas.id	= variedad.color_ventas_id '.
+				' WHERE dispo.cantidad_bunch_disponible > 0 ';
+
+		if (!empty($condiciones['inventario_id']))
+		{
+			$sql = $sql." and dispo.inventario_id = '".$condiciones['inventario_id']."'";
+		}//end if
+	
+		if (!empty($condiciones['proveedor_id']))
+		{
+			$sql = $sql." and dispo.proveedor_id = '".$condiciones['proveedor_id']."'";
+		}//end if
+	
+		if (!empty($condiciones['clasifica']))
+		{
+			$sql = $sql." and dispo.clasifica = '".$condiciones['clasifica']."'";
+		}//end if
+	
+		if (!empty($condiciones['color_ventas_id']))
+		{
+			$sql = $sql." and variedad.color_ventas_id = ".$condiciones['color_ventas_id'];
+		}//end if
+	
+		if (!empty($condiciones['calidad_variedad_id']))
+		{
+			$sql = $sql." and variedad.calidad_variedad_id = ".$condiciones['calidad_variedad_id'];
+		}//end if
+	
+		if (!empty($condiciones['cadena_color_ventas_ids']))
+		{
+			$sql = $sql." and variedad.color_ventas_id in (".$condiciones['cadena_color_ventas_ids'].")";
+		}//end if
+
+		if (!empty($condiciones['cadena_calidad_variedad_ids']))
+		{
+			$sql = $sql." and variedad.calidad_variedad_id in (".$condiciones['cadena_calidad_variedad_ids'].")";
+		}//end if
+
+		if (!empty($condiciones['nro_tallos']))
+		{
+			switch($condiciones['nro_tallos'])
+			{
+				case 'NO25':
+					$sql = $sql." and tallos_x_bunch <> 25";
+					break;
+						
+				default:
+					$sql = $sql." and tallos_x_bunch = ".$condiciones['nro_tallos'];
+					break;
+			}//end switch
+				
+		}//end if
+	
+		$sql = $sql.' GROUP BY dispo.fecha_bunch ';
+		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
+	
+		return $result;
+	}//end function listadoAgrupadoPorFechaBunch	
 }//end class
 
 
