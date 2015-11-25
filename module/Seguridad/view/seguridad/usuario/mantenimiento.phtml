@@ -18,25 +18,24 @@
             	<!--- div class="form-inline" -->
                 	
                 <form id="frm_busqueda_usuario" action="<?php echo($this->basePath()); ?>/seguridad/usuario/mantenimiento" method="post">
-                <div class="input-group" style="display:inline-flex">    
-                	<input name="criterio_busqueda" id="criterio_busqueda" type="text" class="form-control input-sm" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
-                     <div class="input-group">
-						<select  name="busqueda_estado" id="busqueda_estado" class="form-control input-sm" style="width:130px">
-	    	                <?php echo($this->cbo_busqueda_estado); ?>
-    	                </select>  
-                    </div>
- 					<span class="input-group-btn">
- 					  <select name="busqueda_perfil_id" id="busqueda_perfil_id"class="form-control input-sm">
-                    		<?php  echo($this->cbo_busqueda_perfil); ?>
-                    	</select> 
-                    	<button id="btn_consultar"  name="btn_consultar" class="btn btn-sm btn-primary" type="button"><i class="glyphicon glyphicon-search icon-white"></i>Buscar</button>
-                    </span> 
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    <span class="input-group">
-                    <button id="btn_excel" type="button" class="btn btn-sm btn-primary"> <i class="glyphicon glyphicon-download-alt"></i> Reporte</button>
-                    </span>                           
-                </div>                
-               
+	                <div class="input-group" style="display:inline-flex">    
+	                	<input name="criterio_busqueda" id="criterio_busqueda" type="text" class="form-control input-sm" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+	                     <div class="input-group">
+							<select  name="busqueda_estado" id="busqueda_estado" class="form-control input-sm" style="width:130px">
+		    	                <?php echo($this->cbo_busqueda_estado); ?>
+	    	                </select>  
+	                    </div>
+	 					<span class="input-group-btn">
+	 					  <select name="busqueda_perfil_id" id="busqueda_perfil_id"class="form-control input-sm">
+	                    		<?php  echo($this->cbo_busqueda_perfil); ?>
+	                    	</select> 
+	                    	<button id="btn_consultar"  name="btn_consultar" class="btn btn-sm btn-primary" type="button"><i class="glyphicon glyphicon-search icon-white"></i>Buscar</button>
+	                    </span> 
+	                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	                    <span class="input-group">
+	                    <button id="btn_excel" type="button" class="btn btn-sm btn-primary"> <i class="glyphicon glyphicon-download-alt"></i> Generar Reporte</button>
+	                    </span>                           
+	                </div>                
                 </form>    
 			
             </div>

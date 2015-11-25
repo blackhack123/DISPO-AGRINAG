@@ -1068,18 +1068,17 @@ class UsuarioController extends AbstractActionController
 	
 			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
 			$SesionUsuarioPlugin->isLoginAdmin();
-			if ($respuesta==false) return false;
 			
 				
 			$request 			= $this->getRequest();
-			$criterio_busqueda 	= $request->getQuery('criterio_busqueda');
-			$estado		 		= $request->getQuery('estado');
-			$perfil_id  		= $request->getQuery('sincronizado');
+			$criterio_busqueda 	= $request->getQuery('criterio_busqueda', '');
+			$estado		 		= $request->getQuery('estado', '');
+			$perfil_id  		= $request->getQuery('perfil_id', '');
 				
 			$condiciones = array(
 					"criterio_busqueda"		=> $criterio_busqueda,
 					"estado"				=> $estado,
-					"perfil_id"			=> $perfil_id
+					"perfil_id"				=> $perfil_id
 			);
 				
 			$result = $UsuarioBO->generarExcel($condiciones);
@@ -1091,6 +1090,6 @@ class UsuarioController extends AbstractActionController
 			$response->setContent($excepcion_msg);
 			return $response;
 		}
-	}//end function exportarexcel2Action
+	}//end function exportarexcelAction
 	
 }

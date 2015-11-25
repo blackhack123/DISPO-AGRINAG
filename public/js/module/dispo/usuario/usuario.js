@@ -365,11 +365,12 @@ $(document).ready(function () {
 		var url = '../../seguridad/usuario/exportarexcel';
 		var params = '?criterio_busqueda='+$("#frm_busqueda_usuario #criterio_busqueda").val()+
 					 '&estado='+$("#frm_busqueda_usuario #busqueda_estado").val()+
-				 	 '&perfil='+$("#frm_busqueda_usuario #busqueda_perfil_id").val();
+				 	 '&perfil_id='+$("#frm_busqueda_usuario #busqueda_perfil_id").val();
 		url = url + params;
 		var win = window.open(url);
 		
 		cargador_visibility('hide');
+		
 	}//end function DispoGeneral_ExportarExcel
 	
 	

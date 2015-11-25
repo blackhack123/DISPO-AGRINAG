@@ -3,6 +3,7 @@
 namespace Seguridad\BO;
 
 use Seguridad\DAO\UsuarioDAO;
+use Application\Classes\PHPExcelApp;
 use Seguridad\DAO\UsuarioEmpresaSucursalDAO;
 use Application\Classes\Conexion;
 use Seguridad\Data\UsuarioData;
@@ -388,7 +389,7 @@ class UsuarioBO extends Conexion{
 		//----------------Se configura las Etiquetas de Seleccion-----------------
 		$texto_criterio_busqueda	= '';
 		$texto_estado 				= 'TODOS';
-		$texto_sincronizado			= 'TODOS';
+		$texto_perfil				= 'TODOS';
 		
 		if (!empty($condiciones['criterio_busqueda'])){
 			$texto_criterio_busqueda	= $condiciones['criterio_busqueda'];
@@ -405,7 +406,164 @@ class UsuarioBO extends Conexion{
 				break;
 		
 		}//end switch
-	
+		
+		
+		switch ($condiciones['perfil_id'])
+		{
+			case '2':
+				$texto_perfil		=  'VENDEDOR';
+				break;
+		
+			case '3':
+				$texto_perfil		=  'ADMINISTRADOR';
+				break;
+		
+		}//end switch
+		
+		
+		//----------------Se inicia la configuracion del PHPExcel-----------------
+		$PHPExcelApp 	= new PHPExcelApp();
+		$objPHPExcel 	= new \PHPExcel;
+		
+		// Set document properties
+		$PHPExcelApp->setUserName('');
+		$PHPExcelApp->setMetaDataDocument($objPHPExcel);
+		
+		$objPHPExcel->setActiveSheetIndex(0);
+		
+		//Configura el tamaÃ±o del Papel
+		$objPHPExcel->getActiveSheet()->getPageSetup()
+		->setOrientation(\PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+		$objPHPExcel->getActiveSheet()->getPageSetup()
+		->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
+		
+		
+		//Se establece la escala de la pagina
+		$objPHPExcel->getActiveSheet()->getPageSetup()->setFitToWidth(1);
+		$objPHPExcel->getActiveSheet()->getPageSetup()->setFitToHeight(0);
+		
+		//Se establece los margenes de la pagina
+		$objPHPExcel->getActiveSheet()->getPageMargins()->setTop(0.1);
+		$objPHPExcel->getActiveSheet()->getPageMargins()->setRight(0.1);
+		$objPHPExcel->getActiveSheet()->getPageMargins()->setLeft(0.1);
+		$objPHPExcel->getActiveSheet()->getPageMargins()->setBottom(0.1);
+		
+		
+		//------------------------------Registra la cabecera--------------------------------
+		$row				= 1;
+		$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
+		$col_fin 			= $PHPExcelApp->getNameFromNumber(5);
+		
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, "Lista de Usuarios");
+		$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
+		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
+		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		
+		
+		//------------------------------Registra criterios linea 1--------------------------
+		$row				= 2;
+		$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
+		$col_fin 			= $PHPExcelApp->getNameFromNumber(5);
+		
+		$objRichText = new \PHPExcel_RichText();
+		$objRichText->createText('');
+		
+		$objInventario = $objRichText->createTextRun('     Criterio: ');
+		$objInventario->getFont()->setBold(true);
+		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+		$objRichText->createText($texto_criterio_busqueda);
+		
+		
+		$objInventario = $objRichText->createTextRun('     Estado: ');
+		$objInventario->getFont()->setBold(true);
+		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+		$objRichText->createText($texto_estado);
+		
+		
+		$objInventario = $objRichText->createTextRun('     Perfil: ');
+		$objInventario->getFont()->setBold(true);
+		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+		$objRichText->createText($texto_perfil);
+		
+		$objPHPExcel->getActiveSheet()->getCell($col_ini.$row)->setValue($objRichText);
+		$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
+		
+		
+		//------------------------------ Registro de Fecha de Generacion --------------------------------
+		$row				= 3;
+		$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
+		$col_fin 			= $PHPExcelApp->getNameFromNumber(5);
+		
+		//$etiqueta = "";
+		
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, "Generado: ".\Application\Classes\Fecha::getFechaHoraActualServidor());
+		
+		$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
+		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
+		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+		
+		//---------------------------IMPRIME TITULO DE COLUMNA-----------------------------
+		$row = $row + 1;
+		$row_detalle_ini = $row;
+		
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,$row, "Nro");
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1,$row, "Nombre");
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2,$row, "Usuario");
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3,$row, "Login Fox");
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4,$row, "Correo");
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5,$row, "Perfil");
+
+		
+		//----------------------AUTO DIMENSIONAR CELDAS DE ACUERDO AL CONTENIDO---------------
+		$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(0)->setAutoSize(true);
+		$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(1)->setAutoSize(true);
+		$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(2)->setAutoSize(true);
+		$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(3)->setAutoSize(true);
+		$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(4)->setAutoSize(true);
+		$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn(5)->setAutoSize(true);
+		
+		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row.':'.$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
+		
+		$objPHPExcel_getActiveSheet=$objPHPExcel->getActiveSheet();
+		
+		
+		//----------------------CONSULTA LOS REGISTROS A EXPORTAR---------------
+		$result = $this->listado($condiciones);
+		
+		
+		$cont_linea = 0;
+		foreach($result as $reg)
+		{
+				
+			$reg['nombre'] 		= trim($reg['nombre']);
+			$reg['username'] 	= trim($reg['username']);
+			$reg['login_fox']	= trim($reg['login_fox']);
+			$reg['email']	= trim($reg['email']);
+				
+			$cont_linea++;
+			$row=$row+1;
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $cont_linea);
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $reg['nombre'] );
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['username']);
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $reg['login_fox']);
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['email']);
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['perfil_nombre']);
+			
+		}// end foreach
+		
+		
+		//Margenes
+		$col_ini 			= $PHPExcelApp->getNameFromNumber(0);
+		$col_fin 			= $PHPExcelApp->getNameFromNumber(5);
+		$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row_detalle_ini.":".$col_fin.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_BORDE_TODO));
+		
+		// Rename worksheet
+		$objPHPExcel->getActiveSheet()->setTitle('Listado Usuarios');
+		
+		$PHPExcelApp->save($objPHPExcel, $PHPExcelApp::FORMAT_EXCEL_2007, "ListadoUsuarios.xlsx" );
+		
+		
+		
 	}//end function generarExcel
 	
 	
