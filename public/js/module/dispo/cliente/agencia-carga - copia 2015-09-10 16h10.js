@@ -270,7 +270,7 @@ $(document).ready(function () {
 		return false;		
 	}//end function grabar
 
-
+/*
 	function agenciacarga_consultar(id)
 	{
 	
@@ -295,7 +295,8 @@ $(document).ready(function () {
 		return false;
 	}//end function agenciacarga_consultar
 
-	
+	*/
+ 
 
 	function agenciacarga_mostrar_registro(response)
 	{

@@ -26,10 +26,13 @@ $(document).ready(function () {
 		agenciacarga_grabar();
 		return false;
 	});     
+	
 	/*
 	$("#frm_agenciacarga_listado #btn_consultar_agencia").on('click', function(event){    
 		agenciacarga_listar(false);
-	}); */
+	});
+	 */
+	
 	/*---------------------------------------------------------------*/
 	/*-----------------Se configura los JQGRID's AG. CARGA-----------*/
 	/*---------------------------------------------------------------*/	
@@ -78,7 +81,9 @@ $(document).ready(function () {
 		},
 		ondblClickRow: function (rowid,iRow,iCol,e) {
 				var data = $('#grid_agenciacarga_listado').getRowData(rowid);				
-				agenciacarga_consultar(data.id)
+				var id = data.id;
+				agenciacarga_consultar(id);
+				console.log('DATA ID:',id);
 				//return false;
 		},
 		loadBeforeSend: function (xhr, settings) {
@@ -151,7 +156,31 @@ $(document).ready(function () {
 		return new_format_value;
 	}//end function ListadoMarcacion_FormatterSincronizado	
 	
-
+	
+	function agenciacarga_consultar(id)
+	{
+	
+		//Se llama mediante AJAX para adicionar al carrito de compras
+		var data = 	{id:id}
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+							'contentType': 'application/json',
+							'url':'../../dispo/agenciacarga/consultardata',
+							'control_process':true,
+							'show_cargando':true,
+							'finish':function(response){
+								agenciacarga_mostrar_registro(response);
+								//	agenciacarga_listar(true);
+									cargador_visibility('hide');
+									
+									$("#dialog_nueva_agenciacarga").modal('show');
+							}							
+		                 }
+		response = ajax_call(parameters, data);		
+		return false;
+	}//end function agenciacarga_consultar
+	
 	jQuery("#grid_agenciacarga_listado").jqGrid('navGrid','#pager_agenciacarga_listado',{edit:false,add:false,del:false});
 
 	/*---------------------------------------------------------------*/	
@@ -271,29 +300,7 @@ $(document).ready(function () {
 	}//end function grabar
 
 
-	function agenciacarga_consultar(id)
-	{
-	
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{id:id}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'../../dispo/agenciacarga/consultardata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-								agenciacarga_mostrar_registro(response);
-								//	agenciacarga_listar(true);
-									cargador_visibility('hide');
-									
-									$("#dialog_nueva_agenciacarga").modal('show');
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;
-	}//end function agenciacarga_consultar
+
 
 	
 

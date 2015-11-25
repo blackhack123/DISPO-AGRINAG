@@ -47,6 +47,10 @@ $(document).ready(function () {
 		return false;
 	});
 	
+	$("#frm_tipo_caja_busqueda #btn_eliminar_caja_matriz").on('click', function(event){ 
+		EliminarajaMatriz();
+		return false;
+	});
 	
 	//OnChange Combos 
 	
@@ -85,9 +89,10 @@ $(document).ready(function () {
 		datatype: "json",
 		loadonce: true,			
 		/*height:'400',*/
-		colNames:['ID INVENT','ID T CAJA','ID T BUNCH','Tipo Caja','Tallos X Bunch','Tamaño Bunch','40','50','60','70','80','90', '100', '110', ''],
+		colNames:['ID','ID INVENT','ID T CAJA','ID T BUNCH','Tipo Caja','Tallos X Bunch','Tamaño Bunch','40','50','60','70','80','90', '100', '110', ''],
 		colModel:[
 /*			{name:'seleccion',index:'', width:50,  formatter: 'checkbox', align: 'center',editable: true, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},*/
+			{name:'id_caja_matriz',index:'id_caja_matriz', width:110, sorttype:"int", align:"center", hidden:true },
 			{name:'inventario_id',index:'inventario_id', width:110, sorttype:"string", align:"center", hidden:true},
 			{name:'tipo_caja_id',index:'tipo_caja_id', width:110, sorttype:"string", align:"center", hidden:true},
 			{name:'tamano_bunch_id',index:'tamano_bunch_id', width:110, sorttype:"string", align:"center", hidden:true},
@@ -289,6 +294,7 @@ $(document).ready(function () {
 		cellEdit: false,
 		cellsubmit: 'clientArray',
 		editurl: 'clientArray',	
+		multiselect: true,
 		jsonReader: {
 			repeatitems : false,
 		},		
@@ -354,8 +360,6 @@ $(document).ready(function () {
 	/*-----Se configura los JQGRID de NUEVA CAJA MATRIZ--------------*/
 	/*---------------------------------------------------------------*/	
 		jQuery("#grid_mantenimiento_caja_matriz").jqGrid({
-			/*data: dataGridNuevaCajaMatriz,*/     
-			/*datatype: "local",*/
 			url:'../../dispo/tipocajamatriz/consultarPorClaveAlternaListado',
 			postData: {
 				tipo_caja_id: 	function() {return $("#form_mantenimiento_caja_matriz #tipo_caja_id").val();},
@@ -363,9 +367,6 @@ $(document).ready(function () {
 				tallos_x_bunch: function() {return $("#form_mantenimiento_caja_matriz #tallos_x_bunch").val();},
 				tamano_bunch_id: function() {return $("#form_mantenimiento_caja_matriz #tamano_bunch_id").val();},
 			},
-			datatype: "json",
-			loadonce: true,
-			/*height:'400',*/
 			colNames:['40','50','60','70','80','90', '100', '110'],
 			colModel:[
 				//{name:'seleccion',index:'', width:50, align: 'center',editable: false, formatoptions: {disabled : false}, editoptions: {value:"1:0" },editrules:{required:false}},
@@ -373,7 +374,6 @@ $(document).ready(function () {
 					editoptions: {
 											dataInit : function (elem) { $(elem).focus(function(){ this.select();}) },	
 								 },
-								 editrules:{number: true, minValue:0, maxValue: 1000}
 				},
 				{name:'50',index:'50', width:50, sorttype:"int", align:"center",editable:true,
 					editoptions: {
@@ -411,6 +411,8 @@ $(document).ready(function () {
 								 }
 				},
 			],
+			datatype: "json",
+			loadonce: true,
 			rowNum:999999999,
 			pager: '#pager_mantenimiento_caja_matriz',
 			toppager:false,
@@ -421,16 +423,28 @@ $(document).ready(function () {
 			shrinkToFit: false,
 			jsonReader: {
 				repeatitems : false,
+				userdata: "userData",
 			},	
 			cellEdit: true,
 			cellsubmit: 'clientArray',
-			editurl: 'clientArray',	
+			editurl: 'clientArray',				
+			loadComplete: function(data)
+			{
+				userdata = $("#grid_mantenimiento_caja_matriz").jqGrid('getGridParam','userData');
+				
+				if (userdata.respuesta == 'NO-DATA')
+				{
+				    var newData = [{"40": "0", "50": "0", "60": "0", "70": "0", "80": "0", "90": "0", "100": "0", "110": "0"}];
+			        $("#grid_mantenimiento_caja_matriz").addRowData('',newData);
+				}//end if
+			},
 			loadBeforeSend: function (xhr, settings) {
 				this.p.loadBeforeSend = null; //remove event handler
 				return false; // dont send load data request
 			},	
 			loadError: function (jqXHR, textStatus, errorThrown) {
 				message_error('ERROR','HTTP message body (jqXHR.responseText): ' + '<br>' + jqXHR.responseText);
+			//	console.log('ERROR:',jqXHR.responseText);
 			},
 		
 					
@@ -833,11 +847,108 @@ function TipoCaja_OpenModalActualizacionMasiva()
 		var tipo_caja_id	 	=  $("#form_mantenimiento_caja_matriz #tipo_caja_id").val();
 		var tamano_bunch_id 	=  $("#form_mantenimiento_caja_matriz #tamano_bunch_id").val();
 		var tallos_x_bunch 		=  $("#form_mantenimiento_caja_matriz #tallos_x_bunch").val();
-		$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
-		$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json", url: '../../dispo/tipocajamatriz/consultarPorClaveAlternaListado'}).trigger("reloadGrid");
+	
+		if ((tipo_caja_id && tamano_bunch_id && tallos_x_bunch)=='')
+		{
+			return false;			
+		}//end if
 
-		console.log(inventario_id, tipo_caja_id, tamano_bunch_id,tallos_x_bunch)
+		//RECARGA LA GRILLA
+		$('#grid_mantenimiento_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 	}//end function recargarGrilla
+	
+	
+	
+	
+	function EliminarajaMatriz()
+	{
+		
+		var grid 					= $("#grid_tipo_caja_matriz");
+		var col_inventario_id	 	= jqgrid_get_columnIndexByName(grid, "inventario_id");
+		var col_tipo_caja_id 		= jqgrid_get_columnIndexByName(grid, "tipo_caja_id");
+		var col_tamano_bunch_id 	= jqgrid_get_columnIndexByName(grid, "tamano_bunch_id");
+		var col_tallos_x_bunch 		= jqgrid_get_columnIndexByName(grid, "tallos_x_bunch");
+		
+        var rowKey 					= grid.getGridParam("selrow");
+
+        if (!rowKey)
+		{
+			alert("SELECCIONE UN REGISTRO PARA ELIMINAR...");
+			return false;
+		}//end if
+		
+		var r = confirm("Esta seguro de eliminar los registros seleccionados...?");
+		
+		if (r == false)
+		{ 
+			return false; 
+		}//end if
+		
+		var selectedIDs = grid.getGridParam("selarrrow");
+		var arr_data 	= new Array();
+		for (var i = 0; i < selectedIDs.length; i++) 
+		{
+			inventario_id 	= grid.jqGrid('getCell',selectedIDs[i], col_inventario_id);
+			tipo_caja_id 	= grid.jqGrid('getCell',selectedIDs[i], col_tipo_caja_id);
+			tamano_bunch_id	= grid.jqGrid('getCell',selectedIDs[i], col_tamano_bunch_id);
+			tallos_x_bunch 	= grid.jqGrid('getCell',selectedIDs[i], col_tallos_x_bunch);
+			
+			
+			var element				= {};
+			element.inventario_id		= inventario_id;
+			element.tipo_caja_id  		= tipo_caja_id;
+			element.tamano_bunch_id  	= tamano_bunch_id;
+			element.tallos_x_bunch  	= tallos_x_bunch;
+			
+			arr_data.push(element);
+		}//end for
+		
+		
+		var data = 	{
+				grid_data: 		arr_data,
+			}
+
+		data = JSON.stringify(data);
+		
+		var parameters = {	'type': 'POST',//'POST',
+				'contentType': 'application/json',
+				'url':'../../dispo/tipocajamatriz/eliminarcajamatrizmasiva',
+				'control_process':false,
+				'show_cargando':true,
+				'async':true, 
+				'finish':function(response)
+				{
+					
+					if (response.respuesta_code == 'OK')
+					{
+						
+						cargador_visibility('hide');
+						swal({  title: "Registros eliminados correctamente...",   
+							//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
+							//html:true,
+							type: "success",
+							showCancelButton: false,
+							confirmButtonColor: "#DD6B55",
+							confirmButtonText: "OK",
+							cancelButtonText: "",
+							closeOnConfirm: false,
+							closeOnCancel: false,
+						});
+						$('#grid_tipo_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
+					}else{
+						message_error('ERROR', response);
+					}//end if	
+					
+				}//end function response							
+			 }
+		response = ajax_call(parameters, data);		
+		return false;	
+		
+		console.log(arr_data);
+		
+	}//end EliminarCajaMatriz
+	
+	
 /****************************************************/
 /****************************************************/
 /****************************************************/

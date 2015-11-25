@@ -273,7 +273,7 @@ $(document).ready(function () {
 
 	function agenciacarga_consultar(id)
 	{
-	
+		alert('entro a la funcion consultar');
 		//Se llama mediante AJAX para adicionar al carrito de compras
 		var data = 	{id:id}
 		data = JSON.stringify(data);
@@ -285,10 +285,8 @@ $(document).ready(function () {
 							'show_cargando':true,
 							'finish':function(response){
 								agenciacarga_mostrar_registro(response);
-								//	agenciacarga_listar(true);
-									cargador_visibility('hide');
-									
-									$("#dialog_nueva_agenciacarga").modal('show');
+								cargador_visibility('hide');
+								$("#dialog_nueva_agenciacarga").modal('show');
 							}							
 		                 }
 		response = ajax_call(parameters, data);		
