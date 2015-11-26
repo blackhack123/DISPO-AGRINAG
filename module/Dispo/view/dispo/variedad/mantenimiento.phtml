@@ -1,292 +1,5 @@
 
-<script>
-$(document).ready(function () {
-	//InputData_UpperCaseAll();		
-	InputData_TrimAll();
-/*		InputData_KeyEnterDisabled();*/
-	InputData_initNumberNoDecimal();
-	InputData_initNumberAndDecimal();
-	
-	$("#dialog_mantenimiento").draggable({	//TAB MOVIBLE
-	    handle: ".modal-header"
-	});
-	
-	$('table').tablesorter(); //Columna de Sueldo
-	$("table").stickyTableHeaders();
-
-
-    $("#btn_consultar").on('click', function(event){ 
-        $("#frm_busqueda").submit();
-		return false;
-    });
-
-    $("#btn_nuevo").on('click', function(event){
-		nuevo(); 
-		return false;
-    });       
-
-    $(".btn_edit").on('click', function(event){ 
-		var tr 						= $(this).closest('tr');
-		var variedad_id 			= tr.attr('variedad_id');
-
-		consultar_variedad(variedad_id);
-		//$("#dialog_mantenimiento").modal('show') 
-    });
-
-
-    $("#tbl_registros tbody tr").on('dblclick', function(event){ 
-		var tr 						= $(this).closest('tr');
-		var variedad_id 		= tr.attr('variedad_id');
-
-		consultar_variedad(variedad_id);
-		//$("#dialog_mantenimiento").modal('show') 
-    });	
-	
-	
-    $("#tbl_registros tbody tr").on('dblclick', function(event){ 
-		var tr 						= $(this).closest('tr');
-		var variedad_id 			= tr.attr('variedad_id');
-
-		consultar_variedad(variedad_id);
-		//$("#dialog_mantenimiento").modal('show') 
-    });		
-
-    $("#btn_grabar").on('click', function(event){ 
-    	grabar();
-		return false;
-    });       
-
-    $("#frm_busqueda #btn_excel").on('click', function(event){ 
-		Variedad_ExportarExcel();
-		return false;
-	});	
-	
-	        
-	function nuevo()
-	{
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{}
-		//var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/variedad/nuevodata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									ValidateControlsInit();
-									$("#accion").val("I");
-									$("#dialog_mantenimiento_variedad_nombre").html("NUEVO REGISTRO");
-
-									$("#variedad_id").val('');
-									$("#variedad_id").prop('readonly',false);
-									$("#nombre").val('');
-									$("#nombre_tecnico").val('');
-									$("#calidad_variedad_id").html(response.cbo_calidad_variedad_id);
-									$("#color").html(response.cbo_color);
-									$("#color2").html(response.cbo_color2);
-									$("#grupo_color_id").html(response.cbo_grupo_color_id);
-									$("#colorbase").html(response.cbo_color_base);
-									$("#solido").html(response.cbo_solido);
-									$("#es_real").html(response.cbo_es_real);
-									$("#est_producto_especial").val('');
-									$("#mensaje").val('');
-									$("#cultivada").html(response.cbo_cultivada);
-									$("#ciclo_prod").val('');
-									$("#obtentor_id").html(response.cbo_obtentor_id);
-									$("#tamano_bunch_id").html(response.cbo_tamano_bunch);
-									$("#color_ventas_id").html(response.cbo_color_ventas);
-									$("#url_ficha").val('');
-									$("#estado").html(response.cbo_estado);
-									$("#lbl_fec_sincronizado").html('');
-									$("#lbl_usuario_ing").html('');
-									$("#lbl_fec_ingreso").html('');
-									$("#lbl_usuario_mod").html('');
-									$("#lbl_fec_modifica").html('');
-									$("#sincronizado_pendiente").show();
-									$("#sincronizado_ok").hide();
-									
-									$("#dialog_mantenimiento").modal('show')
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;				
-	}//end function nuevo
-        
-
-
-
-    function grabar(){
-		if (!ValidateControls('frm')) {
-			return false;
-		}
-
-		var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{	accion: $("#accion").val(),
-					 	id: $("#variedad_id").val(),
-					 	nombre: $("#nombre").val(),
-					 	nombre_tecnico: $("#nombre_tecnico").val(),
-					 	calidad_variedad_id: $("#calidad_variedad_id").val(),
-					 	color: $("#color").val(),
-					 	color2: $("#color2").val(),
-					 	grupo_color_id: $("#grupo_color_id").val(),
-					 	colorbase: $("#colorbase").val(),
-					 	solido:$("#solido").val(),
-					 	es_real:$("#es_real").val(),
-					 	est_producto_especial: est_producto_especial,
-					 	tamano_bunch_id:$("#tamano_bunch_id").val(),
-					 	url_ficha:$("#url_ficha").val(),
-					 	color_ventas_id:$("#color_ventas_id").val(),
-					 	mensaje:$("#mensaje").val(),
-					 	cultivada:$("#cultivada").val(),
-					 	ciclo_prod: $("#ciclo_prod").val(),
-					 	obtentor_id: $("#obtentor_id").val(),
-					 	//producto_id: $("#producto_id").val(),
-					 	estado: $("#estado").val(),
-					}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/variedad/grabardata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									if (response.validacion_code == 'OK')
-									{
-										mostrar_registro(response)
-										cargador_visibility('hide');
-										swal({  title: "Informacion grabada con exito!!",   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-											//html:true,
-											type: "success",
-											showCancelButton: false,
-											confirmButtonColor: "#DD6B55",
-											confirmButtonText: "OK",
-											cancelButtonText: "",
-											closeOnConfirm: false,
-											closeOnCancel: false,
-											/*timer: 2000*/
-										});
-									}else{
-										swal({title: response.respuesta_mensaje,   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-											//html:true,
-											type: "error",
-											showCancelButton: false,
-											confirmButtonColor: "#DD6B55",
-											confirmButtonText: "OK",
-											cancelButtonText: "",
-											closeOnConfirm: false,
-											closeOnCancel: false,
-											/*timer: 2000*/
-										});
-									
-									}									
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function grabar
-
-
-
-	function consultar_variedad(id)
-	{
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{variedad_id: id}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/variedad/consultardata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									mostrar_registro(response)
-									cargador_visibility('hide');
-
-									$("#dialog_mantenimiento").modal('show')
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function consultar_variedad
-
-	function mostrar_registro(response)
-	{
-		//var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
-		var row = response.row;
-		if (row!==null)
-		{
-			ValidateControlsInit();
-			$("#accion").val("M");			
-			$("#dialog_mantenimiento_variedad_nombre").html(row.nombre);
-			$("#variedad_id").val(row.id);
-			$("#variedad_id").prop('readonly',true);
-			$("#nombre").val(row.nombre);
-			$("#nombre_tecnico").val(row.nombre_tecnico);
-			$("#calidad_variedad_id").html(response.cbo_calidad_variedad_id);
-			$("#color").html(response.cbo_color);
-			$("#color2").html(response.cbo_color2);
-			$("#grupo_color_id").html(response.cbo_grupo_color_id);
-			$("#tamano_bunch_id").html(response.cbo_tamano_bunch);
-			$("#colorbase").html(response.cbo_color_base);
-			$("#solido").html(response.cbo_solido);
-			$("#es_real").html(response.cbo_es_real);
-			$("#mensaje").val(row.mensaje);
-			$("#cultivada").html(response.cbo_cultivada);
-			$("#ciclo_prod").val(row.ciclo_prod);
-			$("#obtentor_id").html(response.cbo_obtentor_id);
-			$("#color_ventas_id").html(response.cbo_color_ventas);
-			$("#url_ficha").val(row.url_ficha);
-			if (row.est_producto_especial=='1')
-			{
-			    $("#est_producto_especial").prop('checked', true);
-			}
-			else
-			{
-			    $("#est_producto_especial").prop('checked', false);
-			}
-			$("#estado").html(response.cbo_estado);
-			$("#lbl_fec_ingreso").html(row.fec_ingreso);
-			$("#lbl_fec_modifica").html(row.fec_modifica);
-			$("#lbl_usuario_ing").html(row.usuario_ing_user_name);
-			$("#lbl_usuario_mod").html(row.usuario_mod_user_name);
-			$("#lbl_fec_sincronizado").html(row.fec_sincronizado);
-			
-
-			if (row.sincronizado==1)
-			{
-				$("#sincronizado_pendiente").hide();
-				$("#sincronizado_ok").show();
-			}else{
-				$("#sincronizado_pendiente").show();
-				$("#sincronizado_ok").hide();
-			}//end if
-		}//end if
-	}//end function mostrar_registro
-
-
-	function Variedad_ExportarExcel()
-	{
-		cargador_visibility('show');
-
-		var url = '../../dispo/variedad/exportarexcel';
-		var params = '?criterio_busqueda='+$("#frm_busqueda #criterio_busqueda").val()+
-					 '&busqueda_estado='+$("#frm_busqueda #busqueda_estado").val()+
-				 	 '&busqueda_color='+$("#frm_busqueda #busqueda_color").val();
-		url = url + params;
-		var win = window.open(url);
-		
-		cargador_visibility('hide');
-	}//end function Variedad_ExportarExcel
-
-	
-	});//$(document).ready
-    </script>
+<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/variedad/variedad.js')); ?>"></script>
 
 
 
@@ -299,110 +12,49 @@ $(document).ready(function () {
 	<section class="body-admin-section">    	
     	<div class="accion-admin-section"> 	
         	<div class="botonera-admin-section pull-left separator">
-            	<a id="btn_nuevo" class="btn btn-small btn-success" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> NUEVO</a>
+        		<form id="frm_nuevo" name="frm_nuevo">
+            		<a id="btn_nuevo" class="btn btn-small btn-primary btn-sm" href="#" role="button"><i class="glyphicon glyphicon-plus icon-white"></i> Nuevo</a>
+            	</form>
             </div>
         	<div class="busqueda-admin-section pull-left">	
             	<div class="form-inline">
-                	
-                <form id="frm_busqueda" action="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento" method="post" >
-                <div class="input-group" style="display:inline-flex">    
-                	<input name="criterio_busqueda" id="criterio_busqueda" type="text" class="select-class2" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
-                     <div class="input-group">
-						<select  name="busqueda_estado" id="busqueda_estado" class="select-class2" style="width:130px">
-	    	                <?php echo($this->busqueda_estado); ?>
-    	                </select>                                       
-                    </div>
-                    <div class="input-group">
-						<select  name="busqueda_color" id="busqueda_color" class="select-class2" style="width:130px">
-	    	                <?php echo($this->busqueda_color); ?>
-    	                </select>                                       
-                    </div>
- 					<span class="input-group-btn">
-                    	<button id="btn_consultar" class="btn  btn-success" type="button"><i class="glyphicon glyphicon-search icon-white"></i></button>
-                    	
-                    </span>    
-                    <span>&nbsp;&nbsp;</span>
-                    <span class="input-group">
-                    <button id="btn_excel" type="button" class="btn btn-success "> <i class="glyphicon glyphicon-download-alt"></i></button>
-                    </span>                    
-                </div>                
-                </form>                  
+	                <form id="frm_busqueda" action="<?php echo($this->basePath()); ?>/dispo/variedad/mantenimiento" method="post" >
+		                <div class="input-group" style="display:inline-flex">    
+		                	<input name="criterio_busqueda" id="criterio_busqueda" type="text" class="form-control input-sm" placeholder="Search" size="20" value="<?php echo($this->criterio_busqueda); ?>" />
+		                     <div class="input-group">
+								<select  name="busqueda_estado" id="busqueda_estado" class="form-control input-sm" style="width:130px">
+			    	                <?php echo($this->busqueda_estado); ?>
+		    	                </select>                                       
+		                    </div>
+		                    <div class="input-group">
+								<select  name="busqueda_color" id="busqueda_color" class="form-control input-sm" style="width:130px">
+			    	                <?php echo($this->busqueda_color); ?>
+		    	                </select>                                       
+		                    </div>
+		 					<span class="input-group-btn">
+		                    	<button id="btn_consultar" class="btn  btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search icon-white"></i> Buscar</button>
+		                    	
+		                    </span>    
+		                    <span>&nbsp;&nbsp;</span>
+		                    <span class="input-group">
+		                    <button id="btn_excel" type="button" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-download-alt"></i> Generar Reporte</button>
+		                    </span>                    
+		                </div>                
+	                </form>                  
 				</div>
             </div>
 		</div>
 		<div class="clearfix"></div>
-    	<div>
-                <table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
-                <thead>
-                    <tr>
-                      <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
-                        <th  width="100" rowspan="2" class="th-inner">ID</th>				
-                        <th  width="0" rowspan="2" class="th-inner">NOMBRE</th>
-                        <th  width="0" rowspan="2" class="th-inner">&nbsp;</th>
-                        <th  width="0" rowspan="2" class="th-inner">COLOR BASE</th>
-                        <th  width="0" rowspan="2" class="th-inner">COLOR VENTAS</th>
-                        <th  width="0" rowspan="2" class="th-inner">SOLIDO</th>
-                        <th  width="0" rowspan="2" class="th-inner">REAL</th>
-                        <th  width="70" colspan="2" class="th-inner">SINCRONIZACION</th>					
-                        <th  width="70" rowspan="2" class="th-inner">ESTADO</th>
-                        <th  width="70" rowspan="2" class="th-inner">EDITAR</th>
-                    </tr>
-                    <tr>
-                      <th  width="70" class="th-inner">&nbsp;</th>
-                      <th class="th-inner">FEC. ULTIMA VEZ</th>
-                  </tr>
-                </thead>
-                <tbody class="searchable" style="border: 1px solid #cdcdcd;">
-    <?php  
-            $i=0;
-            foreach($this->result as $reg)
-            {
-                $i++;
-                $class_row = '';
-                if ($reg['estado']=='I'){
-                    $class_row = 'row_estado_inactivo';
-                }
-    ?>            
-                    <tr variedad_id="<?php echo($reg['id']); ?>" class="<?php echo($class_row); ?>" >
-                      <td><?php echo($i); ?></td>
-                        <td align="center"><?php echo($reg['id']); ?></td>
-                        <td><?php echo($reg['nombre']); ?></td>
-                        <td><a onclick="window.open(this.href,this.target,'scrollbars=yes,resizable=yes,height=600,width=1000,left=100,top=100');
-                             return false;" href="<?php echo($reg['url_ficha']); ?>"><span class="glyphicon glyphicon-camera pointer"></span></a></td>
-                        <td align="center"><?php echo($reg['colorbase']); ?></td>
-                        <td align="center"><?php echo($reg['color_venta']); ?></td>
-                        <td align="center">
-                        <?php if ($reg['solido']=="S"){ ?>
-                            <span class="glyphicon glyphicon-ok" style="color:green"></span>
-                        <?php } //end if ?>					
-                        </td>
-                        <td>
-                            <?php if ($reg['es_real']=="S"){ ?>
-                            <span class="glyphicon glyphicon-ok" style="color:green"></span>
-                        <?php }//end if ?>	
-                        </td>
-                        <td align="center">
-                        <?php if ($reg['sincronizado']==0){ ?>
-                            <span class="glyphicon glyphicon-time icon-white" style="color:red"></span>
-                        <?php }else{ ?>
-                            <i class="glyphicon glyphicon-ok icon-white" style="color:green"></i>
-                        <?php }//end if ?>	
-                        </td>
-                        <td><?php echo($reg['fec_sincronizado']); ?></td>
-                        <td align="center"><?php echo($reg['estado']); ?></td>
-                        <td align="center"><a href="#" class="btn_edit"><i class="glyphicon glyphicon-pencil icon-white" style="color:orange"></i></a></td>
-                    </tr>
-    <?php	}//end foreach ?>		
-                </tbody>
-            </table>   
-		</div>
+        <div>
+			<table id="grid_variedad_listado" class="grid grid-autoheight"></table>
+            <div id="pager_variedad_listado"></div>        	
+        </div>
 	</section>
 </div>				
-
     
 
-            <!--  DIALOG DE MANTENIMIENTO -->
-            <form id="frm">
+        <!--  DIALOG DE MANTENIMIENTO -->
+            <form id="frm_mantenimiento_variedad">
 			<div class="modal fade" id="dialog_mantenimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">

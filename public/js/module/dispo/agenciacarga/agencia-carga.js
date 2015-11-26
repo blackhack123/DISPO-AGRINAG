@@ -99,7 +99,6 @@ $(document).ready(function () {
 		
 		ondblClickRow: function (rowid,iRow,iCol,e) {
 				var data = $('#grid_agenciacarga_listado').getRowData(rowid);
-				console.log('ID:',data.id);
 				consultar(data.id);
 				//return false;
 		},

@@ -39,7 +39,8 @@ class ParametrizarDAO extends Conexion
 					parametro.observacion, usuario.username, parametro.fec_modifica'.
 				' FROM parametro '.
 				' LEFT JOIN usuario '.
-				' ON usuario.id = parametro.usuario_mod_id ';
+				' ON usuario.id = parametro.usuario_mod_id '.
+				' WHERE 1 = 1 ';
 	
 		if (!empty($condiciones['criterio_busqueda']))
 		{

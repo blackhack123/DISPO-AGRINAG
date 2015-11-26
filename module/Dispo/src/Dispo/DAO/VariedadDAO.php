@@ -224,11 +224,15 @@ class VariedadDAO extends Conexion
 	
 	public function listado($condiciones)
 	{
-		$sql = 	' SELECT variedad.id, variedad.nombre, variedad.colorbase,variedad.solido, variedad.es_real, variedad.sincronizado, variedad.fec_sincronizado, color_ventas.nombre as color_venta, variedad.estado,
-						 variedad.url_ficha '.
+		$sql = 	' SELECT variedad.id, variedad.nombre, colores.nombre as color_base_nombre,variedad.solido, variedad.es_real, 
+						 variedad.sincronizado, variedad.fec_sincronizado, color_ventas.nombre as color_venta,
+						 variedad.estado, variedad.url_ficha '.
 				' FROM variedad '.
 				' 			LEFT JOIN color_ventas '.
-				' 					ON variedad.color_ventas_id = color_ventas.id ';
+				' 					ON variedad.color_ventas_id = color_ventas.id '.
+				' 			LEFT JOIN colores '.
+				' 					ON variedad.colorbase = colores.color '.
+				' WHERE 1 = 1 ';
 	
 		if (!empty($condiciones['criterio_busqueda']))
 		{
@@ -281,7 +285,8 @@ class VariedadDAO extends Conexion
 				'				LEFT JOIN obtentor '.
 				' 						ON variedad.obtentor_id = obtentor.id '.
 				' 				LEFT JOIN colores '.
-				'						ON variedad.colorbase = colores.color ';
+				'						ON variedad.colorbase = colores.color '.
+				' WHERE 1 = 1 ';
 				
 		if (!empty($condiciones['criterio_busqueda']))
 		{

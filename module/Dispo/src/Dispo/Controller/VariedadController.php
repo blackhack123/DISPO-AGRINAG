@@ -349,4 +349,75 @@ class VariedadController extends AbstractActionController
 		}
 	}//end function exportarexcel2Action
 	
+	
+	function listadodataAction()
+	{
+		try 
+		{
+		
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+			
+			$VariedadBO = new VariedadBO();
+			$VariedadBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+			
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+			
+			$request 			= $this->getRequest();
+			
+			$criterio_busqueda	= $request->getQuery('criterio_busqueda');
+			$estado 			= $request->getQuery('estado');
+			$color_ventas_id	= $request->getQuery('color_ventas_id');
+			
+			$page 				= $request->getQuery('page');
+			$limit 				= $request->getQuery('rows');
+			$sidx				= $request->getQuery('sidx',1);
+			$sord 				= $request->getQuery('sord', "");
+			
+			$VariedadBO->setPage($page);
+			$VariedadBO->setLimit($limit);
+			$VariedadBO->setSidx($sidx);
+			$VariedadBO->setSord($sord);
+			
+			$condiciones = array(
+					"criterio_busqueda"		=> $criterio_busqueda,
+					"estado" 				=> $estado,
+					"color_ventas_id"		=> $color_ventas_id
+			);	
+			
+			$result = $VariedadBO->listado($condiciones);
+			
+			$response = new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				$row2["id"] 				= $row["id"];
+				$row2["nombre"] 			= trim($row["nombre"]);
+				$row2["url_ficha"] 			= $row["url_ficha"];
+				$row2["color_base_nombre"] 	= $row["color_base_nombre"];
+				$row2["color_venta"] 		= $row["color_venta"];
+				$row2["solido"] 			= $row["solido"];
+				$row2["es_real"] 			= $row["es_real"];
+				$row2["sincronizado"] 		= $row["sincronizado"];
+				$row2["fec_sincronizado"] 	= $row["fec_sincronizado"];
+				$row2["estado"] 			= $row["estado"];
+				
+				$response->rows[$i] = $row2;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+		
+	}//end listadodataAction
+	
 }//end controller

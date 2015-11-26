@@ -34,7 +34,7 @@ class ParametrizarController extends AbstractActionController
 			$result 		= $ParametrizarBO->listado($condiciones);
 			
 			$this->layout($SesionUsuarioPlugin->getUserLayout());
-			$viewModel->result				= $result;
+			//$viewModel->result				= $result;
 			$viewModel->setTemplate('dispo/parametrizar/mantenimiento.phtml');
 			return $viewModel;	
 		
@@ -47,7 +47,7 @@ class ParametrizarController extends AbstractActionController
 		}
 	}//end function 
 
-	
+
 	
 	public function nuevodataAction()
 	{
@@ -197,5 +197,65 @@ class ParametrizarController extends AbstractActionController
 			return $response;
 		}
 	}//end function consultarAction
+	
+	
+	function listadodataAction()
+	{
+		try
+		{
+	
+			$EntityManagerPlugin = $this->EntityManagerPlugin();
+				
+			$ParametrizarBO = new ParametrizarBO();
+			$ParametrizarBO->setEntityManager($EntityManagerPlugin->getEntityManager());
+				
+			$SesionUsuarioPlugin = $this->SesionUsuarioPlugin();
+			$SesionUsuarioPlugin->isLoginAdmin();
+				
+			$request 			= $this->getRequest();
+				
+				
+			$page 				= $request->getQuery('page');
+			$limit 				= $request->getQuery('rows');
+			$sidx				= $request->getQuery('sidx',1);
+			$sord 				= $request->getQuery('sord', "");
+				
+			$ParametrizarBO->setPage($page);
+			$ParametrizarBO->setLimit($limit);
+			$ParametrizarBO->setSidx($sidx);
+			$ParametrizarBO->setSord($sord);
+				
+			$condiciones	= null;
+			$result 		= $ParametrizarBO->listado($condiciones);
+				
+			$response 		= new \stdClass();
+			$i=0;
+			foreach($result as $row){
+				$row2["id"] 				= $row["id"];
+				$row2["descripcion"] 		= $row["descripcion"];
+				$row2["tipo"] 				= $row["tipo"];
+				$row2["valor_texto"] 		= $row["valor_texto"];
+				$row2["valor_numerico"] 	= $row["valor_numerico"];
+				$row2["observacion"] 		= $row["observacion"];
+				$row2["fec_modifica"] 		= $row["fec_modifica"];
+				
+				$response->rows[$i] = $row2;
+				$i++;
+			}//end foreach
+			$tot_reg = $i;
+			$response->total 	= ceil($tot_reg/$limit);
+			$response->page 	= $page;
+			$response->records 	= $tot_reg;
+			$json = new JsonModel(get_object_vars($response));
+			return $json;
+		}catch (\Exception $e) {
+			$excepcion_msg =  utf8_encode($this->ExcepcionPlugin()->getMessageFormat($e));
+			$response = $this->getResponse();
+			$response->setStatusCode(500);
+			$response->setContent($excepcion_msg);
+			return $response;
+		}
+	
+	}//end listadodataAction
 
 }//end controller

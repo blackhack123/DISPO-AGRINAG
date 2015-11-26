@@ -468,21 +468,21 @@ class UsuarioBO extends Conexion{
 		$objRichText = new \PHPExcel_RichText();
 		$objRichText->createText('');
 		
-		$objInventario = $objRichText->createTextRun('     Criterio: ');
-		$objInventario->getFont()->setBold(true);
-		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+		$objCriterio = $objRichText->createTextRun('Criterio: ');
+		$objCriterio->getFont()->setBold(true);
+		$objCriterio->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
 		$objRichText->createText($texto_criterio_busqueda);
 		
 		
-		$objInventario = $objRichText->createTextRun('     Estado: ');
-		$objInventario->getFont()->setBold(true);
-		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+		$objEstado = $objRichText->createTextRun('    Estado: ');
+		$objEstado->getFont()->setBold(true);
+		$objEstado->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
 		$objRichText->createText($texto_estado);
 		
 		
-		$objInventario = $objRichText->createTextRun('     Perfil: ');
-		$objInventario->getFont()->setBold(true);
-		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+		$objPerfil = $objRichText->createTextRun('     Perfil: ');
+		$objPerfil->getFont()->setBold(true);
+		$objPerfil->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
 		$objRichText->createText($texto_perfil);
 		
 		$objPHPExcel->getActiveSheet()->getCell($col_ini.$row)->setValue($objRichText);

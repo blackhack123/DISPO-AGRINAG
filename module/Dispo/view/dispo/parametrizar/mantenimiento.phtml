@@ -1,205 +1,6 @@
 
-<script>
-$(document).ready(function () {
-	InputData_TrimAll();
-	InputData_initNumberNoDecimal();
-	InputData_initNumberAndDecimal();
 
-
-	$(".btn_edit").on('click', function(event){ 
-		var tr 			= $(this).closest('tr');
-		var id 			= tr.attr('id');
-
-		consultar(id);
-		//$("#dialog_mantenimiento").modal('show') 
-    });
-
-	$("#tbl_registros tbody tr").on('dblclick', function(event){ 
-		var tr 			= $(this).closest('tr');
-		var id 			= tr.attr('id');
-
-		consultar(id);
-		//$("#dialog_mantenimiento").modal('show') 
-    });	
-
-   $('#frm #btn_grabar').on('click', function(event){ 
-    	grabar();
-		return false;
-    });       
-	       
-	    
-
-	function nuevo()
-	{
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/parametrizar/nuevodata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									ValidateControlsInit();
-									$("#accion").val("I");
-									$("#dialog_mantenimiento_parametros_nombre").html("NUEVO REGISTRO");
-
-									$("#frm #id").val('');
-									//$("#id").prop('readonly',false);
-									$("#frm #descripcion").val('');
-									$("#frm #tipo").html(response.cbo_tipo);
-									$("#frm #valor_texto").val('');
-									$("#frm #valor_numerico").val('');
-									$("#frm #observacion").val('');
-									$("#frm #lbl_usuario_ing").html('');
-									$("#frm #lbl_fec_ingreso").html('');
-									$("#frm #lbl_usuario_mod").html('');
-									$("#frm #lbl_fec_modifica").html('');
-									
-									$("#dialog_mantenimiento").modal('show');
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;				
-	}//end function nuevo
-
-
-
-
-
-	function consultar(id)
-	{
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{id: id}
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/parametrizar/consultardata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									mostrar_registro(response)
-									cargador_visibility('hide');
-
-									$("#dialog_mantenimiento").modal('show');
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function consultar_variedad
-
-	
-	function mostrar_registro(response)
-	{
-		//var est_producto_especial = ($("#est_producto_especial").is(':checked') ? 1 : 0);
-		var row = response.row;
-		if (row!==null)
-		{
-			ValidateControlsInit();
-			$("#accion").val("M");			
-			$("#dialog_mantenimiento_parametros_nombre").html(row.id);
-			$("#frm #id").val(row.id);
-			$("#frm #id").prop('readonly',true);
-			$("#frm #descripcion").html(row.descripcion);
-			
-			if (row.tipo == "T")
-			{
-				 $("#frm #tipo").html('Texto');
-				 $("#valor_texto").show();
-				 $("#valor_numerico").hide();
-				 $("#frm #valor_texto").val(row.valor_texto);
-			}
-			else
-			{
-				$("#frm #tipo").html('Numerico');
-				$("#valor_texto").hide();
-				$("#valor_numerico").show();
-				$("#frm #valor_numerico").val(row.valor_numerico);
-			}//end if
-			
-			$("#frm #observacion").val(row.observacion);
-			$("#frm #lbl_fec_ingreso").html(row.fec_ingreso);
-			$("#frm #lbl_fec_modifica").html(row.fec_modifica);
-			$("#frm #lbl_usuario_ing").html(row.usuario_ing_user_name);
-			$("#frm #lbl_usuario_mod").html(row.usuario_mod_user_name);
-			
-		}//end if
-	}//end function mostrar_registro
-	
-
-	function grabar(){
-		if (!ValidateControls('frm')) {
-			return false;
-		}
-		if ($('#tipo').text() == "TEXTO")
-		{
-			valor_texto = $("#frm #valor_texto").val();	
-			valor_numerico = null;
-		}
-		else
-		{
-			valor_numerico = $("#frm #valor_numerico").val();
-			valor_texto = null ;
-		} 
-		//Se llama mediante AJAX para adicionar al carrito de compras
-		var data = 	{	accion: $("#accion").val(),
-					 	id: $("#frm #id").val(),
-					  	observacion:$("#frm #observacion").val(),
-					  	valor_texto: $("#frm #valor_texto").val(),
-					  	valor_numerico: $("#frm #valor_numerico").val(),
-					}
-		
-		data = JSON.stringify(data);
-		
-		var parameters = {	'type': 'POST',//'POST',
-							'contentType': 'application/json',
-							'url':'<?php echo($this->basePath()); ?>/dispo/parametrizar/grabardata',
-							'control_process':true,
-							'show_cargando':true,
-							'finish':function(response){
-									if (response.validacion_code == 'OK')
-									{
-										mostrar_registro(response)
-										cargador_visibility('hide');
-										swal({  title: "Informacion grabada con exito!!",   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-											//html:true,
-											type: "success",
-											showCancelButton: false,
-											confirmButtonColor: "#DD6B55",
-											confirmButtonText: "OK",
-											cancelButtonText: "",
-											closeOnConfirm: false,
-											closeOnCancel: false,
-											/*timer: 2000*/
-										});
-									}else{
-										swal({title: response.respuesta_mensaje,   
-											//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
-											//html:true,
-											type: "error",
-											showCancelButton: false,
-											confirmButtonColor: "#DD6B55",
-											confirmButtonText: "OK",
-											cancelButtonText: "",
-											closeOnConfirm: false,
-											closeOnCancel: false,
-											/*timer: 2000*/
-										});
-									
-									}									
-							}							
-		                 }
-		response = ajax_call(parameters, data);		
-		return false;		
-	}//end function grabar
-	
-	
-});//$(document).ready
-</script>
-
+<script type="text/javascript" src="<?php echo($this->basePath('js/module/dispo/parametrizar/parametrizar.js')); ?>"></script>
 
 
 	<div class="title-admin-section">
@@ -207,68 +8,23 @@ $(document).ready(function () {
 	</div>
 	
 	<div class="row">   
-	<section class="body-admin-section">    	
-    	<div class="accion-admin-section"> 	
-        	<div class="botonera-admin-section pull-left separator">
-            </div>
-        	<div class="busqueda-admin-section pull-left">	
-            	<div class="form-inline">
-          		<!-- AREA DE BUSQUEDA -->                 
-				</div>
-            </div>
-		</div>
-		<div class="clearfix"></div>
-    	  	<div>
-                <table id="tbl_registros" class="clear table-head table-dispo tablesorter tableinit tablesorter_numberrow">
-                <thead>
-                    <tr>
-                      <th  width="50" rowspan="2" class="th-inner">&nbsp;</th>
-                        <th  width="100" rowspan="2" class="th-inner">ID</th>				
-                        <th  width="200" rowspan="2" class="th-inner">DESCRIPCION</th>
-                        <th  width="100" rowspan="2" class="th-inner">TIPO</th>
-                        <th  width="100" rowspan="2" class="th-inner">VALOR TEXTO</th>
-                        <th  width="100" rowspan="2" class="th-inner">VALOR NUMERICO</th>
-                        <th  width="200" rowspan="2" class="th-inner">OBSERVACION</th>
-                        <th  width="230" rowspan="2" class="th-inner">ULTIMA MOD.</th>
-                        <th  width="90" rowspan="2" class="th-inner">EDITAR</th>
-                    </tr>
-                </thead>
-                <tbody class="searchable" style="border: 1px solid #cdcdcd;">
-    <?php  
-            $i=0;
-           foreach($this->result as $reg)
-            {
-                $i++;
-                
-    ?>            
-                    <tr id="<?php echo($reg['id']); ?>">
-                      	<td><?php echo($i); ?></td>
-                        <td align="center"><?php echo($reg['id']); ?></td>
-                        <td><?php echo($reg['descripcion']); ?></td>
-                        <td><?php 
-                        if ( $reg['tipo'] == 'T')
-                        {
-                        	echo "TEXTO"; 	
-                        }
-                        else 
-                        {
-                        	 echo "NUMERICO"; 	
-                        }//end if
-                        ?></td>
-                        <td align="center"> <?php echo($reg['valor_texto']); ?></td>
-		               	<td align="center"> <?php echo($reg['valor_numerico']); ?></td>	
-                        <td align="center"><?php echo($reg['observacion']); ?></td>
-                        <td><?php echo($reg['username']. " - ". $reg['fec_modifica']); ?></td>
-                        <td align="center"><a href="#" class="btn_edit"><i class="glyphicon glyphicon-pencil icon-white" style="color:orange"></i></a></td>
-                    </tr>
-    <?php	}//end foreach ?>		
-                </tbody>
-            </table>   
-		</div>
-	</section>
-</div>				
-	
-	
+		<section class="body-admin-section">    	
+	    	<div class="accion-admin-section"> 	
+	        	<div class="botonera-admin-section pull-left separator">
+	            </div>
+	        	<div class="busqueda-admin-section pull-left">	
+	            	<div class="form-inline">
+	          			<!-- AREA DE BUSQUEDA -->                 
+					</div>
+	            </div>
+			</div>
+			<div class="clearfix"></div>
+			<div>
+				<table id="grid_parametro_listado" class="grid grid-autoheight"></table>
+            	<div id="pager_parametro_listado"></div>        	
+       		 </div>
+		</section>
+	</div>
 
 	<!--  DIALOG DE MANTENIMIENTO -->
             
@@ -281,7 +37,7 @@ $(document).ready(function () {
 			      </div>
 			      <div class="modal-body clearfix">
 			        <div class="clearfix">
-                        <form id="frm" name="frm" method="post" action="#">
+                        <form id="frm_matenimiento" name="frm" method="post" action="#">
 			        	  <table border="0" align="center" cellpadding="0" cellspacing="0" class="tbl_formulario_mantenimiento">
 			        	      <tr>
 			        	        <td><label class="control-label">ID:</label></td>
@@ -325,7 +81,7 @@ $(document).ready(function () {
                       <br>
 						<center>
                         	<button id="btn_grabar" type="button" class="btn btn-small btn-success"><i class="glyphicon glyphicon-plus icon-save" ></i> Grabar</button>
-</center>
+						</center>
 				 	</form>
 		        	  <!--   div id="dialog_oferta_formulario"></div -->			
 			        </div>

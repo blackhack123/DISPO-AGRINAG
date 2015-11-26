@@ -385,19 +385,19 @@ class VariedadBO extends Conexion
 		$objRichText = new \PHPExcel_RichText();
 		$objRichText->createText('');
 		
-		$objInventario = $objRichText->createTextRun('  Criterio: ');
-		$objInventario->getFont()->setBold(true);
-		$objInventario->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+		$objCriterio = $objRichText->createTextRun('  Criterio: ');
+		$objCriterio->getFont()->setBold(true);
+		$objCriterio->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
 		$objRichText->createText($texto_criterio_busqueda);
 		
-		$objCalidad = $objRichText->createTextRun('    Color Ventas: ');
-		$objCalidad->getFont()->setBold(true);
-		$objCalidad->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+		$objColor = $objRichText->createTextRun('    Color Ventas: ');
+		$objColor->getFont()->setBold(true);
+		$objColor->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
 		$objRichText->createText($texto_color);
 		
-		$objProveedor = $objRichText->createTextRun('   Estado: ');
-		$objProveedor->getFont()->setBold(true);
-		$objProveedor->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
+		$objEstado = $objRichText->createTextRun('   Estado: ');
+		$objEstado->getFont()->setBold(true);
+		$objEstado->getFont()->setColor(new \PHPExcel_Style_Color(\PHPExcel_Style_Color::COLOR_DARKGREEN));
 		$objRichText->createText($texto_estado);
 		
 		$objPHPExcel->getActiveSheet()->getCell($col_ini.$row)->setValue($objRichText);
@@ -420,9 +420,9 @@ class VariedadBO extends Conexion
 		$row_detalle_ini = $row;
 		
 		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,$row, "Nro");
-		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1,$row, "Id");
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1,$row, "Codigo");
 		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2,$row, "Variedad");
-		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3,$row, " ");
+		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3,$row, "Link");
 		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4,$row, "Calidad");
 		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5,$row, "Obtentor");
 		$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6,$row, "Bunch");
@@ -468,14 +468,16 @@ class VariedadBO extends Conexion
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $cont_linea);
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $reg['id'] );
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $reg['nombre'] );
+			
 			if (!empty($reg['url_ficha']))
 			{
 				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, 'FOTO');
-				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $reg['url_ficha'] );
+				$objPHPExcel->getActiveSheet()->getCell('D'.$row)->getHyperlink()->setUrl($reg['url_ficha']);
 			}else 
 			{
 				$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, '');
-			}
+			}//end if
+			
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $reg['calidad'] );
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $reg['nombre_obtentor'] );
 			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $row, $reg['nombre_bunch'] );
