@@ -2,6 +2,7 @@
 
 
 $(document).ready(function () {
+	
 	 anchoPantalla = document.body.offsetWidth - 320;
 	//EVENTOS  GRABAR
 	 
