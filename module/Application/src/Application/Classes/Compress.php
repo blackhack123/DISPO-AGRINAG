@@ -22,7 +22,9 @@ class Compress {
 			  $zip->addFile($file, basename($file));
 			}
 		}else{
-			$zip->addFile($files, basename($file));
+			if ($files){
+				$zip->addFile($files, basename($files));
+			}//end if
 		}//end if
 		$zip->close();
 		return true;

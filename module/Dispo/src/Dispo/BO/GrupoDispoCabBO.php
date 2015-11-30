@@ -895,28 +895,54 @@ class GrupoDispoCabBO extends Conexion
 	
 		$inventario_id = $condiciones['inventario_id'];
 	
-		//Consulta la lista de registros
+		switch($condiciones['opcion_formato_archivo'])
+		{
+			case 'CAJA-CONSOLIDADA':
+				//Consulta la lista de registros
+				$condiciones['opcion_dispo']	= 'BUNCH_TODOS';
+				$prefijo_archivo				= '';
+				break;
+				
+			case 'CAJA-POR-FECHAS':
+				//Consulta la lista de registros
+				$condiciones['opcion_dispo']	= 'BUNCH_X_FECHA';
+				$prefijo_archivo				= 'fecha_';
+				break;
+		}//end switch	
+
 		$result_dispo = $this->listadoDisponibilidadPorProveedor($condiciones, true);
-	
+		
 		$tipo_caja = 'HB';
 		$result_HB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
-	
+		
 		$tipo_caja = 'QB';
 		$result_QB = $this->transformarDispoEnCajas($inventario_id, $tipo_caja, $result_dispo);
-
+		
 		if ($separar_archivo=='N')
 		{
 			$result_QB = $this->transformarResiduosCajaQB($result_HB);  //ESCOGE EL RESIDUO DE LAS CAJAS HB
-				
-			$result_cajas = array_merge($result_HB, $result_QB);
-			ksort($result_cajas);
-			$nro_archivos = 1;
+		
+			if ($result_HB){
+				$result_cajas = array_merge($result_HB, $result_QB);
+			}else{
+				$result_cajas = $result_QB;
+			}//end if
+			if ($result_cajas)
+			{
+				ksort($result_cajas);
+				$nro_archivos = 1;
+			}else{
+				$nro_archivos = 0;
+			}
 		}else{
 			if ($result_HB)	ksort($result_HB);
 			if ($result_QB) ksort($result_QB);
 			$nro_archivos = 2;
-		}//end if		
-
+		}//end if
+		
+		
+		
+		$ruta 	= $config['ruta_archivos']['tmp'];
 		$files_zip = null;
 		//$files = null;
 		$archivo_texto_HB = '';
@@ -968,8 +994,7 @@ class GrupoDispoCabBO extends Conexion
 			ksort($arr_archivo_texto_proveedor['AGR']);
 			ksort($arr_archivo_texto_proveedor['LMA']);
 			ksort($arr_archivo_texto_proveedor['HTC']);
-		
-			$ruta 	= $config['ruta_archivos']['tmp'];
+					
 			//$ruta 	= $config['ruta_archivos']['public']['descarga'];
 			if ($separar_archivo=='S')
 			{
@@ -977,7 +1002,7 @@ class GrupoDispoCabBO extends Conexion
 				{
 					foreach($arr_archivo_texto_proveedor as $key_archivo_texto_proveedor => $reg_archivo_texto_proveedor)
 					{
-						$archivo_texto	= $ruta.'skype_'.$key_archivo_texto_proveedor.'_HB_'.$usuario_id.'.txt';
+						$archivo_texto	= $ruta.'skype_'.$prefijo_archivo.$key_archivo_texto_proveedor.'_HB_'.$usuario_id.'.txt';
 						$archivo_texto_HB = basename($archivo_texto);
 							
 						\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $reg_archivo_texto_proveedor);
@@ -987,7 +1012,7 @@ class GrupoDispoCabBO extends Conexion
 				}else{
 					foreach($arr_archivo_texto_proveedor as $key_archivo_texto_proveedor => $reg_archivo_texto_proveedor)
 					{
-						$archivo_texto	= $ruta.'skype_'.$key_archivo_texto_proveedor.'_QB_'.$usuario_id.'.txt';
+						$archivo_texto	= $ruta.'skype_'.$prefijo_archivo.$key_archivo_texto_proveedor.'_QB_'.$usuario_id.'.txt';
 						$archivo_texto_QB = basename($archivo_texto);
 			
 						\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $reg_archivo_texto_proveedor);
@@ -998,7 +1023,7 @@ class GrupoDispoCabBO extends Conexion
 			}else{
 				foreach($arr_archivo_texto_proveedor as $key_archivo_texto_proveedor => $reg_archivo_texto_proveedor)
 				{
-					$archivo_texto	= $ruta.'skype_consolidado_'.$key_archivo_texto_proveedor.'_'.$usuario_id.'.txt';
+					$archivo_texto	= $ruta.'skype_'.$prefijo_archivo.'consolidado_'.$key_archivo_texto_proveedor.'_'.$usuario_id.'.txt';
 					\Application\Classes\ArchivoTexto::creaArchivoConArray($archivo_texto, $reg_archivo_texto_proveedor);
 					
 					$files_zip[] = $archivo_texto;
@@ -1007,6 +1032,7 @@ class GrupoDispoCabBO extends Conexion
 			//$files['file'] = basename($archivo_texto);
 		}//end for
 
+		//$ruta 	= $config['ruta_archivos']['tmp'];
 		$zipname = $ruta.'skype_consolidado_x_fincas_'.$usuario_id.'.zip';
 		if (file_exists($zipname)) {
 			$respuesta = unlink($zipname);
@@ -1561,7 +1587,8 @@ procesar_result:
 																						$condiciones['opcion_dispo'],
 																						$condiciones['dispo_rotacion_dias_inicio'],
 																						$condiciones['arr_fechas_cajas']
-																						);			
+																						);	
+
 			foreach($arr_grados as $grado)
 			{
 				$stock_grupo 		= $reg[$grado];
@@ -1571,6 +1598,7 @@ procesar_result:
 					{
 						foreach($result_dispo[$grado] as $key_proveedor => $stock_proveedor)
 						{
+							
 							if ($stock_grupo > $stock_proveedor)
 							{
 								$valor = $stock_proveedor;
@@ -1612,33 +1640,35 @@ procesar_result:
 		$result2 = null;
 		$arr_grados = array('40','50','60','70','80','90','100','110');	
 
-		foreach($result_HB as $reg){
-			if ($reg['existe_residuo_QB']==1)
-			{
-				$reg_new = $reg;
-				$reg_new['tipo_caja_id'] 		= 'QB';
-				$reg_new['existe_residuo_QB'] 	= 0;
-				
-				foreach($arr_grados as $grado_id)
+		if ($result_HB)
+		{
+			foreach($result_HB as $reg){
+				if ($reg['existe_residuo_QB']==1)
 				{
-					$reg_new[$grado_id]['cajas']['total'] = 0;
+					$reg_new = $reg;
+					$reg_new['tipo_caja_id'] 		= 'QB';
+					$reg_new['existe_residuo_QB'] 	= 0;
 					
-					foreach($reg_new[$grado_id]['cajas']['fincas'] as $key_finca => $reg_finca)
+					foreach($arr_grados as $grado_id)
 					{
-						$nro_cajas_residuo_QB	= $reg_new[$grado_id]['cajas']['fincas'][$key_finca]['residuo_QB'];	
-						$reg_new[$grado_id]['cajas']['fincas'][$key_finca]['total'] = $nro_cajas_residuo_QB;
-						$reg_new[$grado_id]['cajas']['total'] = $reg_new[$grado_id]['cajas']['total'] + $nro_cajas_residuo_QB;
+						$reg_new[$grado_id]['cajas']['total'] = 0;
 						
-						$reg_new[$grado_id]['cajas']['fincas'][$key_finca]['residuo_QB'] = 0;
+						foreach($reg_new[$grado_id]['cajas']['fincas'] as $key_finca => $reg_finca)
+						{
+							$nro_cajas_residuo_QB	= $reg_new[$grado_id]['cajas']['fincas'][$key_finca]['residuo_QB'];	
+							$reg_new[$grado_id]['cajas']['fincas'][$key_finca]['total'] = $nro_cajas_residuo_QB;
+							$reg_new[$grado_id]['cajas']['total'] = $reg_new[$grado_id]['cajas']['total'] + $nro_cajas_residuo_QB;
+							
+							$reg_new[$grado_id]['cajas']['fincas'][$key_finca]['residuo_QB'] = 0;
+						}//end foreach
+	
+						$reg_new[$grado_id]['cajas']['residuo_QB'] = 0;
 					}//end foreach
-
-					$reg_new[$grado_id]['cajas']['residuo_QB'] = 0;
-				}//end foreach
-				
-				$result2[] = $reg_new;
-			}//end if			
-		}//end foreach
-		
+					
+					$result2[] = $reg_new;
+				}//end if			
+			}//end foreach
+		}//end if		
 		return $result2;
 	}//end function transformarResiduosCajaQB
 

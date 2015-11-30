@@ -810,15 +810,21 @@ class GrupodispoController extends AbstractActionController
 			$grupo_dispo_cab_id 	= $request->getQuery('grupo_dispo_cab_id', "");
 			//$color_ventas_id  		= $request->getQuery('color_ventas_id', "");
 			//$calidad_variedad_id	= $request->getQuery('calidad_variedad_id', "");
+			$opcion_formato_archivo	= $request->getQuery('opcion_formato_archivo', "CAJA-CONSOLIDADA");			
 			$color_ventas_id  		= '';
 			$calidad_variedad_id	= '';
 			$separar_archivo 		= $request->getQuery('separar_archivo', "");
+			$fechas_cajas			= $request->getQuery('fechas_cajas', "");			
 	
+			$arr_fechas_cajas		= explode(";",$fechas_cajas);
+			
 			$condiciones = array(
 					"inventario_id"				=> $inventario_id,
 					"grupo_dispo_cab_id"		=> $grupo_dispo_cab_id,
 					"color_ventas_id"			=> $color_ventas_id,
 					"calidad_variedad_id"		=> $calidad_variedad_id,
+					"opcion_formato_archivo"	=> $opcion_formato_archivo,
+					"arr_fechas_cajas"			=> $arr_fechas_cajas
 			);
 			list($archivo_texto_HB, $archivo_texto_QB) = $GrupoDispoCabBO->generarTextoCajasXFincas($condiciones, $usuario_id, $separar_archivo);
 			exit;

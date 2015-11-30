@@ -961,6 +961,25 @@
                                                         <h3 style="color:#9C0A0C"><b>Desea usar un solo archivo o separarlo en un archivo HB y QB?</b></h3>
                                                     </div>
                                                 </div>
+                                                
+												<div class="row text-center">
+                                                	<div class="col col-sm-4 col-md-offset-2">
+                                                        <label class="radio">
+                                                          <input type="radio" name="chk_formato_dispo" id="chk_formato_dispo_consolidado" value="CAJA-CONSOLIDADA" checked> <b>Cajas Consolidada</b>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col col-sm-4">
+                                                        <label class="radio">
+                                                          <!-- <input type="radio" name="chk_formato_dispo" id="chk_formato_dispo_rotacion" value="CAJA-NUEVA-VS-ROTACION"> <b>Cajas Nuevas vs Rotacion</b> -->
+                                                          <input type="radio" name="chk_formato_dispo" id="chk_formato_dispo_fecha" value="CAJA-POR-FECHAS"> <b>Cajas por Fechas</b>
+                                                        </label>
+                                                        <div id="contenedor_grid_dispo_fecha" style="display:none">
+                                                            <table id="grid_dispoxfincas_fecha" class="grid"></table>
+                                                            <!-- div id="pager_dispo_fecha"></div -->
+                                                        </div>
+                                                	</div>
+                                                </div>
+                                                                                                
                                                 <div class="row">                                        
                                                     <div class="col-md-12 text-center">
                                                         <button id="btn_separar_archivo" type="button" class="btn btn-success btn-lg ">Separar en archivo HB y QB</button>

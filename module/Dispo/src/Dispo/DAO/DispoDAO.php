@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager,
 use Dispo\Data\DispoData;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Dispo\Data\Dispo\Data;
+use Dispo\Data\GrupoDispoDetData;
 
 class DispoDAO extends Conexion 
 {
@@ -944,6 +945,17 @@ class DispoDAO extends Conexion
 	 */
 	public function moverStock($DispoData, $grados, $color_ventas_id, $calidad_variedad_id, $clasifica_destino)
 	{
+		$GrupoDispoDetDAO 	= new GrupoDispoDetDAO();
+		$DispoDAO			= new DispoDAO();
+		$CalidadDAO			= new CalidadDAO();
+		$GrupoDispoCabDAO	= new GrupoDispoCabDAO();
+		$GrupoDispoDetData	= new GrupoDispoDetData();
+		
+		$GrupoDispoDetDAO->setEntityManager($this->getEntityManager());
+		$DispoDAO->setEntityManager($this->getEntityManager());
+		$CalidadDAO->setEntityManager($this->getEntityManager());
+		$GrupoDispoCabDAO->setEntityManager($this->getEntityManager());
+		
 		//Se establece el RANGO DE GRADOS al que se va afectar
 		$flag_1era_vez = true;
 		$sql_grados = '';
@@ -1027,6 +1039,7 @@ class DispoDAO extends Conexion
 						"	and clasifica			= '".$clasifica_destino."'";
 				$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
 			}//end if
+			
 
 			//Se resta la dispo de ORIGEN (DISMINUYE)
 			$sql = 	" UPDATE dispo ".
@@ -1042,6 +1055,59 @@ class DispoDAO extends Conexion
 					"	and clasifica			= '".$reg['clasifica']."'";
 			$count = $this->getEntityManager()->getConnection()->executeUpdate($sql);
 				
+			
+
+			//ACTUALIZA EL STOCK DE LOS GRUPOS DESTINO
+			$tot_stock = $DispoDAO->consultartotalInventario($reg['inventario_id'], $reg['producto'], $clasifica_destino, $reg['variedad_id'], $reg['grado_id'], $reg['tallos_x_bunch']);
+			/*if ($tot_stock['tot_cantidad_bunch'] < $tot_stock['tot_bunch_disponible'])
+			{
+				$tot_stock['tot_bunch_disponible'] = $tot_stock['tot_cantidad_bunch'];
+			}//end if
+			*/
+			$CalidadData = $CalidadDAO->consultarPorClasificaFox($clasifica_destino);
+			$result_dispocab = $GrupoDispoCabDAO->consultarPorInventario($reg['inventario_id'], $CalidadData->getId());
+			foreach($result_dispocab as $reg_dispocab)
+			{
+				$GrupoDispoDetData->setGrupoDispoCabId			($reg_dispocab['id']);
+				$GrupoDispoDetData->setProductoId				($reg['producto']);
+				$GrupoDispoDetData->setVariedadId				($reg['variedad_id']);
+				$GrupoDispoDetData->setGradoId					($reg['grado_id']);
+				$GrupoDispoDetData->setTallosXBunch				($reg['tallos_x_bunch']);
+				$GrupoDispoDetData->setCantidadBunch			($tot_stock['tot_cantidad_bunch']);
+				$GrupoDispoDetData->setCantidadBunchDisponible	($tot_stock['tot_bunch_disponible']);
+				$GrupoDispoDetData->setUsuarioModId				(1);
+				$GrupoDispoDetData->setUsuarioIngId				(1);
+			
+				$GrupoDispoDetDAO->registrar($GrupoDispoDetData);
+			}//end foreach	
+
+			
+			//ACTUALIZA EL STOCK DE LOS GRUPOS ORIGEN
+			$tot_stock = $DispoDAO->consultartotalInventario($reg['inventario_id'], $reg['producto'], $reg['clasifica'], $reg['variedad_id'], $reg['grado_id'], $reg['tallos_x_bunch']);
+			/*if ($tot_stock['tot_cantidad_bunch'] < $tot_stock['tot_bunch_disponible'])
+			{
+				$tot_stock['tot_bunch_disponible'] = $tot_stock['tot_cantidad_bunch'];
+			}//end if
+			*/
+			$CalidadData = $CalidadDAO->consultarPorClasificaFox($reg['clasifica']);
+			$result_dispocab = $GrupoDispoCabDAO->consultarPorInventario($reg['inventario_id'], $CalidadData->getId());
+			foreach($result_dispocab as $reg_dispocab)
+			{
+				$GrupoDispoDetData->setGrupoDispoCabId			($reg_dispocab['id']);
+				$GrupoDispoDetData->setProductoId				($reg['producto']);
+				$GrupoDispoDetData->setVariedadId				($reg['variedad_id']);
+				$GrupoDispoDetData->setGradoId					($reg['grado_id']);
+				$GrupoDispoDetData->setTallosXBunch				($reg['tallos_x_bunch']);
+				$GrupoDispoDetData->setCantidadBunch			($tot_stock['tot_cantidad_bunch']);
+				$GrupoDispoDetData->setCantidadBunchDisponible	($tot_stock['tot_bunch_disponible']);
+				$GrupoDispoDetData->setUsuarioModId				(1);
+				$GrupoDispoDetData->setUsuarioIngId				(1);
+					
+				$GrupoDispoDetDAO->registrar($GrupoDispoDetData);
+			}//end foreach			
+			
+			
+			
 		}//end foreach
 		
 		return true;
