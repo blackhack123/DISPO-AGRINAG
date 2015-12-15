@@ -101,9 +101,9 @@ class TipoCajaDAO extends Conexion
 	public function consultarTodos()
 	{
 		$sql = 	' SELECT tipo_caja.* '.
-				' FROM tipo_caja '.
-				' order by orden ';
-	
+				' FROM tipo_caja ';
+		
+		$sql = $sql." ORDER BY tipo_caja.orden ";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro

@@ -779,7 +779,7 @@ function TipoCaja_OpenModalActualizacionMasiva()
 						
 						$('#modal_matenimiento_caja_matriz').modal('hide')
 						cargador_visibility('hide');
-						swal({  title: "Registros procesados correctamente!!",   
+						/*	swal({  title: "Registros procesados correctamente!!",   
 							//text: "Desea continuar utilizando la misma marcacion? Para seguir realizando mas pedidos",  
 							//html:true,
 							type: "success",
@@ -790,6 +790,7 @@ function TipoCaja_OpenModalActualizacionMasiva()
 							closeOnConfirm: false,
 							closeOnCancel: false,
 						});
+					*/ //se oculta mensaje de registro grabado exitosamente 
 						$('#grid_tipo_caja_matriz').jqGrid("setGridParam",{datatype:"json"}).trigger("reloadGrid");
 					}else{
 						message_error('ERROR', response);

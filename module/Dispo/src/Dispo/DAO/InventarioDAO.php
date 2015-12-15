@@ -65,7 +65,7 @@ class InventarioDAO extends Conexion
 				' FROM inventario '.
 				' WHERE inventario.id = :id ';
 
-
+		$sql= $sql. " order by inventario.nombre ";
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->bindValue(':id',$id);
 		$stmt->execute();
@@ -90,7 +90,7 @@ class InventarioDAO extends Conexion
 	{
 		$sql = 	' SELECT inventario.* '.
 				' FROM inventario ';
-	
+		
 		$stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 		$stmt->execute();
 		$result = $stmt->fetchAll();  //Se utiliza el fecth por que es un registro
