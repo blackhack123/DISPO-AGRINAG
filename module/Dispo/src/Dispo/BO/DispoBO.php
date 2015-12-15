@@ -1142,8 +1142,16 @@ class DispoBO extends Conexion
 		$indice_hoja = -1;
 		foreach($result_fechas as $reg_fecha)
 		{
-			$indice_hoja++;
+			if (empty($reg_fecha))
+			{
+				$ind_fecha_dispo_final =  count($result_fechas) - 1;
+				$print_fecha_dispo = $result_fechas[1]['fecha_bunch'].' al '.$result_fechas[$ind_fecha_dispo_final]['fecha_bunch'];
+			}else{
+				$print_fecha_dispo = $reg_fecha['fecha_bunch'];
+			}//end if
 			
+			$indice_hoja++;
+						
 			switch ($indice_hoja)
 			{
 				case 0:  //El primer elemento debe ser NULL de reg_fecha
@@ -1234,8 +1242,8 @@ class DispoBO extends Conexion
 			$col_fin 			= $PHPExcelApp->getNameFromNumber(13);
 			
 			//$etiqueta = "";
-			
-			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, "Generado: ".\Application\Classes\Fecha::getFechaHoraActualServidor());
+			$texto_fechas = "Fecha Flor: ".$print_fecha_dispo."     Generado: ".\Application\Classes\Fecha::getFechaHoraActualServidor();
+			$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $texto_fechas);
 			
 			$objPHPExcel->getActiveSheet()->mergeCells($col_ini.$row.':'.$col_fin.$row);
 			$objPHPExcel->getActiveSheet()->getStyle($col_ini.$row)->applyFromArray($PHPExcelApp->getStyleArray($PHPExcelApp::STYLE_ARRAY_NEGRILLA));
