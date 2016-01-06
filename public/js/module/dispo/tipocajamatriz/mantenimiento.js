@@ -625,6 +625,8 @@ function TipoCaja_OpenModalActualizacionMasiva()
 	}//end function TipoCaja_TipoCaja_GrabarMasivo
 */
 
+
+
 /****************************************************/
 /**********CREACION DE NUEVA CAJA MATRIZ*************/
 /****************************************************/
